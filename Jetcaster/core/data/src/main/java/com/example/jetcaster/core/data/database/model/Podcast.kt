@@ -25,8 +25,8 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "podcasts",
     indices = [
-        Index("uri", unique = true)
-    ]
+        Index("uri", unique = true),
+    ],
 )
 @Immutable
 data class Podcast(
@@ -35,5 +35,5 @@ data class Podcast(
     @ColumnInfo(name = "description") val description: String? = null,
     @ColumnInfo(name = "author") val author: String? = null,
     @ColumnInfo(name = "image_url") val imageUrl: String? = null,
-    @ColumnInfo(name = "copyright") val copyright: String? = null
+    @ColumnInfo(name = "copyright") val copyright: String? = null,
 )

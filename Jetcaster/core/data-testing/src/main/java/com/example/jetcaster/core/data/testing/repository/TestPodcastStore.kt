@@ -28,9 +28,9 @@ import kotlinx.coroutines.flow.update
 
 // TODO: Move to :testing module upon merging PR #1379
 class TestPodcastStore : PodcastStore {
-
     private val podcastFlow = MutableStateFlow<List<Podcast>>(listOf())
     private val followedPodcasts = mutableSetOf<String>()
+
     override fun podcastWithUri(uri: String): Flow<Podcast> =
         podcastFlow.map { podcasts ->
             podcasts.first { it.uri == uri }
@@ -56,45 +56,48 @@ class TestPodcastStore : PodcastStore {
 
     override fun followedPodcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> =
         podcastFlow.map { podcasts ->
-            podcasts.filter {
-                followedPodcasts.contains(it.uri)
-            }.map { p ->
-                PodcastWithExtraInfo().apply {
-                    podcast = p
-                    isFollowed = true
+            podcasts
+                .filter {
+                    followedPodcasts.contains(it.uri)
+                }.map { p ->
+                    PodcastWithExtraInfo().apply {
+                        podcast = p
+                        isFollowed = true
+                    }
                 }
-            }
         }
 
     override fun searchPodcastByTitle(
         keyword: String,
-        limit: Int
+        limit: Int,
     ): Flow<List<PodcastWithExtraInfo>> =
         podcastFlow.map { podcastList ->
-            podcastList.filter {
-                it.title.contains(keyword)
-            }.map { p ->
-                PodcastWithExtraInfo().apply {
-                    podcast = p
-                    isFollowed = true
+            podcastList
+                .filter {
+                    it.title.contains(keyword)
+                }.map { p ->
+                    PodcastWithExtraInfo().apply {
+                        podcast = p
+                        isFollowed = true
+                    }
                 }
-            }
         }
 
     override fun searchPodcastByTitleAndCategories(
         keyword: String,
         categories: List<Category>,
-        limit: Int
+        limit: Int,
     ): Flow<List<PodcastWithExtraInfo>> =
         podcastFlow.map { podcastList ->
-            podcastList.filter {
-                it.title.contains(keyword)
-            }.map { p ->
-                PodcastWithExtraInfo().apply {
-                    podcast = p
-                    isFollowed = true
+            podcastList
+                .filter {
+                    it.title.contains(keyword)
+                }.map { p ->
+                    PodcastWithExtraInfo().apply {
+                        podcast = p
+                        isFollowed = true
+                    }
                 }
-            }
         }
 
     override suspend fun togglePodcastFollowed(podcastUri: String) {
@@ -113,9 +116,7 @@ class TestPodcastStore : PodcastStore {
         followedPodcasts.remove(podcastUri)
     }
 
-    override suspend fun addPodcast(podcast: Podcast) =
-        podcastFlow.update { it + podcast }
+    override suspend fun addPodcast(podcast: Podcast) = podcastFlow.update { it + podcast }
 
-    override suspend fun isEmpty(): Boolean =
-        podcastFlow.first().isEmpty()
+    override suspend fun isEmpty(): Boolean = podcastFlow.first().isEmpty()
 }

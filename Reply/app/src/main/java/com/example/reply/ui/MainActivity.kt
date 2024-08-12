@@ -35,7 +35,6 @@ import com.example.reply.ui.theme.ContrastAwareReplyTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
 
 class MainActivity : ComponentActivity() {
-
     private val viewModel: ReplyHomeViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -61,7 +60,7 @@ class MainActivity : ComponentActivity() {
                     },
                     toggleSelectedEmail = { emailId ->
                         viewModel.toggleSelectedEmail(emailId)
-                    }
+                    },
                 )
             }
         }

@@ -37,7 +37,7 @@ fun FavoriteButton(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
             imageVector = Icons.Filled.ThumbUpOffAlt,
-            contentDescription = stringResource(R.string.cd_add_to_favorites)
+            contentDescription = stringResource(R.string.cd_add_to_favorites),
         )
     }
 }
@@ -46,23 +46,25 @@ fun FavoriteButton(onClick: () -> Unit) {
 fun BookmarkButton(
     isBookmarked: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val clickLabel = stringResource(
-        if (isBookmarked) R.string.unbookmark else R.string.bookmark
-    )
+    val clickLabel =
+        stringResource(
+            if (isBookmarked) R.string.unbookmark else R.string.bookmark,
+        )
     IconToggleButton(
         checked = isBookmarked,
         onCheckedChange = { onClick() },
-        modifier = modifier.semantics {
-            // Use a custom click label that accessibility services can communicate to the user.
-            // We only want to override the label, not the actual action, so for the action we pass null.
-            this.onClick(label = clickLabel, action = null)
-        }
+        modifier =
+            modifier.semantics {
+                // Use a custom click label that accessibility services can communicate to the user.
+                // We only want to override the label, not the actual action, so for the action we pass null.
+                this.onClick(label = clickLabel, action = null)
+            },
     ) {
         Icon(
             imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-            contentDescription = null // handled by click label of parent
+            contentDescription = null, // handled by click label of parent
         )
     }
 }
@@ -72,7 +74,7 @@ fun ShareButton(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
             imageVector = Icons.Filled.Share,
-            contentDescription = stringResource(R.string.cd_share)
+            contentDescription = stringResource(R.string.cd_share),
         )
     }
 }
@@ -82,7 +84,7 @@ fun TextSettingsButton(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
             painter = painterResource(R.drawable.ic_text_settings),
-            contentDescription = stringResource(R.string.cd_text_settings)
+            contentDescription = stringResource(R.string.cd_text_settings),
         )
     }
 }

@@ -36,7 +36,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class HomeScreenTests {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -48,14 +47,14 @@ class HomeScreenTests {
         val snackbarHostState = SnackbarHostState()
         composeTestRule.setContent {
             JetnewsTheme {
-
                 // When the Home screen receives data with an error
                 HomeFeedScreen(
-                    uiState = HomeUiState.NoPosts(
-                        isLoading = false,
-                        errorMessages = listOf(ErrorMessage(0L, R.string.load_error)),
-                        searchInput = ""
-                    ),
+                    uiState =
+                        HomeUiState.NoPosts(
+                            isLoading = false,
+                            errorMessages = listOf(ErrorMessage(0L, R.string.load_error)),
+                            searchInput = "",
+                        ),
                     showTopAppBar = false,
                     onToggleFavorite = {},
                     onSelectPost = {},
@@ -64,7 +63,7 @@ class HomeScreenTests {
                     openDrawer = {},
                     homeListLazyListState = rememberLazyListState(),
                     snackbarHostState = snackbarHostState,
-                    onSearchInputChanged = {}
+                    onSearchInputChanged = {},
                 )
             }
         }
@@ -73,10 +72,16 @@ class HomeScreenTests {
         runBlocking {
             // snapshotFlow converts a State to a Kotlin Flow so we can observe it
             // wait for the first a non-null `currentSnackbarData`
-            val actualSnackbarText = snapshotFlow { snackbarHostState.currentSnackbarData }
-                .filterNotNull().first().visuals.message
-            val expectedSnackbarText = InstrumentationRegistry.getInstrumentation()
-                .targetContext.resources.getString(R.string.load_error)
+            val actualSnackbarText =
+                snapshotFlow { snackbarHostState.currentSnackbarData }
+                    .filterNotNull()
+                    .first()
+                    .visuals.message
+            val expectedSnackbarText =
+                InstrumentationRegistry
+                    .getInstrumentation()
+                    .targetContext.resources
+                    .getString(R.string.load_error)
             assertEquals(expectedSnackbarText, actualSnackbarText)
         }
     }

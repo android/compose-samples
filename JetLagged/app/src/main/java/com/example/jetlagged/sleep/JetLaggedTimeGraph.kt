@@ -51,24 +51,24 @@ import java.util.Locale
 @Composable
 fun JetLaggedSleepGraphCard(
     sleepState: SleepGraphData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var selectedTab by remember { mutableStateOf(SleepTab.Week) }
 
     BasicInformationalCard(
         borderColor = Yellow,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column {
             HomeScreenCardHeading(text = "Sleep")
             JetLaggedHeaderTabs(
                 onTabSelected = { selectedTab = it },
                 selectedTab = selectedTab,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 16.dp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             JetLaggedTimeGraph(
-                sleepState
+                sleepState,
             )
         }
     }
@@ -77,16 +77,17 @@ fun JetLaggedSleepGraphCard(
 @Composable
 private fun JetLaggedTimeGraph(
     sleepGraphData: SleepGraphData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
 
     val hours = (sleepGraphData.earliestStartHour..23) + (0..sleepGraphData.latestEndHour)
 
     TimeGraph(
-        modifier = modifier
-            .horizontalScroll(scrollState)
-            .wrapContentSize(),
+        modifier =
+            modifier
+                .horizontalScroll(scrollState)
+                .wrapContentSize(),
         dayItemsCount = sleepGraphData.sleepDayData.size,
         hoursHeader = {
             HoursHeader(hours)
@@ -100,15 +101,16 @@ private fun JetLaggedTimeGraph(
             // We have access to Modifier.timeGraphBar() as we are now in TimeGraphScope
             SleepBar(
                 sleepData = data,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .timeGraphBar(
-                        start = data.firstSleepStart,
-                        end = data.lastSleepEnd,
-                        hours = hours,
-                    )
+                modifier =
+                    Modifier
+                        .padding(bottom = 8.dp)
+                        .timeGraphBar(
+                            start = data.firstSleepStart,
+                            end = data.lastSleepEnd,
+                            hours = hours,
+                        ),
             )
-        }
+        },
     )
 }
 
@@ -116,13 +118,14 @@ private fun JetLaggedTimeGraph(
 private fun DayLabel(dayOfWeek: DayOfWeek) {
     Text(
         dayOfWeek.getDisplayName(
-            TextStyle.SHORT, Locale.getDefault()
+            TextStyle.SHORT,
+            Locale.getDefault(),
         ),
         Modifier
             .height(24.dp)
             .padding(start = 8.dp, end = 24.dp),
         style = SmallHeadingStyle,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -137,16 +140,17 @@ private fun HoursHeader(hours: List<Int>) {
                     brush,
                     cornerRadius = CornerRadius(10.dp.toPx(), 10.dp.toPx()),
                 )
-            }
+            },
     ) {
         hours.forEach {
             Text(
                 text = "$it",
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .width(50.dp)
-                    .padding(vertical = 4.dp),
-                style = SmallHeadingStyle
+                modifier =
+                    Modifier
+                        .width(50.dp)
+                        .padding(vertical = 4.dp),
+                style = SmallHeadingStyle,
             )
         }
     }

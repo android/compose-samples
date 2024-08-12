@@ -34,27 +34,27 @@ import com.example.jetcaster.ui.player.PlayerScreen
 @Composable
 fun JetcasterApp(
     displayFeatures: List<DisplayFeature>,
-    appState: JetcasterAppState = rememberJetcasterAppState()
+    appState: JetcasterAppState = rememberJetcasterAppState(),
 ) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     if (appState.isOnline) {
         NavHost(
             navController = appState.navController,
-            startDestination = Screen.Home.route
+            startDestination = Screen.Home.route,
         ) {
             composable(Screen.Home.route) { backStackEntry ->
                 MainScreen(
                     windowSizeClass = adaptiveInfo.windowSizeClass,
                     navigateToPlayer = { episode ->
                         appState.navigateToPlayer(episode.uri, backStackEntry)
-                    }
+                    },
                 )
             }
             composable(Screen.Player.route) {
                 PlayerScreen(
                     windowSizeClass = adaptiveInfo.windowSizeClass,
                     displayFeatures = displayFeatures,
-                    onBackPress = appState::navigateBack
+                    onBackPress = appState::navigateBack,
                 )
             }
         }
@@ -73,6 +73,6 @@ fun OfflineDialog(onRetry: () -> Unit) {
             TextButton(onClick = onRetry) {
                 Text(stringResource(R.string.retry_label))
             }
-        }
+        },
     )
 }

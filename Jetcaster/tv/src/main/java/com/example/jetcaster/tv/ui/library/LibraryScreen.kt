@@ -50,7 +50,7 @@ fun LibraryScreen(
     navigateToDiscover: () -> Unit,
     showPodcastDetails: (PodcastInfo) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
-    libraryScreenViewModel: LibraryScreenViewModel = hiltViewModel()
+    libraryScreenViewModel: LibraryScreenViewModel = hiltViewModel(),
 ) {
     val uiState by libraryScreenViewModel.uiState.collectAsState()
     when (val s = uiState) {
@@ -59,16 +59,17 @@ fun LibraryScreen(
             NavigateToDiscover(onNavigationRequested = navigateToDiscover, modifier = modifier)
         }
 
-        is LibraryScreenUiState.Ready -> Library(
-            podcastList = s.subscribedPodcastList,
-            episodeList = s.latestEpisodeList,
-            showPodcastDetails = showPodcastDetails,
-            onEpisodeSelected = {
-                libraryScreenViewModel.playEpisode(it)
-                playEpisode(it)
-            },
-            modifier = modifier,
-        )
+        is LibraryScreenUiState.Ready ->
+            Library(
+                podcastList = s.subscribedPodcastList,
+                episodeList = s.latestEpisodeList,
+                showPodcastDetails = showPodcastDetails,
+                onEpisodeSelected = {
+                    libraryScreenViewModel.playEpisode(it)
+                    playEpisode(it)
+                },
+                modifier = modifier,
+            )
     }
 }
 
@@ -91,9 +92,10 @@ private fun Library(
         latestEpisodeList = episodeList,
         onPodcastSelected = showPodcastDetails,
         onEpisodeSelected = onEpisodeSelected,
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .focusRestorer()
+        modifier =
+            modifier
+                .focusRequester(focusRequester)
+                .focusRestorer(),
     )
 }
 
@@ -110,14 +112,15 @@ private fun NavigateToDiscover(
         Column {
             Text(
                 text = stringResource(id = R.string.display_no_subscribed_podcast),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             Text(text = stringResource(id = R.string.message_no_subscribed_podcast))
             Button(
                 onClick = onNavigationRequested,
-                modifier = Modifier
-                    .padding(top = JetcasterAppDefaults.gap.podcastRow)
-                    .focusRequester(focusRequester)
+                modifier =
+                    Modifier
+                        .padding(top = JetcasterAppDefaults.gap.podcastRow)
+                        .focusRequester(focusRequester),
             ) {
                 Text(text = stringResource(id = R.string.label_navigate_to_discover))
             }

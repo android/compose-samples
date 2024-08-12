@@ -39,7 +39,7 @@ fun ImageBackgroundColorScrim(
         modifier = modifier,
         overlay = {
             drawRect(color)
-        }
+        },
     )
 }
 
@@ -53,13 +53,14 @@ fun ImageBackgroundRadialGradientScrim(
         url = url,
         modifier = modifier,
         overlay = {
-            val brush = Brush.radialGradient(
-                colors = colors,
-                center = Offset(0f, size.height),
-                radius = size.width * 1.5f
-            )
+            val brush =
+                Brush.radialGradient(
+                    colors = colors,
+                    center = Offset(0f, size.height),
+                    radius = size.width * 1.5f,
+                )
             drawRect(brush, blendMode = BlendMode.Multiply)
-        }
+        },
     )
 }
 
@@ -76,13 +77,14 @@ fun ImageBackground(
         model = url,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier
-            .fillMaxWidth()
-            .drawWithCache {
-                onDrawWithContent {
-                    drawContent()
-                    overlay()
-                }
-            }
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        overlay()
+                    }
+                },
     )
 }

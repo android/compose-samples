@@ -45,7 +45,7 @@ fun HomeRoute(
     homeViewModel: HomeViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     // UiState of the HomeScreen
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -94,20 +94,21 @@ fun HomeRoute(
     onInteractWithArticleDetails: (String) -> Unit,
     onSearchInputChanged: (String) -> Unit,
     openDrawer: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     // Construct the lazy list states for the list and the details outside of deciding which one to
     // show. This allows the associated state to survive beyond that decision, and therefore
     // we get to preserve the scroll throughout any changes to the content.
     val homeListLazyListState = rememberLazyListState()
-    val articleDetailLazyListStates = when (uiState) {
-        is HomeUiState.HasPosts -> uiState.postsFeed.allPosts
-        is HomeUiState.NoPosts -> emptyList()
-    }.associate { post ->
-        key(post.id) {
-            post.id to rememberLazyListState()
+    val articleDetailLazyListStates =
+        when (uiState) {
+            is HomeUiState.HasPosts -> uiState.postsFeed.allPosts
+            is HomeUiState.NoPosts -> emptyList()
+        }.associate { post ->
+            key(post.id) {
+                post.id to rememberLazyListState()
+            }
         }
-    }
 
     val homeScreenType = getHomeScreenType(isExpandedScreen, uiState)
     when (homeScreenType) {
@@ -154,9 +155,10 @@ fun HomeRoute(
                 onToggleFavorite = {
                     onToggleFavorite(uiState.selectedPost.id)
                 },
-                lazyListState = articleDetailLazyListStates.getValue(
-                    uiState.selectedPost.id
-                )
+                lazyListState =
+                    articleDetailLazyListStates.getValue(
+                        uiState.selectedPost.id,
+                    ),
             )
 
             // If we are just showing the detail, have a back press switch to the list.
@@ -180,7 +182,7 @@ fun HomeRoute(
 private enum class HomeScreenType {
     FeedWithArticleDetails,
     Feed,
-    ArticleDetails
+    ArticleDetails,
 }
 
 /**
@@ -190,19 +192,20 @@ private enum class HomeScreenType {
 @Composable
 private fun getHomeScreenType(
     isExpandedScreen: Boolean,
-    uiState: HomeUiState
-): HomeScreenType = when (isExpandedScreen) {
-    false -> {
-        when (uiState) {
-            is HomeUiState.HasPosts -> {
-                if (uiState.isArticleOpen) {
-                    HomeScreenType.ArticleDetails
-                } else {
-                    HomeScreenType.Feed
+    uiState: HomeUiState,
+): HomeScreenType =
+    when (isExpandedScreen) {
+        false -> {
+            when (uiState) {
+                is HomeUiState.HasPosts -> {
+                    if (uiState.isArticleOpen) {
+                        HomeScreenType.ArticleDetails
+                    } else {
+                        HomeScreenType.Feed
+                    }
                 }
+                is HomeUiState.NoPosts -> HomeScreenType.Feed
             }
-            is HomeUiState.NoPosts -> HomeScreenType.Feed
         }
+        true -> HomeScreenType.FeedWithArticleDetails
     }
-    true -> HomeScreenType.FeedWithArticleDetails
-}

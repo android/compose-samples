@@ -28,7 +28,10 @@ import androidx.compose.ui.platform.LocalContext
  * @return the string data associated with the resource
  */
 @Composable
-fun quantityStringResource(@PluralsRes id: Int, quantity: Int): String {
+fun quantityStringResource(
+    @PluralsRes id: Int,
+    quantity: Int,
+): String {
     val context = LocalContext.current
     return context.resources.getQuantityString(id, quantity)
 }
@@ -42,7 +45,11 @@ fun quantityStringResource(@PluralsRes id: Int, quantity: Int): String {
  * @return the string data associated with the resource
  */
 @Composable
-fun quantityStringResource(@PluralsRes id: Int, quantity: Int, vararg formatArgs: Any): String {
+fun quantityStringResource(
+    @PluralsRes id: Int,
+    quantity: Int,
+    vararg formatArgs: Any,
+): String {
     val context = LocalContext.current
     return context.resources.getQuantityString(id, quantity, *formatArgs)
 }

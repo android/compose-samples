@@ -29,15 +29,15 @@ import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.Duration
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.Duration
+import javax.inject.Inject
 
 data class PlayerUiState(
-    val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
+    val episodePlayerState: EpisodePlayerState = EpisodePlayerState(),
 )
 
 /**
@@ -45,72 +45,75 @@ data class PlayerUiState(
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class PlayerViewModel @Inject constructor(
-    episodeStore: EpisodeStore,
-    private val episodePlayer: EpisodePlayer,
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
+class PlayerViewModel
+    @Inject
+    constructor(
+        episodeStore: EpisodeStore,
+        private val episodePlayer: EpisodePlayer,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        // episodeUri should always be present in the PlayerViewModel.
+        // If that's not the case, fail crashing the app!
+        private val episodeUri: String =
+            Uri.decode(savedStateHandle.get<String>(Screen.ARG_EPISODE_URI)!!)
 
-    // episodeUri should always be present in the PlayerViewModel.
-    // If that's not the case, fail crashing the app!
-    private val episodeUri: String =
-        Uri.decode(savedStateHandle.get<String>(Screen.ARG_EPISODE_URI)!!)
+        var uiState by mutableStateOf(PlayerUiState())
+            private set
 
-    var uiState by mutableStateOf(PlayerUiState())
-        private set
+        init {
+            viewModelScope.launch {
+                episodeStore
+                    .episodeAndPodcastWithUri(episodeUri)
+                    .flatMapConcat {
+                        episodePlayer.currentEpisode = it.toPlayerEpisode()
+                        episodePlayer.playerState
+                    }.map {
+                        PlayerUiState(episodePlayerState = it)
+                    }.collect {
+                        uiState = it
+                    }
+            }
+        }
 
-    init {
-        viewModelScope.launch {
-            episodeStore.episodeAndPodcastWithUri(episodeUri).flatMapConcat {
-                episodePlayer.currentEpisode = it.toPlayerEpisode()
-                episodePlayer.playerState
-            }.map {
-                PlayerUiState(episodePlayerState = it)
-            }.collect {
-                uiState = it
+        fun onPlay() {
+            episodePlayer.play()
+        }
+
+        fun onPause() {
+            episodePlayer.pause()
+        }
+
+        fun onStop() {
+            episodePlayer.stop()
+        }
+
+        fun onPrevious() {
+            episodePlayer.previous()
+        }
+
+        fun onNext() {
+            episodePlayer.next()
+        }
+
+        fun onAdvanceBy(duration: Duration) {
+            episodePlayer.advanceBy(duration)
+        }
+
+        fun onRewindBy(duration: Duration) {
+            episodePlayer.rewindBy(duration)
+        }
+
+        fun onSeekingStarted() {
+            episodePlayer.onSeekingStarted()
+        }
+
+        fun onSeekingFinished(duration: Duration) {
+            episodePlayer.onSeekingFinished(duration)
+        }
+
+        fun onAddToQueue() {
+            uiState.episodePlayerState.currentEpisode?.let {
+                episodePlayer.addToQueue(it)
             }
         }
     }
-
-    fun onPlay() {
-        episodePlayer.play()
-    }
-
-    fun onPause() {
-        episodePlayer.pause()
-    }
-
-    fun onStop() {
-        episodePlayer.stop()
-    }
-
-    fun onPrevious() {
-        episodePlayer.previous()
-    }
-
-    fun onNext() {
-        episodePlayer.next()
-    }
-
-    fun onAdvanceBy(duration: Duration) {
-        episodePlayer.advanceBy(duration)
-    }
-
-    fun onRewindBy(duration: Duration) {
-        episodePlayer.rewindBy(duration)
-    }
-
-    fun onSeekingStarted() {
-        episodePlayer.onSeekingStarted()
-    }
-
-    fun onSeekingFinished(duration: Duration) {
-        episodePlayer.onSeekingFinished(duration)
-    }
-
-    fun onAddToQueue() {
-        uiState.episodePlayerState.currentEpisode?.let {
-            episodePlayer.addToQueue(it)
-        }
-    }
-}

@@ -25,7 +25,6 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 
 class ProfileViewModel : ViewModel() {
-
     private var userId: String = ""
 
     fun setUserId(newUserId: String?) {
@@ -33,11 +32,12 @@ class ProfileViewModel : ViewModel() {
             userId = newUserId ?: meProfile.userId
         }
         // Workaround for simplicity
-        _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
-            meProfile
-        } else {
-            colleagueProfile
-        }
+        _userData.value =
+            if (userId == meProfile.userId || userId == meProfile.displayName) {
+                meProfile
+            } else {
+                colleagueProfile
+            }
     }
 
     private val _userData = MutableLiveData<ProfileScreenState>()
@@ -53,8 +53,10 @@ data class ProfileScreenState(
     val displayName: String,
     val position: String,
     val twitter: String = "",
-    val timeZone: String?, // Null if me
-    val commonChannels: String? // Null if me
+    // value is null if me
+    val timeZone: String?,
+    // value is null if me
+    val commonChannels: String?,
 ) {
     fun isMe() = userId == meProfile.userId
 }

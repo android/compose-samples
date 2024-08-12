@@ -25,19 +25,12 @@ import com.example.jetcaster.designsystem.theme.surfaceVariantDark
 import com.example.jetcaster.designsystem.theme.surfaceVariantLight
 
 @Composable
-internal fun thumbnailPlaceholderDefaultBrush(
-    color: Color = thumbnailPlaceHolderDefaultColor()
-): Brush {
-    return SolidColor(color)
-}
+internal fun thumbnailPlaceholderDefaultBrush(color: Color = thumbnailPlaceHolderDefaultColor()): Brush = SolidColor(color)
 
 @Composable
-private fun thumbnailPlaceHolderDefaultColor(
-    isInDarkMode: Boolean = isSystemInDarkTheme()
-): Color {
-    return if (isInDarkMode) {
+private fun thumbnailPlaceHolderDefaultColor(isInDarkMode: Boolean = isSystemInDarkTheme()): Color =
+    if (isInDarkMode) {
         surfaceVariantDark
     } else {
         surfaceVariantLight
     }
-}

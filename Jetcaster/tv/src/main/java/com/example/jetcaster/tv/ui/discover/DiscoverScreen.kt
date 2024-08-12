@@ -49,16 +49,17 @@ fun DiscoverScreen(
     showPodcastDetails: (PodcastInfo) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel()
+    discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(),
 ) {
     val uiState by discoverScreenViewModel.uiState.collectAsState()
 
     when (val s = uiState) {
         DiscoverScreenUiState.Loading -> {
             Loading(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .then(modifier)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .then(modifier),
             )
         }
 
@@ -74,9 +75,10 @@ fun DiscoverScreen(
                     discoverScreenViewModel.play(it)
                     playEpisode(it)
                 },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .then(modifier)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .then(modifier),
             )
         }
     }
@@ -87,7 +89,6 @@ fun DiscoverScreen(
 private fun CatalogWithCategorySelection(
     categoryInfoList: CategoryInfoList,
     podcastList: PodcastList,
-
     selectedCategory: CategoryInfo,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastInfo) -> Unit,
@@ -96,9 +97,10 @@ private fun CatalogWithCategorySelection(
     modifier: Modifier = Modifier,
     state: TvLazyListState = rememberTvLazyListState(),
 ) {
-    val (focusRequester, selectedTab) = remember {
-        FocusRequester.createRefs()
-    }
+    val (focusRequester, selectedTab) =
+        remember {
+            FocusRequester.createRefs()
+        }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -120,18 +122,20 @@ private fun CatalogWithCategorySelection(
     ) {
         TabRow(
             selectedTabIndex = selectedTabIndex,
-            modifier = Modifier.focusProperties {
-                enter = {
-                    selectedTab
-                }
-            }
+            modifier =
+                Modifier.focusProperties {
+                    enter = {
+                        selectedTab
+                    }
+                },
         ) {
             categoryInfoList.forEachIndexed { index, category ->
-                val tabModifier = if (selectedTabIndex == index) {
-                    Modifier.focusRequester(selectedTab)
-                } else {
-                    Modifier
-                }
+                val tabModifier =
+                    if (selectedTabIndex == index) {
+                        Modifier.focusRequester(selectedTab)
+                    } else {
+                        Modifier
+                    }
 
                 Tab(
                     selected = index == selectedTabIndex,
@@ -142,7 +146,7 @@ private fun CatalogWithCategorySelection(
                 ) {
                     Text(
                         text = category.name,
-                        modifier = Modifier.padding(JetcasterAppDefaults.padding.tab)
+                        modifier = Modifier.padding(JetcasterAppDefaults.padding.tab),
                     )
                 }
             }

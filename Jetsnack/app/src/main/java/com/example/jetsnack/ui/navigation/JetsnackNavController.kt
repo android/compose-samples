@@ -40,11 +40,10 @@ object MainDestinations {
  * Remembers and creates an instance of [JetsnackNavController]
  */
 @Composable
-fun rememberJetsnackNavController(
-    navController: NavHostController = rememberNavController()
-): JetsnackNavController = remember(navController) {
-    JetsnackNavController(navController)
-}
+fun rememberJetsnackNavController(navController: NavHostController = rememberNavController()): JetsnackNavController =
+    remember(navController) {
+        JetsnackNavController(navController)
+    }
 
 /**
  * Responsible for holding UI Navigation logic.
@@ -53,7 +52,6 @@ fun rememberJetsnackNavController(
 class JetsnackNavController(
     val navController: NavHostController,
 ) {
-
     // ----------------------------------------------------------
     // Navigation state source of truth
     // ----------------------------------------------------------
@@ -76,7 +74,11 @@ class JetsnackNavController(
         }
     }
 
-    fun navigateToSnackDetail(snackId: Long, origin: String, from: NavBackStackEntry) {
+    fun navigateToSnackDetail(
+        snackId: Long,
+        origin: String,
+        from: NavBackStackEntry,
+    ) {
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.SNACK_DETAIL_ROUTE}/$snackId?origin=$origin")
@@ -89,8 +91,7 @@ class JetsnackNavController(
  *
  * This is used to de-duplicate navigation events.
  */
-private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
+private fun NavBackStackEntry.lifecycleIsResumed() = this.lifecycle.currentState == Lifecycle.State.RESUMED
 
 private val NavGraph.startDestination: NavDestination?
     get() = findNode(startDestinationId)
@@ -100,6 +101,5 @@ private val NavGraph.startDestination: NavDestination?
  *
  * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:navigation/navigation-ui/src/main/java/androidx/navigation/ui/NavigationUI.kt
  */
-private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
-    return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
-}
+private tailrec fun findStartDestination(graph: NavDestination): NavDestination =
+    if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph

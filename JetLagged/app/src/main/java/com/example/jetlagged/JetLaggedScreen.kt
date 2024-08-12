@@ -49,19 +49,20 @@ fun JetLaggedScreen(
     modifier: Modifier = Modifier,
     windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
     viewModel: JetLaggedHomeScreenViewModel = viewModel(),
-    onDrawerClicked: () -> Unit = {}
+    onDrawerClicked: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier
-            .background(Color.White)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(Color.White)
+        modifier =
+            modifier
+                .background(Color.White)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .background(Color.White),
     ) {
         Column(modifier = Modifier.yellowBackground()) {
             JetLaggedHeader(
                 modifier = Modifier.fillMaxWidth(),
-                onDrawerClicked = onDrawerClicked
+                onDrawerClicked = onDrawerClicked,
             )
         }
 
@@ -72,7 +73,7 @@ fun JetLaggedScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
             verticalArrangement = Arrangement.Center,
-            maxItemsInEachRow = 3
+            maxItemsInEachRow = 3,
         ) {
             JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
             if (windowSizeClass == WindowWidthSizeClass.Compact) {
@@ -87,23 +88,27 @@ fun JetLaggedScreen(
             if (windowSizeClass == WindowWidthSizeClass.Compact) {
                 WellnessCard(
                     wellnessData = uiState.value.wellnessData,
-                    modifier = Modifier.widthIn(max = 400.dp)
-                        .heightIn(min = 200.dp)
+                    modifier =
+                        Modifier
+                            .widthIn(max = 400.dp)
+                            .heightIn(min = 200.dp),
                 )
                 HeartRateCard(
                     modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                    uiState.value.heartRateData
+                    uiState.value.heartRateData,
                 )
             } else {
                 FlowColumn {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
-                        modifier = Modifier.widthIn(max = 400.dp)
-                            .heightIn(min = 200.dp)
+                        modifier =
+                            Modifier
+                                .widthIn(max = 400.dp)
+                                .heightIn(min = 200.dp),
                     )
                     HeartRateCard(
                         modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                        uiState.value.heartRateData
+                        uiState.value.heartRateData,
                     )
                 }
             }

@@ -26,13 +26,14 @@ import com.example.jetcaster.designsystem.theme.primaryDark
 import com.example.jetcaster.designsystem.theme.secondaryContainerDarkMediumContrast
 import com.example.jetcaster.designsystem.theme.secondaryDark
 
-internal val wearColorPalette: Colors = Colors(
-    primary = primaryDark,
-    primaryVariant = primaryContainerDarkMediumContrast,
-    secondary = secondaryDark,
-    secondaryVariant = secondaryContainerDarkMediumContrast,
-    error = errorDark,
-    onPrimary = onPrimaryDark,
-    onSecondary = onSecondaryDark,
-    onError = onErrorDark
-)
+internal val wearColorPalette: Colors =
+    Colors(
+        primary = primaryDark,
+        primaryVariant = primaryContainerDarkMediumContrast,
+        secondary = secondaryDark,
+        secondaryVariant = secondaryContainerDarkMediumContrast,
+        error = errorDark,
+        onPrimary = onPrimaryDark,
+        onSecondary = onSecondaryDark,
+        onError = onErrorDark,
+    )

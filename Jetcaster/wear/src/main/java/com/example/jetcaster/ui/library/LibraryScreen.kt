@@ -57,29 +57,31 @@ fun LibraryScreen(
     onYourPodcastClick: () -> Unit,
     onUpNextClick: () -> Unit,
     modifier: Modifier = Modifier,
-    libraryScreenViewModel: LibraryViewModel = hiltViewModel()
+    libraryScreenViewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val uiState by libraryScreenViewModel.uiState.collectAsState()
 
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = ScalingLazyColumnDefaults.padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
-    )
+    val columnState =
+        rememberResponsiveColumnState(
+            contentPadding =
+                ScalingLazyColumnDefaults.padding(
+                    first = ScalingLazyColumnDefaults.ItemType.Text,
+                    last = ScalingLazyColumnDefaults.ItemType.Chip,
+                ),
+        )
 
     when (val s = uiState) {
         is LibraryScreenUiState.Loading ->
             LoadingScreen(
                 columnState = columnState,
-                modifier = modifier
+                modifier = modifier,
             )
         is LibraryScreenUiState.NoSubscribedPodcast ->
             NoSubscribedPodcastScreen(
                 columnState = columnState,
                 modifier = modifier,
                 topPodcasts = s.topPodcasts,
-                onTogglePodcastFollowed = libraryScreenViewModel::onTogglePodcastFollowed
+                onTogglePodcastFollowed = libraryScreenViewModel::onTogglePodcastFollowed,
             )
 
         is LibraryScreenUiState.Ready ->
@@ -89,7 +91,7 @@ fun LibraryScreen(
                 onLatestEpisodeClick = onLatestEpisodeClick,
                 onYourPodcastClick = onYourPodcastClick,
                 onUpNextClick = onUpNextClick,
-                queue = s.queue
+                queue = s.queue,
             )
     }
 }
@@ -103,7 +105,7 @@ fun LoadingScreen(
         columnState = columnState,
         headerContent = {
             ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding()
+                contentPadding = ListHeaderDefaults.firstItemPadding(),
             ) {
                 Text(text = stringResource(R.string.loading))
             }
@@ -113,7 +115,7 @@ fun LoadingScreen(
             items(count = 2) {
                 PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
             }
-        }
+        },
     )
 }
 
@@ -122,14 +124,14 @@ fun NoSubscribedPodcastScreen(
     columnState: ScalingLazyColumnState,
     modifier: Modifier,
     topPodcasts: List<PodcastInfo>,
-    onTogglePodcastFollowed: (uri: String) -> Unit
+    onTogglePodcastFollowed: (uri: String) -> Unit,
 ) {
     ScreenScaffold(scrollState = columnState, modifier = modifier) {
         ScalingLazyColumn(columnState = columnState) {
             item {
                 ResponsiveListHeader(
                     modifier = modifier.listTextPadding(),
-                    contentColor = MaterialTheme.colors.onSurface
+                    contentColor = MaterialTheme.colors.onSurface,
                 ) {
                     Text(stringResource(R.string.entity_no_featured_podcasts))
                 }
@@ -138,10 +140,11 @@ fun NoSubscribedPodcastScreen(
                 items(topPodcasts.take(3)) { podcast ->
                     PodcastContent(
                         podcast = podcast,
-                        downloadItemArtworkPlaceholder = rememberVectorPainter(
-                            image = Icons.Default.MusicNote,
-                            tintColor = Color.Blue,
-                        ),
+                        downloadItemArtworkPlaceholder =
+                            rememberVectorPainter(
+                                image = Icons.Default.MusicNote,
+                                tintColor = Color.Blue,
+                            ),
                         onClick = {
                             onTogglePodcastFollowed(podcast.uri)
                         },
@@ -151,7 +154,7 @@ fun NoSubscribedPodcastScreen(
                 item {
                     PlaceholderChip(
                         contentDescription = "",
-                        colors = ChipDefaults.secondaryChipColors()
+                        colors = ChipDefaults.secondaryChipColors(),
                     )
                 }
             }
@@ -185,7 +188,7 @@ fun LibraryScreen(
     onLatestEpisodeClick: () -> Unit,
     onYourPodcastClick: () -> Unit,
     onUpNextClick: () -> Unit,
-    queue: List<PlayerEpisode>
+    queue: List<PlayerEpisode>,
 ) {
     ScreenScaffold(scrollState = columnState, modifier = modifier) {
         ScalingLazyColumn(columnState = columnState) {
@@ -199,7 +202,7 @@ fun LibraryScreen(
                     label = stringResource(R.string.latest_episodes),
                     onClick = onLatestEpisodeClick,
                     icon = DrawableResPaintable(R.drawable.new_releases),
-                    colors = ChipDefaults.secondaryChipColors()
+                    colors = ChipDefaults.secondaryChipColors(),
                 )
             }
             item {
@@ -207,7 +210,7 @@ fun LibraryScreen(
                     label = stringResource(R.string.podcasts),
                     onClick = onYourPodcastClick,
                     icon = DrawableResPaintable(R.drawable.podcast),
-                    colors = ChipDefaults.secondaryChipColors()
+                    colors = ChipDefaults.secondaryChipColors(),
                 )
             }
             item {
@@ -223,7 +226,7 @@ fun LibraryScreen(
                         label = stringResource(R.string.up_next),
                         onClick = onUpNextClick,
                         icon = DrawableResPaintable(R.drawable.up_next),
-                        colors = ChipDefaults.secondaryChipColors()
+                        colors = ChipDefaults.secondaryChipColors(),
                     )
                 }
             }

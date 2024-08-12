@@ -25,14 +25,15 @@ fun JetcasterTheme(
     isInDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (isInDarkTheme) {
-        colorSchemeForDarkMode
-    } else {
-        colorSchemeForLightMode
-    }
+    val colorScheme =
+        if (isInDarkTheme) {
+            colorSchemeForDarkMode
+        } else {
+            colorSchemeForLightMode
+        }
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

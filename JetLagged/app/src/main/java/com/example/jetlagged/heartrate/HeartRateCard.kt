@@ -44,35 +44,37 @@ import com.example.jetlagged.ui.theme.TitleStyle
 @Composable
 fun HeartRateCard(
     modifier: Modifier = Modifier,
-    heartRateData: HeartRateOverallData = HeartRateOverallData()
+    heartRateData: HeartRateOverallData = HeartRateOverallData(),
 ) {
     BasicInformationalCard(
         borderColor = Coral,
-        modifier = modifier
-            .height(260.dp)
+        modifier =
+            modifier
+                .height(260.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
             HomeScreenCardHeading(text = stringResource(R.string.heart_rate_heading))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
                     heartRateData.averageBpm.toString(),
                     style = TitleStyle,
                     modifier = Modifier.alignByBaseline(),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Text(
                     "bpm",
                     modifier = Modifier.alignByBaseline(),
-                    style = SmallHeadingStyle
+                    style = SmallHeadingStyle,
                 )
             }
             HeartRateGraph(heartRateData.listData)

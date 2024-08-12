@@ -17,6 +17,7 @@
 package com.example.jetcaster.core.util
 
 import kotlinx.coroutines.flow.Flow
+
 /**
  * Combines 3 flows into a single flow by combining their latest values using the provided transform function.
  *
@@ -32,7 +33,7 @@ fun <T1, T2, T3, T4, T5, R> combine(
     flow3: Flow<T3>,
     flow4: Flow<T4>,
     flow5: Flow<T5>,
-    transform: suspend (T1, T2, T3, T4, T5) -> R
+    transform: suspend (T1, T2, T3, T4, T5) -> R,
 ): Flow<R> =
     kotlinx.coroutines.flow.combine(flow, flow2, flow3, flow4, flow5) { args: Array<*> ->
         transform(
@@ -43,11 +44,11 @@ fun <T1, T2, T3, T4, T5, R> combine(
             args[4] as T5,
         )
     }
+
 fun <T1, T2, R> combine(
     flow: Flow<T1>,
     flow2: Flow<T2>,
-
-    transform: suspend (T1, T2) -> R
+    transform: suspend (T1, T2) -> R,
 ): Flow<R> =
     kotlinx.coroutines.flow.combine(flow, flow2) { args: Array<*> ->
         transform(
@@ -75,7 +76,7 @@ fun <T1, T2, T3, T4, T5, T6, R> combine(
     flow4: Flow<T4>,
     flow5: Flow<T5>,
     flow6: Flow<T6>,
-    transform: suspend (T1, T2, T3, T4, T5, T6) -> R
+    transform: suspend (T1, T2, T3, T4, T5, T6) -> R,
 ): Flow<R> =
     kotlinx.coroutines.flow.combine(flow, flow2, flow3, flow4, flow5, flow6) { args: Array<*> ->
         transform(
@@ -109,7 +110,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
     flow5: Flow<T5>,
     flow6: Flow<T6>,
     flow7: Flow<T7>,
-    transform: suspend (T1, T2, T3, T4, T5, T6, T7) -> R
+    transform: suspend (T1, T2, T3, T4, T5, T6, T7) -> R,
 ): Flow<R> =
     kotlinx.coroutines.flow.combine(
         flow,
@@ -118,7 +119,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
         flow4,
         flow5,
         flow6,
-        flow7
+        flow7,
     ) { args: Array<*> ->
         transform(
             args[0] as T1,

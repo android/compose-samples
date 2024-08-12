@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.asStateFlow
  * Used to communicate between screens.
  */
 class MainViewModel : ViewModel() {
-
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
 

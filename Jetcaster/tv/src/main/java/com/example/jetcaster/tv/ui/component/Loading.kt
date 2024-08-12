@@ -62,11 +62,11 @@ fun Loading(
 ) {
     Box(
         modifier = modifier,
-        contentAlignment = contentAlignment
+        contentAlignment = contentAlignment,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.default)
+            verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.default),
         ) {
             CircularProgressIndicator()
             Text(text = message, style = style)
@@ -84,64 +84,73 @@ fun CircularProgressIndicator(
 ) {
     val transition = rememberInfiniteTransition("loading")
 
-    val stroke = with(LocalDensity.current) {
-        Stroke(width = strokeWidth.toPx(), cap = strokeCap)
-    }
+    val stroke =
+        with(LocalDensity.current) {
+            Stroke(width = strokeWidth.toPx(), cap = strokeCap)
+        }
 
-    val currentRotation = transition.animateValue(
-        0,
-        RotationsPerCycle,
-        Int.VectorConverter,
-        infiniteRepeatable(
-            animation = tween(
-                durationMillis = RotationDuration * RotationsPerCycle,
-                easing = LinearEasing
-            )
-        ),
-        "loading_current_rotation"
-    )
+    val currentRotation =
+        transition.animateValue(
+            0,
+            RotationsPerCycle,
+            Int.VectorConverter,
+            infiniteRepeatable(
+                animation =
+                    tween(
+                        durationMillis = RotationDuration * RotationsPerCycle,
+                        easing = LinearEasing,
+                    ),
+            ),
+            "loading_current_rotation",
+        )
     // How far forward (degrees) the base point should be from the start point
-    val baseRotation = transition.animateFloat(
-        0f,
-        BaseRotationAngle,
-        infiniteRepeatable(
-            animation = tween(
-                durationMillis = RotationDuration,
-                easing = LinearEasing
-            )
-        ),
-        "loading_base_rotation_angle"
-    )
+    val baseRotation =
+        transition.animateFloat(
+            0f,
+            BaseRotationAngle,
+            infiniteRepeatable(
+                animation =
+                    tween(
+                        durationMillis = RotationDuration,
+                        easing = LinearEasing,
+                    ),
+            ),
+            "loading_base_rotation_angle",
+        )
     // How far forward (degrees) both the head and tail should be from the base point
-    val endAngle = transition.animateFloat(
-        0f,
-        JumpRotationAngle,
-        infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = HeadAndTailAnimationDuration + HeadAndTailDelayDuration
-                0f at 0 using CircularEasing
-                JumpRotationAngle at HeadAndTailAnimationDuration
-            }
-        ),
-        "loading_end_rotation_angle"
-    )
-    val startAngle = transition.animateFloat(
-        0f,
-        JumpRotationAngle,
-        infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = HeadAndTailAnimationDuration + HeadAndTailDelayDuration
-                0f at HeadAndTailDelayDuration using CircularEasing
-                JumpRotationAngle at durationMillis
-            }
-        ),
-        "loading_start_angle"
-    )
+    val endAngle =
+        transition.animateFloat(
+            0f,
+            JumpRotationAngle,
+            infiniteRepeatable(
+                animation =
+                    keyframes {
+                        durationMillis = HeadAndTailAnimationDuration + HeadAndTailDelayDuration
+                        0f at 0 using CircularEasing
+                        JumpRotationAngle at HeadAndTailAnimationDuration
+                    },
+            ),
+            "loading_end_rotation_angle",
+        )
+    val startAngle =
+        transition.animateFloat(
+            0f,
+            JumpRotationAngle,
+            infiniteRepeatable(
+                animation =
+                    keyframes {
+                        durationMillis = HeadAndTailAnimationDuration + HeadAndTailDelayDuration
+                        0f at HeadAndTailDelayDuration using CircularEasing
+                        JumpRotationAngle at durationMillis
+                    },
+            ),
+            "loading_start_angle",
+        )
 
     Canvas(
         modifier
             .progressSemantics()
-            .size(CircularIndicatorDiameter)
+            .size(CircularIndicatorDiameter),
     ) {
         drawCircularIndicatorTrack(trackColor, stroke)
 
@@ -157,7 +166,7 @@ fun CircularProgressIndicator(
             strokeWidth,
             sweep,
             color,
-            stroke
+            stroke,
         )
     }
 }
@@ -166,7 +175,7 @@ private fun DrawScope.drawCircularIndicator(
     startAngle: Float,
     sweep: Float,
     color: Color,
-    stroke: Stroke
+    stroke: Stroke,
 ) {
     // To draw this circle we need a rect with edges that line up with the midpoint of the stroke.
     // To do this we need to remove half the stroke width from the total diameter for both sides.
@@ -179,13 +188,13 @@ private fun DrawScope.drawCircularIndicator(
         useCenter = false,
         topLeft = Offset(diameterOffset, diameterOffset),
         size = Size(arcDimen, arcDimen),
-        style = stroke
+        style = stroke,
     )
 }
 
 private fun DrawScope.drawCircularIndicatorTrack(
     color: Color,
-    stroke: Stroke
+    stroke: Stroke,
 ) = drawCircularIndicator(0f, 360f, color, stroke)
 
 private fun DrawScope.drawIndeterminateCircularIndicator(
@@ -193,16 +202,17 @@ private fun DrawScope.drawIndeterminateCircularIndicator(
     strokeWidth: Dp,
     sweep: Float,
     color: Color,
-    stroke: Stroke
+    stroke: Stroke,
 ) {
-    val strokeCapOffset = if (stroke.cap == StrokeCap.Butt) {
-        0f
-    } else {
-        // Length of arc is angle * radius
-        // Angle (radians) is length / radius
-        // The length should be the same as the stroke width for calculating the min angle
-        (180.0 / PI).toFloat() * (strokeWidth / (CircularIndicatorDiameter / 2)) / 2f
-    }
+    val strokeCapOffset =
+        if (stroke.cap == StrokeCap.Butt) {
+            0f
+        } else {
+            // Length of arc is angle * radius
+            // Angle (radians) is length / radius
+            // The length should be the same as the stroke width for calculating the min angle
+            (180.0 / PI).toFloat() * (strokeWidth / (CircularIndicatorDiameter / 2)) / 2f
+        }
 
     // Adding a stroke cap draws half the stroke width behind the start point, so we want to
     // move it forward by that amount so the arc visually appears in the correct place

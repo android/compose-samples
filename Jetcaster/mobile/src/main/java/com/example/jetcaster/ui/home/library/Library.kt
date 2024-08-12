@@ -38,22 +38,23 @@ import com.example.jetcaster.util.fullWidthItem
 fun LazyListScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit
+    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     item {
         Text(
             text = stringResource(id = R.string.latest_episodes),
-            modifier = Modifier.padding(
-                start = Keyline1,
-                top = 16.dp,
-            ),
+            modifier =
+                Modifier.padding(
+                    start = Keyline1,
+                    top = 16.dp,
+                ),
             style = MaterialTheme.typography.titleLarge,
         )
     }
 
     items(
         library,
-        key = { it.episode.uri }
+        key = { it.episode.uri },
     ) { item ->
         EpisodeListItem(
             episode = item.episode,
@@ -68,29 +69,30 @@ fun LazyListScope.libraryItems(
 fun LazyGridScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit
+    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     fullWidthItem {
         Text(
             text = stringResource(id = R.string.latest_episodes),
-            modifier = Modifier.padding(
-                start = Keyline1,
-                top = 16.dp,
-            ),
+            modifier =
+                Modifier.padding(
+                    start = Keyline1,
+                    top = 16.dp,
+                ),
             style = MaterialTheme.typography.headlineLarge,
         )
     }
 
     items(
         library,
-        key = { it.episode.uri }
+        key = { it.episode.uri },
     ) { item ->
         EpisodeListItem(
             episode = item.episode,
             podcast = item.podcast,
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

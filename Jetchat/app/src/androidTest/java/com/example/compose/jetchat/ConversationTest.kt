@@ -41,7 +41,6 @@ import org.junit.Test
  * Checks that the features in the Conversation screen work as expected.
  */
 class ConversationTest {
-
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
@@ -55,7 +54,7 @@ class ConversationTest {
                 ConversationContent(
                     uiState = conversationTestUiState,
                     navigateToProfile = { },
-                    onNavIconPressed = { }
+                    onNavIconPressed = { },
                 )
             }
         }
@@ -75,7 +74,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
+                durationMillis = 200,
             )
         }
         // Check that the jump to bottom button is shown
@@ -89,7 +88,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
+                durationMillis = 200,
             )
         }
         // Snap scroll to the bottom
@@ -102,16 +101,17 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAfterUserInteracted() {
         // First swipe
-        composeTestRule.onNodeWithTag(
-            testTag = ConversationTestTag,
-            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-        ).performTouchInput {
-            this.swipe(
-                start = this.center,
-                end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
-            )
-        }
+        composeTestRule
+            .onNodeWithTag(
+                testTag = ConversationTestTag,
+                useUnmergedTree = true, // https://issuetracker.google.com/issues/184825850
+            ).performTouchInput {
+                this.swipe(
+                    start = this.center,
+                    end = Offset(this.center.x, this.center.y + 500),
+                    durationMillis = 200,
+                )
+            }
         // Second, snap to bottom
         findJumpToBottom().performClick()
 
@@ -129,7 +129,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
+                durationMillis = 200,
             )
         }
 
@@ -146,23 +146,23 @@ class ConversationTest {
     private fun findJumpToBottom() =
         composeTestRule.onNodeWithText(
             composeTestRule.activity.getString(R.string.jumpBottom),
-            useUnmergedTree = true
+            useUnmergedTree = true,
         )
 
     private fun openEmojiSelector() =
         composeTestRule
             .onNodeWithContentDescription(
                 label = composeTestRule.activity.getString(R.string.emoji_selector_bt_desc),
-                useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-            )
-            .performClick()
+                useUnmergedTree = true, // https://issuetracker.google.com/issues/184825850
+            ).performClick()
 }
 
 /**
  * Make the list of messages longer so the test makes sense on tablets.
  */
-private val conversationTestUiState = ConversationUiState(
-    initialMessages = (exampleUiState.messages.plus(exampleUiState.messages)),
-    channelName = "#composers",
-    channelMembers = 42
-)
+private val conversationTestUiState =
+    ConversationUiState(
+        initialMessages = (exampleUiState.messages.plus(exampleUiState.messages)),
+        channelName = "#composers",
+        channelMembers = 42,
+    )

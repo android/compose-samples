@@ -41,58 +41,65 @@ import kotlin.random.Random
 fun BubbleBackground(
     modifier: Modifier = Modifier,
     numberBubbles: Int,
-    bubbleColor: Color
+    bubbleColor: Color,
 ) {
     val infiniteAnimation = rememberInfiniteTransition(label = "bubble position")
 
     Box(modifier = modifier) {
-        val bubbles = remember(numberBubbles) {
-            List(numberBubbles) {
-                BackgroundBubbleData(
-                    startPosition = Offset(
-                        x = Random.nextFloat(),
-                        y = Random.nextFloat()
-                    ),
-                    endPosition = Offset(
-                        x = Random.nextFloat(),
-                        y = Random.nextFloat()
-                    ),
-                    durationMillis = Random.nextLong(3000L, 10000L),
-                    easingFunction = EaseInOut,
-                    radius = Random.nextFloat() * 30.dp + 20.dp
-                )
+        val bubbles =
+            remember(numberBubbles) {
+                List(numberBubbles) {
+                    BackgroundBubbleData(
+                        startPosition =
+                            Offset(
+                                x = Random.nextFloat(),
+                                y = Random.nextFloat(),
+                            ),
+                        endPosition =
+                            Offset(
+                                x = Random.nextFloat(),
+                                y = Random.nextFloat(),
+                            ),
+                        durationMillis = Random.nextLong(3000L, 10000L),
+                        easingFunction = EaseInOut,
+                        radius = Random.nextFloat() * 30.dp + 20.dp,
+                    )
+                }
             }
-        }
         for (bubble in bubbles) {
             val xValue by infiniteAnimation.animateFloat(
                 initialValue = bubble.startPosition.x,
                 targetValue = bubble.endPosition.x,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        bubble.durationMillis.toInt(),
-                        easing = bubble.easingFunction
+                animationSpec =
+                    infiniteRepeatable(
+                        animation =
+                            tween(
+                                bubble.durationMillis.toInt(),
+                                easing = bubble.easingFunction,
+                            ),
+                        repeatMode = RepeatMode.Reverse,
                     ),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = ""
+                label = "",
             )
             val yValue by infiniteAnimation.animateFloat(
                 initialValue = bubble.startPosition.y,
                 targetValue = bubble.endPosition.y,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        bubble.durationMillis.toInt(),
-                        easing = bubble.easingFunction
+                animationSpec =
+                    infiniteRepeatable(
+                        animation =
+                            tween(
+                                bubble.durationMillis.toInt(),
+                                easing = bubble.easingFunction,
+                            ),
+                        repeatMode = RepeatMode.Reverse,
                     ),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = ""
+                label = "",
             )
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawCircle(
                     bubbleColor,
                     radius = bubble.radius.toPx(),
-                    center = Offset(xValue * size.width, yValue * size.height)
+                    center = Offset(xValue * size.width, yValue * size.height),
                 )
             }
         }
@@ -104,5 +111,5 @@ data class BackgroundBubbleData(
     val endPosition: Offset = Offset.Zero,
     val durationMillis: Long = 2000,
     val easingFunction: Easing = EaseInOut,
-    val radius: Dp = 0.dp
+    val radius: Dp = 0.dp,
 )

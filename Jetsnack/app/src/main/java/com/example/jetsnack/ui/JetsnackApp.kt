@@ -15,7 +15,7 @@
  */
 
 @file:OptIn(
-    ExperimentalSharedTransitionApi::class
+    ExperimentalSharedTransitionApi::class,
 )
 
 package com.example.jetsnack.ui
@@ -64,17 +64,17 @@ fun JetsnackApp() {
         val jetsnackNavController = rememberJetsnackNavController()
         SharedTransitionLayout {
             CompositionLocalProvider(
-                LocalSharedTransitionScope provides this
+                LocalSharedTransitionScope provides this,
             ) {
                 NavHost(
                     navController = jetsnackNavController.navController,
-                    startDestination = MainDestinations.HOME_ROUTE
+                    startDestination = MainDestinations.HOME_ROUTE,
                 ) {
                     composableWithCompositionLocal(
-                        route = MainDestinations.HOME_ROUTE
+                        route = MainDestinations.HOME_ROUTE,
                     ) { backStackEntry ->
                         MainContainer(
-                            onSnackSelected = jetsnackNavController::navigateToSnackDetail
+                            onSnackSelected = jetsnackNavController::navigateToSnackDetail,
                         )
                     }
 
@@ -82,12 +82,12 @@ fun JetsnackApp() {
                         "${MainDestinations.SNACK_DETAIL_ROUTE}/" +
                             "{${MainDestinations.SNACK_ID_KEY}}" +
                             "?origin={${MainDestinations.ORIGIN}}",
-                        arguments = listOf(
-                            navArgument(MainDestinations.SNACK_ID_KEY) {
-                                type = NavType.LongType
-                            }
-                        ),
-
+                        arguments =
+                            listOf(
+                                navArgument(MainDestinations.SNACK_ID_KEY) {
+                                    type = NavType.LongType
+                                },
+                            ),
                     ) { backStackEntry ->
                         val arguments = requireNotNull(backStackEntry.arguments)
                         val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
@@ -95,7 +95,7 @@ fun JetsnackApp() {
                         SnackDetail(
                             snackId,
                             origin = origin ?: "",
-                            upPress = jetsnackNavController::upPress
+                            upPress = jetsnackNavController::upPress,
                         )
                     }
                 }
@@ -107,16 +107,18 @@ fun JetsnackApp() {
 @Composable
 fun MainContainer(
     modifier: Modifier = Modifier,
-    onSnackSelected: (Long, String, NavBackStackEntry) -> Unit
+    onSnackSelected: (Long, String, NavBackStackEntry) -> Unit,
 ) {
     val jetsnackScaffoldState = rememberJetsnackScaffoldState()
     val nestedNavController = rememberJetsnackNavController()
     val navBackStackEntry by nestedNavController.navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val sharedTransitionScope = LocalSharedTransitionScope.current
-        ?: throw IllegalStateException("No SharedElementScope found")
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-        ?: throw IllegalStateException("No SharedElementScope found")
+    val sharedTransitionScope =
+        LocalSharedTransitionScope.current
+            ?: throw IllegalStateException("No SharedElementScope found")
+    val animatedVisibilityScope =
+        LocalNavAnimatedVisibilityScope.current
+            ?: throw IllegalStateException("No SharedElementScope found")
     JetsnackScaffold(
         bottomBar = {
             with(animatedVisibilityScope) {
@@ -125,22 +127,26 @@ fun MainContainer(
                         tabs = HomeSections.entries.toTypedArray(),
                         currentRoute = currentRoute ?: HomeSections.FEED.route,
                         navigateToRoute = nestedNavController::navigateToBottomBarRoute,
-                        modifier = Modifier
-                            .renderInSharedTransitionScopeOverlay(
-                                zIndexInOverlay = 1f,
-                            )
-                            .animateEnterExit(
-                                enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(
-                                    spatialExpressiveSpring()
-                                ) {
-                                    it
-                                },
-                                exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(
-                                    spatialExpressiveSpring()
-                                ) {
-                                    it
-                                }
-                            )
+                        modifier =
+                            Modifier
+                                .renderInSharedTransitionScopeOverlay(
+                                    zIndexInOverlay = 1f,
+                                ).animateEnterExit(
+                                    enter =
+                                        fadeIn(nonSpatialExpressiveSpring()) +
+                                            slideInVertically(
+                                                spatialExpressiveSpring(),
+                                            ) {
+                                                it
+                                            },
+                                    exit =
+                                        fadeOut(nonSpatialExpressiveSpring()) +
+                                            slideOutVertically(
+                                                spatialExpressiveSpring(),
+                                            ) {
+                                                it
+                                            },
+                                ),
                     )
                 }
             }
@@ -150,20 +156,21 @@ fun MainContainer(
             SnackbarHost(
                 hostState = it,
                 modifier = Modifier.systemBarsPadding(),
-                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
+                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) },
             )
         },
         snackBarHostState = jetsnackScaffoldState.snackBarHostState,
     ) { padding ->
         NavHost(
             navController = nestedNavController.navController,
-            startDestination = HomeSections.FEED.route
+            startDestination = HomeSections.FEED.route,
         ) {
             addHomeGraph(
                 onSnackSelected = onSnackSelected,
-                modifier = Modifier
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .consumeWindowInsets(padding),
             )
         }
     }

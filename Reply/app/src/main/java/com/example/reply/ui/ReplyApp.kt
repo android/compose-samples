@@ -40,12 +40,13 @@ import com.example.reply.ui.utils.ReplyNavigationType
 import com.example.reply.ui.utils.isBookPosture
 import com.example.reply.ui.utils.isSeparating
 
-private fun NavigationSuiteType.toReplyNavType() = when (this) {
-    NavigationSuiteType.NavigationBar -> ReplyNavigationType.BOTTOM_NAVIGATION
-    NavigationSuiteType.NavigationRail -> ReplyNavigationType.NAVIGATION_RAIL
-    NavigationSuiteType.NavigationDrawer -> ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
-    else -> ReplyNavigationType.BOTTOM_NAVIGATION
-}
+private fun NavigationSuiteType.toReplyNavType() =
+    when (this) {
+        NavigationSuiteType.NavigationBar -> ReplyNavigationType.BOTTOM_NAVIGATION
+        NavigationSuiteType.NavigationRail -> ReplyNavigationType.NAVIGATION_RAIL
+        NavigationSuiteType.NavigationDrawer -> ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+        else -> ReplyNavigationType.BOTTOM_NAVIGATION
+    }
 
 @Composable
 fun ReplyApp(
@@ -54,7 +55,7 @@ fun ReplyApp(
     replyHomeUIState: ReplyHomeUIState,
     closeDetailScreen: () -> Unit = {},
     navigateToDetail: (Long, ReplyContentType) -> Unit = { _, _ -> },
-    toggleSelectedEmail: (Long) -> Unit = { }
+    toggleSelectedEmail: (Long) -> Unit = { },
 ) {
     /**
      * We are using display's folding features to map the device postures a fold is in.
@@ -63,31 +64,35 @@ fun ReplyApp(
      */
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
-    val foldingDevicePosture = when {
-        isBookPosture(foldingFeature) ->
-            DevicePosture.BookPosture(foldingFeature.bounds)
+    val foldingDevicePosture =
+        when {
+            isBookPosture(foldingFeature) ->
+                DevicePosture.BookPosture(foldingFeature.bounds)
 
-        isSeparating(foldingFeature) ->
-            DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
+            isSeparating(foldingFeature) ->
+                DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
 
-        else -> DevicePosture.NormalPosture
-    }
-
-    val contentType = when (windowSize.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> ReplyContentType.SINGLE_PANE
-        WindowWidthSizeClass.Medium -> if (foldingDevicePosture != DevicePosture.NormalPosture) {
-            ReplyContentType.DUAL_PANE
-        } else {
-            ReplyContentType.SINGLE_PANE
+            else -> DevicePosture.NormalPosture
         }
-        WindowWidthSizeClass.Expanded -> ReplyContentType.DUAL_PANE
-        else -> ReplyContentType.SINGLE_PANE
-    }
+
+    val contentType =
+        when (windowSize.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> ReplyContentType.SINGLE_PANE
+            WindowWidthSizeClass.Medium ->
+                if (foldingDevicePosture != DevicePosture.NormalPosture) {
+                    ReplyContentType.DUAL_PANE
+                } else {
+                    ReplyContentType.SINGLE_PANE
+                }
+            WindowWidthSizeClass.Expanded -> ReplyContentType.DUAL_PANE
+            else -> ReplyContentType.SINGLE_PANE
+        }
 
     val navController = rememberNavController()
-    val navigationActions = remember(navController) {
-        ReplyNavigationActions(navController)
-    }
+    val navigationActions =
+        remember(navController) {
+            ReplyNavigationActions(navController)
+        }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val selectedDestination =
         navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
@@ -95,7 +100,7 @@ fun ReplyApp(
     Surface {
         ReplyNavigationWrapper(
             selectedDestination = selectedDestination,
-            navigateToTopLevelDestination = navigationActions::navigateTo
+            navigateToTopLevelDestination = navigationActions::navigateTo,
         ) {
             ReplyNavHost(
                 navController = navController,
@@ -136,7 +141,7 @@ private fun ReplyNavHost(
                 displayFeatures = displayFeatures,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
-                toggleSelectedEmail = toggleSelectedEmail
+                toggleSelectedEmail = toggleSelectedEmail,
             )
         }
         composable(ReplyRoute.DM) {

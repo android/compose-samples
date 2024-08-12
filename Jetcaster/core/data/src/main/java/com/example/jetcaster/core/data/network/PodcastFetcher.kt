@@ -27,11 +27,6 @@ import com.rometools.modules.itunes.FeedInformation
 import com.rometools.rome.feed.synd.SyndEntry
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
-import java.time.Duration
-import java.time.Instant
-import java.time.ZoneOffset
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -42,6 +37,11 @@ import kotlinx.coroutines.withContext
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneOffset
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * A class which fetches some selected podcast RSS feeds.
@@ -50,62 +50,66 @@ import okhttp3.Request
  * @param syndFeedInput [SyndFeedInput] to use for parsing RSS feeds.
  * @param ioDispatcher [CoroutineDispatcher] to use for running fetch requests.
  */
-class PodcastsFetcher @Inject constructor(
-    private val okHttpClient: OkHttpClient,
-    private val syndFeedInput: SyndFeedInput,
-    @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
-) {
+class PodcastsFetcher
+    @Inject
+    constructor(
+        private val okHttpClient: OkHttpClient,
+        private val syndFeedInput: SyndFeedInput,
+        @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+    ) {
+        /**
+         * It seems that most podcast hosts do not implement HTTP caching appropriately.
+         * Instead of fetching data on every app open, we instead allow the use of 'stale'
+         * network responses (up to 8 hours).
+         */
+        private val cacheControl by lazy {
+            CacheControl.Builder().maxStale(8, TimeUnit.HOURS).build()
+        }
 
-    /**
-     * It seems that most podcast hosts do not implement HTTP caching appropriately.
-     * Instead of fetching data on every app open, we instead allow the use of 'stale'
-     * network responses (up to 8 hours).
-     */
-    private val cacheControl by lazy {
-        CacheControl.Builder().maxStale(8, TimeUnit.HOURS).build()
-    }
-
-    /**
-     * Returns a [Flow] which fetches each podcast feed and emits it in turn.
-     *
-     * The feeds are fetched concurrently, meaning that the resulting emission order may not
-     * match the order of [feedUrls].
-     */
-    operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> {
-        // We use flatMapMerge here to achieve concurrent fetching/parsing of the feeds.
-        return feedUrls.asFlow()
-            .flatMapMerge { feedUrl ->
-                flow {
-                    emit(fetchPodcast(feedUrl))
-                }.catch { e ->
-                    // If an exception was caught while fetching the podcast, wrap it in
-                    // an Error instance.
-                    emit(PodcastRssResponse.Error(e))
+        /**
+         * Returns a [Flow] which fetches each podcast feed and emits it in turn.
+         *
+         * The feeds are fetched concurrently, meaning that the resulting emission order may not
+         * match the order of [feedUrls].
+         */
+        operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> {
+            // We use flatMapMerge here to achieve concurrent fetching/parsing of the feeds.
+            return feedUrls
+                .asFlow()
+                .flatMapMerge { feedUrl ->
+                    flow {
+                        emit(fetchPodcast(feedUrl))
+                    }.catch { e ->
+                        // If an exception was caught while fetching the podcast, wrap it in
+                        // an Error instance.
+                        emit(PodcastRssResponse.Error(e))
+                    }
                 }
-            }
-    }
+        }
 
-    private suspend fun fetchPodcast(url: String): PodcastRssResponse {
-        val request = Request.Builder()
-            .url(url)
-            .cacheControl(cacheControl)
-            .build()
+        private suspend fun fetchPodcast(url: String): PodcastRssResponse {
+            val request =
+                Request
+                    .Builder()
+                    .url(url)
+                    .cacheControl(cacheControl)
+                    .build()
 
-        val response = okHttpClient.newCall(request).await()
+            val response = okHttpClient.newCall(request).await()
 
-        // If the network request wasn't successful, throw an exception
-        if (!response.isSuccessful) throw HttpException(response)
+            // If the network request wasn't successful, throw an exception
+            if (!response.isSuccessful) throw HttpException(response)
 
-        // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
-        // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
-        // from a stream.
-        return withContext(ioDispatcher) {
-            response.body!!.use { body ->
-                syndFeedInput.build(body.charStream()).toPodcastResponse(url)
+            // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
+            // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
+            // from a stream.
+            return withContext(ioDispatcher) {
+                response.body!!.use { body ->
+                    syndFeedInput.build(body.charStream()).toPodcastResponse(url)
+                }
             }
         }
     }
-}
 
 sealed class PodcastRssResponse {
     data class Error(
@@ -115,7 +119,7 @@ sealed class PodcastRssResponse {
     data class Success(
         val podcast: Podcast,
         val episodes: List<Episode>,
-        val categories: Set<Category>
+        val categories: Set<Category>,
     ) : PodcastRssResponse()
 }
 
@@ -127,18 +131,21 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
     val episodes = entries.map { it.toEpisode(podcastUri) }
 
     val feedInfo = getModule(PodcastModuleDtd) as? FeedInformation
-    val podcast = Podcast(
-        uri = podcastUri,
-        title = title,
-        description = feedInfo?.summary ?: description,
-        author = author,
-        copyright = copyright,
-        imageUrl = feedInfo?.imageUri?.toString()
-    )
+    val podcast =
+        Podcast(
+            uri = podcastUri,
+            title = title,
+            description = feedInfo?.summary ?: description,
+            author = author,
+            copyright = copyright,
+            imageUrl = feedInfo?.imageUri?.toString(),
+        )
 
-    val categories = feedInfo?.categories
-        ?.map { Category(name = it.name) }
-        ?.toSet() ?: emptySet()
+    val categories =
+        feedInfo
+            ?.categories
+            ?.map { Category(name = it.name) }
+            ?.toSet() ?: emptySet()
 
     return PodcastRssResponse.Success(podcast, episodes, categories)
 }
@@ -156,7 +163,7 @@ private fun SyndEntry.toEpisode(podcastUri: String): Episode {
         summary = entryInformation?.summary ?: description?.value,
         subtitle = entryInformation?.subtitle,
         published = Instant.ofEpochMilli(publishedDate.time).atOffset(ZoneOffset.UTC),
-        duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) }
+        duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) },
     )
 }
 

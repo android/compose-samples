@@ -48,7 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-
 fun JetsnackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -61,42 +60,41 @@ fun JetsnackButton(
     contentColor: Color = JetsnackTheme.colors.textInteractive,
     disabledContentColor: Color = JetsnackTheme.colors.textHelp,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     JetsnackSurface(
         shape = shape,
         color = Color.Transparent,
         contentColor = if (enabled) contentColor else disabledContentColor,
         border = border,
-        modifier = modifier
-            .clip(shape)
-            .background(
-                Brush.horizontalGradient(
-                    colors = if (enabled) backgroundGradient else disabledBackgroundGradient
-                )
-            )
-            .clickable(
-                onClick = onClick,
-                enabled = enabled,
-                role = Role.Button,
-                interactionSource = interactionSource,
-                indication = null
-            )
+        modifier =
+            modifier
+                .clip(shape)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = if (enabled) backgroundGradient else disabledBackgroundGradient,
+                    ),
+                ).clickable(
+                    onClick = onClick,
+                    enabled = enabled,
+                    role = Role.Button,
+                    interactionSource = interactionSource,
+                    indication = null,
+                ),
     ) {
         ProvideTextStyle(
-            value = MaterialTheme.typography.labelLarge
+            value = MaterialTheme.typography.labelLarge,
         ) {
             Row(
                 Modifier
                     .defaultMinSize(
                         minWidth = ButtonDefaults.MinWidth,
-                        minHeight = ButtonDefaults.MinHeight
-                    )
-                    .indication(interactionSource, rememberRipple())
+                        minHeight = ButtonDefaults.MinHeight,
+                    ).indication(interactionSource, rememberRipple())
                     .padding(contentPadding),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                content = content
+                content = content,
             )
         }
     }
@@ -123,7 +121,8 @@ private fun ButtonPreview() {
 private fun RectangleButtonPreview() {
     JetsnackTheme {
         JetsnackButton(
-            onClick = {}, shape = RectangleShape
+            onClick = {},
+            shape = RectangleShape,
         ) {
             Text(text = "Demo")
         }

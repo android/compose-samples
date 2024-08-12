@@ -82,33 +82,37 @@ private fun WindowSizeClass.isCompact() =
         windowHeightSizeClass == WindowHeightSizeClass.COMPACT
 
 class ReplyNavSuiteScope(
-    val navSuiteType: NavigationSuiteType
+    val navSuiteType: NavigationSuiteType,
 )
 
 @Composable
 fun ReplyNavigationWrapper(
     selectedDestination: String,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
-    content: @Composable ReplyNavSuiteScope.() -> Unit
+    content: @Composable ReplyNavSuiteScope.() -> Unit,
 ) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
-    val windowSize = with(LocalDensity.current) {
-        currentWindowSize().toSize().toDpSize()
-    }
+    val windowSize =
+        with(LocalDensity.current) {
+            currentWindowSize().toSize().toDpSize()
+        }
 
-    val navLayoutType = when {
-        adaptiveInfo.windowPosture.isTabletop -> NavigationSuiteType.NavigationBar
-        adaptiveInfo.windowSizeClass.isCompact() -> NavigationSuiteType.NavigationBar
-        adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED &&
-            windowSize.width >= 1200.dp -> NavigationSuiteType.NavigationDrawer
-        else -> NavigationSuiteType.NavigationRail
-    }
-    val navContentPosition = when (adaptiveInfo.windowSizeClass.windowHeightSizeClass) {
-        WindowHeightSizeClass.COMPACT -> ReplyNavigationContentPosition.TOP
-        WindowHeightSizeClass.MEDIUM,
-        WindowHeightSizeClass.EXPANDED -> ReplyNavigationContentPosition.CENTER
-        else -> ReplyNavigationContentPosition.TOP
-    }
+    val navLayoutType =
+        when {
+            adaptiveInfo.windowPosture.isTabletop -> NavigationSuiteType.NavigationBar
+            adaptiveInfo.windowSizeClass.isCompact() -> NavigationSuiteType.NavigationBar
+            adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED &&
+                windowSize.width >= 1200.dp -> NavigationSuiteType.NavigationDrawer
+            else -> NavigationSuiteType.NavigationRail
+        }
+    val navContentPosition =
+        when (adaptiveInfo.windowSizeClass.windowHeightSizeClass) {
+            WindowHeightSizeClass.COMPACT -> ReplyNavigationContentPosition.TOP
+            WindowHeightSizeClass.MEDIUM,
+            WindowHeightSizeClass.EXPANDED,
+            -> ReplyNavigationContentPosition.CENTER
+            else -> ReplyNavigationContentPosition.TOP
+        }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -135,7 +139,7 @@ fun ReplyNavigationWrapper(
                     coroutineScope.launch {
                         drawerState.close()
                     }
-                }
+                },
             )
         },
     ) {
@@ -143,27 +147,30 @@ fun ReplyNavigationWrapper(
             layoutType = navLayoutType,
             navigationSuite = {
                 when (navLayoutType) {
-                    NavigationSuiteType.NavigationBar -> ReplyBottomNavigationBar(
-                        selectedDestination = selectedDestination,
-                        navigateToTopLevelDestination = navigateToTopLevelDestination
-                    )
-                    NavigationSuiteType.NavigationRail -> ReplyNavigationRail(
-                        selectedDestination = selectedDestination,
-                        navigationContentPosition = navContentPosition,
-                        navigateToTopLevelDestination = navigateToTopLevelDestination,
-                        onDrawerClicked = {
-                            coroutineScope.launch {
-                                drawerState.open()
-                            }
-                        }
-                    )
-                    NavigationSuiteType.NavigationDrawer -> PermanentNavigationDrawerContent(
-                        selectedDestination = selectedDestination,
-                        navigationContentPosition = navContentPosition,
-                        navigateToTopLevelDestination = navigateToTopLevelDestination
-                    )
+                    NavigationSuiteType.NavigationBar ->
+                        ReplyBottomNavigationBar(
+                            selectedDestination = selectedDestination,
+                            navigateToTopLevelDestination = navigateToTopLevelDestination,
+                        )
+                    NavigationSuiteType.NavigationRail ->
+                        ReplyNavigationRail(
+                            selectedDestination = selectedDestination,
+                            navigationContentPosition = navContentPosition,
+                            navigateToTopLevelDestination = navigateToTopLevelDestination,
+                            onDrawerClicked = {
+                                coroutineScope.launch {
+                                    drawerState.open()
+                                }
+                            },
+                        )
+                    NavigationSuiteType.NavigationDrawer ->
+                        PermanentNavigationDrawerContent(
+                            selectedDestination = selectedDestination,
+                            navigationContentPosition = navContentPosition,
+                            navigateToTopLevelDestination = navigateToTopLevelDestination,
+                        )
                 }
-            }
+            },
         ) {
             ReplyNavSuiteScope(navLayoutType).content()
         }
@@ -179,12 +186,12 @@ fun ReplyNavigationRail(
 ) {
     NavigationRail(
         modifier = Modifier.fillMaxHeight(),
-        containerColor = MaterialTheme.colorScheme.inverseOnSurface
+        containerColor = MaterialTheme.colorScheme.inverseOnSurface,
     ) {
         Column(
             modifier = Modifier.layoutId(LayoutType.HEADER),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             NavigationRailItem(
                 selected = false,
@@ -192,20 +199,20 @@ fun ReplyNavigationRail(
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Menu,
-                        contentDescription = stringResource(id = R.string.navigation_drawer)
+                        contentDescription = stringResource(id = R.string.navigation_drawer),
                     )
-                }
+                },
             )
             FloatingActionButton(
                 onClick = { /*TODO*/ },
                 modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = stringResource(id = R.string.compose),
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(18.dp),
                 )
             }
             Spacer(Modifier.height(8.dp)) // NavigationRailHeaderPadding
@@ -215,7 +222,7 @@ fun ReplyNavigationRail(
         Column(
             modifier = Modifier.layoutId(LayoutType.CONTENT),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                 NavigationRailItem(
@@ -224,11 +231,12 @@ fun ReplyNavigationRail(
                     icon = {
                         Icon(
                             imageVector = replyDestination.selectedIcon,
-                            contentDescription = stringResource(
-                                id = replyDestination.iconTextId
-                            )
+                            contentDescription =
+                                stringResource(
+                                    id = replyDestination.iconTextId,
+                                ),
                         )
-                    }
+                    },
                 )
             }
         }
@@ -238,7 +246,7 @@ fun ReplyNavigationRail(
 @Composable
 fun ReplyBottomNavigationBar(
     selectedDestination: String,
-    navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit
+    navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
 ) {
     NavigationBar(modifier = Modifier.fillMaxWidth()) {
         TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
@@ -248,9 +256,9 @@ fun ReplyBottomNavigationBar(
                 icon = {
                     Icon(
                         imageVector = replyDestination.selectedIcon,
-                        contentDescription = stringResource(id = replyDestination.iconTextId)
+                        contentDescription = stringResource(id = replyDestination.iconTextId),
                     )
-                }
+                },
             )
         }
     }
@@ -268,47 +276,51 @@ fun PermanentNavigationDrawerContent(
     ) {
         // TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
         Layout(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding(16.dp),
             content = {
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        modifier = Modifier
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .padding(16.dp),
                         text = stringResource(id = R.string.app_name).uppercase(),
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                     ExtendedFloatingActionButton(
                         onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, bottom = 40.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 40.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = stringResource(id = R.string.compose),
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
                         Text(
                             text = stringResource(id = R.string.compose),
                             modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }
 
                 Column(
-                    modifier = Modifier
-                        .layoutId(LayoutType.CONTENT)
-                        .verticalScroll(rememberScrollState()),
+                    modifier =
+                        Modifier
+                            .layoutId(LayoutType.CONTENT)
+                            .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
@@ -317,26 +329,28 @@ fun PermanentNavigationDrawerContent(
                             label = {
                                 Text(
                                     text = stringResource(id = replyDestination.iconTextId),
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    modifier = Modifier.padding(horizontal = 16.dp),
                                 )
                             },
                             icon = {
                                 Icon(
                                     imageVector = replyDestination.selectedIcon,
-                                    contentDescription = stringResource(
-                                        id = replyDestination.iconTextId
-                                    )
+                                    contentDescription =
+                                        stringResource(
+                                            id = replyDestination.iconTextId,
+                                        ),
                                 )
                             },
-                            colors = NavigationDrawerItemDefaults.colors(
-                                unselectedContainerColor = Color.Transparent
-                            ),
-                            onClick = { navigateToTopLevelDestination(replyDestination) }
+                            colors =
+                                NavigationDrawerItemDefaults.colors(
+                                    unselectedContainerColor = Color.Transparent,
+                                ),
+                            onClick = { navigateToTopLevelDestination(replyDestination) },
                         )
                     }
                 }
             },
-            measurePolicy = navigationMeasurePolicy(navigationContentPosition)
+            measurePolicy = navigationMeasurePolicy(navigationContentPosition),
         )
     }
 }
@@ -346,65 +360,69 @@ fun ModalNavigationDrawerContent(
     selectedDestination: String,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
-    onDrawerClicked: () -> Unit = {}
+    onDrawerClicked: () -> Unit = {},
 ) {
     ModalDrawerSheet {
         // TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
         Layout(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.inverseOnSurface)
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .background(MaterialTheme.colorScheme.inverseOnSurface)
+                    .padding(16.dp),
             content = {
                 Column(
                     modifier = Modifier.layoutId(LayoutType.HEADER),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text = stringResource(id = R.string.app_name).uppercase(),
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
                         IconButton(onClick = onDrawerClicked) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.MenuOpen,
-                                contentDescription = stringResource(id = R.string.close_drawer)
+                                contentDescription = stringResource(id = R.string.close_drawer),
                             )
                         }
                     }
 
                     ExtendedFloatingActionButton(
                         onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, bottom = 40.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 40.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = stringResource(id = R.string.compose),
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(18.dp),
                         )
                         Text(
                             text = stringResource(id = R.string.compose),
                             modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }
 
                 Column(
-                    modifier = Modifier
-                        .layoutId(LayoutType.CONTENT)
-                        .verticalScroll(rememberScrollState()),
+                    modifier =
+                        Modifier
+                            .layoutId(LayoutType.CONTENT)
+                            .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
@@ -413,34 +431,34 @@ fun ModalNavigationDrawerContent(
                             label = {
                                 Text(
                                     text = stringResource(id = replyDestination.iconTextId),
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    modifier = Modifier.padding(horizontal = 16.dp),
                                 )
                             },
                             icon = {
                                 Icon(
                                     imageVector = replyDestination.selectedIcon,
-                                    contentDescription = stringResource(
-                                        id = replyDestination.iconTextId
-                                    )
+                                    contentDescription =
+                                        stringResource(
+                                            id = replyDestination.iconTextId,
+                                        ),
                                 )
                             },
-                            colors = NavigationDrawerItemDefaults.colors(
-                                unselectedContainerColor = Color.Transparent
-                            ),
-                            onClick = { navigateToTopLevelDestination(replyDestination) }
+                            colors =
+                                NavigationDrawerItemDefaults.colors(
+                                    unselectedContainerColor = Color.Transparent,
+                                ),
+                            onClick = { navigateToTopLevelDestination(replyDestination) },
                         )
                     }
                 }
             },
-            measurePolicy = navigationMeasurePolicy(navigationContentPosition)
+            measurePolicy = navigationMeasurePolicy(navigationContentPosition),
         )
     }
 }
 
-fun navigationMeasurePolicy(
-    navigationContentPosition: ReplyNavigationContentPosition,
-): MeasurePolicy {
-    return MeasurePolicy { measurables, constraints ->
+fun navigationMeasurePolicy(navigationContentPosition: ReplyNavigationContentPosition): MeasurePolicy =
+    MeasurePolicy { measurables, constraints ->
         lateinit var headerMeasurable: Measurable
         lateinit var contentMeasurable: Measurable
         measurables.forEach {
@@ -452,9 +470,10 @@ fun navigationMeasurePolicy(
         }
 
         val headerPlaceable = headerMeasurable.measure(constraints)
-        val contentPlaceable = contentMeasurable.measure(
-            constraints.offset(vertical = -headerPlaceable.height)
-        )
+        val contentPlaceable =
+            contentMeasurable.measure(
+                constraints.offset(vertical = -headerPlaceable.height),
+            )
         layout(constraints.maxWidth, constraints.maxHeight) {
             // Place the header, this goes at the top
             headerPlaceable.placeRelative(0, 0)
@@ -462,20 +481,21 @@ fun navigationMeasurePolicy(
             // Determine how much space is not taken up by the content
             val nonContentVerticalSpace = constraints.maxHeight - contentPlaceable.height
 
-            val contentPlaceableY = when (navigationContentPosition) {
-                // Figure out the place we want to place the content, with respect to the
-                // parent (ignoring the header for now)
-                ReplyNavigationContentPosition.TOP -> 0
-                ReplyNavigationContentPosition.CENTER -> nonContentVerticalSpace / 2
-            }
-                // And finally, make sure we don't overlap with the header.
-                .coerceAtLeast(headerPlaceable.height)
+            val contentPlaceableY =
+                when (navigationContentPosition) {
+                    // Figure out the place we want to place the content, with respect to the
+                    // parent (ignoring the header for now)
+                    ReplyNavigationContentPosition.TOP -> 0
+                    ReplyNavigationContentPosition.CENTER -> nonContentVerticalSpace / 2
+                }
+                    // And finally, make sure we don't overlap with the header.
+                    .coerceAtLeast(headerPlaceable.height)
 
             contentPlaceable.placeRelative(0, contentPlaceableY)
         }
     }
-}
 
 enum class LayoutType {
-    HEADER, CONTENT
+    HEADER,
+    CONTENT,
 }

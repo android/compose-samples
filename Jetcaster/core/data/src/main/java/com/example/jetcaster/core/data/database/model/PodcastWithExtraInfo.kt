@@ -35,18 +35,21 @@ class PodcastWithExtraInfo {
      * Allow consumers to destructure this class
      */
     operator fun component1() = podcast
+
     operator fun component2() = lastEpisodeDate
+
     operator fun component3() = isFollowed
 
-    override fun equals(other: Any?): Boolean = when {
-        other === this -> true
-        other is PodcastWithExtraInfo -> {
-            podcast == other.podcast &&
-                lastEpisodeDate == other.lastEpisodeDate &&
-                isFollowed == other.isFollowed
+    override fun equals(other: Any?): Boolean =
+        when {
+            other === this -> true
+            other is PodcastWithExtraInfo -> {
+                podcast == other.podcast &&
+                    lastEpisodeDate == other.lastEpisodeDate &&
+                    isFollowed == other.isFollowed
+            }
+            else -> false
         }
-        else -> false
-    }
 
     override fun hashCode(): Int = Objects.hash(podcast, lastEpisodeDate, isFollowed)
 }

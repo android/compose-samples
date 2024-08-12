@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.Flow
  * Interface to the Posts data layer.
  */
 interface PostsRepository {
-
     /**
      * Get a specific JetNews post.
      */

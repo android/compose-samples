@@ -28,10 +28,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
  * If the created [ViewModel] does not match the requested class, an [IllegalArgumentException]
  * exception is thrown.
  */
-inline fun <reified VM : ViewModel> viewModelProviderFactoryOf(
-    crossinline create: () -> VM
-): ViewModelProvider.Factory = viewModelFactory {
-    initializer {
-        create()
+inline fun <reified VM : ViewModel> viewModelProviderFactoryOf(crossinline create: () -> VM): ViewModelProvider.Factory =
+    viewModelFactory {
+        initializer {
+            create()
+        }
     }
-}

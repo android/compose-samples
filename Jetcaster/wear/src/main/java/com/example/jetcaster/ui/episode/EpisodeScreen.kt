@@ -63,7 +63,7 @@ fun EpisodeScreen(
     onPlayButtonClick: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    episodeViewModel: EpisodeViewModel = hiltViewModel()
+    episodeViewModel: EpisodeViewModel = hiltViewModel(),
 ) {
     val uiState by episodeViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -86,15 +86,17 @@ fun EpisodeScreen(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
+    val columnState =
+        rememberResponsiveColumnState(
+            contentPadding =
+                padding(
+                    first = ScalingLazyColumnDefaults.ItemType.Text,
+                    last = ScalingLazyColumnDefaults.ItemType.Chip,
+                ),
         )
-    )
     ScreenScaffold(
         scrollState = columnState,
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (uiState) {
             is EpisodeScreenState.Loaded -> {
@@ -104,12 +106,12 @@ fun EpisodeScreen(
                     columnState = columnState,
                     headerContent = {
                         ResponsiveListHeader(
-                            contentPadding = ListHeaderDefaults.firstItemPadding()
+                            contentPadding = ListHeaderDefaults.firstItemPadding(),
                         ) {
                             Text(
                                 text = title,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     },
@@ -118,13 +120,12 @@ fun EpisodeScreen(
                             episode = uiState.episode,
                             onPlayButtonClick = onPlayButtonClick,
                             onPlayEpisode = onPlayEpisode,
-                            onAddToQueue = onAddToQueue
+                            onAddToQueue = onAddToQueue,
                         )
                     },
                     content = {
                         episodeInfoContent(episode = uiState.episode)
-                    }
-
+                    },
                 )
             }
 
@@ -132,7 +133,7 @@ fun EpisodeScreen(
                 AlertDialog(
                     showDialog = true,
                     onDismiss = { onDismiss },
-                    message = stringResource(R.string.episode_info_not_available)
+                    message = stringResource(R.string.episode_info_not_available),
                 )
             }
             EpisodeScreenState.Loading -> {
@@ -149,17 +150,16 @@ fun LoadedButtonsContent(
     onPlayButtonClick: () -> Unit,
     onPlayEpisode: (PlayerEpisode) -> Unit,
     onAddToQueue: (PlayerEpisode) -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
-
     Row(
-        modifier = Modifier
-            .padding(bottom = 16.dp)
-            .height(52.dp),
+        modifier =
+            Modifier
+                .padding(bottom = 16.dp)
+                .height(52.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
     ) {
-
         Button(
             imageVector = Icons.Outlined.PlayArrow,
             contentDescription = stringResource(id = R.string.button_play_content_description),
@@ -168,8 +168,9 @@ fun LoadedButtonsContent(
                 onPlayEpisode(episode.toPlayerEpisode())
             },
             enabled = enabled,
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
+            modifier =
+                Modifier
+                    .weight(weight = 0.3F, fill = false),
         )
 
         Button(
@@ -177,18 +178,20 @@ fun LoadedButtonsContent(
             contentDescription = stringResource(id = R.string.add_to_queue_content_description),
             onClick = { onAddToQueue(episode.toPlayerEpisode()) },
             enabled = enabled,
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
+            modifier =
+                Modifier
+                    .weight(weight = 0.3F, fill = false),
         )
     }
 }
+
 @Composable
 fun LoadingScreen(columnState: ScalingLazyColumnState) {
     EntityScreen(
         columnState = columnState,
         headerContent = {
             ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding()
+                contentPadding = ListHeaderDefaults.firstItemPadding(),
             ) {
                 Text(text = stringResource(R.string.loading))
             }
@@ -200,7 +203,7 @@ fun LoadingScreen(columnState: ScalingLazyColumnState) {
             items(count = 2) {
                 PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
             }
-        }
+        },
     )
 }
 
@@ -208,20 +211,21 @@ fun LoadingScreen(columnState: ScalingLazyColumnState) {
 @Composable
 fun LoadingButtonsContent() {
     Row(
-        modifier = Modifier
-            .padding(bottom = 16.dp)
-            .height(52.dp),
+        modifier =
+            Modifier
+                .padding(bottom = 16.dp)
+                .height(52.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
     ) {
-
         Button(
             imageVector = Icons.Outlined.PlayArrow,
             contentDescription = stringResource(id = R.string.button_play_content_description),
             onClick = {},
             enabled = false,
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
+            modifier =
+                Modifier
+                    .weight(weight = 0.3F, fill = false),
         )
 
         Button(
@@ -229,8 +233,9 @@ fun LoadingButtonsContent() {
             contentDescription = stringResource(id = R.string.add_to_queue_content_description),
             onClick = {},
             enabled = false,
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
+            modifier =
+                Modifier
+                    .weight(weight = 0.3F, fill = false),
         )
     }
 }
@@ -247,31 +252,33 @@ private fun ScalingLazyListScope.episodeInfoContent(episode: EpisodeToPodcast) {
                 text = author,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.body2,
             )
         }
     }
 
     item {
         Text(
-            text = when {
-                duration != null -> {
-                    // If we have the duration, we combine the date/duration via a
-                    // formatted string
-                    stringResource(
-                        R.string.episode_date_duration,
-                        MediumDateFormatter.format(published),
-                        duration.toMinutes().toInt()
-                    )
-                }
-                // Otherwise we just use the date
-                else -> MediumDateFormatter.format(published)
-            },
+            text =
+                when {
+                    duration != null -> {
+                        // If we have the duration, we combine the date/duration via a
+                        // formatted string
+                        stringResource(
+                            R.string.episode_date_duration,
+                            MediumDateFormatter.format(published),
+                            duration.toMinutes().toInt(),
+                        )
+                    }
+                    // Otherwise we just use the date
+                    else -> MediumDateFormatter.format(published)
+                },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.body2,
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
+            modifier =
+                Modifier
+                    .padding(horizontal = 8.dp),
         )
     }
     if (summary != null) {
@@ -282,7 +289,7 @@ private fun ScalingLazyListScope.episodeInfoContent(episode: EpisodeToPodcast) {
                     text = it,
                     style = MaterialTheme.typography.body2,
                     color = LocalContentColor.current,
-                    modifier = Modifier.listTextPadding()
+                    modifier = Modifier.listTextPadding(),
                 )
             }
         }

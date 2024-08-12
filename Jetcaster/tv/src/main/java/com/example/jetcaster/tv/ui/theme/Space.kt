@@ -35,18 +35,20 @@ internal data class OverScanMarginSettings(
     val catalog: OverScanMargin = OverScanMargin(end = 0.dp),
     val episode: OverScanMargin = OverScanMargin(start = 80.dp, end = 80.dp),
     val drawer: OverScanMargin = OverScanMargin(start = 16.dp, end = 16.dp),
-    val podcast: OverScanMargin = OverScanMargin(
-        top = 40.dp,
-        bottom = 40.dp,
-        start = 80.dp,
-        end = 80.dp
-    ),
-    val player: OverScanMargin = OverScanMargin(
-        top = 40.dp,
-        bottom = 40.dp,
-        start = 80.dp,
-        end = 80.dp
-    ),
+    val podcast: OverScanMargin =
+        OverScanMargin(
+            top = 40.dp,
+            bottom = 40.dp,
+            start = 80.dp,
+            end = 80.dp,
+        ),
+    val player: OverScanMargin =
+        OverScanMargin(
+            top = 40.dp,
+            bottom = 40.dp,
+            start = 80.dp,
+            end = 80.dp,
+        ),
 )
 
 internal data class OverScanMargin(
@@ -55,21 +57,19 @@ internal data class OverScanMargin(
     val start: Dp = 48.dp,
     val end: Dp = 48.dp,
 ) {
-    fun intoPaddingValues(): PaddingValues {
-        return PaddingValues(start, top, end, bottom)
-    }
+    fun intoPaddingValues(): PaddingValues = PaddingValues(start, top, end, bottom)
 }
 
 internal data class CardWidth(
     val large: Dp = 268.dp,
     val medium: Dp = 196.dp,
-    val small: Dp = 124.dp
+    val small: Dp = 124.dp,
 )
 
 internal data class ThumbnailSize(
     val episodeDetails: DpSize = DpSize(266.dp, 266.dp),
     val podcast: DpSize = DpSize(196.dp, 196.dp),
-    val episode: DpSize = DpSize(124.dp, 124.dp)
+    val episode: DpSize = DpSize(124.dp, 124.dp),
 )
 
 internal data class PaddingSettings(
@@ -85,7 +85,6 @@ internal data class GapSettings(
     val default: Dp = small * 2,
     val medium: Dp = default + tiny,
     val large: Dp = medium * 2,
-
     val chip: Dp = small,
     val episodeRow: Dp = medium,
     val item: Dp = default,
@@ -98,13 +97,14 @@ internal data class GapSettings(
 internal data class IconButtonSize(
     val default: Radius = Radius(14.dp),
     val medium: Radius = Radius(20.dp),
-    val large: Radius = Radius(28.dp)
+    val large: Radius = Radius(28.dp),
 )
 
-internal data class Radius(private val value: Dp) {
-    private fun diameter(): Dp {
-        return value * 2
-    }
+internal data class Radius(
+    private val value: Dp,
+) {
+    private fun diameter(): Dp = value * 2
+
     fun intoDpSize(): DpSize {
         val d = diameter()
         return DpSize(d, d)

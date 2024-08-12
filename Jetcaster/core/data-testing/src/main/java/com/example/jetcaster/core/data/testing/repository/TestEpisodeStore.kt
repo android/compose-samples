@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.update
 
 // TODO: Move to :testing module upon merging PR #1379
 class TestEpisodeStore : EpisodeStore {
-
     private val episodesFlow = MutableStateFlow<List<Episode>>(listOf())
+
     override fun episodeWithUri(episodeUri: String): Flow<Episode> =
         episodesFlow.map { episodes ->
             episodes.first { it.uri == episodeUri }
@@ -36,38 +36,44 @@ class TestEpisodeStore : EpisodeStore {
 
     override fun episodeAndPodcastWithUri(episodeUri: String): Flow<EpisodeToPodcast> =
         episodesFlow.map { episodes ->
-            val e = episodes.first {
-                it.uri == episodeUri
-            }
+            val e =
+                episodes.first {
+                    it.uri == episodeUri
+                }
             EpisodeToPodcast().apply {
                 episode = e
-                _podcasts = emptyList()
+                podcasts = emptyList()
             }
         }
 
-    override fun episodesInPodcast(podcastUri: String, limit: Int): Flow<List<EpisodeToPodcast>> =
+    override fun episodesInPodcast(
+        podcastUri: String,
+        limit: Int,
+    ): Flow<List<EpisodeToPodcast>> =
         episodesFlow.map { episodes ->
-            episodes.filter {
-                it.podcastUri == podcastUri
-            }.map { e ->
-                EpisodeToPodcast().apply {
-                    episode = e
+            episodes
+                .filter {
+                    it.podcastUri == podcastUri
+                }.map { e ->
+                    EpisodeToPodcast().apply {
+                        episode = e
+                    }
                 }
-            }
         }
 
     override fun episodesInPodcasts(
         podcastUris: List<String>,
-        limit: Int
+        limit: Int,
     ): Flow<List<EpisodeToPodcast>> =
         episodesFlow.map { episodes ->
-            episodes.filter {
-                podcastUris.contains(it.podcastUri)
-            }.map { ep ->
-                EpisodeToPodcast().apply {
-                    episode = ep
+            episodes
+                .filter {
+                    podcastUris.contains(it.podcastUri)
+                }.map { ep ->
+                    EpisodeToPodcast().apply {
+                        episode = ep
+                    }
                 }
-            }
         }
 
     override suspend fun addEpisodes(episodes: Collection<Episode>) =
@@ -75,6 +81,5 @@ class TestEpisodeStore : EpisodeStore {
             it + episodes
         }
 
-    override suspend fun isEmpty(): Boolean =
-        episodesFlow.first().isEmpty()
+    override suspend fun isEmpty(): Boolean = episodesFlow.first().isEmpty()
 }

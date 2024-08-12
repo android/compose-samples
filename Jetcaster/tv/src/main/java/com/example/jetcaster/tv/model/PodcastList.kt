@@ -21,5 +21,5 @@ import com.example.jetcaster.core.model.PodcastInfo
 
 @Immutable
 data class PodcastList(
-    val member: List<PodcastInfo>
+    val member: List<PodcastInfo>,
 ) : List<PodcastInfo> by member

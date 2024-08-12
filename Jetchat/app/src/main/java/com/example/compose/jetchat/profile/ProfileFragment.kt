@@ -51,7 +51,6 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ProfileFragment : Fragment() {
-
     private val viewModel: ProfileViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
 
@@ -66,7 +65,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val rootView: View = inflater.inflate(R.layout.fragment_profile, container, false)
 
@@ -88,15 +87,16 @@ class ProfileFragment : Fragment() {
                             Icon(
                                 imageVector = Icons.Outlined.MoreVert,
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier
-                                    .clickable(onClick = {
-                                        functionalityNotAvailablePopupShown = true
-                                    })
-                                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                                    .height(24.dp),
-                                contentDescription = stringResource(id = R.string.more_options)
+                                modifier =
+                                    Modifier
+                                        .clickable(onClick = {
+                                            functionalityNotAvailablePopupShown = true
+                                        })
+                                        .padding(horizontal = 12.dp, vertical = 16.dp)
+                                        .height(24.dp),
+                                contentDescription = stringResource(id = R.string.more_options),
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -113,7 +113,7 @@ class ProfileFragment : Fragment() {
                     } else {
                         ProfileScreen(
                             userData = userData!!,
-                            nestedScrollInteropConnection = nestedScrollInteropConnection
+                            nestedScrollInteropConnection = nestedScrollInteropConnection,
                         )
                     }
                 }

@@ -37,11 +37,12 @@ data class ReplyTopLevelDestination(
     val route: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val iconTextId: Int
+    val iconTextId: Int,
 )
 
-class ReplyNavigationActions(private val navController: NavHostController) {
-
+class ReplyNavigationActions(
+    private val navController: NavHostController,
+) {
     fun navigateTo(destination: ReplyTopLevelDestination) {
         navController.navigate(destination.route) {
             // Pop up to the start destination of the graph to
@@ -59,30 +60,30 @@ class ReplyNavigationActions(private val navController: NavHostController) {
     }
 }
 
-val TOP_LEVEL_DESTINATIONS = listOf(
-    ReplyTopLevelDestination(
-        route = ReplyRoute.INBOX,
-        selectedIcon = Icons.Default.Inbox,
-        unselectedIcon = Icons.Default.Inbox,
-        iconTextId = R.string.tab_inbox
-    ),
-    ReplyTopLevelDestination(
-        route = ReplyRoute.ARTICLES,
-        selectedIcon = Icons.AutoMirrored.Filled.Article,
-        unselectedIcon = Icons.AutoMirrored.Filled.Article,
-        iconTextId = R.string.tab_article
-    ),
-    ReplyTopLevelDestination(
-        route = ReplyRoute.DM,
-        selectedIcon = Icons.Outlined.ChatBubbleOutline,
-        unselectedIcon = Icons.Outlined.ChatBubbleOutline,
-        iconTextId = R.string.tab_inbox
-    ),
-    ReplyTopLevelDestination(
-        route = ReplyRoute.GROUPS,
-        selectedIcon = Icons.Default.People,
-        unselectedIcon = Icons.Default.People,
-        iconTextId = R.string.tab_article
+val TOP_LEVEL_DESTINATIONS =
+    listOf(
+        ReplyTopLevelDestination(
+            route = ReplyRoute.INBOX,
+            selectedIcon = Icons.Default.Inbox,
+            unselectedIcon = Icons.Default.Inbox,
+            iconTextId = R.string.tab_inbox,
+        ),
+        ReplyTopLevelDestination(
+            route = ReplyRoute.ARTICLES,
+            selectedIcon = Icons.AutoMirrored.Filled.Article,
+            unselectedIcon = Icons.AutoMirrored.Filled.Article,
+            iconTextId = R.string.tab_article,
+        ),
+        ReplyTopLevelDestination(
+            route = ReplyRoute.DM,
+            selectedIcon = Icons.Outlined.ChatBubbleOutline,
+            unselectedIcon = Icons.Outlined.ChatBubbleOutline,
+            iconTextId = R.string.tab_inbox,
+        ),
+        ReplyTopLevelDestination(
+            route = ReplyRoute.GROUPS,
+            selectedIcon = Icons.Default.People,
+            unselectedIcon = Icons.Default.People,
+            iconTextId = R.string.tab_article,
+        ),
     )
-
-)

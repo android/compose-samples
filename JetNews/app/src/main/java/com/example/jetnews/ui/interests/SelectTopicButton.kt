@@ -37,35 +37,38 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 @Composable
 fun SelectTopicButton(
     modifier: Modifier = Modifier,
-    selected: Boolean = false
+    selected: Boolean = false,
 ) {
     val icon = if (selected) Icons.Filled.Done else Icons.Filled.Add
-    val iconColor = if (selected) {
-        MaterialTheme.colorScheme.onPrimary
-    } else {
-        MaterialTheme.colorScheme.primary
-    }
-    val borderColor = if (selected) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-    }
-    val backgroundColor = if (selected) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.onPrimary
-    }
+    val iconColor =
+        if (selected) {
+            MaterialTheme.colorScheme.onPrimary
+        } else {
+            MaterialTheme.colorScheme.primary
+        }
+    val borderColor =
+        if (selected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+        }
+    val backgroundColor =
+        if (selected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onPrimary
+        }
     Surface(
         color = backgroundColor,
         shape = CircleShape,
         border = BorderStroke(1.dp, borderColor),
-        modifier = modifier.size(36.dp, 36.dp)
+        modifier = modifier.size(36.dp, 36.dp),
     ) {
         Image(
             imageVector = icon,
             colorFilter = ColorFilter.tint(iconColor),
             modifier = Modifier.padding(8.dp),
-            contentDescription = null // toggleable at higher level
+            contentDescription = null, // toggleable at higher level
         )
     }
 }
@@ -75,7 +78,7 @@ fun SelectTopicButton(
 @Composable
 fun SelectTopicButtonPreviewOff() {
     SelectTopicButtonPreviewTemplate(
-        selected = false
+        selected = false,
     )
 }
 
@@ -84,19 +87,17 @@ fun SelectTopicButtonPreviewOff() {
 @Composable
 fun SelectTopicButtonPreviewOn() {
     SelectTopicButtonPreviewTemplate(
-        selected = true
+        selected = true,
     )
 }
 
 @Composable
-private fun SelectTopicButtonPreviewTemplate(
-    selected: Boolean
-) {
+private fun SelectTopicButtonPreviewTemplate(selected: Boolean) {
     JetnewsTheme {
         Surface {
             SelectTopicButton(
                 modifier = Modifier.padding(32.dp),
-                selected = selected
+                selected = selected,
             )
         }
     }

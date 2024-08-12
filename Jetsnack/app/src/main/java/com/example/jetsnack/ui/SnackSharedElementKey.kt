@@ -19,7 +19,7 @@ package com.example.jetsnack.ui
 data class SnackSharedElementKey(
     val snackId: Long,
     val origin: String,
-    val type: SnackSharedElementType
+    val type: SnackSharedElementType,
 )
 
 enum class SnackSharedElementType {
@@ -27,7 +27,7 @@ enum class SnackSharedElementType {
     Image,
     Title,
     Tagline,
-    Background
+    Background,
 }
 
 object FilterSharedElementKey

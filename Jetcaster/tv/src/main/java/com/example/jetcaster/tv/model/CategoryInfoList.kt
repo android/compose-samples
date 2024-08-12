@@ -22,11 +22,10 @@ import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.asExternalModel
 
 @Immutable
-data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo> by member {
-
-    fun intoCategoryList(): List<Category> {
-        return map(CategoryInfo::intoCategory)
-    }
+data class CategoryInfoList(
+    val member: List<CategoryInfo>,
+) : List<CategoryInfo> by member {
+    fun intoCategoryList(): List<Category> = map(CategoryInfo::intoCategory)
 
     companion object {
         fun from(list: List<Category>): CategoryInfoList {
@@ -36,6 +35,4 @@ data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo>
     }
 }
 
-private fun CategoryInfo.intoCategory(): Category {
-    return Category(id, name)
-}
+private fun CategoryInfo.intoCategory(): Category = Category(id, name)

@@ -44,7 +44,6 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.ui.PodcastDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -52,65 +51,72 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 /**
  * ViewModel that handles the business logic and screen state of the Podcast details screen.
  */
 @HiltViewModel
-class PodcastDetailsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    episodeStore: EpisodeStore,
-    private val episodePlayer: EpisodePlayer,
-    podcastStore: PodcastStore
-) : ViewModel() {
-
-    private val podcastUri: String =
-        savedStateHandle.get<String>(PodcastDetails.PODCAST_URI).let {
-            Uri.decode(it)
-        }
-
-    private val podcastFlow = if (podcastUri != null) {
-        podcastStore.podcastWithExtraInfo(podcastUri)
-    } else {
-        flowOf(null)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5_000),
-        null
-    )
-
-    private val episodeListFlow = podcastFlow.flatMapLatest {
-        if (it != null) {
-            episodeStore.episodesInPodcast(it.podcast.uri)
-        } else {
-            flowOf(emptyList())
-        }
-    }.map { list ->
-        list.map { it.toPlayerEpisode() }
-    }
-
-    val uiState: StateFlow<PodcastDetailsScreenState> =
-        combine(
-            podcastFlow,
-            episodeListFlow
-        ) { podcast, episodes ->
-            if (podcast != null) {
-                PodcastDetailsScreenState.Loaded(
-                    podcast = podcast.podcast.asExternalModel()
-                        .copy(isSubscribed = podcast.isFollowed),
-                    episodeList = episodes,
-                )
-            } else {
-                PodcastDetailsScreenState.Empty
+class PodcastDetailsViewModel
+    @Inject
+    constructor(
+        savedStateHandle: SavedStateHandle,
+        episodeStore: EpisodeStore,
+        private val episodePlayer: EpisodePlayer,
+        podcastStore: PodcastStore,
+    ) : ViewModel() {
+        private val podcastUri: String =
+            savedStateHandle.get<String>(PodcastDetails.PODCAST_URI).let {
+                Uri.decode(it)
             }
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            PodcastDetailsScreenState.Loading,
-        )
 
-    fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
-        episodePlayer.currentEpisode = episodes[0]
-        episodePlayer.play(episodes)
+        private val podcastFlow =
+            if (podcastUri != null) {
+                podcastStore.podcastWithExtraInfo(podcastUri)
+            } else {
+                flowOf(null)
+            }.stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                null,
+            )
+
+        private val episodeListFlow =
+            podcastFlow
+                .flatMapLatest {
+                    if (it != null) {
+                        episodeStore.episodesInPodcast(it.podcast.uri)
+                    } else {
+                        flowOf(emptyList())
+                    }
+                }.map { list ->
+                    list.map { it.toPlayerEpisode() }
+                }
+
+        val uiState: StateFlow<PodcastDetailsScreenState> =
+            combine(
+                podcastFlow,
+                episodeListFlow,
+            ) { podcast, episodes ->
+                if (podcast != null) {
+                    PodcastDetailsScreenState.Loaded(
+                        podcast =
+                            podcast.podcast
+                                .asExternalModel()
+                                .copy(isSubscribed = podcast.isFollowed),
+                        episodeList = episodes,
+                    )
+                } else {
+                    PodcastDetailsScreenState.Empty
+                }
+            }.stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                PodcastDetailsScreenState.Loading,
+            )
+
+        fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
+            episodePlayer.currentEpisode = episodes[0]
+            episodePlayer.play(episodes)
+        }
     }
-}

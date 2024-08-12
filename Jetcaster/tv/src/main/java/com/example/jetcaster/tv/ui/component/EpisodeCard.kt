@@ -54,12 +54,13 @@ internal fun EpisodeCard(
         title = {
             EpisodeMetaData(
                 playerEpisode = playerEpisode,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .width(JetcasterAppDefaults.cardWidth.small * 2)
+                modifier =
+                    Modifier
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .width(JetcasterAppDefaults.cardWidth.small * 2),
             )
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -69,7 +70,7 @@ private fun EpisodeThumbnail(
     playerEpisode: PlayerEpisode,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     Card(
         onClick = onClick,
@@ -86,7 +87,7 @@ private fun EpisodeThumbnail(
 @Composable
 private fun EpisodeMetaData(
     playerEpisode: PlayerEpisode,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val duration = playerEpisode.duration
     Column(modifier = modifier) {
@@ -94,12 +95,12 @@ private fun EpisodeMetaData(
             text = playerEpisode.title,
             style = MaterialTheme.typography.bodyLarge,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         Text(text = playerEpisode.podcastName, style = MaterialTheme.typography.bodySmall)
         if (duration != null) {
             Spacer(
-                modifier = Modifier.height(JetcasterAppDefaults.gap.podcastRow * 0.8f)
+                modifier = Modifier.height(JetcasterAppDefaults.gap.podcastRow * 0.8f),
             )
             EpisodeDataAndDuration(offsetDateTime = playerEpisode.published, duration = duration)
         }

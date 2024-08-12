@@ -62,7 +62,7 @@ internal fun Catalog(
         modifier = modifier,
         contentPadding = JetcasterAppDefaults.overScanMargin.catalog.intoPaddingValues(),
         verticalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
+            Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
         state = state,
     ) {
         if (header != null) {
@@ -72,14 +72,14 @@ internal fun Catalog(
             PodcastSection(
                 podcastList = podcastList,
                 onPodcastSelected = onPodcastSelected,
-                title = stringResource(R.string.label_podcast)
+                title = stringResource(R.string.label_podcast),
             )
         }
         item {
             LatestEpisodeSection(
                 episodeList = latestEpisodeList,
                 onEpisodeSelected = onEpisodeSelected,
-                title = stringResource(R.string.label_latest_episode)
+                title = stringResource(R.string.label_latest_episode),
             )
         }
     }
@@ -94,7 +94,7 @@ private fun PodcastSection(
 ) {
     Section(
         title = title,
-        modifier = modifier
+        modifier = modifier,
     ) {
         PodcastRow(
             podcastList = podcastList,
@@ -108,11 +108,11 @@ private fun LatestEpisodeSection(
     episodeList: EpisodeList,
     onEpisodeSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    title: String? = null
+    title: String? = null,
 ) {
     Section(
         modifier = modifier,
-        title = title
+        title = title,
     ) {
         EpisodeRow(
             playerEpisodeList = episodeList,
@@ -134,7 +134,7 @@ private fun Section(
             Text(
                 text = title,
                 style = style,
-                modifier = Modifier.padding(JetcasterAppDefaults.padding.sectionTitle)
+                modifier = Modifier.padding(JetcasterAppDefaults.padding.sectionTitle),
             )
         }
         content()
@@ -158,33 +158,35 @@ private fun PodcastRow(
     TvLazyRow(
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .focusProperties {
-                exit = {
-                    previousPodcastListHash = podcastList.hashCode()
-                    focusRequester.saveFocusedChild()
-                    FocusRequester.Default
-                }
-                enter = {
-                    if (isSamePodcastList && focusRequester.restoreFocusedChild()) {
-                        FocusRequester.Cancel
-                    } else {
-                        firstItem
+        modifier =
+            modifier
+                .focusRequester(focusRequester)
+                .focusProperties {
+                    exit = {
+                        previousPodcastListHash = podcastList.hashCode()
+                        focusRequester.saveFocusedChild()
+                        FocusRequester.Default
                     }
-                }
-            },
+                    enter = {
+                        if (isSamePodcastList && focusRequester.restoreFocusedChild()) {
+                            FocusRequester.Cancel
+                        } else {
+                            firstItem
+                        }
+                    }
+                },
     ) {
         itemsIndexed(podcastList) { index, podcastInfo ->
-            val cardModifier = if (index == 0) {
-                Modifier.focusRequester(firstItem)
-            } else {
-                Modifier
-            }
+            val cardModifier =
+                if (index == 0) {
+                    Modifier.focusRequester(firstItem)
+                } else {
+                    Modifier
+                }
             PodcastCard(
                 podcastInfo = podcastInfo,
                 onClick = { onPodcastSelected(podcastInfo) },
-                modifier = cardModifier.width(JetcasterAppDefaults.cardWidth.medium)
+                modifier = cardModifier.width(JetcasterAppDefaults.cardWidth.medium),
             )
         }
     }

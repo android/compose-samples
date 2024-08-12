@@ -37,7 +37,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 fun ErrorState(
     backToHome: () -> Unit,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -46,13 +46,13 @@ fun ErrorState(
         Column {
             Text(
                 text = stringResource(R.string.display_error_state),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             Button(
                 onClick = backToHome,
                 modifier
                     .padding(top = JetcasterAppDefaults.gap.podcastRow)
-                    .focusRequester(focusRequester)
+                    .focusRequester(focusRequester),
             ) {
                 Text(text = stringResource(R.string.label_back_to_home))
             }

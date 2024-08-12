@@ -40,17 +40,13 @@ interface PodcastStore {
      * Returns a flow containing the entire collection of podcasts, sorted by the last episode
      * publish date for each podcast.
      */
-    fun podcastsSortedByLastEpisode(
-        limit: Int = Int.MAX_VALUE
-    ): Flow<List<PodcastWithExtraInfo>>
+    fun podcastsSortedByLastEpisode(limit: Int = Int.MAX_VALUE): Flow<List<PodcastWithExtraInfo>>
 
     /**
      * Returns a flow containing a list of all followed podcasts, sorted by the their last
      * episode date.
      */
-    fun followedPodcastsSortedByLastEpisode(
-        limit: Int = Int.MAX_VALUE
-    ): Flow<List<PodcastWithExtraInfo>>
+    fun followedPodcastsSortedByLastEpisode(limit: Int = Int.MAX_VALUE): Flow<List<PodcastWithExtraInfo>>
 
     /**
      * Returns a flow containing a list of podcasts such that its name partially matches
@@ -58,7 +54,7 @@ interface PodcastStore {
      */
     fun searchPodcastByTitle(
         keyword: String,
-        limit: Int = Int.MAX_VALUE
+        limit: Int = Int.MAX_VALUE,
     ): Flow<List<PodcastWithExtraInfo>>
 
     /**
@@ -69,7 +65,7 @@ interface PodcastStore {
     fun searchPodcastByTitleAndCategories(
         keyword: String,
         categories: List<Category>,
-        limit: Int = Int.MAX_VALUE
+        limit: Int = Int.MAX_VALUE,
     ): Flow<List<PodcastWithExtraInfo>>
 
     suspend fun togglePodcastFollowed(podcastUri: String)
@@ -94,52 +90,40 @@ interface PodcastStore {
 class LocalPodcastStore constructor(
     private val podcastDao: PodcastsDao,
     private val podcastFollowedEntryDao: PodcastFollowedEntryDao,
-    private val transactionRunner: TransactionRunner
+    private val transactionRunner: TransactionRunner,
 ) : PodcastStore {
     /**
      * Return a flow containing the [Podcast] with the given [uri].
      */
-    override fun podcastWithUri(uri: String): Flow<Podcast> {
-        return podcastDao.podcastWithUri(uri)
-    }
+    override fun podcastWithUri(uri: String): Flow<Podcast> = podcastDao.podcastWithUri(uri)
 
     /**
      * Return a flow containing the [PodcastWithExtraInfo] with the given [podcastUri].
      */
-    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> =
-        podcastDao.podcastWithExtraInfo(podcastUri)
+    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> = podcastDao.podcastWithExtraInfo(podcastUri)
 
     /**
      * Returns a flow containing the entire collection of podcasts, sorted by the last episode
      * publish date for each podcast.
      */
-    override fun podcastsSortedByLastEpisode(
-        limit: Int
-    ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastDao.podcastsSortedByLastEpisode(limit)
-    }
+    override fun podcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> = podcastDao.podcastsSortedByLastEpisode(limit)
 
     /**
      * Returns a flow containing a list of all followed podcasts, sorted by the their last
      * episode date.
      */
-    override fun followedPodcastsSortedByLastEpisode(
-        limit: Int
-    ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastDao.followedPodcastsSortedByLastEpisode(limit)
-    }
+    override fun followedPodcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> =
+        podcastDao.followedPodcastsSortedByLastEpisode(limit)
 
     override fun searchPodcastByTitle(
         keyword: String,
-        limit: Int
-    ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastDao.searchPodcastByTitle(keyword, limit)
-    }
+        limit: Int,
+    ): Flow<List<PodcastWithExtraInfo>> = podcastDao.searchPodcastByTitle(keyword, limit)
 
     override fun searchPodcastByTitleAndCategories(
         keyword: String,
         categories: List<Category>,
-        limit: Int
+        limit: Int,
     ): Flow<List<PodcastWithExtraInfo>> {
         val categoryIdList = categories.map { it.id }
         return podcastDao.searchPodcastByTitleAndCategory(keyword, categoryIdList, limit)
@@ -149,13 +133,14 @@ class LocalPodcastStore constructor(
         podcastFollowedEntryDao.insert(PodcastFollowedEntry(podcastUri = podcastUri))
     }
 
-    override suspend fun togglePodcastFollowed(podcastUri: String) = transactionRunner {
-        if (podcastFollowedEntryDao.isPodcastFollowed(podcastUri)) {
-            unfollowPodcast(podcastUri)
-        } else {
-            followPodcast(podcastUri)
+    override suspend fun togglePodcastFollowed(podcastUri: String) =
+        transactionRunner {
+            if (podcastFollowedEntryDao.isPodcastFollowed(podcastUri)) {
+                unfollowPodcast(podcastUri)
+            } else {
+                followPodcast(podcastUri)
+            }
         }
-    }
 
     override suspend fun unfollowPodcast(podcastUri: String) {
         podcastFollowedEntryDao.deleteWithPodcastUri(podcastUri)

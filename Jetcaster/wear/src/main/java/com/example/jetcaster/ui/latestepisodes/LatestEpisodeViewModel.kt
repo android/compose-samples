@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.latest_episodes
+package com.example.jetcaster.ui.latestepisodes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,52 +23,54 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 @HiltViewModel
-class LatestEpisodeViewModel @Inject constructor(
-    episodesFromFavouritePodcasts: GetLatestFollowedEpisodesUseCase,
-    private val episodePlayer: EpisodePlayer,
-) : ViewModel() {
-
-    val uiState: StateFlow<LatestEpisodeScreenState> =
-        episodesFromFavouritePodcasts.invoke().map { episodeToPodcastList ->
-            if (episodeToPodcastList.isNotEmpty()) {
-                LatestEpisodeScreenState.Loaded(
-                    episodeToPodcastList.map {
-                        it.toPlayerEpisode()
+class LatestEpisodeViewModel
+    @Inject
+    constructor(
+        episodesFromFavouritePodcasts: GetLatestFollowedEpisodesUseCase,
+        private val episodePlayer: EpisodePlayer,
+    ) : ViewModel() {
+        val uiState: StateFlow<LatestEpisodeScreenState> =
+            episodesFromFavouritePodcasts
+                .invoke()
+                .map { episodeToPodcastList ->
+                    if (episodeToPodcastList.isNotEmpty()) {
+                        LatestEpisodeScreenState.Loaded(
+                            episodeToPodcastList.map {
+                                it.toPlayerEpisode()
+                            },
+                        )
+                    } else {
+                        LatestEpisodeScreenState.Empty
                     }
+                }.stateIn(
+                    viewModelScope,
+                    SharingStarted.WhileSubscribed(5000),
+                    LatestEpisodeScreenState.Loading,
                 )
-            } else {
-                LatestEpisodeScreenState.Empty
-            }
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            LatestEpisodeScreenState.Loading,
-        )
 
-    fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
-        episodePlayer.currentEpisode = episodes[0]
-        episodePlayer.play(episodes)
-    }
+        fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
+            episodePlayer.currentEpisode = episodes[0]
+            episodePlayer.play(episodes)
+        }
 
-    fun onPlayEpisode(episode: PlayerEpisode) {
-        episodePlayer.currentEpisode = episode
-        episodePlayer.play()
+        fun onPlayEpisode(episode: PlayerEpisode) {
+            episodePlayer.currentEpisode = episode
+            episodePlayer.play()
+        }
     }
-}
 
 sealed interface LatestEpisodeScreenState {
-
     data object Loading : LatestEpisodeScreenState
 
     data class Loaded(
-        val episodeList: List<PlayerEpisode>
+        val episodeList: List<PlayerEpisode>,
     ) : LatestEpisodeScreenState
 
     data object Empty : LatestEpisodeScreenState

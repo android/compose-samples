@@ -42,9 +42,10 @@ fun JetnewsApp(
 ) {
     JetnewsTheme {
         val navController = rememberNavController()
-        val navigationActions = remember(navController) {
-            JetnewsNavigationActions(navController)
-        }
+        val navigationActions =
+            remember(navController) {
+                JetnewsNavigationActions(navController)
+            }
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -61,12 +62,12 @@ fun JetnewsApp(
                     currentRoute = currentRoute,
                     navigateToHome = navigationActions.navigateToHome,
                     navigateToInterests = navigationActions.navigateToInterests,
-                    closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
+                    closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
                 )
             },
             drawerState = sizeAwareDrawerState,
             // Only enable opening the drawer via gestures if the screen is not expanded
-            gesturesEnabled = !isExpandedScreen
+            gesturesEnabled = !isExpandedScreen,
         ) {
             Row {
                 if (isExpandedScreen) {

@@ -40,46 +40,50 @@ import com.example.jetcaster.R
 fun ToggleFollowPodcastIconButton(
     isFollowed: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val clickLabel = stringResource(if (isFollowed) R.string.cd_unfollow else R.string.cd_follow)
     IconButton(
         onClick = onClick,
-        modifier = modifier.semantics {
-            onClick(label = clickLabel, action = null)
-        }
+        modifier =
+            modifier.semantics {
+                onClick(label = clickLabel, action = null)
+            },
     ) {
         Icon(
             // TODO: think about animating these icons
-            imageVector = when {
-                isFollowed -> Icons.Default.Check
-                else -> Icons.Default.Add
-            },
-            contentDescription = when {
-                isFollowed -> stringResource(R.string.cd_following)
-                else -> stringResource(R.string.cd_not_following)
-            },
-            tint = animateColorAsState(
+            imageVector =
                 when {
-                    isFollowed -> MaterialTheme.colorScheme.onPrimary
-                    else -> MaterialTheme.colorScheme.primary
-                }
-            ).value,
-            modifier = Modifier
-                .shadow(
-                    elevation = animateDpAsState(if (isFollowed) 0.dp else 1.dp).value,
-                    shape = MaterialTheme.shapes.small
-                )
-                .background(
-                    color = animateColorAsState(
-                        when {
-                            isFollowed -> MaterialTheme.colorScheme.primary
-                            else -> MaterialTheme.colorScheme.surfaceContainerHighest
-                        }
-                    ).value,
-                    shape = CircleShape
-                )
-                .padding(4.dp)
+                    isFollowed -> Icons.Default.Check
+                    else -> Icons.Default.Add
+                },
+            contentDescription =
+                when {
+                    isFollowed -> stringResource(R.string.cd_following)
+                    else -> stringResource(R.string.cd_not_following)
+                },
+            tint =
+                animateColorAsState(
+                    when {
+                        isFollowed -> MaterialTheme.colorScheme.onPrimary
+                        else -> MaterialTheme.colorScheme.primary
+                    },
+                ).value,
+            modifier =
+                Modifier
+                    .shadow(
+                        elevation = animateDpAsState(if (isFollowed) 0.dp else 1.dp).value,
+                        shape = MaterialTheme.shapes.small,
+                    ).background(
+                        color =
+                            animateColorAsState(
+                                when {
+                                    isFollowed -> MaterialTheme.colorScheme.primary
+                                    else -> MaterialTheme.colorScheme.surfaceContainerHighest
+                                },
+                            ).value,
+                        shape = CircleShape,
+                    ).padding(4.dp),
         )
     }
 }

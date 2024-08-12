@@ -56,30 +56,36 @@ import com.example.jetnews.ui.utils.BookmarkButton
 @Composable
 fun AuthorAndReadTime(
     post: Post,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier) {
         Text(
-            text = stringResource(
-                id = R.string.home_post_min_read,
-                formatArgs = arrayOf(
-                    post.metadata.author.name,
-                    post.metadata.readTimeMinutes
-                )
-            ),
-            style = MaterialTheme.typography.bodyMedium
+            text =
+                stringResource(
+                    id = R.string.home_post_min_read,
+                    formatArgs =
+                        arrayOf(
+                            post.metadata.author.name,
+                            post.metadata.readTimeMinutes,
+                        ),
+                ),
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
 
 @Composable
-fun PostImage(post: Post, modifier: Modifier = Modifier) {
+fun PostImage(
+    post: Post,
+    modifier: Modifier = Modifier,
+) {
     Image(
         painter = painterResource(post.imageThumbId),
         contentDescription = null, // decorative
-        modifier = modifier
-            .size(40.dp, 40.dp)
-            .clip(MaterialTheme.shapes.small)
+        modifier =
+            modifier
+                .size(40.dp, 40.dp)
+                .clip(MaterialTheme.shapes.small),
     )
 }
 
@@ -98,29 +104,35 @@ fun PostCardSimple(
     post: Post,
     navigateToArticle: (String) -> Unit,
     isFavorite: Boolean,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
 ) {
     val bookmarkAction = stringResource(if (isFavorite) R.string.unbookmark else R.string.bookmark)
     Row(
-        modifier = Modifier
-            .clickable(onClick = { navigateToArticle(post.id) })
-            .semantics {
-                // By defining a custom action, we tell accessibility services that this whole
-                // composable has an action attached to it. The accessibility service can choose
-                // how to best communicate this action to the user.
-                customActions = listOf(
-                    CustomAccessibilityAction(
-                        label = bookmarkAction,
-                        action = { onToggleFavorite(); true }
-                    )
-                )
-            }
+        modifier =
+            Modifier
+                .clickable(onClick = { navigateToArticle(post.id) })
+                .semantics {
+                    // By defining a custom action, we tell accessibility services that this whole
+                    // composable has an action attached to it. The accessibility service can choose
+                    // how to best communicate this action to the user.
+                    customActions =
+                        listOf(
+                            CustomAccessibilityAction(
+                                label = bookmarkAction,
+                                action = {
+                                    onToggleFavorite()
+                                    true
+                                },
+                            ),
+                        )
+                },
     ) {
         PostImage(post, Modifier.padding(16.dp))
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(vertical = 10.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(vertical = 10.dp),
         ) {
             PostTitle(post)
             AuthorAndReadTime(post)
@@ -129,44 +141,48 @@ fun PostCardSimple(
             isBookmarked = isFavorite,
             onClick = onToggleFavorite,
             // Remove button semantics so action can be handled at row level
-            modifier = Modifier
-                .clearAndSetSemantics {}
-                .padding(vertical = 2.dp, horizontal = 6.dp)
+            modifier =
+                Modifier
+                    .clearAndSetSemantics {}
+                    .padding(vertical = 2.dp, horizontal = 6.dp),
         )
     }
 }
 
 @Composable
-fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
+fun PostCardHistory(
+    post: Post,
+    navigateToArticle: (String) -> Unit,
+) {
     var openDialog by remember { mutableStateOf(false) }
 
     Row(
         Modifier
-            .clickable(onClick = { navigateToArticle(post.id) })
+            .clickable(onClick = { navigateToArticle(post.id) }),
     ) {
         PostImage(
             post = post,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
         Column(
             Modifier
                 .weight(1f)
-                .padding(vertical = 12.dp)
+                .padding(vertical = 12.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.home_post_based_on_history),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
             )
             PostTitle(post = post)
             AuthorAndReadTime(
                 post = post,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
             )
         }
         IconButton(onClick = { openDialog = true }) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
-                contentDescription = stringResource(R.string.cd_more_actions)
+                contentDescription = stringResource(R.string.cd_more_actions),
             )
         }
     }
@@ -177,13 +193,13 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
             title = {
                 Text(
                     text = stringResource(id = R.string.fewer_stories),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
             },
             text = {
                 Text(
                     text = stringResource(id = R.string.fewer_stories_content),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             },
             confirmButton = {
@@ -191,11 +207,12 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                     text = stringResource(id = R.string.agree),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .clickable { openDialog = false }
+                    modifier =
+                        Modifier
+                            .padding(15.dp)
+                            .clickable { openDialog = false },
                 )
-            }
+            },
         )
     }
 }

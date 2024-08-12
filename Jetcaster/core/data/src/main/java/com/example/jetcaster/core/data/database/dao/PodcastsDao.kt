@@ -44,7 +44,7 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         LEFT JOIN podcast_followed_entries AS followed_entries ON followed_entries.podcast_uri = podcasts.uri
         WHERE podcasts.uri = :podcastUri
         ORDER BY datetime(last_episode_date) DESC
-        """
+        """,
     )
     abstract fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo>
 
@@ -61,11 +61,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         LEFT JOIN podcast_followed_entries AS followed_entries ON followed_entries.podcast_uri = episodes.podcast_uri
         ORDER BY datetime(last_episode_date) DESC
         LIMIT :limit
-        """
+        """,
     )
-    abstract fun podcastsSortedByLastEpisode(
-        limit: Int
-    ): Flow<List<PodcastWithExtraInfo>>
+    abstract fun podcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>>
 
     @Transaction
     @Query(
@@ -82,11 +80,11 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         LEFT JOIN podcast_followed_entries AS followed_entries ON followed_entries.podcast_uri = inner_query.podcast_uri
         ORDER BY datetime(last_episode_date) DESC
         LIMIT :limit
-        """
+        """,
     )
     abstract fun podcastsInCategorySortedByLastEpisode(
         categoryId: Long,
-        limit: Int
+        limit: Int,
     ): Flow<List<PodcastWithExtraInfo>>
 
     @Transaction
@@ -100,11 +98,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         INNER JOIN podcast_followed_entries AS followed_entries ON followed_entries.podcast_uri = episodes.podcast_uri
         ORDER BY datetime(last_episode_date) DESC
         LIMIT :limit
-        """
+        """,
     )
-    abstract fun followedPodcastsSortedByLastEpisode(
-        limit: Int
-    ): Flow<List<PodcastWithExtraInfo>>
+    abstract fun followedPodcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>>
 
     @Transaction
     @Query(
@@ -118,9 +114,12 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         WHERE podcasts.title LIKE '%' || :keyword || '%' 
         ORDER BY datetime(last_episode_date) DESC
         LIMIT :limit
-        """
+        """,
     )
-    abstract fun searchPodcastByTitle(keyword: String, limit: Int): Flow<List<PodcastWithExtraInfo>>
+    abstract fun searchPodcastByTitle(
+        keyword: String,
+        limit: Int,
+    ): Flow<List<PodcastWithExtraInfo>>
 
     @Transaction
     @Query(
@@ -138,12 +137,12 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         WHERE podcasts.title LIKE '%' || :keyword || '%' 
         ORDER BY datetime(last_episode_date) DESC
         LIMIT :limit
-        """
+        """,
     )
     abstract fun searchPodcastByTitleAndCategory(
         keyword: String,
         categoryIdList: List<Long>,
-        limit: Int
+        limit: Int,
     ): Flow<List<PodcastWithExtraInfo>>
 
     @Query("SELECT COUNT(*) FROM podcasts")

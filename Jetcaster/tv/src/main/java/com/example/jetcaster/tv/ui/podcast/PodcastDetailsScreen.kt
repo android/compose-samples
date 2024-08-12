@@ -85,19 +85,20 @@ fun PodcastDetailsScreen(
     when (val s = uiState) {
         PodcastScreenUiState.Loading -> Loading(modifier = modifier)
         PodcastScreenUiState.Error -> ErrorState(backToHome = backToHomeScreen, modifier = modifier)
-        is PodcastScreenUiState.Ready -> PodcastDetailsWithBackground(
-            podcastInfo = s.podcastInfo,
-            episodeList = s.episodeList,
-            isSubscribed = s.isSubscribed,
-            subscribe = podcastDetailsScreenViewModel::subscribe,
-            unsubscribe = podcastDetailsScreenViewModel::unsubscribe,
-            playEpisode = {
-                podcastDetailsScreenViewModel.play(it)
-                playEpisode(it)
-            },
-            enqueue = podcastDetailsScreenViewModel::enqueue,
-            showEpisodeDetails = showEpisodeDetails,
-        )
+        is PodcastScreenUiState.Ready ->
+            PodcastDetailsWithBackground(
+                podcastInfo = s.podcastInfo,
+                episodeList = s.episodeList,
+                isSubscribed = s.isSubscribed,
+                subscribe = podcastDetailsScreenViewModel::subscribe,
+                unsubscribe = podcastDetailsScreenViewModel::unsubscribe,
+                playEpisode = {
+                    podcastDetailsScreenViewModel.play(it)
+                    playEpisode(it)
+                },
+                enqueue = podcastDetailsScreenViewModel::enqueue,
+                showEpisodeDetails = showEpisodeDetails,
+            )
     }
 }
 
@@ -112,9 +113,8 @@ private fun PodcastDetailsWithBackground(
     showEpisodeDetails: (PlayerEpisode) -> Unit,
     enqueue: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
-
     BackgroundContainer(podcastInfo = podcastInfo, modifier = modifier) {
         PodcastDetails(
             podcastInfo = podcastInfo,
@@ -126,8 +126,9 @@ private fun PodcastDetailsWithBackground(
             focusRequester = focusRequester,
             showEpisodeDetails = showEpisodeDetails,
             enqueue = enqueue,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         )
     }
 }
@@ -144,24 +145,26 @@ private fun PodcastDetails(
     showEpisodeDetails: (PlayerEpisode) -> Unit,
     enqueue: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     TwoColumn(
         modifier = modifier,
         horizontalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
+            Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
         first = {
             PodcastInfo(
                 podcastInfo = podcastInfo,
                 isSubscribed = isSubscribed,
                 subscribe = subscribe,
                 unsubscribe = unsubscribe,
-                modifier = Modifier
-                    .weight(0.3f)
-                    .padding(
-                        JetcasterAppDefaults.overScanMargin.podcast.copy(end = 0.dp)
-                            .intoPaddingValues()
-                    ),
+                modifier =
+                    Modifier
+                        .weight(0.3f)
+                        .padding(
+                            JetcasterAppDefaults.overScanMargin.podcast
+                                .copy(end = 0.dp)
+                                .intoPaddingValues(),
+                        ),
             )
         },
         second = {
@@ -170,12 +173,13 @@ private fun PodcastDetails(
                 playEpisode = { playEpisode(it) },
                 showDetails = showEpisodeDetails,
                 enqueue = enqueue,
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .focusRestorer()
-                    .weight(0.7f)
+                modifier =
+                    Modifier
+                        .focusRequester(focusRequester)
+                        .focusRestorer()
+                        .weight(0.7f),
             )
-        }
+        },
     )
 
     LaunchedEffect(Unit) {
@@ -197,7 +201,7 @@ private fun PodcastInfo(
 
         Text(
             text = podcastInfo.author,
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall,
         )
         Text(
             text = podcastInfo.title,
@@ -207,15 +211,16 @@ private fun PodcastInfo(
             text = podcastInfo.description,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
         ToggleSubscriptionButton(
             podcastInfo,
             isSubscribed,
             subscribe,
             unsubscribe,
-            modifier = Modifier
-                .padding(top = JetcasterAppDefaults.gap.podcastRow)
+            modifier =
+                Modifier
+                    .padding(top = JetcasterAppDefaults.gap.podcastRow),
         )
     }
 }
@@ -226,29 +231,32 @@ private fun ToggleSubscriptionButton(
     isSubscribed: Boolean,
     subscribe: (PodcastInfo, Boolean) -> Unit,
     unsubscribe: (PodcastInfo, Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val icon = if (isSubscribed) {
-        Icons.Default.Remove
-    } else {
-        Icons.Default.Add
-    }
-    val label = if (isSubscribed) {
-        stringResource(R.string.label_unsubscribe)
-    } else {
-        stringResource(R.string.label_subscribe)
-    }
-    val action = if (isSubscribed) {
-        unsubscribe
-    } else {
-        subscribe
-    }
+    val icon =
+        if (isSubscribed) {
+            Icons.Default.Remove
+        } else {
+            Icons.Default.Add
+        }
+    val label =
+        if (isSubscribed) {
+            stringResource(R.string.label_unsubscribe)
+        } else {
+            stringResource(R.string.label_subscribe)
+        }
+    val action =
+        if (isSubscribed) {
+            unsubscribe
+        } else {
+            subscribe
+        }
     ButtonWithIcon(
         label = label,
         icon = icon,
         onClick = { action(podcastInfo, isSubscribed) },
         scale = ButtonDefaults.scale(scale = 1f),
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -258,12 +266,12 @@ private fun PodcastEpisodeList(
     playEpisode: (PlayerEpisode) -> Unit,
     showDetails: (PlayerEpisode) -> Unit,
     enqueue: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TvLazyColumn(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         modifier = modifier,
-        contentPadding = JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues()
+        contentPadding = JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues(),
     ) {
         items(episodeList) {
             EpisodeListItem(
@@ -291,37 +299,40 @@ private fun EpisodeListItem(
     }
     val shape = RoundedCornerShape(cornerRadius)
 
-    val backgroundColor = if (hasFocus) {
-        MaterialTheme.colorScheme.surface
-    } else {
-        Color.Transparent
-    }
+    val backgroundColor =
+        if (hasFocus) {
+            MaterialTheme.colorScheme.surface
+        } else {
+            Color.Transparent
+        }
 
-    val borderColor = if (hasFocus) {
-        MaterialTheme.colorScheme.border
-    } else {
-        Color.Transparent
-    }
-    val elevation = if (hasFocus) {
-        10.dp
-    } else {
-        0.dp
-    }
+    val borderColor =
+        if (hasFocus) {
+            MaterialTheme.colorScheme.border
+        } else {
+            Color.Transparent
+        }
+    val elevation =
+        if (hasFocus) {
+            10.dp
+        } else {
+            0.dp
+        }
 
     EpisodeListItemContentLayer(
         playerEpisode = playerEpisode,
         onEpisodeSelected = onEpisodeSelected,
         onInfoClicked = onInfoClicked,
         onEnqueueClicked = onEnqueueClicked,
-        modifier = modifier
-            .clip(shape)
-            .onFocusChanged {
-                hasFocus = it.hasFocus
-            }
-            .border(borderWidth, borderColor, shape)
-            .background(backgroundColor)
-            .shadow(elevation, shape)
-            .padding(start = 12.dp, top = 12.dp, bottom = 12.dp, end = 16.dp)
+        modifier =
+            modifier
+                .clip(shape)
+                .onFocusChanged {
+                    hasFocus = it.hasFocus
+                }.border(borderWidth, borderColor, shape)
+                .background(backgroundColor)
+                .shadow(elevation, shape)
+                .padding(start = 12.dp, top = 12.dp, bottom = 12.dp, end = 16.dp),
     )
 }
 
@@ -337,9 +348,8 @@ private fun EpisodeListItemContentLayer(
     val playButton = remember { FocusRequester() }
     Box(
         contentAlignment = Alignment.CenterStart,
-        modifier = modifier
+        modifier = modifier,
     ) {
-
         Column(
             verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.tiny),
         ) {
@@ -347,12 +357,13 @@ private fun EpisodeListItemContentLayer(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.default),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(top = JetcasterAppDefaults.gap.paragraph)
+                modifier =
+                    Modifier
+                        .padding(top = JetcasterAppDefaults.gap.paragraph),
             ) {
                 PlayButton(
                     onClick = onEpisodeSelected,
-                    modifier = Modifier.focusRequester(playButton)
+                    modifier = Modifier.focusRequester(playButton),
                 )
                 if (duration != null) {
                     EpisodeDataAndDuration(playerEpisode.published, duration)
@@ -366,10 +377,13 @@ private fun EpisodeListItemContentLayer(
 }
 
 @Composable
-private fun EpisodeTitle(playerEpisode: PlayerEpisode, modifier: Modifier = Modifier) {
+private fun EpisodeTitle(
+    playerEpisode: PlayerEpisode,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = playerEpisode.title,
         style = MaterialTheme.typography.titleLarge,
-        modifier = modifier
+        modifier = modifier,
     )
 }

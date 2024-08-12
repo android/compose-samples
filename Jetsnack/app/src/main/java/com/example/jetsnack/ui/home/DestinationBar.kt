@@ -60,12 +60,13 @@ fun DestinationBar(modifier: Modifier = Modifier) {
     with(sharedElementScope) {
         with(navAnimatedScope) {
             Column(
-                modifier = modifier
-                    .renderInSharedTransitionScopeOverlay()
-                    .animateEnterExit(
-                        enter = slideInVertically(spatialExpressiveSpring()) { -it * 2 },
-                        exit = slideOutVertically(spatialExpressiveSpring()) { -it * 2 }
-                    )
+                modifier =
+                    modifier
+                        .renderInSharedTransitionScopeOverlay()
+                        .animateEnterExit(
+                            enter = slideInVertically(spatialExpressiveSpring()) { -it * 2 },
+                            exit = slideOutVertically(spatialExpressiveSpring()) { -it * 2 },
+                        ),
             ) {
                 TopAppBar(
                     windowInsets = WindowInsets(0, 0, 0, 0),
@@ -78,28 +79,31 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically)
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .align(Alignment.CenterVertically),
                             )
                             IconButton(
                                 onClick = { /* todo */ },
-                                modifier = Modifier.align(Alignment.CenterVertically)
+                                modifier = Modifier.align(Alignment.CenterVertically),
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.ExpandMore,
                                     tint = JetsnackTheme.colors.brand,
                                     contentDescription =
-                                    stringResource(R.string.label_select_delivery)
+                                        stringResource(R.string.label_select_delivery),
                                 )
                             }
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors().copy(
-                        containerColor = JetsnackTheme.colors.uiBackground
-                            .copy(alpha = AlphaNearOpaque),
-                        titleContentColor = JetsnackTheme.colors.textSecondary
-                    ),
+                    colors =
+                        TopAppBarDefaults.topAppBarColors().copy(
+                            containerColor =
+                                JetsnackTheme.colors.uiBackground
+                                    .copy(alpha = AlphaNearOpaque),
+                            titleContentColor = JetsnackTheme.colors.textSecondary,
+                        ),
                 )
                 JetsnackDivider()
             }

@@ -17,8 +17,6 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.player.model.PlayerEpisode
-import java.time.Duration
-import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -31,11 +29,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.time.Duration
+import kotlin.reflect.KProperty
 
 class MockEpisodePlayer(
-    private val mainDispatcher: CoroutineDispatcher
+    private val mainDispatcher: CoroutineDispatcher,
 ) : EpisodePlayer {
-
     private val _playerState = MutableStateFlow(EpisodePlayerState())
     private val _currentEpisode = MutableStateFlow<PlayerEpisode?>(null)
     private val queue = MutableStateFlow<List<PlayerEpisode>>(emptyList())
@@ -54,14 +53,14 @@ class MockEpisodePlayer(
                 queue,
                 isPlaying,
                 timeElapsed,
-                _playerSpeed
+                _playerSpeed,
             ) { currentEpisode, queue, isPlaying, timeElapsed, playerSpeed ->
                 EpisodePlayerState(
                     currentEpisode = currentEpisode,
                     queue = queue,
                     isPlaying = isPlaying,
                     timeElapsed = timeElapsed,
-                    playbackSpeed = playerSpeed
+                    playbackSpeed = playerSpeed,
                 )
             }.catch {
                 // TODO handle error state
@@ -77,6 +76,7 @@ class MockEpisodePlayer(
     override val playerState: StateFlow<EpisodePlayerState> = _playerState.asStateFlow()
 
     override var currentEpisode: PlayerEpisode? by _currentEpisode
+
     override fun addToQueue(episode: PlayerEpisode) {
         queue.update {
             it + episode
@@ -96,21 +96,22 @@ class MockEpisodePlayer(
         val episode = _currentEpisode.value ?: return
 
         isPlaying.value = true
-        timerJob = coroutineScope.launch {
-            // Increment timer by a second
-            while (isActive && timeElapsed.value < episode.duration) {
-                delay(playerSpeed.toMillis())
-                timeElapsed.update { it + playerSpeed }
-            }
+        timerJob =
+            coroutineScope.launch {
+                // Increment timer by a second
+                while (isActive && timeElapsed.value < episode.duration) {
+                    delay(playerSpeed.toMillis())
+                    timeElapsed.update { it + playerSpeed }
+                }
 
-            // Once done playing, see if
-            isPlaying.value = false
-            timeElapsed.value = Duration.ZERO
+                // Once done playing, see if
+                isPlaying.value = false
+                timeElapsed.value = Duration.ZERO
 
-            if (hasNext()) {
-                next()
+                if (hasNext()) {
+                    next()
+                }
             }
-        }
     }
 
     override fun play(playerEpisode: PlayerEpisode) {
@@ -212,19 +213,19 @@ class MockEpisodePlayer(
         timerJob = null
     }
 
-    private fun hasNext(): Boolean {
-        return queue.value.isNotEmpty()
-    }
+    private fun hasNext(): Boolean = queue.value.isNotEmpty()
 }
 
 // Used to enable property delegation
 private operator fun <T> MutableStateFlow<T>.setValue(
     thisObj: Any?,
     property: KProperty<*>,
-    value: T
+    value: T,
 ) {
     this.value = value
 }
 
-private operator fun <T> MutableStateFlow<T>.getValue(thisObj: Any?, property: KProperty<*>): T =
-    this.value
+private operator fun <T> MutableStateFlow<T>.getValue(
+    thisObj: Any?,
+    property: KProperty<*>,
+): T = this.value

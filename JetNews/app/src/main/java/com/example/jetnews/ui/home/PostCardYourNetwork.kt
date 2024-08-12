@@ -54,22 +54,24 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 fun PostCardPopular(
     post: Post,
     navigateToArticle: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         onClick = { navigateToArticle(post.id) },
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-            .width(280.dp)
+        modifier =
+            modifier
+                .width(280.dp),
     ) {
         Column {
             Image(
                 painter = painterResource(post.imageId),
                 contentDescription = null, // decorative
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .height(100.dp)
+                        .fillMaxWidth(),
             )
 
             Column(modifier = Modifier.padding(16.dp)) {
@@ -77,25 +79,27 @@ fun PostCardPopular(
                     text = post.title,
                     style = MaterialTheme.typography.headlineSmall,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = post.metadata.author.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
 
                 Text(
-                    text = stringResource(
-                        id = R.string.home_post_min_read,
-                        formatArgs = arrayOf(
-                            post.metadata.date,
-                            post.metadata.readTimeMinutes
-                        )
-                    ),
-                    style = MaterialTheme.typography.bodySmall
+                    text =
+                        stringResource(
+                            id = R.string.home_post_min_read,
+                            formatArgs =
+                                arrayOf(
+                                    post.metadata.date,
+                                    post.metadata.readTimeMinutes,
+                                ),
+                        ),
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }
@@ -106,7 +110,7 @@ fun PostCardPopular(
 @Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPostCardPopular(
-    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post,
 ) {
     JetnewsTheme {
         Surface {
@@ -118,7 +122,7 @@ fun PreviewPostCardPopular(
 @Preview("Regular colors, long text")
 @Composable
 fun PreviewPostCardPopularLongText(
-    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post,
 ) {
     val loremIpsum =
         """
@@ -134,12 +138,13 @@ fun PreviewPostCardPopularLongText(
             PostCardPopular(
                 post.copy(
                     title = "Title$loremIpsum",
-                    metadata = post.metadata.copy(
-                        author = PostAuthor("Author: $loremIpsum"),
-                        readTimeMinutes = Int.MAX_VALUE
-                    )
+                    metadata =
+                        post.metadata.copy(
+                            author = PostAuthor("Author: $loremIpsum"),
+                            readTimeMinutes = Int.MAX_VALUE,
+                        ),
                 ),
-                {}
+                {},
             )
         }
     }
@@ -164,7 +169,12 @@ fun PreviewPostCardPopularLongText(
  * be the right place to instantiate dummy instances.
  */
 class PostPreviewParameterProvider : PreviewParameterProvider<Post> {
-    override val values = sequenceOf(
-        post1, post2, post3, post4, post5
-    )
+    override val values =
+        sequenceOf(
+            post1,
+            post2,
+            post3,
+            post4,
+            post5,
+        )
 }

@@ -35,7 +35,6 @@ import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -47,151 +46,164 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val podcastsRepository: PodcastsRepository,
-    private val podcastStore: PodcastStore,
-    private val episodeStore: EpisodeStore,
-    private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase,
-    private val filterableCategoriesUseCase: FilterableCategoriesUseCase,
-    private val episodePlayer: EpisodePlayer,
-) : ViewModel() {
-    // Holds our currently selected podcast in the library
-    private val selectedLibraryPodcast = MutableStateFlow<PodcastInfo?>(null)
-    // Holds our currently selected home category
-    private val selectedHomeCategory = MutableStateFlow(HomeCategory.Discover)
-    // Holds the currently available home categories
-    private val homeCategories = MutableStateFlow(HomeCategory.entries)
-    // Holds our currently selected category
-    private val _selectedCategory = MutableStateFlow<CategoryInfo?>(null)
-    // Holds our view state which the UI collects via [state]
-    private val _state = MutableStateFlow<HomeScreenUiState>(HomeScreenUiState.Loading)
-    // Holds the view state if the UI is refreshing for new data
-    private val refreshing = MutableStateFlow(false)
+class HomeViewModel
+    @Inject
+    constructor(
+        private val podcastsRepository: PodcastsRepository,
+        private val podcastStore: PodcastStore,
+        private val episodeStore: EpisodeStore,
+        private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase,
+        private val filterableCategoriesUseCase: FilterableCategoriesUseCase,
+        private val episodePlayer: EpisodePlayer,
+    ) : ViewModel() {
+        // Holds our currently selected podcast in the library
+        private val selectedLibraryPodcast = MutableStateFlow<PodcastInfo?>(null)
 
-    private val subscribedPodcasts = podcastStore.followedPodcastsSortedByLastEpisode(limit = 10)
-        .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
+        // Holds our currently selected home category
+        private val selectedHomeCategory = MutableStateFlow(HomeCategory.Discover)
 
-    val state: StateFlow<HomeScreenUiState>
-        get() = _state
+        // Holds the currently available home categories
+        private val homeCategories = MutableStateFlow(HomeCategory.entries)
 
-    init {
-        viewModelScope.launch {
-            // Combines the latest value from each of the flows, allowing us to generate a
-            // view state instance which only contains the latest values.
-            com.example.jetcaster.core.util.combine(
-                homeCategories,
-                selectedHomeCategory,
-                subscribedPodcasts,
-                refreshing,
-                _selectedCategory.flatMapLatest { selectedCategory ->
-                    filterableCategoriesUseCase(selectedCategory)
-                },
-                _selectedCategory.flatMapLatest {
-                    podcastCategoryFilterUseCase(it)
-                },
-                subscribedPodcasts.flatMapLatest { podcasts ->
-                    episodeStore.episodesInPodcasts(
-                        podcastUris = podcasts.map { it.podcast.uri },
-                        limit = 20
-                    )
+        // Holds our currently selected category
+        private val selectedCategory = MutableStateFlow<CategoryInfo?>(null)
+
+        // Holds our view state which the UI collects via [state]
+        private val _state = MutableStateFlow<HomeScreenUiState>(HomeScreenUiState.Loading)
+
+        // Holds the view state if the UI is refreshing for new data
+        private val refreshing = MutableStateFlow(false)
+
+        private val subscribedPodcasts =
+            podcastStore
+                .followedPodcastsSortedByLastEpisode(limit = 10)
+                .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
+
+        val state: StateFlow<HomeScreenUiState>
+            get() = _state
+
+        init {
+            viewModelScope.launch {
+                // Combines the latest value from each of the flows, allowing us to generate a
+                // view state instance which only contains the latest values.
+                com.example.jetcaster.core.util
+                    .combine(
+                        homeCategories,
+                        selectedHomeCategory,
+                        subscribedPodcasts,
+                        refreshing,
+                        selectedCategory.flatMapLatest { selectedCategory ->
+                            filterableCategoriesUseCase(selectedCategory)
+                        },
+                        selectedCategory.flatMapLatest {
+                            podcastCategoryFilterUseCase(it)
+                        },
+                        subscribedPodcasts.flatMapLatest { podcasts ->
+                            episodeStore.episodesInPodcasts(
+                                podcastUris = podcasts.map { it.podcast.uri },
+                                limit = 20,
+                            )
+                        },
+                    ) {
+                            homeCategories,
+                            homeCategory,
+                            podcasts,
+                            refreshing,
+                            filterableCategories,
+                            podcastCategoryFilterResult,
+                            libraryEpisodes,
+                        ->
+
+                        if (refreshing) {
+                            Log.d("Jetcaster", "refreshing: $refreshing, podcasts $podcasts")
+                            return@combine HomeScreenUiState.Loading
+                        }
+
+                        selectedCategory.value = filterableCategories.selectedCategory
+
+                        // Override selected home category to show 'DISCOVER' if there are no
+                        // featured podcasts
+                        selectedHomeCategory.value =
+                            if (podcasts.isEmpty()) HomeCategory.Discover else homeCategory
+
+                        HomeScreenUiState.Ready(
+                            homeCategories = homeCategories,
+                            selectedHomeCategory = homeCategory,
+                            featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
+                            filterableCategoriesModel = filterableCategories,
+                            podcastCategoryFilterResult = podcastCategoryFilterResult,
+                            library = libraryEpisodes.asLibrary(),
+                        )
+                    }.catch { throwable ->
+                        _state.value = HomeScreenUiState.Error(throwable.message)
+                    }.collect {
+                        _state.value = it
+                    }
+            }
+
+            refresh(force = false)
+        }
+
+        fun refresh(force: Boolean = true) {
+            viewModelScope.launch {
+                runCatching {
+                    refreshing.value = true
+                    podcastsRepository.updatePodcasts(force)
                 }
-            ) { homeCategories,
-                homeCategory,
-                podcasts,
-                refreshing,
-                filterableCategories,
-                podcastCategoryFilterResult,
-                libraryEpisodes ->
+                // TODO: look at result of runCatching and show any errors
 
-                if (refreshing) {
-                    Log.d("Jetcaster", "refreshing: $refreshing, podcasts $podcasts")
-                    return@combine HomeScreenUiState.Loading
-                }
-
-                _selectedCategory.value = filterableCategories.selectedCategory
-
-                // Override selected home category to show 'DISCOVER' if there are no
-                // featured podcasts
-                selectedHomeCategory.value =
-                    if (podcasts.isEmpty()) HomeCategory.Discover else homeCategory
-
-                HomeScreenUiState.Ready(
-                    homeCategories = homeCategories,
-                    selectedHomeCategory = homeCategory,
-                    featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
-                    filterableCategoriesModel = filterableCategories,
-                    podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    library = libraryEpisodes.asLibrary()
-                )
-            }.catch { throwable ->
-                _state.value = HomeScreenUiState.Error(throwable.message)
-            }.collect {
-                _state.value = it
+                refreshing.value = false
             }
         }
 
-        refresh(force = false)
-    }
+        fun onCategorySelected(category: CategoryInfo) {
+            selectedCategory.value = category
+        }
 
-    fun refresh(force: Boolean = true) {
-        viewModelScope.launch {
-            runCatching {
-                refreshing.value = true
-                podcastsRepository.updatePodcasts(force)
+        fun onHomeCategorySelected(category: HomeCategory) {
+            selectedHomeCategory.value = category
+        }
+
+        fun onPodcastUnfollowed(podcast: PodcastInfo) {
+            viewModelScope.launch {
+                podcastStore.unfollowPodcast(podcast.uri)
             }
-            // TODO: look at result of runCatching and show any errors
+        }
 
-            refreshing.value = false
+        fun onTogglePodcastFollowed(podcast: PodcastInfo) {
+            viewModelScope.launch {
+                podcastStore.togglePodcastFollowed(podcast.uri)
+            }
+        }
+
+        fun onLibraryPodcastSelected(podcast: PodcastInfo?) {
+            selectedLibraryPodcast.value = podcast
+        }
+
+        fun onQueueEpisode(episode: PlayerEpisode) {
+            episodePlayer.addToQueue(episode)
         }
     }
-
-    fun onCategorySelected(category: CategoryInfo) {
-        _selectedCategory.value = category
-    }
-
-    fun onHomeCategorySelected(category: HomeCategory) {
-        selectedHomeCategory.value = category
-    }
-
-    fun onPodcastUnfollowed(podcast: PodcastInfo) {
-        viewModelScope.launch {
-            podcastStore.unfollowPodcast(podcast.uri)
-        }
-    }
-
-    fun onTogglePodcastFollowed(podcast: PodcastInfo) {
-        viewModelScope.launch {
-            podcastStore.togglePodcastFollowed(podcast.uri)
-        }
-    }
-
-    fun onLibraryPodcastSelected(podcast: PodcastInfo?) {
-        selectedLibraryPodcast.value = podcast
-    }
-
-    fun onQueueEpisode(episode: PlayerEpisode) {
-        episodePlayer.addToQueue(episode)
-    }
-}
 
 private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
     LibraryInfo(
-        episodes = this.map { it.asPodcastToEpisodeInfo() }
+        episodes = this.map { it.asPodcastToEpisodeInfo() },
     )
 
 enum class HomeCategory {
-    Library, Discover
+    Library,
+    Discover,
 }
 
 sealed interface HomeScreenUiState {
     data object Loading : HomeScreenUiState
 
     data class Error(
-        val errorMessage: String? = null
+        val errorMessage: String? = null,
     ) : HomeScreenUiState
 
     data class Ready(

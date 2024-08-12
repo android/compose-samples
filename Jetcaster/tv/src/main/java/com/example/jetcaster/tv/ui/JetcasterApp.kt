@@ -64,7 +64,7 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
 private fun GlobalNavigationContainer(
     jetcasterAppState: JetcasterAppState,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val (discover, library) = remember { FocusRequester.createRefs() }
     val currentRoute
@@ -74,18 +74,18 @@ private fun GlobalNavigationContainer(
         drawerContent = {
             val isClosed = it == DrawerValue.Closed
             Column(
-                modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused) {
-                            when (currentRoute) {
-                                Screen.Discover.route -> discover
-                                Screen.Library.route -> library
-                                else -> FocusRequester.Default
-                            }.requestFocus()
-                        }
-                    }
-                    .focusable()
+                modifier =
+                    Modifier
+                        .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused) {
+                                when (currentRoute) {
+                                    Screen.Discover.route -> discover
+                                    Screen.Library.route -> library
+                                    else -> FocusRequester.Default
+                                }.requestFocus()
+                            }
+                        }.focusable(),
             ) {
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Profile.route,
@@ -101,7 +101,7 @@ private fun GlobalNavigationContainer(
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Search.route,
                     onClick = jetcasterAppState::navigateToSearch,
-                    leadingContent = { Icon(Icons.Default.Search, contentDescription = null) }
+                    leadingContent = { Icon(Icons.Default.Search, contentDescription = null) },
                 ) {
                     Text(text = "Search")
                 }
@@ -109,7 +109,7 @@ private fun GlobalNavigationContainer(
                     selected = isClosed && currentRoute == Screen.Discover.route,
                     onClick = jetcasterAppState::navigateToDiscover,
                     leadingContent = { Icon(Icons.Default.Home, contentDescription = null) },
-                    modifier = Modifier.focusRequester(discover)
+                    modifier = Modifier.focusRequester(discover),
                 ) {
                     Text(text = "Discover")
                 }
@@ -119,10 +119,10 @@ private fun GlobalNavigationContainer(
                     leadingContent = {
                         Icon(
                             Icons.Default.VideoLibrary,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     },
-                    modifier = Modifier.focusRequester(library)
+                    modifier = Modifier.focusRequester(library),
                 ) {
                     Text(text = "Library")
                 }
@@ -130,7 +130,7 @@ private fun GlobalNavigationContainer(
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Settings.route,
                     onClick = jetcasterAppState::navigateToSettings,
-                    leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
+                    leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) },
                 ) {
                     Text(text = "Settings")
                 }
@@ -153,7 +153,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     playEpisode = {
                         jetcasterAppState.playEpisode()
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
         }
@@ -168,7 +168,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     playEpisode = {
                         jetcasterAppState.playEpisode()
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
         }
@@ -178,9 +178,10 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                 onPodcastSelected = {
                     jetcasterAppState.showPodcastDetails(it.uri)
                 },
-                modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
-                    .fillMaxSize()
+                modifier =
+                    Modifier
+                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
+                        .fillMaxSize(),
             )
         }
 
@@ -191,9 +192,10 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
                     jetcasterAppState.playEpisode()
                 },
                 showEpisodeDetails = { jetcasterAppState.showEpisodeDetails(it.uri) },
-                modifier = Modifier
-                    .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(JetcasterAppDefaults.overScanMargin.podcast.intoPaddingValues())
+                        .fillMaxSize(),
             )
         }
 
@@ -216,17 +218,19 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
 
         composable(Screen.Profile.route) {
             ProfileScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues()),
             )
         }
 
         composable(Screen.Settings.route) {
             SettingsScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues()),
             )
         }
     }

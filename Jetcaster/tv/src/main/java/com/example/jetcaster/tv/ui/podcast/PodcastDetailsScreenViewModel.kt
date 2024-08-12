@@ -29,7 +29,6 @@ import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -38,89 +37,102 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class PodcastDetailsScreenViewModel @Inject constructor(
-    handle: SavedStateHandle,
-    private val podcastStore: PodcastStore,
-    episodeStore: EpisodeStore,
-    private val episodePlayer: EpisodePlayer,
-) : ViewModel() {
+class PodcastDetailsScreenViewModel
+    @Inject
+    constructor(
+        handle: SavedStateHandle,
+        private val podcastStore: PodcastStore,
+        episodeStore: EpisodeStore,
+        private val episodePlayer: EpisodePlayer,
+    ) : ViewModel() {
+        private val podcastUri = handle.get<String>(Screen.Podcast.PARAMETER_NAME)
 
-    private val podcastUri = handle.get<String>(Screen.Podcast.PARAMETER_NAME)
+        @OptIn(ExperimentalCoroutinesApi::class)
+        private val podcastFlow =
+            handle.getStateFlow<String?>(Screen.Podcast.PARAMETER_NAME, null).flatMapLatest {
+                if (it != null) {
+                    podcastStore.podcastWithUri(it)
+                } else {
+                    flowOf(null)
+                }
+            }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val podcastFlow =
-        handle.getStateFlow<String?>(Screen.Podcast.PARAMETER_NAME, null).flatMapLatest {
-            if (it != null) {
-                podcastStore.podcastWithUri(it)
-            } else {
-                flowOf(null)
+        @OptIn(ExperimentalCoroutinesApi::class)
+        private val episodeListFlow =
+            podcastFlow
+                .flatMapLatest {
+                    if (it != null) {
+                        episodeStore.episodesInPodcast(it.uri)
+                    } else {
+                        flowOf(emptyList())
+                    }
+                }.map { list ->
+                    EpisodeList(list.map { it.toPlayerEpisode() })
+                }
+
+        private val subscribedPodcastListFlow =
+            podcastStore.followedPodcastsSortedByLastEpisode()
+
+        val uiStateFlow =
+            combine(
+                podcastFlow,
+                episodeListFlow,
+                subscribedPodcastListFlow,
+            ) { podcast, episodeList, subscribedPodcastList ->
+                if (podcast != null) {
+                    val isSubscribed = subscribedPodcastList.any { it.podcast.uri == podcastUri }
+                    PodcastScreenUiState.Ready(podcast.asExternalModel(), episodeList, isSubscribed)
+                } else {
+                    PodcastScreenUiState.Error
+                }
+            }.stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                PodcastScreenUiState.Loading,
+            )
+
+        fun subscribe(
+            podcastInfo: PodcastInfo,
+            isSubscribed: Boolean,
+        ) {
+            if (!isSubscribed) {
+                viewModelScope.launch {
+                    podcastStore.togglePodcastFollowed(podcastInfo.uri)
+                }
             }
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val episodeListFlow = podcastFlow.flatMapLatest {
-        if (it != null) {
-            episodeStore.episodesInPodcast(it.uri)
-        } else {
-            flowOf(emptyList())
-        }
-    }.map { list ->
-        EpisodeList(list.map { it.toPlayerEpisode() })
-    }
-
-    private val subscribedPodcastListFlow =
-        podcastStore.followedPodcastsSortedByLastEpisode()
-
-    val uiStateFlow = combine(
-        podcastFlow,
-        episodeListFlow,
-        subscribedPodcastListFlow
-    ) { podcast, episodeList, subscribedPodcastList ->
-        if (podcast != null) {
-            val isSubscribed = subscribedPodcastList.any { it.podcast.uri == podcastUri }
-            PodcastScreenUiState.Ready(podcast.asExternalModel(), episodeList, isSubscribed)
-        } else {
-            PodcastScreenUiState.Error
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5_000),
-        PodcastScreenUiState.Loading
-    )
-
-    fun subscribe(podcastInfo: PodcastInfo, isSubscribed: Boolean) {
-        if (!isSubscribed) {
-            viewModelScope.launch {
-                podcastStore.togglePodcastFollowed(podcastInfo.uri)
+        fun unsubscribe(
+            podcastInfo: PodcastInfo,
+            isSubscribed: Boolean,
+        ) {
+            if (isSubscribed) {
+                viewModelScope.launch {
+                    podcastStore.togglePodcastFollowed(podcastInfo.uri)
+                }
             }
         }
-    }
 
-    fun unsubscribe(podcastInfo: PodcastInfo, isSubscribed: Boolean) {
-        if (isSubscribed) {
-            viewModelScope.launch {
-                podcastStore.togglePodcastFollowed(podcastInfo.uri)
-            }
+        fun play(playerEpisode: PlayerEpisode) {
+            episodePlayer.play(playerEpisode)
+        }
+
+        fun enqueue(playerEpisode: PlayerEpisode) {
+            episodePlayer.addToQueue(playerEpisode)
         }
     }
-
-    fun play(playerEpisode: PlayerEpisode) {
-        episodePlayer.play(playerEpisode)
-    }
-
-    fun enqueue(playerEpisode: PlayerEpisode) {
-        episodePlayer.addToQueue(playerEpisode)
-    }
-}
 
 sealed interface PodcastScreenUiState {
     data object Loading : PodcastScreenUiState
+
     data object Error : PodcastScreenUiState
+
     data class Ready(
         val podcastInfo: PodcastInfo,
         val episodeList: EpisodeList,
-        val isSubscribed: Boolean
+        val isSubscribed: Boolean,
     ) : PodcastScreenUiState
 }

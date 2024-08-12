@@ -31,7 +31,7 @@ fun JetchatDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     JetchatTheme {
         ModalNavigationDrawer(
@@ -40,11 +40,11 @@ fun JetchatDrawer(
                 ModalDrawerSheet {
                     JetchatDrawerContent(
                         onProfileClicked = onProfileClicked,
-                        onChatClicked = onChatClicked
+                        onChatClicked = onChatClicked,
                     )
                 }
             },
-            content = content
+            content = content,
         )
     }
 }

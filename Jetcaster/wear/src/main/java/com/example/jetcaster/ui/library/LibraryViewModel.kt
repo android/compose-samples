@@ -47,7 +47,6 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -56,88 +55,95 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class LibraryViewModel @Inject constructor(
-    private val podcastsRepository: PodcastsRepository,
-    private val episodeStore: EpisodeStore,
-    private val podcastStore: PodcastStore,
-    private val episodePlayer: EpisodePlayer,
-    private val categoryStore: CategoryStore,
-    private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase
-) : ViewModel() {
+class LibraryViewModel
+    @Inject
+    constructor(
+        private val podcastsRepository: PodcastsRepository,
+        private val episodeStore: EpisodeStore,
+        private val podcastStore: PodcastStore,
+        private val episodePlayer: EpisodePlayer,
+        private val categoryStore: CategoryStore,
+        private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase,
+    ) : ViewModel() {
+        private val defaultCategory = categoryStore.getCategory(CategoryTechnology)
+        private val topPodcastsFlow =
+            defaultCategory.flatMapLatest {
+                podcastCategoryFilterUseCase(it?.asExternalModel())
+            }
 
-    private val defaultCategory = categoryStore.getCategory(CategoryTechnology)
-    private val topPodcastsFlow = defaultCategory.flatMapLatest {
-        podcastCategoryFilterUseCase(it?.asExternalModel())
-    }
+        private val followingPodcastListFlow = podcastStore.followedPodcastsSortedByLastEpisode()
 
-    private val followingPodcastListFlow = podcastStore.followedPodcastsSortedByLastEpisode()
+        private val queue =
+            episodePlayer.playerState.map {
+                it.queue
+            }
 
-    private val queue = episodePlayer.playerState.map {
-        it.queue
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val latestEpisodeListFlow = podcastStore
-        .followedPodcastsSortedByLastEpisode()
-        .flatMapLatest { podcastList ->
-            if (podcastList.isNotEmpty()) {
-                combine(podcastList.map { episodeStore.episodesInPodcast(it.podcast.uri, 1) }) {
-                    it.map { episodes ->
-                        episodes.first()
+        @OptIn(ExperimentalCoroutinesApi::class)
+        private val latestEpisodeListFlow =
+            podcastStore
+                .followedPodcastsSortedByLastEpisode()
+                .flatMapLatest { podcastList ->
+                    if (podcastList.isNotEmpty()) {
+                        combine(podcastList.map { episodeStore.episodesInPodcast(it.podcast.uri, 1) }) {
+                            it.map { episodes ->
+                                episodes.first()
+                            }
+                        }
+                    } else {
+                        flowOf(emptyList())
                     }
+                }.map { list ->
+                    (list.map { it.toPlayerEpisode() })
                 }
-            } else {
-                flowOf(emptyList())
+
+        val uiState =
+            combine(
+                topPodcastsFlow,
+                followingPodcastListFlow,
+                latestEpisodeListFlow,
+                queue,
+            ) { topPodcasts, podcastList, episodeList, queue ->
+                if (podcastList.isEmpty()) {
+                    LibraryScreenUiState.NoSubscribedPodcast(topPodcasts.topPodcasts)
+                } else {
+                    LibraryScreenUiState.Ready(podcastList, episodeList, queue)
+                }
+            }.stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                LibraryScreenUiState.Loading,
+            )
+
+        init {
+            viewModelScope.launch {
+                podcastsRepository.updatePodcasts(false)
             }
-        }.map { list ->
-            (list.map { it.toPlayerEpisode() })
         }
 
-    val uiState =
-        combine(
-            topPodcastsFlow,
-            followingPodcastListFlow,
-            latestEpisodeListFlow,
-            queue
-        ) { topPodcasts, podcastList, episodeList, queue ->
-            if (podcastList.isEmpty()) {
-                LibraryScreenUiState.NoSubscribedPodcast(topPodcasts.topPodcasts)
-            } else {
-                LibraryScreenUiState.Ready(podcastList, episodeList, queue)
+        fun playEpisode(playerEpisode: PlayerEpisode) {
+            episodePlayer.play(playerEpisode)
+        }
+
+        fun onTogglePodcastFollowed(podcastUri: String) {
+            viewModelScope.launch {
+                podcastStore.togglePodcastFollowed(podcastUri)
             }
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            LibraryScreenUiState.Loading
-        )
-
-    init {
-        viewModelScope.launch {
-            podcastsRepository.updatePodcasts(false)
         }
     }
-
-    fun playEpisode(playerEpisode: PlayerEpisode) {
-        episodePlayer.play(playerEpisode)
-    }
-
-    fun onTogglePodcastFollowed(podcastUri: String) {
-        viewModelScope.launch {
-            podcastStore.togglePodcastFollowed(podcastUri)
-        }
-    }
-}
 
 sealed interface LibraryScreenUiState {
     data object Loading : LibraryScreenUiState
+
     data class NoSubscribedPodcast(
-        val topPodcasts: List<PodcastInfo>
+        val topPodcasts: List<PodcastInfo>,
     ) : LibraryScreenUiState
+
     data class Ready(
         val subscribedPodcastList: List<PodcastWithExtraInfo>,
         val latestEpisodeList: List<PlayerEpisode>,
-        val queue: List<PlayerEpisode>
+        val queue: List<PlayerEpisode>,
     ) : LibraryScreenUiState
 }

@@ -23,12 +23,14 @@ import androidx.wear.compose.material.Typography
 import com.example.jetcaster.designsystem.theme.Montserrat
 
 // Set of Material typography styles to start with
-val Typography = Typography(
-    body1 = TextStyle(
-        fontFamily = Montserrat,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    )
+val Typography =
+    Typography(
+        body1 =
+            TextStyle(
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+            ),
     /* Other default text styles to override
     button = TextStyle(
         fontFamily = FontFamily.Default,
@@ -41,4 +43,4 @@ val Typography = Typography(
         fontSize = 12.sp
     )
      */
-)
+    )

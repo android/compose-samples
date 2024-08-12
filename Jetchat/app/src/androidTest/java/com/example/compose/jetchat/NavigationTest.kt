@@ -36,7 +36,6 @@ import org.junit.Test
  * Checks that the navigation flows in the app are correct.
  */
 class NavigationTest {
-
     @get:Rule
     val composeTestRule = createAndroidComposeRule<NavActivity>()
 
@@ -80,29 +79,30 @@ class NavigationTest {
     }
 
     private fun navigateToProfile(name: String) {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open)
-        ).performClick()
+        composeTestRule
+            .onNodeWithContentDescription(
+                composeTestRule.activity.getString(R.string.navigation_drawer_open),
+            ).performClick()
 
         composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
     }
 
     private fun isInDrawer() = hasAnyAncestor(isDrawer())
 
-    private fun isDrawer() = SemanticsMatcher.expectValue(
-        SemanticsProperties.PaneTitle,
-        composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu)
-    )
+    private fun isDrawer() =
+        SemanticsMatcher.expectValue(
+            SemanticsProperties.PaneTitle,
+            composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu),
+        )
 
     private fun navigateToHome() {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open)
-        ).performClick()
+        composeTestRule
+            .onNodeWithContentDescription(
+                composeTestRule.activity.getString(R.string.navigation_drawer_open),
+            ).performClick()
 
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
     }
 
-    private fun getNavController(): NavController {
-        return composeTestRule.activity.findNavController(R.id.nav_host_fragment)
-    }
+    private fun getNavController(): NavController = composeTestRule.activity.findNavController(R.id.nav_host_fragment)
 }

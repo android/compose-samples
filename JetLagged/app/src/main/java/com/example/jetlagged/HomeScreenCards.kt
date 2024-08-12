@@ -73,15 +73,16 @@ import com.example.jetlagged.ui.theme.SmallHeadingStyle
 fun BasicInformationalCard(
     modifier: Modifier = Modifier,
     borderColor: Color,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val shape = RoundedCornerShape(24.dp)
     Card(
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = modifier
-            .padding(8.dp),
-        border = BorderStroke(2.dp, borderColor)
+        modifier =
+            modifier
+                .padding(8.dp),
+        border = BorderStroke(2.dp, borderColor),
     ) {
         Box {
             content()
@@ -95,42 +96,48 @@ fun TwoLineInfoCard(
     firstLineText: String,
     secondLineText: String,
     icon: ImageVector,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     BasicInformationalCard(
         borderColor = borderColor,
-        modifier = modifier.size(200.dp)
+        modifier = modifier.size(200.dp),
     ) {
         BubbleBackground(
             modifier = Modifier.fillMaxSize(),
-            numberBubbles = 3, bubbleColor = borderColor.copy(0.25f)
+            numberBubbles = 3,
+            bubbleColor = borderColor.copy(0.25f),
         )
         BoxWithConstraints(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxSize(),
         ) {
             if (maxWidth > 400.dp) {
                 Row(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(CenterStart)
+                    modifier =
+                        Modifier
+                            .wrapContentSize()
+                            .align(CenterStart),
                 ) {
                     Icon(
-                        icon, contentDescription = null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .align(CenterVertically)
+                        icon,
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .size(50.dp)
+                                .align(CenterVertically),
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(
-                        modifier = Modifier
-                            .align(CenterVertically)
-                            .wrapContentSize()
+                        modifier =
+                            Modifier
+                                .align(CenterVertically)
+                                .wrapContentSize(),
                     ) {
                         Text(
                             firstLineText,
-                            style = SmallHeadingStyle
+                            style = SmallHeadingStyle,
                         )
                         Text(
                             secondLineText,
@@ -140,27 +147,30 @@ fun TwoLineInfoCard(
                 }
             } else {
                 Column(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Center)
+                    modifier =
+                        Modifier
+                            .wrapContentSize()
+                            .align(Center),
                 ) {
                     Icon(
-                        icon, contentDescription = null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .align(CenterHorizontally)
+                        icon,
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .size(50.dp)
+                                .align(CenterHorizontally),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Column(modifier = Modifier.align(CenterHorizontally)) {
                         Text(
                             firstLineText,
                             style = SmallHeadingStyle,
-                            modifier = Modifier.align(CenterHorizontally)
+                            modifier = Modifier.align(CenterHorizontally),
                         )
                         Text(
                             secondLineText,
                             style = HeadingStyle,
-                            modifier = Modifier.align(CenterHorizontally)
+                            modifier = Modifier.align(CenterHorizontally),
                         )
                     }
                 }
@@ -178,9 +188,10 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
         firstLineText = stringResource(R.string.ave_time_in_bed_heading),
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
-        modifier = modifier
-            .wrapContentWidth()
-            .heightIn(min = 156.dp)
+        modifier =
+            modifier
+                .wrapContentWidth()
+                .heightIn(min = 156.dp),
     )
 }
 
@@ -193,9 +204,10 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
         firstLineText = stringResource(R.string.ave_time_sleep_heading),
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
-        modifier = modifier
-            .wrapContentWidth()
-            .heightIn(min = 156.dp)
+        modifier =
+            modifier
+                .wrapContentWidth()
+                .heightIn(min = 156.dp),
     )
 }
 
@@ -204,40 +216,42 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
 @Composable
 fun WellnessCard(
     modifier: Modifier = Modifier,
-    wellnessData: WellnessData = WellnessData(0, 0, 0)
+    wellnessData: WellnessData = WellnessData(0, 0, 0),
 ) {
     BasicInformationalCard(
         borderColor = LightBlue,
-        modifier = modifier
-            .widthIn(max = 400.dp)
-            .heightIn(min = 200.dp)
+        modifier =
+            modifier
+                .widthIn(max = 400.dp)
+                .heightIn(min = 200.dp),
     ) {
         FadingCircleBackground(36.dp, LightBlue.copy(0.25f))
         Column(
             horizontalAlignment = CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             HomeScreenCardHeading(text = stringResource(R.string.wellness_heading))
             FlowRow(
                 horizontalArrangement = Arrangement.Center,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier.fillMaxHeight(),
             ) {
                 WellnessBubble(
                     titleText = stringResource(R.string.snoring_heading),
                     countText = wellnessData.snoring.toString(),
-                    metric = "min"
+                    metric = "min",
                 )
                 WellnessBubble(
                     titleText = stringResource(R.string.coughing_heading),
                     countText = wellnessData.coughing.toString(),
-                    metric = "times"
+                    metric = "times",
                 )
                 WellnessBubble(
                     titleText = stringResource(R.string.respiration_heading),
                     countText = wellnessData.respiration.toString(),
-                    metric = "rpm"
+                    metric = "rpm",
                 )
             }
         }
@@ -249,18 +263,19 @@ fun WellnessBubble(
     titleText: String,
     countText: String,
     metric: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .padding(4.dp)
-            .sizeIn(maxHeight = 100.dp)
-            .aspectRatio(1f)
-            .drawBehind {
-                drawCircle(LightBlue)
-            },
+        modifier =
+            modifier
+                .padding(4.dp)
+                .sizeIn(maxHeight = 100.dp)
+                .aspectRatio(1f)
+                .drawBehind {
+                    drawCircle(LightBlue)
+                },
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = CenterHorizontally
+        horizontalAlignment = CenterHorizontally,
     ) {
         Text(titleText, fontSize = 12.sp)
         Text(countText, fontSize = 36.sp)
@@ -272,10 +287,11 @@ fun WellnessBubble(
 fun HomeScreenCardHeading(text: String) {
     Text(
         text,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
         textAlign = TextAlign.Center,
-        style = HeadingStyle
+        style = HeadingStyle,
     )
 }

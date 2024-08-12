@@ -62,11 +62,14 @@ internal fun Seekbar(
                     val start = Offset.Zero.copy(y = knobRadius)
                     val end = start.copy(x = size.width)
 
-                    val knobCenter = start.copy(
-                        x = timeElapsed.seconds.toFloat() / length.seconds.toFloat() * size.width
-                    )
+                    val knobCenter =
+                        start.copy(
+                            x = timeElapsed.seconds.toFloat() / length.seconds.toFloat() * size.width,
+                        )
                     drawLine(
-                        brush, start, end,
+                        brush,
+                        start,
+                        end,
                     )
                     if (isFocused) {
                         val outlineColor = color.copy(alpha = 0.6f)
@@ -74,8 +77,7 @@ internal fun Seekbar(
                     }
                     drawCircle(brush, knobRadius, knobCenter)
                 }
-            }
-            .height(outlineSize)
+            }.height(outlineSize)
             .focusable(true, interactionSource)
             .onKeyEvent {
                 when {
@@ -91,6 +93,6 @@ internal fun Seekbar(
 
                     else -> false
                 }
-            }
+            },
     )
 }

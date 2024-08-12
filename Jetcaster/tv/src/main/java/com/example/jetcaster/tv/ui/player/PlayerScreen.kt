@@ -77,16 +77,16 @@ import com.example.jetcaster.tv.ui.component.RewindButton
 import com.example.jetcaster.tv.ui.component.Seekbar
 import com.example.jetcaster.tv.ui.component.SkipButton
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
-import java.time.Duration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 @Composable
 fun PlayerScreen(
     backToHome: () -> Unit,
     showDetails: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    playScreenViewModel: PlayerScreenViewModel = hiltViewModel()
+    playScreenViewModel: PlayerScreenViewModel = hiltViewModel(),
 ) {
     val uiState by playScreenViewModel.uiStateFlow.collectAsStateWithLifecycle()
 
@@ -126,7 +126,7 @@ private fun Player(
     showDetails: (PlayerEpisode) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    autoStart: Boolean = true
+    autoStart: Boolean = true,
 ) {
     LaunchedEffect(key1 = autoStart) {
         if (autoStart && !episodePlayerState.isPlaying) {
@@ -172,7 +172,7 @@ private fun EpisodePlayerWithBackground(
     enqueue: (PlayerEpisode) -> Unit,
     showDetails: (PlayerEpisode) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val episodePlayer = remember { FocusRequester() }
 
@@ -183,9 +183,8 @@ private fun EpisodePlayerWithBackground(
     BackgroundContainer(
         playerEpisode = playerEpisode,
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
-
         EpisodePlayer(
             playerEpisode = playerEpisode,
             isPlaying = isPlaying,
@@ -199,16 +198,19 @@ private fun EpisodePlayerWithBackground(
             enqueue = enqueue,
             showDetails = showDetails,
             focusRequester = episodePlayer,
-            modifier = Modifier
-                .padding(JetcasterAppDefaults.overScanMargin.player.intoPaddingValues())
+            modifier =
+                Modifier
+                    .padding(JetcasterAppDefaults.overScanMargin.player.intoPaddingValues()),
         )
 
         PlayerQueueOverlay(
             playerEpisodeList = queue,
             onSelected = playEpisode,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = JetcasterAppDefaults.overScanMargin.player.copy(top = 0.dp)
-                .intoPaddingValues(),
+            contentPadding =
+                JetcasterAppDefaults.overScanMargin.player
+                    .copy(top = 0.dp)
+                    .intoPaddingValues(),
             offset = DpOffset(0.dp, 136.dp),
         )
     }
@@ -231,20 +233,20 @@ private fun EpisodePlayer(
     modifier: Modifier = Modifier,
     bringIntoViewRequester: BringIntoViewRequester = remember { BringIntoViewRequester() },
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
-        modifier = Modifier
-            .bringIntoViewRequester(bringIntoViewRequester)
-            .onFocusChanged {
-                if (it.hasFocus) {
-                    coroutineScope.launch {
-                        bringIntoViewRequester.bringIntoView()
+        modifier =
+            Modifier
+                .bringIntoViewRequester(bringIntoViewRequester)
+                .onFocusChanged {
+                    if (it.hasFocus) {
+                        coroutineScope.launch {
+                            bringIntoViewRequester.bringIntoView()
+                        }
                     }
-                }
-            }
-            .then(modifier)
+                }.then(modifier),
     ) {
         EpisodeDetails(
             playerEpisode = playerEpisode,
@@ -252,7 +254,7 @@ private fun EpisodePlayer(
             controls = {
                 EpisodeControl(
                     showDetails = { showDetails(playerEpisode) },
-                    enqueue = { enqueue(playerEpisode) }
+                    enqueue = { enqueue(playerEpisode) },
                 )
             },
         )
@@ -266,7 +268,7 @@ private fun EpisodePlayer(
             next = next,
             skip = skip,
             rewind = rewind,
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
         )
     }
 }
@@ -279,15 +281,15 @@ private fun EpisodeControl(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item)
+        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
     ) {
         EnqueueButton(
             onClick = enqueue,
-            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize())
+            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize()),
         )
         InfoButton(
             onClick = showDetails,
-            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize())
+            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize()),
         )
     }
 }
@@ -305,7 +307,7 @@ private fun PlayerControl(
     skip: () -> Unit,
     rewind: () -> Unit,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     val playPauseButton = remember { FocusRequester() }
 
@@ -314,28 +316,29 @@ private fun PlayerControl(
         modifier = modifier,
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(
-                JetcasterAppDefaults.gap.default,
-                Alignment.CenterHorizontally
-            ),
+            horizontalArrangement =
+                Arrangement.spacedBy(
+                    JetcasterAppDefaults.gap.default,
+                    Alignment.CenterHorizontally,
+                ),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester)
-                .onFocusChanged {
-                    if (it.isFocused) {
-                        playPauseButton.requestFocus()
-                    }
-                }
-                .focusable(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        if (it.isFocused) {
+                            playPauseButton.requestFocus()
+                        }
+                    }.focusable(),
         ) {
             PreviousButton(
                 onClick = previous,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
             RewindButton(
                 onClick = rewind,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
             PlayPauseButton(
                 isPlaying = isPlaying,
@@ -346,17 +349,18 @@ private fun PlayerControl(
                         play()
                     }
                 },
-                modifier = Modifier
-                    .size(JetcasterAppDefaults.iconButtonSize.large.intoDpSize())
-                    .focusRequester(playPauseButton)
+                modifier =
+                    Modifier
+                        .size(JetcasterAppDefaults.iconButtonSize.large.intoDpSize())
+                        .focusRequester(playPauseButton),
             )
             SkipButton(
                 onClick = skip,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
             NextButton(
                 onClick = next,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
         }
         if (length != null) {
@@ -372,11 +376,11 @@ private fun ElapsedTimeIndicator(
     skip: () -> Unit,
     rewind: () -> Unit,
     modifier: Modifier = Modifier,
-    knobSize: Dp = 8.dp
+    knobSize: Dp = 8.dp,
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.tiny)
+        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.tiny),
     ) {
         ElapsedTime(timeElapsed = timeElapsed, length = length)
         Seekbar(
@@ -385,7 +389,7 @@ private fun ElapsedTimeIndicator(
             knobSize = knobSize,
             onMoveLeft = rewind,
             onMoveRight = skip,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -395,20 +399,20 @@ private fun ElapsedTime(
     timeElapsed: Duration,
     length: Duration,
     modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodySmall
+    style: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
     val elapsed =
         stringResource(
             R.string.minutes_seconds,
             timeElapsed.toMinutes(),
-            timeElapsed.toSeconds() % 60
+            timeElapsed.toSeconds() % 60,
         )
     val l =
         stringResource(R.string.minutes_seconds, length.toMinutes(), length.toSeconds() % 60)
     Text(
         text = stringResource(R.string.elapsed_time, elapsed, l),
         style = style,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -416,7 +420,7 @@ private fun ElapsedTime(
 private fun NoEpisodeInQueue(
     backToHome: () -> Unit,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -425,7 +429,7 @@ private fun NoEpisodeInQueue(
         Column {
             Text(
                 text = stringResource(R.string.display_nothing_in_queue),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
             Text(text = stringResource(R.string.message_nothing_in_queue))
@@ -447,27 +451,30 @@ private fun PlayerQueueOverlay(
     contentPadding: PaddingValues = PaddingValues(),
     contentAlignment: Alignment = Alignment.BottomStart,
     scrim: DrawScope.() -> Unit = {
-        val brush = Brush.verticalGradient(
-            listOf(Color.Transparent, Color.Black),
-        )
+        val brush =
+            Brush.verticalGradient(
+                listOf(Color.Transparent, Color.Black),
+            )
         drawRect(brush, blendMode = BlendMode.Multiply)
     },
     offset: DpOffset = DpOffset.Zero,
 ) {
     var hasFocus by remember { mutableStateOf(false) }
-    val actualOffset = if (hasFocus) {
-        DpOffset.Zero
-    } else {
-        offset
-    }
+    val actualOffset =
+        if (hasFocus) {
+            DpOffset.Zero
+        } else {
+            offset
+        }
     Box(
-        modifier = modifier.drawWithCache {
-            onDrawBehind {
-                if (hasFocus) {
-                    scrim()
+        modifier =
+            modifier.drawWithCache {
+                onDrawBehind {
+                    if (hasFocus) {
+                        scrim()
+                    }
                 }
-            }
-        },
+            },
         contentAlignment = contentAlignment,
     ) {
         EpisodeRow(
@@ -475,9 +482,10 @@ private fun PlayerQueueOverlay(
             onSelected = onSelected,
             horizontalArrangement = horizontalArrangement,
             contentPadding = contentPadding,
-            modifier = Modifier
-                .offset(actualOffset.x, actualOffset.y)
-                .onFocusChanged { hasFocus = it.hasFocus }
+            modifier =
+                Modifier
+                    .offset(actualOffset.x, actualOffset.y)
+                    .onFocusChanged { hasFocus = it.hasFocus },
         )
     }
 }

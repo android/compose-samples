@@ -28,10 +28,10 @@ import androidx.compose.ui.Modifier
 fun Loading(modifier: Modifier = Modifier) {
     Surface(modifier = modifier) {
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             CircularProgressIndicator(
-                Modifier.align(Alignment.Center)
+                Modifier.align(Alignment.Center),
             )
         }
     }

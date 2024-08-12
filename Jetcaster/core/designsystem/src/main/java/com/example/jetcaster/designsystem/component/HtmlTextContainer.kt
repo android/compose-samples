@@ -34,14 +34,15 @@ import androidx.core.text.HtmlCompat
 @Composable
 fun HtmlTextContainer(
     text: String,
-    content: @Composable (AnnotatedString) -> Unit
+    content: @Composable (AnnotatedString) -> Unit,
 ) {
-    val annotatedString = remember(key1 = text) {
-        buildAnnotatedString {
-            val htmlCompat = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
-            append(htmlCompat)
+    val annotatedString =
+        remember(key1 = text) {
+            buildAnnotatedString {
+                val htmlCompat = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                append(htmlCompat)
+            }
         }
-    }
     SelectionContainer {
         content(annotatedString)
     }

@@ -35,12 +35,13 @@ fun InterestsRoute(
     interestsViewModel: InterestsViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val tabContent = rememberTabContent(interestsViewModel)
-    val (currentSection, updateSection) = rememberSaveable {
-        mutableStateOf(tabContent.first().section)
-    }
+    val (currentSection, updateSection) =
+        rememberSaveable {
+            mutableStateOf(tabContent.first().section)
+        }
 
     InterestsScreen(
         tabContent = tabContent,
@@ -48,6 +49,6 @@ fun InterestsRoute(
         isExpandedScreen = isExpandedScreen,
         onTabChange = updateSection,
         openDrawer = openDrawer,
-        snackbarHostState = snackbarHostState
+        snackbarHostState = snackbarHostState,
     )
 }

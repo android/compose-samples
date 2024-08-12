@@ -33,24 +33,25 @@ fun MediaContent(
     episode: PlayerEpisode,
     episodeArtworkPlaceholder: Painter?,
     onItemClick: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val mediaTitle = episode.title
     val duration = episode.duration
 
-    val secondaryLabel = when {
-        duration != null -> {
-            // If we have the duration, we combine the date/duration via a
-            // formatted string
-            stringResource(
-                R.string.episode_date_duration,
-                MediumDateFormatter.format(episode.published),
-                duration.toMinutes().toInt()
-            )
+    val secondaryLabel =
+        when {
+            duration != null -> {
+                // If we have the duration, we combine the date/duration via a
+                // formatted string
+                stringResource(
+                    R.string.episode_date_duration,
+                    MediumDateFormatter.format(episode.published),
+                    duration.toMinutes().toInt(),
+                )
+            }
+            // Otherwise we just use the date
+            else -> MediumDateFormatter.format(episode.published)
         }
-        // Otherwise we just use the date
-        else -> MediumDateFormatter.format(episode.published)
-    }
 
     Chip(
         label = mediaTitle,
@@ -59,7 +60,7 @@ fun MediaContent(
         icon = CoilPaintable(episode.podcastImageUrl, episodeArtworkPlaceholder),
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
-        modifier = modifier
+        modifier = modifier,
     )
 }
 

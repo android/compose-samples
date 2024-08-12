@@ -40,14 +40,12 @@ import androidx.compose.ui.unit.Dp
  * baselines.
  */
 data class BaselineHeightModifier(
-    val heightFromBaseline: Dp
+    val heightFromBaseline: Dp,
 ) : LayoutModifier {
-
     override fun MeasureScope.measure(
         measurable: Measurable,
-        constraints: Constraints
+        constraints: Constraints,
     ): MeasureResult {
-
         val textPlaceable = measurable.measure(constraints)
         val firstBaseline = textPlaceable[FirstBaseline]
         val lastBaseline = textPlaceable[LastBaseline]
@@ -60,5 +58,4 @@ data class BaselineHeightModifier(
     }
 }
 
-fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier =
-    this.then(BaselineHeightModifier(heightFromBaseline))
+fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier = this.then(BaselineHeightModifier(heightFromBaseline))

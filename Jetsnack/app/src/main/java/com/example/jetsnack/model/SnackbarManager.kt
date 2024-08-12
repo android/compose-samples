@@ -17,28 +17,33 @@
 package com.example.jetsnack.model
 
 import androidx.annotation.StringRes
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.UUID
 
-data class Message(val id: Long, @StringRes val messageId: Int)
+data class Message(
+    val id: Long,
+    @StringRes val messageId: Int,
+)
 
 /**
  * Class responsible for managing Snackbar messages to show on the screen
  */
 object SnackbarManager {
-
     private val _messages: MutableStateFlow<List<Message>> = MutableStateFlow(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages.asStateFlow()
 
-    fun showMessage(@StringRes messageTextId: Int) {
+    fun showMessage(
+        @StringRes messageTextId: Int,
+    ) {
         _messages.update { currentMessages ->
-            currentMessages + Message(
-                id = UUID.randomUUID().mostSignificantBits,
-                messageId = messageTextId
-            )
+            currentMessages +
+                Message(
+                    id = UUID.randomUUID().mostSignificantBits,
+                    messageId = messageTextId,
+                )
         }
     }
 

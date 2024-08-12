@@ -87,13 +87,13 @@ fun PodcastDetailsScreen(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
     showBackButton: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     when (val s = state) {
         is PodcastUiState.Loading -> {
             PodcastDetailsLoadingScreen(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
         is PodcastUiState.Ready -> {
@@ -112,9 +112,7 @@ fun PodcastDetailsScreen(
 }
 
 @Composable
-private fun PodcastDetailsLoadingScreen(
-    modifier: Modifier = Modifier
-) {
+private fun PodcastDetailsLoadingScreen(modifier: Modifier = Modifier) {
     Loading(modifier = modifier)
 }
 
@@ -127,7 +125,7 @@ fun PodcastDetailsScreen(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
     showBackButton: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -138,13 +136,13 @@ fun PodcastDetailsScreen(
             if (showBackButton) {
                 PodcastDetailsTopAppBar(
                     navigateBack = navigateBack,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
-        }
+        },
     ) { contentPadding ->
         PodcastDetailsContent(
             podcast = podcast,
@@ -157,7 +155,7 @@ fun PodcastDetailsScreen(
                 onQueueEpisode(it)
             },
             navigateToPlayer = navigateToPlayer,
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier.padding(contentPadding),
         )
     }
 }
@@ -169,17 +167,17 @@ fun PodcastDetailsContent(
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
-        modifier.fillMaxSize()
+        modifier.fillMaxSize(),
     ) {
         fullWidthItem {
             PodcastDetailsHeaderItem(
                 podcast = podcast,
                 toggleSubscribe = toggleSubscribe,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
         items(episodes, key = { it.uri }) { episode ->
@@ -190,7 +188,7 @@ fun PodcastDetailsContent(
                 onQueueEpisode = onQueueEpisode,
                 modifier = Modifier.fillMaxWidth(),
                 showPodcastImage = false,
-                showSummary = true
+                showSummary = true,
             )
         }
     }
@@ -200,48 +198,50 @@ fun PodcastDetailsContent(
 fun PodcastDetailsHeaderItem(
     podcast: PodcastInfo,
     toggleSubscribe: (PodcastInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(
-        modifier = modifier.padding(Keyline1)
+        modifier = modifier.padding(Keyline1),
     ) {
         val maxImageSize = this.maxWidth / 2
         val imageSize = min(maxImageSize, 148.dp)
         Column {
             Row(
                 verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 PodcastImage(
-                    modifier = Modifier
-                        .size(imageSize)
-                        .clip(MaterialTheme.shapes.large),
+                    modifier =
+                        Modifier
+                            .size(imageSize)
+                            .clip(MaterialTheme.shapes.large),
                     podcastImageUrl = podcast.imageUrl,
-                    contentDescription = podcast.title
+                    contentDescription = podcast.title,
                 )
                 Column(
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 ) {
                     Text(
                         text = podcast.title,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineMedium
+                        style = MaterialTheme.typography.headlineMedium,
                     )
                     PodcastDetailsHeaderItemButtons(
                         isSubscribed = podcast.isSubscribed ?: false,
                         onClick = {
                             toggleSubscribe(podcast)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
             PodcastDetailsDescription(
                 podcast = podcast,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
             )
         }
     }
@@ -250,12 +250,12 @@ fun PodcastDetailsHeaderItem(
 @Composable
 fun PodcastDetailsDescription(
     podcast: PodcastInfo,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var showSeeMore by remember { mutableStateOf(false) }
     Box(
-        modifier = modifier.clickable { isExpanded = !isExpanded }
+        modifier = modifier.clickable { isExpanded = !isExpanded },
     ) {
         Text(
             text = podcast.description,
@@ -265,27 +265,31 @@ fun PodcastDetailsDescription(
             onTextLayout = { result ->
                 showSeeMore = result.hasVisualOverflow
             },
-            modifier = Modifier.animateContentSize(
-                animationSpec = tween(
-                    durationMillis = 200,
-                    easing = EaseOutExpo
-                )
-            )
+            modifier =
+                Modifier.animateContentSize(
+                    animationSpec =
+                        tween(
+                            durationMillis = 200,
+                            easing = EaseOutExpo,
+                        ),
+                ),
         )
         if (showSeeMore) {
             Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .background(MaterialTheme.colorScheme.surface)
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .background(MaterialTheme.colorScheme.surface),
             ) {
                 // TODO: Add gradient effect
                 Text(
                     text = stringResource(id = R.string.see_more),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.padding(start = 16.dp)
+                    style =
+                        MaterialTheme.typography.bodyMedium.copy(
+                            textDecoration = TextDecoration.Underline,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             }
         }
@@ -296,32 +300,39 @@ fun PodcastDetailsDescription(
 fun PodcastDetailsHeaderItemButtons(
     isSubscribed: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier.padding(top = 16.dp)) {
         Button(
             onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSubscribed)
-                    MaterialTheme.colorScheme.tertiary
-                else
-                    MaterialTheme.colorScheme.secondary
-            ),
-            modifier = Modifier.semantics(mergeDescendants = true) { }
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor =
+                        if (isSubscribed) {
+                            MaterialTheme.colorScheme.tertiary
+                        } else {
+                            MaterialTheme.colorScheme.secondary
+                        },
+                ),
+            modifier = Modifier.semantics(mergeDescendants = true) { },
         ) {
             Icon(
-                imageVector = if (isSubscribed)
-                    Icons.Default.Check
-                else
-                    Icons.Default.Add,
-                contentDescription = null
+                imageVector =
+                    if (isSubscribed) {
+                        Icons.Default.Check
+                    } else {
+                        Icons.Default.Add
+                    },
+                contentDescription = null,
             )
             Text(
-                text = if (isSubscribed)
-                    stringResource(id = R.string.subscribed)
-                else
-                    stringResource(id = R.string.subscribe),
-                modifier = Modifier.padding(start = 8.dp)
+                text =
+                    if (isSubscribed) {
+                        stringResource(id = R.string.subscribed)
+                    } else {
+                        stringResource(id = R.string.subscribe)
+                    },
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
 
@@ -329,11 +340,11 @@ fun PodcastDetailsHeaderItemButtons(
 
         IconButton(
             onClick = { /* TODO */ },
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 8.dp),
         ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.cd_more)
+                contentDescription = stringResource(R.string.cd_more),
             )
         }
     }
@@ -343,7 +354,7 @@ fun PodcastDetailsHeaderItemButtons(
 @Composable
 fun PodcastDetailsTopAppBar(
     navigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         title = { },
@@ -351,11 +362,11 @@ fun PodcastDetailsTopAppBar(
             IconButton(onClick = navigateBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.cd_back)
+                    contentDescription = stringResource(id = R.string.cd_back),
                 )
             }
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 

@@ -29,7 +29,7 @@ import java.time.OffsetDateTime
     tableName = "episodes",
     indices = [
         Index("uri", unique = true),
-        Index("podcast_uri")
+        Index("podcast_uri"),
     ],
     foreignKeys = [
         ForeignKey(
@@ -37,9 +37,9 @@ import java.time.OffsetDateTime
             parentColumns = ["uri"],
             childColumns = ["podcast_uri"],
             onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 @Immutable
 data class Episode(
@@ -50,5 +50,5 @@ data class Episode(
     @ColumnInfo(name = "summary") val summary: String? = null,
     @ColumnInfo(name = "author") val author: String? = null,
     @ColumnInfo(name = "published") val published: OffsetDateTime,
-    @ColumnInfo(name = "duration") val duration: Duration? = null
+    @ColumnInfo(name = "duration") val duration: Duration? = null,
 )

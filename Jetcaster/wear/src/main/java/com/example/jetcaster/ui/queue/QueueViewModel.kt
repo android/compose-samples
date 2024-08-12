@@ -22,55 +22,56 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 /**
  * ViewModel that handles the business logic and screen state of the Queue screen.
  */
 @HiltViewModel
-class QueueViewModel @Inject constructor(
-    private val episodePlayer: EpisodePlayer,
+class QueueViewModel
+    @Inject
+    constructor(
+        private val episodePlayer: EpisodePlayer,
+    ) : ViewModel() {
+        val uiState: StateFlow<QueueScreenState> =
+            episodePlayer.playerState
+                .map {
+                    if (it.queue.isNotEmpty()) {
+                        QueueScreenState.Loaded(it.queue)
+                    } else {
+                        QueueScreenState.Empty
+                    }
+                }.stateIn(
+                    viewModelScope,
+                    SharingStarted.WhileSubscribed(5000),
+                    QueueScreenState.Loading,
+                )
 
-) : ViewModel() {
-
-    val uiState: StateFlow<QueueScreenState> = episodePlayer.playerState.map {
-        if (it.queue.isNotEmpty()) {
-            QueueScreenState.Loaded(it.queue)
-        } else {
-            QueueScreenState.Empty
+        fun onPlayEpisode(episode: PlayerEpisode) {
+            episodePlayer.currentEpisode = episode
+            episodePlayer.play()
         }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        QueueScreenState.Loading,
-    )
 
-    fun onPlayEpisode(episode: PlayerEpisode) {
-        episodePlayer.currentEpisode = episode
-        episodePlayer.play()
-    }
+        fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
+            episodePlayer.currentEpisode = episodes[0]
+            episodePlayer.play(episodes)
+        }
 
-    fun onPlayEpisodes(episodes: List<PlayerEpisode>) {
-        episodePlayer.currentEpisode = episodes[0]
-        episodePlayer.play(episodes)
+        fun onDeleteQueueEpisodes() {
+            episodePlayer.removeAllFromQueue()
+        }
     }
-
-    fun onDeleteQueueEpisodes() {
-        episodePlayer.removeAllFromQueue()
-    }
-}
 
 @ExperimentalHorologistApi
 sealed interface QueueScreenState {
-
     data object Loading : QueueScreenState
 
     data class Loaded(
-        val episodeList: List<PlayerEpisode>
+        val episodeList: List<PlayerEpisode>,
     ) : QueueScreenState
 
     data object Empty : QueueScreenState

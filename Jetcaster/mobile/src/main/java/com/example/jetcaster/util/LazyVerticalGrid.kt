@@ -27,10 +27,10 @@ import androidx.compose.runtime.Composable
 fun LazyGridScope.fullWidthItem(
     key: Any? = null,
     contentType: Any? = null,
-    content: @Composable LazyGridItemScope.() -> Unit
+    content: @Composable LazyGridItemScope.() -> Unit,
 ) = item(
     span = { GridItemSpan(this.maxLineSpan) },
     key = key,
     contentType = contentType,
-    content = content
+    content = content,
 )

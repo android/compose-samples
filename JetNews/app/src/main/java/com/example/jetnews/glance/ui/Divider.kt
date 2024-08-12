@@ -36,13 +36,14 @@ import com.example.jetnews.glance.ui.theme.JetnewsGlanceColorScheme
 @Composable
 fun Divider(
     thickness: Dp = DividerDefaults.Thickness,
-    color: ColorProvider = DividerDefaults.color
+    color: ColorProvider = DividerDefaults.color,
 ) {
     Spacer(
-        modifier = GlanceModifier
-            .fillMaxWidth()
-            .height(thickness)
-            .background(color)
+        modifier =
+            GlanceModifier
+                .fillMaxWidth()
+                .height(thickness)
+                .background(color),
     )
 }
 

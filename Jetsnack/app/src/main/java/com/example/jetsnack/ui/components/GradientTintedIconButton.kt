@@ -45,53 +45,57 @@ fun JetsnackGradientTintedIconButton(
     onClick: () -> Unit,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
+    colors: List<Color> = JetsnackTheme.colors.interactiveSecondary,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     // This should use a layer + srcIn but needs investigation
-    val border = Modifier.fadeInDiagonalGradientBorder(
-        showBorder = true,
-        colors = JetsnackTheme.colors.interactiveSecondary,
-        shape = CircleShape
-    )
+    val border =
+        Modifier.fadeInDiagonalGradientBorder(
+            showBorder = true,
+            colors = JetsnackTheme.colors.interactiveSecondary,
+            shape = CircleShape,
+        )
     val pressed by interactionSource.collectIsPressedAsState()
-    val background = if (pressed) {
-        Modifier.offsetGradientBackground(colors, 200f, 0f)
-    } else {
-        Modifier.background(JetsnackTheme.colors.uiBackground)
-    }
+    val background =
+        if (pressed) {
+            Modifier.offsetGradientBackground(colors, 200f, 0f)
+        } else {
+            Modifier.background(JetsnackTheme.colors.uiBackground)
+        }
     val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
-    val modifierColor = if (pressed) {
-        Modifier.diagonalGradientTint(
-            colors = listOf(
-                JetsnackTheme.colors.textSecondary,
-                JetsnackTheme.colors.textSecondary
-            ),
-            blendMode = blendMode
-        )
-    } else {
-        Modifier.diagonalGradientTint(
-            colors = colors,
-            blendMode = blendMode
-        )
-    }
-    Surface(
-        modifier = modifier
-            .clickable(
-                onClick = onClick,
-                interactionSource = interactionSource,
-                indication = null
+    val modifierColor =
+        if (pressed) {
+            Modifier.diagonalGradientTint(
+                colors =
+                    listOf(
+                        JetsnackTheme.colors.textSecondary,
+                        JetsnackTheme.colors.textSecondary,
+                    ),
+                blendMode = blendMode,
             )
-            .clip(CircleShape)
-            .then(border)
-            .then(background),
-        color = Color.Transparent
+        } else {
+            Modifier.diagonalGradientTint(
+                colors = colors,
+                blendMode = blendMode,
+            )
+        }
+    Surface(
+        modifier =
+            modifier
+                .clickable(
+                    onClick = onClick,
+                    interactionSource = interactionSource,
+                    indication = null,
+                ).clip(CircleShape)
+                .then(border)
+                .then(background),
+        color = Color.Transparent,
     ) {
         Icon(
             imageVector = imageVector,
             contentDescription = contentDescription,
-            modifier = modifierColor
+            modifier = modifierColor,
         )
     }
 }
@@ -105,7 +109,7 @@ private fun GradientTintedIconButtonPreview() {
             imageVector = Icons.Default.Add,
             onClick = {},
             contentDescription = "Demo",
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(4.dp),
         )
     }
 }

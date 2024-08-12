@@ -17,7 +17,6 @@
 package com.example.jetsnack.ui.home.search
 
 import android.content.res.Configuration
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -48,10 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.R
-import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.snacks
-import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -62,14 +59,14 @@ import com.example.jetsnack.ui.utils.formatPrice
 @Composable
 fun SearchResults(
     searchResults: List<Snack>,
-    onSnackClick: (Long, String) -> Unit
+    onSnackClick: (Long, String) -> Unit,
 ) {
     Column {
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
             style = MaterialTheme.typography.titleLarge,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
         )
         LazyColumn {
             itemsIndexed(searchResults) { index, snack ->
@@ -84,13 +81,14 @@ private fun SearchResult(
     snack: Snack,
     onSnackClick: (Long, String) -> Unit,
     showDivider: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onSnackClick(snack.id, "search") }
-            .padding(horizontal = 24.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { onSnackClick(snack.id, "search") }
+                .padding(horizontal = 24.dp),
     ) {
         val (divider, image, name, tag, priceSpacer, price, add) = createRefs()
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
@@ -99,87 +97,92 @@ private fun SearchResult(
                 Modifier.constrainAs(divider) {
                     linkTo(start = parent.start, end = parent.end)
                     top.linkTo(parent.top)
-                }
+                },
             )
         }
         SnackImage(
             imageRes = snack.imageRes,
             contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .constrainAs(image) {
-                    linkTo(
-                        top = parent.top,
-                        topMargin = 16.dp,
-                        bottom = parent.bottom,
-                        bottomMargin = 16.dp
-                    )
-                    start.linkTo(parent.start)
-                }
+            modifier =
+                Modifier
+                    .size(100.dp)
+                    .constrainAs(image) {
+                        linkTo(
+                            top = parent.top,
+                            topMargin = 16.dp,
+                            bottom = parent.bottom,
+                            bottomMargin = 16.dp,
+                        )
+                        start.linkTo(parent.start)
+                    },
         )
         Text(
             text = snack.name,
             style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = add.start,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-            }
+            modifier =
+                Modifier.constrainAs(name) {
+                    linkTo(
+                        start = image.end,
+                        startMargin = 16.dp,
+                        end = add.start,
+                        endMargin = 16.dp,
+                        bias = 0f,
+                    )
+                },
         )
         Text(
             text = snack.tagline,
             style = MaterialTheme.typography.bodyLarge,
             color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = add.start,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-            }
+            modifier =
+                Modifier.constrainAs(tag) {
+                    linkTo(
+                        start = image.end,
+                        startMargin = 16.dp,
+                        end = add.start,
+                        endMargin = 16.dp,
+                        bias = 0f,
+                    )
+                },
         )
         Spacer(
             Modifier
                 .height(8.dp)
                 .constrainAs(priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
-                }
+                },
         )
         Text(
             text = formatPrice(snack.price),
             style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = add.start,
-                    endMargin = 16.dp,
-                    bias = 0f
-                )
-            }
+            modifier =
+                Modifier.constrainAs(price) {
+                    linkTo(
+                        start = image.end,
+                        startMargin = 16.dp,
+                        end = add.start,
+                        endMargin = 16.dp,
+                        bias = 0f,
+                    )
+                },
         )
         JetsnackButton(
             onClick = { /* todo */ },
             shape = CircleShape,
             contentPadding = PaddingValues(0.dp),
-            modifier = Modifier
-                .size(36.dp)
-                .constrainAs(add) {
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                    end.linkTo(parent.end)
-                }
+            modifier =
+                Modifier
+                    .size(36.dp)
+                    .constrainAs(add) {
+                        linkTo(top = parent.top, bottom = parent.bottom)
+                        end.linkTo(parent.end)
+                    },
         ) {
             Icon(
                 imageVector = Icons.Outlined.Add,
-                contentDescription = stringResource(R.string.label_add)
+                contentDescription = stringResource(R.string.label_add),
             )
         }
     }
@@ -188,32 +191,33 @@ private fun SearchResult(
 @Composable
 fun NoResults(
     query: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxSize()
-            .wrapContentSize()
-            .padding(24.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .wrapContentSize()
+                .padding(24.dp),
     ) {
         Image(
             painterResource(R.drawable.empty_state_search),
-            contentDescription = null
+            contentDescription = null,
         )
         Spacer(Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.search_no_matches_retry),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -228,7 +232,7 @@ private fun SearchResultPreview() {
             SearchResult(
                 snack = snacks[0],
                 onSnackClick = { _, _ -> },
-                showDivider = false
+                showDivider = false,
             )
         }
     }

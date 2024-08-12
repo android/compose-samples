@@ -76,7 +76,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun ProfileScreen(
     userData: ProfileScreenState,
-    nestedScrollInteropConnection: NestedScrollConnection = rememberNestedScrollInteropConnection()
+    nestedScrollInteropConnection: NestedScrollConnection = rememberNestedScrollInteropConnection(),
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -86,21 +86,23 @@ fun ProfileScreen(
     val scrollState = rememberScrollState()
 
     BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(nestedScrollInteropConnection)
-            .systemBarsPadding()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .nestedScroll(nestedScrollInteropConnection)
+                .systemBarsPadding(),
     ) {
         Surface {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
             ) {
                 ProfileHeader(
                     scrollState,
                     userData,
-                    this@BoxWithConstraints.maxHeight
+                    this@BoxWithConstraints.maxHeight,
                 )
                 UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
             }
@@ -110,17 +112,21 @@ fun ProfileScreen(
         ProfileFab(
             extended = fabExtended,
             userIsMe = userData.isMe(),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                // Offsets the FAB to compensate for CoordinatorLayout collapsing behaviour
-                .offset(y = ((-100).dp)),
-            onFabClicked = { functionalityNotAvailablePopupShown = true }
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    // Offsets the FAB to compensate for CoordinatorLayout collapsing behaviour
+                    .offset(y = ((-100).dp)),
+            onFabClicked = { functionalityNotAvailablePopupShown = true },
         )
     }
 }
 
 @Composable
-private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
+private fun UserInfoFields(
+    userData: ProfileScreenState,
+    containerHeight: Dp,
+) {
     Column {
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -143,39 +149,44 @@ private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
 }
 
 @Composable
-private fun NameAndPosition(
-    userData: ProfileScreenState
-) {
+private fun NameAndPosition(userData: ProfileScreenState) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Name(
             userData,
-            modifier = Modifier.baselineHeight(32.dp)
+            modifier = Modifier.baselineHeight(32.dp),
         )
         Position(
             userData,
-            modifier = Modifier
-                .padding(bottom = 20.dp)
-                .baselineHeight(24.dp)
+            modifier =
+                Modifier
+                    .padding(bottom = 20.dp)
+                    .baselineHeight(24.dp),
         )
     }
 }
 
 @Composable
-private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
+private fun Name(
+    userData: ProfileScreenState,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = userData.name,
         modifier = modifier,
-        style = MaterialTheme.typography.headlineSmall
+        style = MaterialTheme.typography.headlineSmall,
     )
 }
 
 @Composable
-private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
+private fun Position(
+    userData: ProfileScreenState,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = userData.position,
         modifier = modifier,
         style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
@@ -183,49 +194,54 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 private fun ProfileHeader(
     scrollState: ScrollState,
     data: ProfileScreenState,
-    containerHeight: Dp
+    containerHeight: Dp,
 ) {
     val offset = (scrollState.value / 2)
     val offsetDp = with(LocalDensity.current) { offset.toDp() }
 
     data.photo?.let {
         Image(
-            modifier = Modifier
-                .heightIn(max = containerHeight / 2)
-                .fillMaxWidth()
-                // TODO: Update to use offset to avoid recomposition
-                .padding(
-                    start = 16.dp,
-                    top = offsetDp,
-                    end = 16.dp
-                )
-                .clip(CircleShape),
+            modifier =
+                Modifier
+                    .heightIn(max = containerHeight / 2)
+                    .fillMaxWidth()
+                    // TODO: Update to use offset to avoid recomposition
+                    .padding(
+                        start = 16.dp,
+                        top = offsetDp,
+                        end = 16.dp,
+                    ).clip(CircleShape),
             painter = painterResource(id = it),
             contentScale = ContentScale.Crop,
-            contentDescription = null
+            contentDescription = null,
         )
     }
 }
 
 @Composable
-fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
+fun ProfileProperty(
+    label: String,
+    value: String,
+    isLink: Boolean = false,
+) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
         Divider()
         Text(
             text = label,
             modifier = Modifier.baselineHeight(24.dp),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        val style = if (isLink) {
-            MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
-        } else {
-            MaterialTheme.typography.bodyLarge
-        }
+        val style =
+            if (isLink) {
+                MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
+            } else {
+                MaterialTheme.typography.bodyLarge
+            }
         Text(
             text = value,
             modifier = Modifier.baselineHeight(24.dp),
-            style = style
+            style = style,
         )
     }
 }
@@ -240,35 +256,39 @@ fun ProfileFab(
     extended: Boolean,
     userIsMe: Boolean,
     modifier: Modifier = Modifier,
-    onFabClicked: () -> Unit = { }
+    onFabClicked: () -> Unit = { },
 ) {
-    key(userIsMe) { // Prevent multiple invocations to execute during composition
+    key(userIsMe) {
+        // Prevent multiple invocations to execute during composition
         FloatingActionButton(
             onClick = onFabClicked,
-            modifier = modifier
-                .padding(16.dp)
-                .navigationBarsPadding()
-                .height(48.dp)
-                .widthIn(min = 48.dp),
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            modifier =
+                modifier
+                    .padding(16.dp)
+                    .navigationBarsPadding()
+                    .height(48.dp)
+                    .widthIn(min = 48.dp),
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         ) {
             AnimatingFabContent(
                 icon = {
                     Icon(
                         imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
-                        contentDescription = stringResource(
-                            if (userIsMe) R.string.edit_profile else R.string.message
-                        )
+                        contentDescription =
+                            stringResource(
+                                if (userIsMe) R.string.edit_profile else R.string.message,
+                            ),
                     )
                 },
                 text = {
                     Text(
-                        text = stringResource(
-                            id = if (userIsMe) R.string.edit_profile else R.string.message
-                        ),
+                        text =
+                            stringResource(
+                                id = if (userIsMe) R.string.edit_profile else R.string.message,
+                            ),
                     )
                 },
-                extended = extended
+                extended = extended,
             )
         }
     }

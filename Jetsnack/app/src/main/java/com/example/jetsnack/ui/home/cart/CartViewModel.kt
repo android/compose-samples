@@ -32,15 +32,15 @@ import kotlinx.coroutines.flow.StateFlow
  */
 class CartViewModel(
     private val snackbarManager: SnackbarManager,
-    snackRepository: SnackRepo
+    snackRepository: SnackRepo,
 ) : ViewModel() {
-
     private val _orderLines: MutableStateFlow<List<OrderLine>> =
         MutableStateFlow(snackRepository.getCart())
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines
 
     // Logic to show errors every few requests
     private var requestCount = 0
+
     private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 
     fun increaseSnackCount(snackId: Long) {
@@ -71,14 +71,18 @@ class CartViewModel(
         _orderLines.value = _orderLines.value.filter { it.snack.id != snackId }
     }
 
-    private fun updateSnackCount(snackId: Long, count: Int) {
-        _orderLines.value = _orderLines.value.map {
-            if (it.snack.id == snackId) {
-                it.copy(count = count)
-            } else {
-                it
+    private fun updateSnackCount(
+        snackId: Long,
+        count: Int,
+    ) {
+        _orderLines.value =
+            _orderLines.value.map {
+                if (it.snack.id == snackId) {
+                    it.copy(count = count)
+                } else {
+                    it
+                }
             }
-        }
     }
 
     /**
@@ -87,12 +91,11 @@ class CartViewModel(
     companion object {
         fun provideFactory(
             snackbarManager: SnackbarManager = SnackbarManager,
-            snackRepository: SnackRepo = SnackRepo
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return CartViewModel(snackbarManager, snackRepository) as T
+            snackRepository: SnackRepo = SnackRepo,
+        ): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T = CartViewModel(snackbarManager, snackRepository) as T
             }
-        }
     }
 }

@@ -45,7 +45,7 @@ internal fun EpisodeRow(
         Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
     contentPadding: PaddingValues = JetcasterAppDefaults.padding.episodeRowContentPadding,
     focusRequester: FocusRequester = remember { FocusRequester() },
-    lazyListState: TvLazyListState = remember(playerEpisodeList) { TvLazyListState() }
+    lazyListState: TvLazyListState = remember(playerEpisodeList) { TvLazyListState() },
 ) {
     val firstItem = remember { FocusRequester() }
     var previousEpisodeListHash by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
@@ -53,36 +53,37 @@ internal fun EpisodeRow(
 
     TvLazyRow(
         state = lazyListState,
-        modifier = Modifier
-            .focusRequester(focusRequester)
-            .focusProperties {
-                enter = {
-                    when {
-                        lazyListState.layoutInfo.visibleItemsInfo.isEmpty() -> FocusRequester.Cancel
-                        isSameList && focusRequester.restoreFocusedChild() -> FocusRequester.Cancel
-                        else -> firstItem
+        modifier =
+            Modifier
+                .focusRequester(focusRequester)
+                .focusProperties {
+                    enter = {
+                        when {
+                            lazyListState.layoutInfo.visibleItemsInfo.isEmpty() -> FocusRequester.Cancel
+                            isSameList && focusRequester.restoreFocusedChild() -> FocusRequester.Cancel
+                            else -> firstItem
+                        }
                     }
-                }
-                exit = {
-                    previousEpisodeListHash = playerEpisodeList.hashCode()
-                    focusRequester.saveFocusedChild()
-                    FocusRequester.Default
-                }
-            }
-            .then(modifier),
+                    exit = {
+                        previousEpisodeListHash = playerEpisodeList.hashCode()
+                        focusRequester.saveFocusedChild()
+                        FocusRequester.Default
+                    }
+                }.then(modifier),
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
     ) {
         itemsIndexed(playerEpisodeList) { index, item ->
-            val cardModifier = if (index == 0) {
-                Modifier.focusRequester(firstItem)
-            } else {
-                Modifier
-            }
+            val cardModifier =
+                if (index == 0) {
+                    Modifier.focusRequester(firstItem)
+                } else {
+                    Modifier
+                }
             EpisodeCard(
                 playerEpisode = item,
                 onClick = { onSelected(item) },
-                modifier = cardModifier
+                modifier = cardModifier,
             )
         }
     }

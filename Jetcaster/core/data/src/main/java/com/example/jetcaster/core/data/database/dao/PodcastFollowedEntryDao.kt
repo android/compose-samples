@@ -28,7 +28,5 @@ abstract class PodcastFollowedEntryDao : BaseDao<PodcastFollowedEntry> {
     @Query("SELECT COUNT(*) FROM podcast_followed_entries WHERE podcast_uri = :podcastUri")
     protected abstract suspend fun podcastFollowRowCount(podcastUri: String): Int
 
-    suspend fun isPodcastFollowed(podcastUri: String): Boolean {
-        return podcastFollowRowCount(podcastUri) > 0
-    }
+    suspend fun isPodcastFollowed(podcastUri: String): Boolean = podcastFollowRowCount(podcastUri) > 0
 }

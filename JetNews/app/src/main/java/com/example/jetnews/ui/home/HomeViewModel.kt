@@ -25,13 +25,13 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.ErrorMessage
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 /**
  * UI state for the Home route.
@@ -40,7 +40,6 @@ import kotlinx.coroutines.launch
  * precisely represent the state available to render the UI.
  */
 sealed interface HomeUiState {
-
     val isLoading: Boolean
     val errorMessages: List<ErrorMessage>
     val searchInput: String
@@ -54,7 +53,7 @@ sealed interface HomeUiState {
     data class NoPosts(
         override val isLoading: Boolean,
         override val errorMessages: List<ErrorMessage>,
-        override val searchInput: String
+        override val searchInput: String,
     ) : HomeUiState
 
     /**
@@ -69,7 +68,7 @@ sealed interface HomeUiState {
         val favorites: Set<String>,
         override val isLoading: Boolean,
         override val errorMessages: List<ErrorMessage>,
-        override val searchInput: String
+        override val searchInput: String,
     ) : HomeUiState
 }
 
@@ -85,7 +84,6 @@ private data class HomeViewModelState(
     val errorMessages: List<ErrorMessage> = emptyList(),
     val searchInput: String = "",
 ) {
-
     /**
      * Converts this [HomeViewModelState] into a more strongly typed [HomeUiState] for driving
      * the ui.
@@ -95,7 +93,7 @@ private data class HomeViewModelState(
             HomeUiState.NoPosts(
                 isLoading = isLoading,
                 errorMessages = errorMessages,
-                searchInput = searchInput
+                searchInput = searchInput,
             )
         } else {
             HomeUiState.HasPosts(
@@ -103,14 +101,15 @@ private data class HomeViewModelState(
                 // Determine the selected post. This will be the post the user last selected.
                 // If there is none (or that post isn't in the current feed), default to the
                 // highlighted post
-                selectedPost = postsFeed.allPosts.find {
-                    it.id == selectedPostId
-                } ?: postsFeed.highlightedPost,
+                selectedPost =
+                    postsFeed.allPosts.find {
+                        it.id == selectedPostId
+                    } ?: postsFeed.highlightedPost,
                 isArticleOpen = isArticleOpen,
                 favorites = favorites,
                 isLoading = isLoading,
                 errorMessages = errorMessages,
-                searchInput = searchInput
+                searchInput = searchInput,
             )
         }
 }
@@ -120,25 +119,26 @@ private data class HomeViewModelState(
  */
 class HomeViewModel(
     private val postsRepository: PostsRepository,
-    preSelectedPostId: String?
+    preSelectedPostId: String?,
 ) : ViewModel() {
-
-    private val viewModelState = MutableStateFlow(
-        HomeViewModelState(
-            isLoading = true,
-            selectedPostId = preSelectedPostId,
-            isArticleOpen = preSelectedPostId != null
+    private val viewModelState =
+        MutableStateFlow(
+            HomeViewModelState(
+                isLoading = true,
+                selectedPostId = preSelectedPostId,
+                isArticleOpen = preSelectedPostId != null,
+            ),
         )
-    )
 
     // UI state exposed to the UI
-    val uiState = viewModelState
-        .map(HomeViewModelState::toUiState)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            viewModelState.value.toUiState()
-        )
+    val uiState =
+        viewModelState
+            .map(HomeViewModelState::toUiState)
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                viewModelState.value.toUiState(),
+            )
 
     init {
         refreshPosts()
@@ -164,10 +164,12 @@ class HomeViewModel(
                 when (result) {
                     is Result.Success -> it.copy(postsFeed = result.data, isLoading = false)
                     is Result.Error -> {
-                        val errorMessages = it.errorMessages + ErrorMessage(
-                            id = UUID.randomUUID().mostSignificantBits,
-                            messageId = R.string.load_error
-                        )
+                        val errorMessages =
+                            it.errorMessages +
+                                ErrorMessage(
+                                    id = UUID.randomUUID().mostSignificantBits,
+                                    messageId = R.string.load_error,
+                                )
                         it.copy(errorMessages = errorMessages, isLoading = false)
                     }
                 }
@@ -218,7 +220,7 @@ class HomeViewModel(
         viewModelState.update {
             it.copy(
                 selectedPostId = postId,
-                isArticleOpen = true
+                isArticleOpen = true,
             )
         }
     }
@@ -238,12 +240,11 @@ class HomeViewModel(
     companion object {
         fun provideFactory(
             postsRepository: PostsRepository,
-            preSelectedPostId: String? = null
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return HomeViewModel(postsRepository, preSelectedPostId) as T
+            preSelectedPostId: String? = null,
+        ): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T = HomeViewModel(postsRepository, preSelectedPostId) as T
             }
-        }
     }
 }

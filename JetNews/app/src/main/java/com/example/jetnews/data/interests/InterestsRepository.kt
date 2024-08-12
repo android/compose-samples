@@ -19,13 +19,15 @@ package com.example.jetnews.data.interests
 import com.example.jetnews.data.Result
 import kotlinx.coroutines.flow.Flow
 
-data class InterestSection(val title: String, val interests: List<String>)
+data class InterestSection(
+    val title: String,
+    val interests: List<String>,
+)
 
 /**
  * Interface to the Interests data layer.
  */
 interface InterestsRepository {
-
     /**
      * Get relevant topics to the user.
      */
@@ -72,4 +74,7 @@ interface InterestsRepository {
     fun observePublicationSelected(): Flow<Set<String>>
 }
 
-data class TopicSelection(val section: String, val topic: String)
+data class TopicSelection(
+    val section: String,
+    val topic: String,
+)

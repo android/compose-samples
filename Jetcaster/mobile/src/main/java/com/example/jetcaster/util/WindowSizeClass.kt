@@ -24,5 +24,6 @@ import androidx.window.core.layout.WindowWidthSizeClass
  * Returns true if the width or height size classes are compact.
  */
 val WindowSizeClass.isCompact: Boolean
-    get() = windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
-        windowHeightSizeClass == WindowHeightSizeClass.COMPACT
+    get() =
+        windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
+            windowHeightSizeClass == WindowHeightSizeClass.COMPACT

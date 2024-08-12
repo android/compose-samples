@@ -55,35 +55,40 @@ fun PodcastImage(
         mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty)
     }
 
-    val imageLoader = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(podcastImageUrl)
-            .crossfade(true)
-            .build(),
-        contentScale = contentScale,
-        onState = { state -> imagePainterState = state }
-    )
+    val imageLoader =
+        rememberAsyncImagePainter(
+            model =
+                ImageRequest
+                    .Builder(LocalContext.current)
+                    .data(podcastImageUrl)
+                    .crossfade(true)
+                    .build(),
+            contentScale = contentScale,
+            onState = { state -> imagePainterState = state },
+        )
 
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         when (imagePainterState) {
             is AsyncImagePainter.State.Loading,
-            is AsyncImagePainter.State.Error -> {
+            is AsyncImagePainter.State.Error,
+            -> {
                 Image(
                     painter = painterResource(id = R.drawable.img_empty),
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                 )
             }
             else -> {
                 Box(
-                    modifier = Modifier
-                        .background(placeholderBrush)
-                        .fillMaxSize()
-
+                    modifier =
+                        Modifier
+                            .background(placeholderBrush)
+                            .fillMaxSize(),
                 )
             }
         }

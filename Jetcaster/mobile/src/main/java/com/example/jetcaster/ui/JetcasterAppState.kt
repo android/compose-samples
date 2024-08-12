@@ -36,15 +36,18 @@ import androidx.navigation.compose.rememberNavController
 /**
  * List of screens for [JetcasterApp]
  */
-sealed class Screen(val route: String) {
+sealed class Screen(
+    val route: String,
+) {
     object Home : Screen("home")
+
     object Player : Screen("player/{$ARG_EPISODE_URI}") {
         fun createRoute(episodeUri: String) = "player/$episodeUri"
     }
 
     object PodcastDetails : Screen("podcast/{$ARG_PODCAST_URI}") {
-
         val PODCAST_URI = "podcastUri"
+
         fun createRoute(podcastUri: String) = "podcast/$podcastUri"
     }
 
@@ -57,14 +60,14 @@ sealed class Screen(val route: String) {
 @Composable
 fun rememberJetcasterAppState(
     navController: NavHostController = rememberNavController(),
-    context: Context = LocalContext.current
+    context: Context = LocalContext.current,
 ) = remember(navController, context) {
     JetcasterAppState(navController, context)
 }
 
 class JetcasterAppState(
     val navController: NavHostController,
-    private val context: Context
+    private val context: Context,
 ) {
     var isOnline by mutableStateOf(checkIfOnline())
         private set
@@ -73,7 +76,10 @@ class JetcasterAppState(
         isOnline = checkIfOnline()
     }
 
-    fun navigateToPlayer(episodeUri: String, from: NavBackStackEntry) {
+    fun navigateToPlayer(
+        episodeUri: String,
+        from: NavBackStackEntry,
+    ) {
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
             val encodedUri = Uri.encode(episodeUri)
@@ -81,7 +87,10 @@ class JetcasterAppState(
         }
     }
 
-    fun navigateToPodcastDetails(podcastUri: String, from: NavBackStackEntry) {
+    fun navigateToPodcastDetails(
+        podcastUri: String,
+        from: NavBackStackEntry,
+    ) {
         if (from.lifecycleIsResumed()) {
             val encodedUri = Uri.encode(podcastUri)
             navController.navigate(Screen.PodcastDetails.createRoute(encodedUri))
@@ -111,5 +120,4 @@ class JetcasterAppState(
  *
  * This is used to de-duplicate navigation events.
  */
-private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
+private fun NavBackStackEntry.lifecycleIsResumed() = this.lifecycle.currentState == Lifecycle.State.RESUMED

@@ -45,7 +45,7 @@ fun TimeGraph(
     val bars = @Composable { repeat(dayItemsCount) { TimeGraphScope.bar(it) } }
     Layout(
         contents = listOf(hoursHeader, dayLabels, bars),
-        modifier = modifier.padding(bottom = 32.dp)
+        modifier = modifier.padding(bottom = 32.dp),
     ) {
             (hoursHeaderMeasurables, dayLabelMeasurables, barMeasureables),
             constraints,
@@ -55,26 +55,29 @@ fun TimeGraph(
         }
         val hoursHeaderPlaceable = hoursHeaderMeasurables.first().measure(constraints)
 
-        val dayLabelPlaceables = dayLabelMeasurables.map { measurable ->
-            val placeable = measurable.measure(constraints)
-            placeable
-        }
+        val dayLabelPlaceables =
+            dayLabelMeasurables.map { measurable ->
+                val placeable = measurable.measure(constraints)
+                placeable
+            }
 
         var totalHeight = hoursHeaderPlaceable.height
 
-        val barPlaceables = barMeasureables.map { measurable ->
-            val barParentData = measurable.parentData as TimeGraphParentData
-            val barWidth = (barParentData.duration * hoursHeaderPlaceable.width).roundToInt()
+        val barPlaceables =
+            barMeasureables.map { measurable ->
+                val barParentData = measurable.parentData as TimeGraphParentData
+                val barWidth = (barParentData.duration * hoursHeaderPlaceable.width).roundToInt()
 
-            val barPlaceable = measurable.measure(
-                constraints.copy(
-                    minWidth = barWidth,
-                    maxWidth = barWidth
-                )
-            )
-            totalHeight += barPlaceable.height
-            barPlaceable
-        }
+                val barPlaceable =
+                    measurable.measure(
+                        constraints.copy(
+                            minWidth = barWidth,
+                            maxWidth = barWidth,
+                        ),
+                    )
+                totalHeight += barPlaceable.height
+                barPlaceable
+            }
 
         val totalWidth = dayLabelPlaceables.first().width + hoursHeaderPlaceable.width
 
@@ -117,8 +120,8 @@ object TimeGraphScope {
         return then(
             TimeGraphParentData(
                 duration = durationInHours / hours.size,
-                offset = offsetInHours / hours.size
-            )
+                offset = offsetInHours / hours.size,
+            ),
         )
     }
 }

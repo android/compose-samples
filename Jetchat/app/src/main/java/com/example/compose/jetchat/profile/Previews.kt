@@ -45,6 +45,7 @@ fun ProfilePreview480Other() {
         ProfileScreen(colleagueProfile)
     }
 }
+
 @Preview(widthDp = 340, name = "340 width - Me - Dark")
 @Composable
 fun ProfilePreview340MeDark() {

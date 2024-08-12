@@ -35,11 +35,9 @@ abstract class CategoriesDao : BaseDao<Category> {
         ) ON category_id = categories.id
         ORDER BY podcast_count DESC
         LIMIT :limit
-        """
+        """,
     )
-    abstract fun categoriesSortedByPodcastCount(
-        limit: Int
-    ): Flow<List<Category>>
+    abstract fun categoriesSortedByPodcastCount(limit: Int): Flow<List<Category>>
 
     @Query("SELECT * FROM categories WHERE name = :name")
     abstract suspend fun getCategoryWithName(name: String): Category?

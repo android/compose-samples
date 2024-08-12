@@ -61,16 +61,14 @@ data class SleepDayData(
         }
     }
 
-    fun fractionOfTotalTime(sleepPeriod: SleepPeriod): Float {
-        return sleepPeriod.duration.toMinutes() / totalTimeInBed.toMinutes().toFloat()
-    }
+    fun fractionOfTotalTime(sleepPeriod: SleepPeriod): Float = sleepPeriod.duration.toMinutes() / totalTimeInBed.toMinutes().toFloat()
 
-    fun minutesAfterSleepStart(sleepPeriod: SleepPeriod): Long {
-        return Duration.between(
-            firstSleepStart,
-            sleepPeriod.startTime
-        ).toMinutes()
-    }
+    fun minutesAfterSleepStart(sleepPeriod: SleepPeriod): Long =
+        Duration
+            .between(
+                firstSleepStart,
+                sleepPeriod.startTime,
+            ).toMinutes()
 }
 
 data class SleepPeriod(
@@ -78,15 +76,17 @@ data class SleepPeriod(
     val endTime: LocalDateTime,
     val type: SleepType,
 ) {
-
     val duration: Duration by lazy {
         Duration.between(startTime, endTime)
     }
 }
 
-enum class SleepType(val title: Int, val color: Color) {
+enum class SleepType(
+    val title: Int,
+    val color: Color,
+) {
     Awake(R.string.sleep_type_awake, Yellow_Awake),
     REM(R.string.sleep_type_rem, Yellow_Rem),
     Light(R.string.sleep_type_light, Yellow_Light),
-    Deep(R.string.sleep_type_deep, Yellow_Deep)
+    Deep(R.string.sleep_type_deep, Yellow_Deep),
 }

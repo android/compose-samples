@@ -43,9 +43,8 @@ data class InterestsUiState(
 )
 
 class InterestsViewModel(
-    private val interestsRepository: InterestsRepository
+    private val interestsRepository: InterestsRepository,
 ) : ViewModel() {
-
     // UI state exposed to the UI
     private val _uiState = MutableStateFlow(InterestsUiState(loading = true))
     val uiState: StateFlow<InterestsUiState> = _uiState.asStateFlow()
@@ -54,21 +53,21 @@ class InterestsViewModel(
         interestsRepository.observeTopicsSelected().stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            emptySet()
+            emptySet(),
         )
 
     val selectedPeople =
         interestsRepository.observePeopleSelected().stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            emptySet()
+            emptySet(),
         )
 
     val selectedPublications =
         interestsRepository.observePublicationSelected().stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            emptySet()
+            emptySet(),
         )
 
     init {
@@ -115,7 +114,7 @@ class InterestsViewModel(
                     loading = false,
                     topics = topics,
                     people = people,
-                    publications = publications
+                    publications = publications,
                 )
             }
         }
@@ -125,13 +124,10 @@ class InterestsViewModel(
      * Factory for InterestsViewModel that takes PostsRepository as a dependency
      */
     companion object {
-        fun provideFactory(
-            interestsRepository: InterestsRepository,
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return InterestsViewModel(interestsRepository) as T
+        fun provideFactory(interestsRepository: InterestsRepository): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T = InterestsViewModel(interestsRepository) as T
             }
-        }
     }
 }

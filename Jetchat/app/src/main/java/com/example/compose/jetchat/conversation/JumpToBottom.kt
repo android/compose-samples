@@ -36,7 +36,7 @@ import com.example.compose.jetchat.R
 
 private enum class Visibility {
     VISIBLE,
-    GONE
+    GONE,
 }
 
 /**
@@ -46,13 +46,14 @@ private enum class Visibility {
 fun JumpToBottom(
     enabled: Boolean,
     onClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // Show Jump to Bottom button
-    val transition = updateTransition(
-        if (enabled) Visibility.VISIBLE else Visibility.GONE,
-        label = "JumpToBottom visibility animation"
-    )
+    val transition =
+        updateTransition(
+            if (enabled) Visibility.VISIBLE else Visibility.GONE,
+            label = "JumpToBottom visibility animation",
+        )
     val bottomOffset by transition.animateDp(label = "JumpToBottom offset animation") {
         if (it == Visibility.GONE) {
             (-32).dp
@@ -66,7 +67,7 @@ fun JumpToBottom(
                 Icon(
                     imageVector = Icons.Filled.ArrowDownward,
                     modifier = Modifier.height(18.dp),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             },
             text = {
@@ -75,9 +76,10 @@ fun JumpToBottom(
             onClick = onClicked,
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.primary,
-            modifier = modifier
-                .offset(x = 0.dp, y = -bottomOffset)
-                .height(36.dp)
+            modifier =
+                modifier
+                    .offset(x = 0.dp, y = -bottomOffset)
+                    .height(36.dp),
         )
     }
 }

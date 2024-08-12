@@ -32,7 +32,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class JetnewsTests {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -49,7 +48,6 @@ class JetnewsTests {
 
     @Test
     fun app_opensArticle() {
-
         println(composeTestRule.onRoot().printToString())
         composeTestRule.onAllNodes(hasText("Manuel Vivo", substring = true))[0].performClick()
 
@@ -64,10 +62,11 @@ class JetnewsTests {
 
     @Test
     fun app_opensInterests() {
-        composeTestRule.onNodeWithContentDescription(
-            label = "Open navigation drawer",
-            useUnmergedTree = true
-        ).performClick()
+        composeTestRule
+            .onNodeWithContentDescription(
+                label = "Open navigation drawer",
+                useUnmergedTree = true,
+            ).performClick()
         composeTestRule.onNodeWithText("Interests").performClick()
         // TODO - this fails on CI but not locally. (https://github.com/android/compose-samples/issues/1442)
         // composeTestRule.waitUntilAtLeastOneExists(hasText("Topics"), 5000L)

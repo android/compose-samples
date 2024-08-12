@@ -41,11 +41,11 @@ internal fun PodcastCard(
                 onClick = onClick,
                 interactionSource = it,
                 scale = CardScale.None,
-                shape = CardDefaults.shape(RoundedCornerShape(12.dp))
+                shape = CardDefaults.shape(RoundedCornerShape(12.dp)),
             ) {
                 Thumbnail(
                     podcastInfo = podcastInfo,
-                    size = JetcasterAppDefaults.thumbnailSize.podcast
+                    size = JetcasterAppDefaults.thumbnailSize.podcast,
                 )
             }
         },

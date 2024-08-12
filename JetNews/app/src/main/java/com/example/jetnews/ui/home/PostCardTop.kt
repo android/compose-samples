@@ -41,45 +41,52 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.CompletePreviews
 
 @Composable
-fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
+fun PostCardTop(
+    post: Post,
+    modifier: Modifier = Modifier,
+) {
     // TUTORIAL CONTENT STARTS HERE
     val typography = MaterialTheme.typography
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp),
     ) {
-        val imageModifier = Modifier
-            .heightIn(min = 180.dp)
-            .fillMaxWidth()
-            .clip(shape = MaterialTheme.shapes.large)
+        val imageModifier =
+            Modifier
+                .heightIn(min = 180.dp)
+                .fillMaxWidth()
+                .clip(shape = MaterialTheme.shapes.large)
         Image(
             painter = painterResource(post.imageId),
             contentDescription = null, // decorative
             modifier = imageModifier,
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
         Spacer(Modifier.height(16.dp))
 
         Text(
             text = post.title,
             style = typography.titleLarge,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
         )
         Text(
             text = post.metadata.author.name,
             style = typography.labelLarge,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 4.dp),
         )
         Text(
-            text = stringResource(
-                id = R.string.home_post_min_read,
-                formatArgs = arrayOf(
-                    post.metadata.date,
-                    post.metadata.readTimeMinutes
-                )
-            ),
-            style = typography.bodySmall
+            text =
+                stringResource(
+                    id = R.string.home_post_min_read,
+                    formatArgs =
+                        arrayOf(
+                            post.metadata.date,
+                            post.metadata.readTimeMinutes,
+                        ),
+                ),
+            style = typography.bodySmall,
         )
     }
 }

@@ -71,7 +71,7 @@ fun LazyListScope.discoverItems(
         PodcastCategoryTabs(
             filterableCategoriesModel = filterableCategoriesModel,
             onCategorySelected = onCategorySelected,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(Modifier.height(8.dp))
@@ -106,7 +106,7 @@ fun LazyGridScope.discoverItems(
         PodcastCategoryTabs(
             filterableCategoriesModel = filterableCategoriesModel,
             onCategorySelected = onCategorySelected,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(Modifier.height(8.dp))
@@ -127,18 +127,19 @@ private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
 private fun PodcastCategoryTabs(
     filterableCategoriesModel: FilterableCategoriesModel,
     onCategorySelected: (CategoryInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val selectedIndex = filterableCategoriesModel.categories.indexOf(
-        filterableCategoriesModel.selectedCategory
-    )
+    val selectedIndex =
+        filterableCategoriesModel.categories.indexOf(
+            filterableCategoriesModel.selectedCategory,
+        )
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,
         containerColor = Color.Transparent,
-        divider = {}, /* Disable the built-in divider */
+        divider = {}, // Disable the built-in divider
         edgePadding = Keyline1,
         indicator = emptyTabIndicator,
-        modifier = modifier
+        modifier = modifier,
     ) {
         filterableCategoriesModel.categories.forEachIndexed { index, category ->
             ChoiceChipContent(
@@ -157,42 +158,47 @@ private fun ChoiceChipContent(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // When adding onClick to Surface, it automatically makes this item higher.
     // On the other hand, adding .clickable modifier, doesn't use the same shape as Surface.
     // This way we disable the minimum height requirement
     CompositionLocalProvider(value = LocalMinimumInteractiveComponentEnforcement provides false) {
         Surface(
-            color = when {
-                selected -> MaterialTheme.colorScheme.secondaryContainer
-                else -> MaterialTheme.colorScheme.surfaceContainer
-            },
-            contentColor = when {
-                selected -> MaterialTheme.colorScheme.onSecondaryContainer
-                else -> MaterialTheme.colorScheme.onSurfaceVariant
-            },
+            color =
+                when {
+                    selected -> MaterialTheme.colorScheme.secondaryContainer
+                    else -> MaterialTheme.colorScheme.surfaceContainer
+                },
+            contentColor =
+                when {
+                    selected -> MaterialTheme.colorScheme.onSecondaryContainer
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                },
             shape = MaterialTheme.shapes.medium,
             modifier = modifier,
             onClick = onClick,
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(
-                    horizontal = when {
-                        selected -> 8.dp
-                        else -> 16.dp
-                    },
-                    vertical = 8.dp
-                )
+                modifier =
+                    Modifier.padding(
+                        horizontal =
+                            when {
+                                selected -> 8.dp
+                                else -> 16.dp
+                            },
+                        vertical = 8.dp,
+                    ),
             ) {
                 if (selected) {
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = stringResource(id = R.string.cd_selected_category),
-                        modifier = Modifier
-                            .height(18.dp)
-                            .padding(end = 8.dp)
+                        modifier =
+                            Modifier
+                                .height(18.dp)
+                                .padding(end = 8.dp),
                     )
                 }
                 Text(

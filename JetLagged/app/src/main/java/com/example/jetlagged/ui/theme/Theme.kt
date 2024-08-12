@@ -22,26 +22,27 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val LightColorScheme = lightColorScheme(
-    primary = Yellow,
-    secondary = MintGreen,
-    tertiary = Coral,
-    secondaryContainer = Yellow,
-    surface = White
-)
+private val LightColorScheme =
+    lightColorScheme(
+        primary = Yellow,
+        secondary = MintGreen,
+        tertiary = Coral,
+        secondaryContainer = Yellow,
+        surface = White,
+    )
 private val shapes: Shapes
     @Composable
-    get() = MaterialTheme.shapes.copy(
-        large = CircleShape
-    )
+    get() =
+        MaterialTheme.shapes.copy(
+            large = CircleShape,
+        )
+
 @Composable
-fun JetLaggedTheme(
-    content: @Composable () -> Unit,
-) {
+fun JetLaggedTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = LightColorScheme,
         typography = Typography,
         shapes = shapes,
-        content = content
+        content = content,
     )
 }

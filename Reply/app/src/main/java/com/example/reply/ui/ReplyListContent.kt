@@ -65,7 +65,7 @@ fun ReplyInboxScreen(
     closeDetailScreen: () -> Unit,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
     toggleSelectedEmail: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     /**
      * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
@@ -89,17 +89,17 @@ fun ReplyInboxScreen(
                     selectedEmailIds = replyHomeUIState.selectedEmails,
                     toggleEmailSelection = toggleSelectedEmail,
                     emailLazyListState = emailLazyListState,
-                    navigateToDetail = navigateToDetail
+                    navigateToDetail = navigateToDetail,
                 )
             },
             second = {
                 ReplyEmailDetail(
                     email = replyHomeUIState.openedEmail ?: replyHomeUIState.emails.first(),
-                    isFullScreen = false
+                    isFullScreen = false,
                 )
             },
             strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
-            displayFeatures = displayFeatures
+            displayFeatures = displayFeatures,
         )
     } else {
         Box(modifier = modifier.fillMaxSize()) {
@@ -109,22 +109,23 @@ fun ReplyInboxScreen(
                 emailLazyListState = emailLazyListState,
                 modifier = Modifier.fillMaxSize(),
                 closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
             )
             // When we have bottom navigation we show FAB at the bottom end.
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 LargeFloatingActionButton(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp),
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = stringResource(id = R.string.compose),
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(28.dp),
                     )
                 }
             }
@@ -139,7 +140,7 @@ fun ReplySinglePaneContent(
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long, ReplyContentType) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
 ) {
     if (replyHomeUIState.openedEmail != null && replyHomeUIState.isDetailOnlyOpen) {
         BackHandler {
@@ -156,7 +157,7 @@ fun ReplySinglePaneContent(
             toggleEmailSelection = toggleEmailSelection,
             emailLazyListState = emailLazyListState,
             modifier = modifier,
-            navigateToDetail = navigateToDetail
+            navigateToDetail = navigateToDetail,
         )
     }
 }
@@ -169,7 +170,7 @@ fun ReplyEmailList(
     toggleEmailSelection: (Long) -> Unit,
     emailLazyListState: LazyListState,
     modifier: Modifier = Modifier,
-    navigateToDetail: (Long, ReplyContentType) -> Unit
+    navigateToDetail: (Long, ReplyContentType) -> Unit,
 ) {
     Box(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
         ReplyDockedSearchBar(
@@ -177,16 +178,18 @@ fun ReplyEmailList(
             onSearchItemSelected = { searchedEmail ->
                 navigateToDetail(searchedEmail.id, ReplyContentType.SINGLE_PANE)
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
         )
 
         LazyColumn(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 80.dp),
-            state = emailLazyListState
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .padding(top = 80.dp),
+            state = emailLazyListState,
         ) {
             items(items = emails, key = { it.id }) { email ->
                 ReplyEmailListItem(
@@ -196,7 +199,7 @@ fun ReplyEmailList(
                     },
                     toggleSelection = toggleEmailSelection,
                     isOpened = openedEmail?.id == email.id,
-                    isSelected = selectedEmailIds.contains(email.id)
+                    isSelected = selectedEmailIds.contains(email.id),
                 )
             }
             // Add extra spacing at the bottom if
@@ -212,11 +215,12 @@ fun ReplyEmailDetail(
     email: Email,
     modifier: Modifier = Modifier,
     isFullScreen: Boolean = true,
-    onBackPressed: () -> Unit = {}
+    onBackPressed: () -> Unit = {},
 ) {
     LazyColumn(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
+        modifier =
+            modifier
+                .background(MaterialTheme.colorScheme.inverseOnSurface),
     ) {
         item {
             EmailDetailAppBar(email, isFullScreen) {

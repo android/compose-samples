@@ -23,7 +23,7 @@ import com.example.compose.jetchat.R
 class ConversationUiState(
     val channelName: String,
     val channelMembers: Int,
-    initialMessages: List<Message>
+    initialMessages: List<Message>,
 ) {
     private val _messages: MutableList<Message> = initialMessages.toMutableStateList()
     val messages: List<Message> = _messages
@@ -39,5 +39,5 @@ data class Message(
     val content: String,
     val timestamp: String,
     val image: Int? = null,
-    val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else
+    val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else,
 )

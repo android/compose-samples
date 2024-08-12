@@ -25,7 +25,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class AppTest {
-
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 

@@ -38,13 +38,15 @@ import org.intellij.lang.annotations.Language
 private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun create() = YellowBackgroundNode()
+
     override fun update(node: YellowBackgroundNode) {
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
-
+private class YellowBackgroundNode :
+    Modifier.Node(),
+    DrawModifierNode {
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
     private val time = mutableFloatStateOf(0f)
@@ -52,7 +54,7 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
     init {
         shader.setColorUniform(
             "color",
-            Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha)
+            Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha),
         )
     }
 
@@ -90,7 +92,8 @@ fun Modifier.yellowBackground(): Modifier =
     }
 
 @Language("AGSL")
-val SHADER = """
+val SHADER =
+    """
     uniform float2 resolution;
     uniform float time;
     uniform float waves;
@@ -128,4 +131,4 @@ val SHADER = """
         
         return float4(rgbColor, 1.0);
     }
-""".trimIndent()
+    """.trimIndent()

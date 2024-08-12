@@ -24,8 +24,9 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class JetcasterWearApplication : Application(), ImageLoaderFactory {
-
+class JetcasterWearApplication :
+    Application(),
+    ImageLoaderFactory {
     @Inject lateinit var imageLoader: ImageLoader
 
     override fun onCreate() {
@@ -35,7 +36,8 @@ class JetcasterWearApplication : Application(), ImageLoaderFactory {
 
     private fun setStrictMode() {
         StrictMode.setThreadPolicy(
-            StrictMode.ThreadPolicy.Builder()
+            StrictMode.ThreadPolicy
+                .Builder()
                 .detectDiskReads()
                 .detectDiskWrites()
                 .detectNetwork()
@@ -44,6 +46,5 @@ class JetcasterWearApplication : Application(), ImageLoaderFactory {
         )
     }
 
-    override fun newImageLoader(): ImageLoader =
-        imageLoader
+    override fun newImageLoader(): ImageLoader = imageLoader
 }

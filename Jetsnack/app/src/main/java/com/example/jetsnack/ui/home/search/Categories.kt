@@ -51,9 +51,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.max
 
 @Composable
-fun SearchCategories(
-    categories: List<SearchCategoryCollection>
-) {
+fun SearchCategories(categories: List<SearchCategoryCollection>) {
     LazyColumn {
         itemsIndexed(categories) { index, collection ->
             SearchCategoryCollection(collection, index)
@@ -66,28 +64,30 @@ fun SearchCategories(
 private fun SearchCategoryCollection(
     collection: SearchCategoryCollection,
     index: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier) {
         Text(
             text = collection.name,
             style = MaterialTheme.typography.titleLarge,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier
-                .heightIn(min = 56.dp)
-                .padding(horizontal = 24.dp, vertical = 4.dp)
-                .wrapContentHeight()
+            modifier =
+                Modifier
+                    .heightIn(min = 56.dp)
+                    .padding(horizontal = 24.dp, vertical = 4.dp)
+                    .wrapContentHeight(),
         )
         VerticalGrid(Modifier.padding(horizontal = 16.dp)) {
-            val gradient = when (index % 2) {
-                0 -> JetsnackTheme.colors.gradient2_2
-                else -> JetsnackTheme.colors.gradient2_3
-            }
+            val gradient =
+                when (index % 2) {
+                    0 -> JetsnackTheme.colors.gradient2_2
+                    else -> JetsnackTheme.colors.gradient2_3
+                }
             collection.categories.forEach { category ->
                 SearchCategory(
                     category = category,
                     gradient = gradient,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
                 )
             }
         }
@@ -103,30 +103,32 @@ private const val CategoryTextProportion = 0.55f
 private fun SearchCategory(
     category: SearchCategory,
     gradient: List<Color>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Layout(
-        modifier = modifier
-            .aspectRatio(1.45f)
-            .shadow(elevation = 3.dp, shape = CategoryShape)
-            .clip(CategoryShape)
-            .background(Brush.horizontalGradient(gradient))
-            .clickable { /* todo */ },
+        modifier =
+            modifier
+                .aspectRatio(1.45f)
+                .shadow(elevation = 3.dp, shape = CategoryShape)
+                .clip(CategoryShape)
+                .background(Brush.horizontalGradient(gradient))
+                .clickable { /* todo */ },
         content = {
             Text(
                 text = category.name,
                 style = MaterialTheme.typography.titleMedium,
                 color = JetsnackTheme.colors.textSecondary,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .padding(start = 8.dp)
+                modifier =
+                    Modifier
+                        .padding(4.dp)
+                        .padding(start = 8.dp),
             )
             SnackImage(
                 imageRes = category.imageRes,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
-        }
+        },
     ) { measurables, constraints ->
         // Text given a set proportion of width (which is determined by the aspect ratio)
         val textWidth = (constraints.maxWidth * CategoryTextProportion).toInt()
@@ -138,16 +140,16 @@ private fun SearchCategory(
         val imagePlaceable = measurables[1].measure(Constraints.fixed(imageSize, imageSize))
         layout(
             width = constraints.maxWidth,
-            height = constraints.minHeight
+            height = constraints.minHeight,
         ) {
             textPlaceable.placeRelative(
                 x = 0,
-                y = (constraints.maxHeight - textPlaceable.height) / 2 // centered
+                y = (constraints.maxHeight - textPlaceable.height) / 2, // centered
             )
             imagePlaceable.placeRelative(
                 // image is placed to end of text i.e. will overflow to the end (but be clipped)
                 x = textWidth,
-                y = (constraints.maxHeight - imagePlaceable.height) / 2 // centered
+                y = (constraints.maxHeight - imagePlaceable.height) / 2, // centered
             )
         }
     }
@@ -160,11 +162,12 @@ private fun SearchCategory(
 private fun SearchCategoryPreview() {
     JetsnackTheme {
         SearchCategory(
-            category = SearchCategory(
-                name = "Desserts",
-                imageRes = R.drawable.desserts
-            ),
-            gradient = JetsnackTheme.colors.gradient3_2
+            category =
+                SearchCategory(
+                    name = "Desserts",
+                    imageRes = R.drawable.desserts,
+                ),
+            gradient = JetsnackTheme.colors.gradient3_2,
         )
     }
 }

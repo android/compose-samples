@@ -75,10 +75,10 @@ fun EpisodeListItem(
         Surface(
             shape = MaterialTheme.shapes.large,
             color = MaterialTheme.colorScheme.surfaceContainer,
-            onClick = { onClick(episode) }
+            onClick = { onClick(episode) },
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             ) {
                 // Top Part
                 EpisodeListItemHeader(
@@ -86,7 +86,7 @@ fun EpisodeListItem(
                     podcast = podcast,
                     showPodcastImage = showPodcastImage,
                     showSummary = showSummary,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp),
                 )
 
                 // Bottom Part
@@ -105,48 +105,51 @@ private fun EpisodeListItemFooter(
     episode: EpisodeInfo,
     podcast: PodcastInfo,
     onQueueEpisode: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Image(
             imageVector = Icons.Rounded.PlayCircleFilled,
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false, radius = 24.dp)
-                ) { /* TODO */ }
-                .size(48.dp)
-                .padding(6.dp)
-                .semantics { role = Role.Button }
+            modifier =
+                Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false, radius = 24.dp),
+                    ) { /* TODO */ }
+                    .size(48.dp)
+                    .padding(6.dp)
+                    .semantics { role = Role.Button },
         )
 
         val duration = episode.duration
         Text(
-            text = when {
-                duration != null -> {
-                    // If we have the duration, we combine the date/duration via a
-                    // formatted string
-                    stringResource(
-                        R.string.episode_date_duration,
-                        MediumDateFormatter.format(episode.published),
-                        duration.toMinutes().toInt()
-                    )
-                }
-                // Otherwise we just use the date
-                else -> MediumDateFormatter.format(episode.published)
-            },
+            text =
+                when {
+                    duration != null -> {
+                        // If we have the duration, we combine the date/duration via a
+                        // formatted string
+                        stringResource(
+                            R.string.episode_date_duration,
+                            MediumDateFormatter.format(episode.published),
+                            duration.toMinutes().toInt(),
+                        )
+                    }
+                    // Otherwise we just use the date
+                    else -> MediumDateFormatter.format(episode.published)
+                },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .weight(1f)
+            modifier =
+                Modifier
+                    .padding(horizontal = 8.dp)
+                    .weight(1f),
         )
 
         IconButton(
@@ -154,15 +157,15 @@ private fun EpisodeListItemFooter(
                 onQueueEpisode(
                     PlayerEpisode(
                         podcastInfo = podcast,
-                        episodeInfo = episode
-                    )
+                        episodeInfo = episode,
+                    ),
                 )
             },
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
                 contentDescription = stringResource(R.string.cd_add),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
@@ -172,7 +175,7 @@ private fun EpisodeListItemFooter(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = stringResource(R.string.cd_more),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -184,14 +187,14 @@ private fun EpisodeListItemHeader(
     podcast: PodcastInfo,
     showPodcastImage: Boolean,
     showSummary: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         Column(
             modifier =
-            Modifier
-                .weight(1f)
-                .padding(end = 16.dp)
+                Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp),
         ) {
             Text(
                 text = episode.title,
@@ -199,7 +202,7 @@ private fun EpisodeListItemHeader(
                 minLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 2.dp)
+                modifier = Modifier.padding(vertical = 2.dp),
             )
 
             if (showSummary) {
@@ -225,9 +228,10 @@ private fun EpisodeListItemHeader(
         if (showPodcastImage) {
             EpisodeListItemImage(
                 podcast = podcast,
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(MaterialTheme.shapes.medium)
+                modifier =
+                    Modifier
+                        .size(56.dp)
+                        .clip(MaterialTheme.shapes.medium),
             )
         }
     }
@@ -236,7 +240,7 @@ private fun EpisodeListItemHeader(
 @Composable
 private fun EpisodeListItemImage(
     podcast: PodcastInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     PodcastImage(
         podcastImageUrl = podcast.imageUrl,
@@ -248,12 +252,12 @@ private fun EpisodeListItemImage(
 @Preview(
     name = "Light Mode",
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
 @Preview(
     name = "Dark Mode",
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun EpisodeListItemPreview() {
@@ -263,7 +267,7 @@ private fun EpisodeListItemPreview() {
             podcast = PreviewPodcasts[0],
             onClick = {},
             onQueueEpisode = {},
-            showSummary = true
+            showSummary = true,
         )
     }
 }

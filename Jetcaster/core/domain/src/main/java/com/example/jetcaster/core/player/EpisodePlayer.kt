@@ -17,10 +17,11 @@
 package com.example.jetcaster.core.player
 
 import com.example.jetcaster.core.player.model.PlayerEpisode
-import java.time.Duration
 import kotlinx.coroutines.flow.StateFlow
+import java.time.Duration
 
 val DefaultPlaybackSpeed = Duration.ofSeconds(1)
+
 data class EpisodePlayerState(
     val currentEpisode: PlayerEpisode? = null,
     val queue: List<PlayerEpisode> = emptyList(),
@@ -34,7 +35,6 @@ data class EpisodePlayerState(
  * episodes, playing an episode, pausing, seeking, etc.
  */
 interface EpisodePlayer {
-
     /**
      * A StateFlow that emits the [EpisodePlayerState] as controls as invoked on this player.
      */
@@ -53,8 +53,8 @@ interface EpisodePlayer {
     fun addToQueue(episode: PlayerEpisode)
 
     /*
-    * Flushes the queue
-    */
+     * Flushes the queue
+     */
     fun removeAllFromQueue()
 
     /**

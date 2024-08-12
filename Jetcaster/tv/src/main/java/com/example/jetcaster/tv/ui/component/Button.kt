@@ -44,20 +44,19 @@ internal fun PlayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     scale: ButtonScale = ButtonDefaults.scale(),
-) =
-    ButtonWithIcon(
-        icon = Icons.Outlined.PlayArrow,
-        label = stringResource(R.string.label_play),
-        onClick = onClick,
-        modifier = modifier,
-        scale = scale
-    )
+) = ButtonWithIcon(
+    icon = Icons.Outlined.PlayArrow,
+    label = stringResource(R.string.label_play),
+    onClick = onClick,
+    modifier = modifier,
+    scale = scale,
+)
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun EnqueueButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
@@ -71,7 +70,7 @@ internal fun EnqueueButton(
 @Composable
 internal fun InfoButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
@@ -85,12 +84,12 @@ internal fun InfoButton(
 @Composable
 internal fun PreviousButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
             Icons.Default.SkipPrevious,
-            contentDescription = stringResource(R.string.label_previous_episode)
+            contentDescription = stringResource(R.string.label_previous_episode),
         )
     }
 }
@@ -99,12 +98,12 @@ internal fun PreviousButton(
 @Composable
 internal fun NextButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
             Icons.Default.SkipNext,
-            contentDescription = stringResource(R.string.label_next_episode)
+            contentDescription = stringResource(R.string.label_next_episode),
         )
     }
 }
@@ -114,13 +113,14 @@ internal fun NextButton(
 internal fun PlayPauseButton(
     isPlaying: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val (icon, description) = if (isPlaying) {
-        Icons.Default.Pause to stringResource(R.string.label_pause)
-    } else {
-        Icons.Default.PlayArrow to stringResource(R.string.label_play)
-    }
+    val (icon, description) =
+        if (isPlaying) {
+            Icons.Default.Pause to stringResource(R.string.label_pause)
+        } else {
+            Icons.Default.PlayArrow to stringResource(R.string.label_play)
+        }
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(icon, description, modifier = Modifier.size(48.dp))
     }
@@ -130,12 +130,12 @@ internal fun PlayPauseButton(
 @Composable
 internal fun RewindButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
             Icons.Default.Replay10,
-            contentDescription = stringResource(R.string.label_rewind)
+            contentDescription = stringResource(R.string.label_rewind),
         )
     }
 }
@@ -144,12 +144,12 @@ internal fun RewindButton(
 @Composable
 internal fun SkipButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
             Icons.Default.Forward10,
-            contentDescription = stringResource(R.string.label_skip)
+            contentDescription = stringResource(R.string.label_skip),
         )
     }
 }

@@ -59,7 +59,6 @@ import com.google.android.horologist.media.ui.screens.playerlibrarypager.PlayerL
 
 @Composable
 fun WearApp() {
-
     val navController = rememberSwipeDismissableNavController()
     val navHostState = rememberSwipeDismissableNavHostState()
     val volumeViewModel: VolumeViewModel = viewModel(factory = VolumeViewModel.Factory)
@@ -92,7 +91,7 @@ fun WearApp() {
                                 volumeViewModel = volumeViewModel,
                                 onVolumeClick = {
                                     navController.navigateToVolume()
-                                }
+                                },
                             )
                         },
                         libraryScreen = {
@@ -123,13 +122,13 @@ fun WearApp() {
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
                         },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = YourPodcasts.navRoute) {
                     PodcastsScreen(
                         onPodcastsItemClick = { navController.navigateToPodcastDetails(it.uri) },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = PodcastDetails.navRoute) {
@@ -138,7 +137,7 @@ fun WearApp() {
                             navController.navigateToPlayer()
                         },
                         onEpisodeItemClick = { navController.navigateToEpisode(it.uri) },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = UpNext.navRoute) {
@@ -150,7 +149,7 @@ fun WearApp() {
                         onDismiss = {
                             navController.popBackStack()
                             navController.navigateToYourPodcast()
-                        }
+                        },
                     )
                 }
                 composable(route = Episode.navRoute) {
@@ -161,7 +160,7 @@ fun WearApp() {
                         onDismiss = {
                             navController.popBackStack()
                             navController.navigateToYourPodcast()
-                        }
+                        },
                     )
                 }
             }

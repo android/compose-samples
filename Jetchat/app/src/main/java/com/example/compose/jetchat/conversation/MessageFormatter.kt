@@ -37,9 +37,11 @@ val symbolPattern by lazy {
 
 // Accepted annotations for the ClickableTextWrapper
 enum class SymbolAnnotationType {
-    PERSON, LINK
+    PERSON,
+    LINK,
 }
 typealias StringAnnotation = AnnotatedString.Range<String>
+
 // Pair returning styled content and annotation for ClickableText when matching syntax token
 typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
 
@@ -58,12 +60,11 @@ typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
 @Composable
 fun messageFormatter(
     text: String,
-    primary: Boolean
+    primary: Boolean,
 ): AnnotatedString {
     val tokens = symbolPattern.findAll(text)
 
     return buildAnnotatedString {
-
         var cursorPosition = 0
 
         val codeSnippetBackground =
@@ -76,12 +77,13 @@ fun messageFormatter(
         for (token in tokens) {
             append(text.slice(cursorPosition until token.range.first))
 
-            val (annotatedString, stringAnnotation) = getSymbolAnnotation(
-                matchResult = token,
-                colorScheme = MaterialTheme.colorScheme,
-                primary = primary,
-                codeSnippetBackground = codeSnippetBackground
-            )
+            val (annotatedString, stringAnnotation) =
+                getSymbolAnnotation(
+                    matchResult = token,
+                    colorScheme = MaterialTheme.colorScheme,
+                    primary = primary,
+                    codeSnippetBackground = codeSnippetBackground,
+                )
             append(annotatedString)
 
             if (stringAnnotation != null) {
@@ -110,71 +112,79 @@ private fun getSymbolAnnotation(
     matchResult: MatchResult,
     colorScheme: ColorScheme,
     primary: Boolean,
-    codeSnippetBackground: Color
-): SymbolAnnotation {
-    return when (matchResult.value.first()) {
-        '@' -> SymbolAnnotation(
-            AnnotatedString(
-                text = matchResult.value,
-                spanStyle = SpanStyle(
-                    color = if (primary) colorScheme.inversePrimary else colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-            ),
-            StringAnnotation(
-                item = matchResult.value.substring(1),
-                start = matchResult.range.first,
-                end = matchResult.range.last,
-                tag = SymbolAnnotationType.PERSON.name
+    codeSnippetBackground: Color,
+): SymbolAnnotation =
+    when (matchResult.value.first()) {
+        '@' ->
+            SymbolAnnotation(
+                AnnotatedString(
+                    text = matchResult.value,
+                    spanStyle =
+                        SpanStyle(
+                            color = if (primary) colorScheme.inversePrimary else colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                ),
+                StringAnnotation(
+                    item = matchResult.value.substring(1),
+                    start = matchResult.range.first,
+                    end = matchResult.range.last,
+                    tag = SymbolAnnotationType.PERSON.name,
+                ),
             )
-        )
-        '*' -> SymbolAnnotation(
-            AnnotatedString(
-                text = matchResult.value.trim('*'),
-                spanStyle = SpanStyle(fontWeight = FontWeight.Bold)
-            ),
-            null
-        )
-        '_' -> SymbolAnnotation(
-            AnnotatedString(
-                text = matchResult.value.trim('_'),
-                spanStyle = SpanStyle(fontStyle = FontStyle.Italic)
-            ),
-            null
-        )
-        '~' -> SymbolAnnotation(
-            AnnotatedString(
-                text = matchResult.value.trim('~'),
-                spanStyle = SpanStyle(textDecoration = TextDecoration.LineThrough)
-            ),
-            null
-        )
-        '`' -> SymbolAnnotation(
-            AnnotatedString(
-                text = matchResult.value.trim('`'),
-                spanStyle = SpanStyle(
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 12.sp,
-                    background = codeSnippetBackground,
-                    baselineShift = BaselineShift(0.2f)
-                )
-            ),
-            null
-        )
-        'h' -> SymbolAnnotation(
-            AnnotatedString(
-                text = matchResult.value,
-                spanStyle = SpanStyle(
-                    color = if (primary) colorScheme.inversePrimary else colorScheme.primary
-                )
-            ),
-            StringAnnotation(
-                item = matchResult.value,
-                start = matchResult.range.first,
-                end = matchResult.range.last,
-                tag = SymbolAnnotationType.LINK.name
+        '*' ->
+            SymbolAnnotation(
+                AnnotatedString(
+                    text = matchResult.value.trim('*'),
+                    spanStyle = SpanStyle(fontWeight = FontWeight.Bold),
+                ),
+                null,
             )
-        )
+        '_' ->
+            SymbolAnnotation(
+                AnnotatedString(
+                    text = matchResult.value.trim('_'),
+                    spanStyle = SpanStyle(fontStyle = FontStyle.Italic),
+                ),
+                null,
+            )
+        '~' ->
+            SymbolAnnotation(
+                AnnotatedString(
+                    text = matchResult.value.trim('~'),
+                    spanStyle = SpanStyle(textDecoration = TextDecoration.LineThrough),
+                ),
+                null,
+            )
+        '`' ->
+            SymbolAnnotation(
+                AnnotatedString(
+                    text = matchResult.value.trim('`'),
+                    spanStyle =
+                        SpanStyle(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 12.sp,
+                            background = codeSnippetBackground,
+                            baselineShift = BaselineShift(0.2f),
+                        ),
+                ),
+                null,
+            )
+        'h' ->
+            SymbolAnnotation(
+                AnnotatedString(
+                    text = matchResult.value,
+                    spanStyle =
+                        SpanStyle(
+                            color = if (primary) colorScheme.inversePrimary else colorScheme.primary,
+                        ),
+                ),
+                StringAnnotation(
+                    item = matchResult.value,
+                    start = matchResult.range.first,
+                    end = matchResult.range.last,
+                    tag = SymbolAnnotationType.LINK.name,
+                ),
+            )
         else -> SymbolAnnotation(AnnotatedString(matchResult.value), null)
     }
-}

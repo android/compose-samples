@@ -30,7 +30,9 @@ object JetnewsDestinations {
 /**
  * Models the navigation actions in the app.
  */
-class JetnewsNavigationActions(navController: NavHostController) {
+class JetnewsNavigationActions(
+    navController: NavHostController,
+) {
     val navigateToHome: () -> Unit = {
         navController.navigate(JetnewsDestinations.HOME_ROUTE) {
             // Pop up to the start destination of the graph to

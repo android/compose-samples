@@ -25,7 +25,6 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.example.jetlagged.ui.theme.JetLaggedTheme
 
 class MainActivity : ComponentActivity() {
-
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

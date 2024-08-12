@@ -21,7 +21,7 @@ package com.example.jetcaster.core.model
  */
 data class FilterableCategoriesModel(
     val categories: List<CategoryInfo> = emptyList(),
-    val selectedCategory: CategoryInfo? = null
+    val selectedCategory: CategoryInfo? = null,
 ) {
     val isEmpty = categories.isEmpty() || selectedCategory == null
 }

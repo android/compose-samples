@@ -57,25 +57,27 @@ fun PodcastsScreen(
 ) {
     val uiState by podcastsViewModel.uiState.collectAsStateWithLifecycle()
 
-    val modifiedState = when (uiState) {
-        is PodcastsScreenState.Loaded -> {
-            val modifiedPodcast = (uiState as PodcastsScreenState.Loaded).podcastList.map {
-                it.takeIf { it.title.isNotEmpty() }
-                    ?: it.copy(title = stringResource(id = R.string.no_title))
+    val modifiedState =
+        when (uiState) {
+            is PodcastsScreenState.Loaded -> {
+                val modifiedPodcast =
+                    (uiState as PodcastsScreenState.Loaded).podcastList.map {
+                        it.takeIf { it.title.isNotEmpty() }
+                            ?: it.copy(title = stringResource(id = R.string.no_title))
+                    }
+
+                PodcastsScreenState.Loaded(modifiedPodcast)
             }
 
-            PodcastsScreenState.Loaded(modifiedPodcast)
+            PodcastsScreenState.Empty,
+            PodcastsScreenState.Loading,
+            -> uiState
         }
-
-        PodcastsScreenState.Empty,
-        PodcastsScreenState.Loading,
-        -> uiState
-    }
 
     PodcastsScreen(
         podcastsScreenState = modifiedState,
         onPodcastsItemClick = onPodcastsItemClick,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
     )
 }
 
@@ -87,18 +89,18 @@ fun PodcastsScreen(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     val columnState = rememberResponsiveColumnState()
     ScreenScaffold(
         scrollState = columnState,
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (podcastsScreenState) {
-            is PodcastsScreenState.Loaded -> PodcastScreenLoaded(
-                columnState = columnState,
-                podcastList = podcastsScreenState.podcastList,
-                onPodcastsItemClick = onPodcastsItemClick
-            )
+            is PodcastsScreenState.Loaded ->
+                PodcastScreenLoaded(
+                    columnState = columnState,
+                    podcastList = podcastsScreenState.podcastList,
+                    onPodcastsItemClick = onPodcastsItemClick,
+                )
             PodcastsScreenState.Empty ->
                 PodcastScreenEmpty(onDismiss)
             PodcastsScreenState.Loading ->
@@ -112,66 +114,65 @@ fun PodcastScreenLoaded(
     columnState: ScalingLazyColumnState,
     podcastList: List<PodcastInfo>,
     onPodcastsItemClick: (PodcastInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     EntityScreen(
         columnState = columnState,
         modifier = modifier,
         headerContent = {
             ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding()
+                contentPadding = ListHeaderDefaults.firstItemPadding(),
             ) {
                 Text(text = stringResource(id = R.string.podcasts))
             }
         },
         content = {
-            items(count = podcastList.size) {
-                    index ->
+            items(count = podcastList.size) { index ->
                 MediaContent(
                     podcast = podcastList[index],
-                    downloadItemArtworkPlaceholder = rememberVectorPainter(
-                        image = Icons.Default.MusicNote,
-                        tintColor = Color.Blue,
-                    ),
-                    onPodcastsItemClick = onPodcastsItemClick
-
+                    downloadItemArtworkPlaceholder =
+                        rememberVectorPainter(
+                            image = Icons.Default.MusicNote,
+                            tintColor = Color.Blue,
+                        ),
+                    onPodcastsItemClick = onPodcastsItemClick,
                 )
             }
-        }
+        },
     )
 }
 
 @Composable
 fun PodcastScreenEmpty(
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
         showDialog = true,
         message = stringResource(R.string.podcasts_no_podcasts),
         onDismiss = onDismiss,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun PodcastScreenLoading(
     columnState: ScalingLazyColumnState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     EntityScreen(
         columnState = columnState,
         modifier = modifier,
         headerContent = {
             DefaultEntityScreenHeader(
-                title = stringResource(R.string.podcasts)
+                title = stringResource(R.string.podcasts),
             )
         },
         content = {
             items(count = 2) {
                 PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
             }
-        }
+        },
     )
 }
 
@@ -179,18 +180,20 @@ fun PodcastScreenLoading(
 @WearPreviewFontScales
 @Composable
 fun PodcastScreenLoadedPreview(
-    @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo
+    @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo,
 ) {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = ScalingLazyColumnDefaults.padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
+    val columnState =
+        rememberResponsiveColumnState(
+            contentPadding =
+                ScalingLazyColumnDefaults.padding(
+                    first = ScalingLazyColumnDefaults.ItemType.Text,
+                    last = ScalingLazyColumnDefaults.ItemType.Chip,
+                ),
         )
-    )
     PodcastScreenLoaded(
         columnState = columnState,
         podcastList = listOf(podcasts),
-        onPodcastsItemClick = {}
+        onPodcastsItemClick = {},
     )
 }
 
@@ -198,12 +201,14 @@ fun PodcastScreenLoadedPreview(
 @WearPreviewFontScales
 @Composable
 fun PodcastScreenLoadingPreview() {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = ScalingLazyColumnDefaults.padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
+    val columnState =
+        rememberResponsiveColumnState(
+            contentPadding =
+                ScalingLazyColumnDefaults.padding(
+                    first = ScalingLazyColumnDefaults.ItemType.Text,
+                    last = ScalingLazyColumnDefaults.ItemType.Chip,
+                ),
         )
-    )
     PodcastScreenLoading(columnState)
 }
 
@@ -218,7 +223,7 @@ fun PodcastScreenEmptyPreview() {
 fun MediaContent(
     podcast: PodcastInfo,
     downloadItemArtworkPlaceholder: Painter?,
-    onPodcastsItemClick: (PodcastInfo) -> Unit
+    onPodcastsItemClick: (PodcastInfo) -> Unit,
 ) {
     val mediaTitle = podcast.title
 

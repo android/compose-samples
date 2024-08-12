@@ -25,12 +25,12 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import kotlinx.coroutines.flow.map
 
 class JetcasterAppState(
-    val navHostController: NavHostController
+    val navHostController: NavHostController,
 ) {
-
-    val currentRouteFlow = navHostController.currentBackStackEntryFlow.map {
-        it.destination.route
-    }
+    val currentRouteFlow =
+        navHostController.currentBackStackEntryFlow.map {
+            it.destination.route
+        }
 
     private fun navigate(screen: Screen) {
         navHostController.navigate(screen.route)
@@ -83,9 +83,7 @@ class JetcasterAppState(
 }
 
 @Composable
-fun rememberJetcasterAppState(
-    navHostController: NavHostController = rememberNavController()
-) =
+fun rememberJetcasterAppState(navHostController: NavHostController = rememberNavController()) =
     remember(navHostController) {
         JetcasterAppState(navHostController)
     }
@@ -113,7 +111,9 @@ sealed interface Screen {
         override val route: String = "settings"
     }
 
-    data class Podcast(private val podcastUri: String) : Screen {
+    data class Podcast(
+        private val podcastUri: String,
+    ) : Screen {
         override val route = "$ROOT/$podcastUri"
 
         companion object : Screen {
@@ -123,8 +123,9 @@ sealed interface Screen {
         }
     }
 
-    data class Episode(private val episodeUri: String) : Screen {
-
+    data class Episode(
+        private val episodeUri: String,
+    ) : Screen {
         override val route: String = "$ROOT/$episodeUri"
 
         companion object : Screen {
