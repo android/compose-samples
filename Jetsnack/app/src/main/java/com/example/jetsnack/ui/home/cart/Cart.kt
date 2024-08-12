@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES

@@ -45,12 +45,12 @@ fun SwipeDismissItem(
     // Boolean value used for hiding the item if the current state is dismissed
     val isDismissed = dismissState.currentValue == SwipeToDismissBoxValue.EndToStart
 
-     AnimatedVisibility(
-         modifier = modifier,
-         visible = !isDismissed,
-         enter = enter,
-         exit = exit
-     ) {
+    AnimatedVisibility(
+        modifier = modifier,
+        visible = !isDismissed,
+        enter = enter,
+        exit = exit
+    ) {
         SwipeToDismissBox(
             modifier = modifier,
             state = dismissState,
@@ -58,5 +58,5 @@ fun SwipeDismissItem(
             backgroundContent = { background(dismissState.progress) },
             content = { content(isDismissed) }
         )
-     }
+    }
 }
