@@ -99,7 +99,6 @@ fun Search(
 
                 SearchDisplay.Results -> SearchResults(
                     state.searchResults,
-                    state.filters,
                     onSnackClick
                 )
 

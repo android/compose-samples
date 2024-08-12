@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class)
-
 package com.example.jetsnack.ui.home
 
 import androidx.annotation.FloatRange
@@ -24,7 +22,6 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -328,7 +325,8 @@ fun JetsnackBottomNavigationItem(
     modifier: Modifier = Modifier
 ) {
     // Animate the icon/text positions within the item based on selection
-    val animationProgress by animateFloatAsState(if (selected) 1f else 0f, animSpec)
+    val animationProgress by animateFloatAsState(if (selected) 1f else 0f, animSpec,
+        label = "animation progress")
     JetsnackBottomNavItemLayout(
         icon = icon,
         text = text,
@@ -430,7 +428,7 @@ private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, v
 private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomBar(
-            tabs = HomeSections.values(),
+            tabs = HomeSections.entries.toTypedArray(),
             currentRoute = "home/feed",
             navigateToRoute = { }
         )
