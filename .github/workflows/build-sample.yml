@@ -59,7 +59,7 @@ jobs:
 
       - name: Check formatting
         working-directory: ${{ inputs.path }}
-        run: ./gradlew --init-script buildscripts/init.gradle.kts spotlessCheck --stacktrace
+        run: ./gradlew spotlessCheck --stacktrace
 
       - name: Check lint
         working-directory: ${{ inputs.path }}
