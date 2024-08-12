@@ -325,8 +325,10 @@ fun JetsnackBottomNavigationItem(
     modifier: Modifier = Modifier
 ) {
     // Animate the icon/text positions within the item based on selection
-    val animationProgress by animateFloatAsState(if (selected) 1f else 0f, animSpec,
-        label = "animation progress")
+    val animationProgress by animateFloatAsState(
+        if (selected) 1f else 0f, animSpec,
+        label = "animation progress"
+    )
     JetsnackBottomNavItemLayout(
         icon = icon,
         text = text,
