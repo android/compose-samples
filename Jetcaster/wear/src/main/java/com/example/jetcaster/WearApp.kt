@@ -41,7 +41,7 @@ import com.example.jetcaster.ui.PodcastDetails
 import com.example.jetcaster.ui.UpNext
 import com.example.jetcaster.ui.YourPodcasts
 import com.example.jetcaster.ui.episode.EpisodeScreen
-import com.example.jetcaster.ui.latest_episodes.LatestEpisodesScreen
+import com.example.jetcaster.ui.latestepisodes.LatestEpisodesScreen
 import com.example.jetcaster.ui.library.LibraryScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
