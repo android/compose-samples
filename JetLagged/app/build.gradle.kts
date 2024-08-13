@@ -114,7 +114,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.google.android.material)
 
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.foundation)

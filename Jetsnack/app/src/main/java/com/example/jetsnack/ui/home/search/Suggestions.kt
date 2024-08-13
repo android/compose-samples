@@ -26,8 +26,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,7 +69,7 @@ private fun SuggestionHeader(
 ) {
     Text(
         text = name,
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.titleLarge,
         color = JetsnackTheme.colors.textPrimary,
         modifier = modifier
             .heightIn(min = 56.dp)
@@ -86,7 +86,7 @@ private fun Suggestion(
 ) {
     Text(
         text = suggestion,
-        style = MaterialTheme.typography.subtitle1,
+        style = MaterialTheme.typography.titleMedium,
         modifier = modifier
             .heightIn(min = 48.dp)
             .clickable { onSuggestionSelect(suggestion) }

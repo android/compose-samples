@@ -23,19 +23,17 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Horizontal
-import androidx.compose.foundation.layout.WindowInsetsSides.Companion.Top
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +41,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
@@ -52,8 +49,8 @@ import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import java.lang.IllegalStateException
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {
     val sharedElementScope =
@@ -66,40 +63,44 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                 modifier = modifier
                     .renderInSharedTransitionScopeOverlay()
                     .animateEnterExit(
-                        enter = slideInVertically(spatialExpressiveSpring()) { -it },
-                        exit = slideOutVertically(spatialExpressiveSpring()) { -it }
+                        enter = slideInVertically(spatialExpressiveSpring()) { -it * 2 },
+                        exit = slideOutVertically(spatialExpressiveSpring()) { -it * 2 }
                     )
             ) {
                 TopAppBar(
-                    backgroundColor = JetsnackTheme.colors.uiBackground
-                        .copy(alpha = AlphaNearOpaque),
-                    contentColor = JetsnackTheme.colors.textSecondary,
-                    contentPadding = WindowInsets.systemBars.only(Horizontal + Top)
-                        .asPaddingValues(),
-                    elevation = 0.dp,
-                ) {
-                    Text(
-                        text = "Delivery to 1600 Amphitheater Way",
-                        style = MaterialTheme.typography.subtitle1,
-                        color = JetsnackTheme.colors.textSecondary,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically)
-                    )
-                    IconButton(
-                        onClick = { /* todo */ },
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ExpandMore,
-                            tint = JetsnackTheme.colors.brand,
-                            contentDescription = stringResource(R.string.label_select_delivery)
-                        )
-                    }
-                }
+                    windowInsets = WindowInsets(0, 0, 0, 0),
+                    title = {
+                        Row {
+                            Text(
+                                text = "Delivery to 1600 Amphitheater Way",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = JetsnackTheme.colors.textSecondary,
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically)
+                            )
+                            IconButton(
+                                onClick = { /* todo */ },
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ExpandMore,
+                                    tint = JetsnackTheme.colors.brand,
+                                    contentDescription =
+                                    stringResource(R.string.label_select_delivery)
+                                )
+                            }
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors().copy(
+                        containerColor = JetsnackTheme.colors.uiBackground
+                            .copy(alpha = AlphaNearOpaque),
+                        titleContentColor = JetsnackTheme.colors.textSecondary
+                    ),
+                )
                 JetsnackDivider()
             }
         }

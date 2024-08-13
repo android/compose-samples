@@ -28,9 +28,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.SnackbarHost
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -71,11 +72,12 @@ fun JetsnackApp() {
                 ) {
                     composableWithCompositionLocal(
                         route = MainDestinations.HOME_ROUTE
-                    ) {
+                    ) { backStackEntry ->
                         MainContainer(
                             onSnackSelected = jetsnackNavController::navigateToSnackDetail
                         )
                     }
+
                     composableWithCompositionLocal(
                         "${MainDestinations.SNACK_DETAIL_ROUTE}/" +
                             "{${MainDestinations.SNACK_ID_KEY}}" +
@@ -151,15 +153,17 @@ fun MainContainer(
                 snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
             )
         },
-        scaffoldState = jetsnackScaffoldState.scaffoldState,
-    ) { paddingValues ->
+        snackBarHostState = jetsnackScaffoldState.snackBarHostState,
+    ) { padding ->
         NavHost(
             navController = nestedNavController.navController,
             startDestination = HomeSections.FEED.route
         ) {
             addHomeGraph(
                 onSnackSelected = onSnackSelected,
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier
+                    .padding(padding)
+                    .consumeWindowInsets(padding)
             )
         }
     }

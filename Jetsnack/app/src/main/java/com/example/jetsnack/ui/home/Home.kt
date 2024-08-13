@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class)
-
 package com.example.jetsnack.ui.home
 
 import androidx.annotation.FloatRange
@@ -24,7 +22,6 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -42,14 +39,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -226,7 +223,7 @@ fun JetsnackBottomBar(
                         Text(
                             text = text,
                             color = tint,
-                            style = MaterialTheme.typography.button,
+                            style = MaterialTheme.typography.labelLarge,
                             maxLines = 1
                         )
                     },
@@ -328,7 +325,10 @@ fun JetsnackBottomNavigationItem(
     modifier: Modifier = Modifier
 ) {
     // Animate the icon/text positions within the item based on selection
-    val animationProgress by animateFloatAsState(if (selected) 1f else 0f, animSpec)
+    val animationProgress by animateFloatAsState(
+        if (selected) 1f else 0f, animSpec,
+        label = "animation progress"
+    )
     JetsnackBottomNavItemLayout(
         icon = icon,
         text = text,
@@ -430,7 +430,7 @@ private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, v
 private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomBar(
-            tabs = HomeSections.values(),
+            tabs = HomeSections.entries.toTypedArray(),
             currentRoute = "home/feed",
             navigateToRoute = { }
         )
