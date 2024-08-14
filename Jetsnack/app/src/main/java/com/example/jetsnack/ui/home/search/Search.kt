@@ -31,13 +31,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -60,63 +61,48 @@ import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
-import com.example.jetsnack.ui.home.HomeSections
-import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.utils.mirroringBackIcon
 
 @Composable
 fun Search(
-    onSnackClick: (Long) -> Unit,
-    onNavigateToRoute: (String) -> Unit,
+    onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
     state: SearchState = rememberSearchState()
 ) {
-    JetsnackScaffold(
-        bottomBar = {
-            JetsnackBottomBar(
-                tabs = HomeSections.values(),
-                currentRoute = HomeSections.SEARCH.route,
-                navigateToRoute = onNavigateToRoute
+    JetsnackSurface(modifier = modifier.fillMaxSize()) {
+        Column {
+            Spacer(modifier = Modifier.statusBarsPadding())
+            SearchBar(
+                query = state.query,
+                onQueryChange = { state.query = it },
+                searchFocused = state.focused,
+                onSearchFocusChange = { state.focused = it },
+                onClearQuery = { state.query = TextFieldValue("") },
+                searching = state.searching
             )
-        },
-        modifier = modifier
-    ) { paddingValues ->
-        JetsnackSurface(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            Column {
-                Spacer(modifier = Modifier.statusBarsPadding())
-                SearchBar(
-                    query = state.query,
-                    onQueryChange = { state.query = it },
-                    searchFocused = state.focused,
-                    onSearchFocusChange = { state.focused = it },
-                    onClearQuery = { state.query = TextFieldValue("") },
-                    searching = state.searching
-                )
-                JetsnackDivider()
+            JetsnackDivider()
 
-                LaunchedEffect(state.query.text) {
-                    state.searching = true
-                    state.searchResults = SearchRepo.search(state.query.text)
-                    state.searching = false
-                }
-                when (state.searchDisplay) {
-                    SearchDisplay.Categories -> SearchCategories(state.categories)
-                    SearchDisplay.Suggestions -> SearchSuggestions(
-                        suggestions = state.suggestions,
-                        onSuggestionSelect = { suggestion ->
-                            state.query = TextFieldValue(suggestion)
-                        }
-                    )
-                    SearchDisplay.Results -> SearchResults(
-                        state.searchResults,
-                        state.filters,
-                        onSnackClick
-                    )
-                    SearchDisplay.NoResults -> NoResults(state.query.text)
-                }
+            LaunchedEffect(state.query.text) {
+                state.searching = true
+                state.searchResults = SearchRepo.search(state.query.text)
+                state.searching = false
+            }
+            when (state.searchDisplay) {
+                SearchDisplay.Categories -> SearchCategories(state.categories)
+                SearchDisplay.Suggestions -> SearchSuggestions(
+                    suggestions = state.suggestions,
+                    onSuggestionSelect = { suggestion ->
+                        state.query = TextFieldValue(suggestion)
+                    }
+                )
+
+                SearchDisplay.Results -> SearchResults(
+                    state.searchResults,
+                    onSnackClick
+                )
+
+                SearchDisplay.NoResults -> NoResults(state.query.text)
             }
         }
     }
@@ -207,7 +193,7 @@ private fun SearchBar(
                 if (searchFocused) {
                     IconButton(onClick = onClearQuery) {
                         Icon(
-                            imageVector = mirroringBackIcon(),
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             tint = JetsnackTheme.colors.iconPrimary,
                             contentDescription = stringResource(R.string.label_back)
                         )

@@ -99,6 +99,10 @@ composeCompiler {
     enableStrongSkippingMode = true
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
@@ -136,8 +140,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window)
-
-    implementation(libs.google.android.material)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)

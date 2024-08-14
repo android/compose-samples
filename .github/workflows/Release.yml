@@ -40,26 +40,6 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Upload Crane
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Crane/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: crane-debug.apk
-          asset_content_type: application/vnd.android.package-archive          
-
-      - name: Upload Owl
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Owl/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: owl-debug.apk
-          asset_content_type: application/vnd.android.package-archive
-
       - name: Upload Jetcaster
         uses: actions/upload-release-asset@v1
         env:
@@ -98,14 +78,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: Jetsnack/app/build/outputs/apk/debug/app-debug.apk
           asset_name: jetsnack-debug.apk
-          asset_content_type: application/vnd.android.package-archive
-
-      - name: Upload Jetsurvey
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Jetsurvey/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: jetsurvey-debug.apk
           asset_content_type: application/vnd.android.package-archive

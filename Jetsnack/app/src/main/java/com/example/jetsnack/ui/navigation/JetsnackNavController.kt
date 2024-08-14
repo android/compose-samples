@@ -33,6 +33,7 @@ object MainDestinations {
     const val HOME_ROUTE = "home"
     const val SNACK_DETAIL_ROUTE = "snack"
     const val SNACK_ID_KEY = "snackId"
+    const val ORIGIN = "origin"
 }
 
 /**
@@ -57,15 +58,12 @@ class JetsnackNavController(
     // Navigation state source of truth
     // ----------------------------------------------------------
 
-    val currentRoute: String?
-        get() = navController.currentDestination?.route
-
     fun upPress() {
         navController.navigateUp()
     }
 
     fun navigateToBottomBarRoute(route: String) {
-        if (route != currentRoute) {
+        if (route != navController.currentDestination?.route) {
             navController.navigate(route) {
                 launchSingleTop = true
                 restoreState = true
@@ -78,10 +76,10 @@ class JetsnackNavController(
         }
     }
 
-    fun navigateToSnackDetail(snackId: Long, from: NavBackStackEntry) {
+    fun navigateToSnackDetail(snackId: Long, origin: String, from: NavBackStackEntry) {
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
-            navController.navigate("${MainDestinations.SNACK_DETAIL_ROUTE}/$snackId")
+            navController.navigate("${MainDestinations.SNACK_DETAIL_ROUTE}/$snackId?origin=$origin")
         }
     }
 }

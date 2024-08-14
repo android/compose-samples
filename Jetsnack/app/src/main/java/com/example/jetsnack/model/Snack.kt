@@ -19,6 +19,7 @@ package com.example.jetsnack.model
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import com.example.jetsnack.R
+import kotlin.random.Random
 
 @Immutable
 data class Snack(
@@ -44,183 +45,183 @@ val snacks = listOf(
         price = 299
     ),
     Snack(
-        id = 2L,
+        id = Random.nextLong(),
         name = "Donut",
         tagline = "A tag line",
         imageRes = R.drawable.donut,
         price = 299
     ),
     Snack(
-        id = 3L,
+        id = Random.nextLong(),
         name = "Eclair",
         tagline = "A tag line",
         imageRes = R.drawable.eclair,
         price = 299
     ),
     Snack(
-        id = 4L,
+        id = Random.nextLong(),
         name = "Froyo",
         tagline = "A tag line",
         imageRes = R.drawable.froyo,
         price = 299
     ),
     Snack(
-        id = 5L,
+        id = Random.nextLong(),
         name = "Gingerbread",
         tagline = "A tag line",
         imageRes = R.drawable.gingerbread,
         price = 499
     ),
     Snack(
-        id = 6L,
+        id = Random.nextLong(),
         name = "Honeycomb",
         tagline = "A tag line",
         imageRes = R.drawable.honeycomb,
         price = 299
     ),
     Snack(
-        id = 7L,
+        id = Random.nextLong(),
         name = "Ice Cream Sandwich",
         tagline = "A tag line",
         imageRes = R.drawable.ice_cream_sandwich,
         price = 1299
     ),
     Snack(
-        id = 8L,
+        id = Random.nextLong(),
         name = "Jellybean",
         tagline = "A tag line",
         imageRes = R.drawable.jelly_bean,
         price = 299
     ),
     Snack(
-        id = 9L,
+        id = Random.nextLong(),
         name = "KitKat",
         tagline = "A tag line",
         imageRes = R.drawable.kitkat,
         price = 549
     ),
     Snack(
-        id = 10L,
+        id = Random.nextLong(),
         name = "Lollipop",
         tagline = "A tag line",
         imageRes = R.drawable.lollipop,
         price = 299
     ),
     Snack(
-        id = 11L,
+        id = Random.nextLong(),
         name = "Marshmallow",
         tagline = "A tag line",
         imageRes = R.drawable.marshmallow,
         price = 299
     ),
     Snack(
-        id = 12L,
+        id = Random.nextLong(),
         name = "Nougat",
         tagline = "A tag line",
         imageRes = R.drawable.nougat,
         price = 299
     ),
     Snack(
-        id = 13L,
+        id = Random.nextLong(),
         name = "Oreo",
         tagline = "A tag line",
         imageRes = R.drawable.oreo,
         price = 299
     ),
     Snack(
-        id = 14L,
+        id = Random.nextLong(),
         name = "Pie",
         tagline = "A tag line",
         imageRes = R.drawable.pie,
         price = 299
     ),
     Snack(
-        id = 15L,
+        id = Random.nextLong(),
         name = "Chips",
         imageRes = R.drawable.chips,
         price = 299
     ),
     Snack(
-        id = 16L,
+        id = Random.nextLong(),
         name = "Pretzels",
         imageRes = R.drawable.pretzels,
         price = 299
     ),
     Snack(
-        id = 17L,
+        id = Random.nextLong(),
         name = "Smoothies",
         imageRes = R.drawable.smoothies,
         price = 299
     ),
     Snack(
-        id = 18L,
+        id = Random.nextLong(),
         name = "Popcorn",
         imageRes = R.drawable.popcorn,
         price = 299
     ),
     Snack(
-        id = 19L,
+        id = Random.nextLong(),
         name = "Almonds",
         imageRes = R.drawable.almonds,
         price = 299
     ),
     Snack(
-        id = 20L,
+        id = Random.nextLong(),
         name = "Cheese",
         imageRes = R.drawable.cheese,
         price = 299
     ),
     Snack(
-        id = 21L,
+        id = Random.nextLong(),
         name = "Apples",
         tagline = "A tag line",
         imageRes = R.drawable.apples,
         price = 299
     ),
     Snack(
-        id = 22L,
+        id = Random.nextLong(),
         name = "Apple sauce",
         tagline = "A tag line",
         imageRes = R.drawable.apple_sauce,
         price = 299
     ),
     Snack(
-        id = 23L,
+        id = Random.nextLong(),
         name = "Apple chips",
         tagline = "A tag line",
         imageRes = R.drawable.apple_chips,
         price = 299
     ),
     Snack(
-        id = 24L,
+        id = Random.nextLong(),
         name = "Apple juice",
         tagline = "A tag line",
         imageRes = R.drawable.apple_juice,
         price = 299
     ),
     Snack(
-        id = 25L,
+        id = Random.nextLong(),
         name = "Apple pie",
         tagline = "A tag line",
         imageRes = R.drawable.apple_pie,
         price = 299
     ),
     Snack(
-        id = 26L,
+        id = Random.nextLong(),
         name = "Grapes",
         tagline = "A tag line",
         imageRes = R.drawable.grapes,
         price = 299
     ),
     Snack(
-        id = 27L,
+        id = Random.nextLong(),
         name = "Kiwi",
         tagline = "A tag line",
         imageRes = R.drawable.kiwi,
         price = 299
     ),
     Snack(
-        id = 28L,
+        id = Random.nextLong(),
         name = "Mango",
         tagline = "A tag line",
         imageRes = R.drawable.mango,

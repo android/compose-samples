@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-package com.example.jetsnack.ui.utils
+package com.example.jetsnack.ui
 
-/**
- * Moved to https://google.github.io/accompanist/systemuicontroller/
- */
+data class SnackSharedElementKey(
+    val snackId: Long,
+    val origin: String,
+    val type: SnackSharedElementType
+)
+
+enum class SnackSharedElementType {
+    Bounds,
+    Image,
+    Title,
+    Tagline,
+    Background
+}
+
+object FilterSharedElementKey
