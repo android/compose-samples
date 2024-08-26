@@ -24,6 +24,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:resizeableActivity="true"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.JetLagged">
 
         <profileable android:shell="true" tools:targetApi="q" />

@@ -16,6 +16,7 @@
 
 package com.example.jetlagged
 
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
@@ -54,6 +55,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
@@ -79,18 +81,32 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
 
         val coroutineScope = rememberCoroutineScope()
 
+        suspend fun closeDrawer() {
+            translationX.animateTo(0f)
+            drawerState = DrawerState.Closed
+        }
+        suspend fun openDrawer() {
+            translationX.animateTo(drawerWidth)
+            drawerState = DrawerState.Open
+        }
         fun toggleDrawerState() {
             coroutineScope.launch {
                 if (drawerState == DrawerState.Open) {
-                    translationX.animateTo(0f)
+                    closeDrawer()
                 } else {
-                    translationX.animateTo(drawerWidth)
+                    openDrawer()
                 }
-                drawerState = if (drawerState == DrawerState.Open) {
-                    DrawerState.Closed
-                } else {
-                    DrawerState.Open
+            }
+        }
+       PredictiveBackHandler(drawerState == DrawerState.Open) { progress ->
+            try {
+                progress.collect { backEvent ->
+                    val targetSize = (drawerWidth - (drawerWidth * backEvent.progress))
+                    translationX.snapTo(targetSize)
                 }
+                closeDrawer()
+            } catch (e: CancellationException) {
+                openDrawer()
             }
         }
 
