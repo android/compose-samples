@@ -54,8 +54,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
@@ -98,7 +98,7 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
                 }
             }
         }
-       PredictiveBackHandler(drawerState == DrawerState.Open) { progress ->
+        PredictiveBackHandler(drawerState == DrawerState.Open) { progress ->
             try {
                 progress.collect { backEvent ->
                     val targetSize = (drawerWidth - (drawerWidth * backEvent.progress))
