@@ -16,6 +16,8 @@
 
 package com.example.jetlagged
 
+import android.os.SystemClock
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
@@ -47,12 +49,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,19 +84,41 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
 
         val coroutineScope = rememberCoroutineScope()
 
+        suspend fun closeDrawer(velocity: Float = 0f) {
+            translationX.animateTo(targetValue = 0f, initialVelocity = velocity)
+            drawerState = DrawerState.Closed
+        }
+        suspend fun openDrawer(velocity: Float = 0f) {
+            translationX.animateTo(targetValue = drawerWidth, initialVelocity = velocity)
+            drawerState = DrawerState.Open
+        }
         fun toggleDrawerState() {
             coroutineScope.launch {
                 if (drawerState == DrawerState.Open) {
-                    translationX.animateTo(0f)
+                    closeDrawer()
                 } else {
-                    translationX.animateTo(drawerWidth)
-                }
-                drawerState = if (drawerState == DrawerState.Open) {
-                    DrawerState.Closed
-                } else {
-                    DrawerState.Open
+                    openDrawer()
                 }
             }
+        }
+        val velocityTracker = remember {
+            VelocityTracker()
+        }
+        PredictiveBackHandler(drawerState == DrawerState.Open) { progress ->
+            try {
+                progress.collect { backEvent ->
+                    val targetSize = (drawerWidth - (drawerWidth * backEvent.progress))
+                    translationX.snapTo(targetSize)
+                    velocityTracker.addPosition(
+                        SystemClock.uptimeMillis(),
+                        Offset(backEvent.touchX, backEvent.touchY)
+                    )
+                }
+                closeDrawer(velocityTracker.calculateVelocity().x)
+            } catch (e: CancellationException) {
+                openDrawer(velocityTracker.calculateVelocity().x)
+            }
+            velocityTracker.resetTracking()
         }
 
         HomeScreenDrawerContents(
