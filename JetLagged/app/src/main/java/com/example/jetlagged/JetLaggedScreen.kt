@@ -22,10 +22,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -67,9 +72,13 @@ fun JetLaggedScreen(
 
         val uiState =
             viewModel.uiState.collectAsStateWithLifecycle()
-
+        val insets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
+        )
         FlowRow(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(insets),
             horizontalArrangement = Arrangement.Center,
             verticalArrangement = Arrangement.Center,
             maxItemsInEachRow = 3
