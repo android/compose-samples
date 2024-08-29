@@ -90,7 +90,7 @@ fun Modifier.yellowBackground(): Modifier =
     }
 
 @Language("AGSL")
-val SHADER = """
+private val SHADER = """
     uniform float2 resolution;
     uniform float time;
     uniform float waves;
