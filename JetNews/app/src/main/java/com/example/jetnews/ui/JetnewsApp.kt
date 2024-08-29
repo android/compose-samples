@@ -16,10 +16,10 @@
 
 package com.example.jetnews.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -34,7 +34,6 @@ import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JetnewsApp(
     appContainer: AppContainer,
@@ -54,6 +53,12 @@ fun JetnewsApp(
 
         val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
         val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
+
+        BackHandler(sizeAwareDrawerState.isOpen) {
+            coroutineScope.launch {
+                sizeAwareDrawerState.close()
+            }
+        }
 
         ModalNavigationDrawer(
             drawerContent = {
