@@ -11,7 +11,7 @@ androidx-benchmark = "1.2.4"
 androidx-benchmark-junit4 = "1.2.4"
 androidx-compose-bom = "2024.06.00"
 androidx-compose-latest = "1.7.0-beta07"
-androidx-compose-material3 = "1.3.0-beta05"
+androidx-compose-material3 = "1.3.0-rc01"
 androidx-compose-material3-adaptive = "1.0.0-beta04"
 androidx-constraintlayout = "1.1.0-alpha13"
 androidx-core-splashscreen = "1.0.1"
@@ -78,7 +78,7 @@ androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = 
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation",  version.ref = "androidx-compose-latest"}
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" ,version.ref = "androidx-compose-latest"}
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material3" }
 androidx-compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "androidx-compose-material3-adaptive" }
 androidx-compose-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "androidx-compose-material3-adaptive" }
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "androidx-compose-material3-adaptive" }

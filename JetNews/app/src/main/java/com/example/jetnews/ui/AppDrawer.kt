@@ -24,13 +24,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -40,16 +42,19 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.theme.JetnewsTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(
+    drawerState: DrawerState,
     currentRoute: String,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ModalDrawerSheet(modifier) {
+    ModalDrawerSheet(
+        drawerState = drawerState,
+        modifier = modifier,
+    ) {
         JetNewsLogo(
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp)
         )
@@ -93,6 +98,7 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
 fun PreviewAppDrawer() {
     JetnewsTheme {
         AppDrawer(
+            drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
             currentRoute = JetnewsDestinations.HOME_ROUTE,
             navigateToHome = {},
             navigateToInterests = {},
