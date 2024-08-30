@@ -17,7 +17,6 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
-import androidx.activity.compose.BackHandler
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -71,15 +70,7 @@ class NavActivity : AppCompatActivity() {
                         }
                     }
 
-                    // Intercepts back navigation when the drawer is open
                     val scope = rememberCoroutineScope()
-                    if (drawerState.isOpen) {
-                        BackHandler {
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        }
-                    }
 
                     JetchatDrawer(
                         drawerState = drawerState,

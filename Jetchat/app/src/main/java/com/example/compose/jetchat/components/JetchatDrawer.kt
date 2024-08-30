@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -61,7 +60,7 @@ fun JetchatDrawerContent(
 ) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Column {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
         DrawerHeader()
         DividerItem()
