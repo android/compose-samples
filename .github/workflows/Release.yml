@@ -31,7 +31,7 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v4
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Jetcaster/app/build/outputs/apk/debug/app-debug.apk
+          asset_path: Jetcaster/mobile/build/outputs/apk/debug/app-debug.apk
           asset_name: jetcaster-debug.apk
           asset_content_type: application/vnd.android.package-archive          
 
