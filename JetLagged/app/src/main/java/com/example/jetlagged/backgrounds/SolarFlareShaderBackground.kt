@@ -22,13 +22,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
-import com.example.jetlagged.ui.theme.White
 import com.example.jetlagged.ui.theme.Yellow
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
@@ -41,12 +38,7 @@ fun Modifier.solarFlareShaderBackground(): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         this.then(SolarFlareShaderBackgroundElement)
     } else {
-        drawWithCache {
-            val gradientBrush = Brush.verticalGradient(listOf(Yellow, White))
-            onDrawBehind {
-                drawRect(gradientBrush, alpha = 1f)
-            }
-        }
+        this.then(Modifier.simpleGradient())
     }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -105,7 +97,7 @@ private val SHADER = """
         
         // Coords
         float2 uv = fragCoord / resolution.xy;
-        float2 uvCalc = mod(uv * 5.0, 5.0) - 200.0;
+        float2 uvCalc = (uv * 5.0) - (INTENSITY * 2.0);
         
         // Values to adjust per iteration
         float2 iterationChange = float2(uvCalc);
@@ -126,8 +118,11 @@ private val SHADER = """
         }
         colorPart = 1.6 - (colorPart / float(ITERATIONS));
         
+        // Fade out the bottom on a curve
         float alpha = 1.0 - (uv.y * uv.y);
+        // Mix calculated color with the incoming base color
         float4 color = float4(colorPart * baseColor.r, colorPart * baseColor.g, colorPart * baseColor.b, alpha);
+        // Keep all channels within valid bounds of 0.0 and 1.0
         return clamp(color, 0.0, 1.0);
     }
 """.trimIndent()
