@@ -17,7 +17,6 @@
 package com.example.jetlagged.sleep
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
@@ -78,9 +77,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.example.jetlagged.data.sleepData
+import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.theme.LegendHeadingStyle
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SleepBar(
     sleepData: SleepDayData,
@@ -122,7 +121,6 @@ fun SleepBar(
 }
 
 @Composable
-@OptIn(ExperimentalTextApi::class)
 private fun SleepRoundedBar(
     sleepData: SleepDayData,
     transition: Transition<Boolean>,
@@ -148,6 +146,7 @@ private fun SleepRoundedBar(
         if (target) 1f else 0f
     }
 
+    val sleepGradientBarColorStops = sleepGradientBarColorStops()
     Spacer(
         modifier = Modifier
             .drawWithCache {
@@ -191,7 +190,7 @@ private fun SleepRoundedBar(
                     Brush.verticalGradient(
                         colorStops = sleepGradientBarColorStops.toTypedArray(),
                         startY = 0f,
-                        endY = SleepType.values().size * barHeightPx
+                        endY = SleepType.entries.size * barHeightPx
                     )
                 val textResult = textMeasurer.measure(AnnotatedString(sleepData.sleepScoreEmoji))
 
@@ -261,7 +260,7 @@ private fun generateSleepPath(
         val periodWidth = percentageOfTotal * width
         val startOffsetPercentage = sleepData.minutesAfterSleepStart(period) /
             sleepData.totalTimeInBed.toMinutes().toFloat()
-        val halfBarHeight = canvasSize.height / SleepType.values().size / 2f
+        val halfBarHeight = canvasSize.height / SleepType.entries.size / 2f
 
         val offset = if (previousPeriod == null) {
             0f
@@ -306,7 +305,7 @@ private fun DetailLegend() {
         modifier = Modifier.padding(top = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        SleepType.values().forEach {
+        SleepType.entries.forEach {
             LegendItem(it)
         }
     }
@@ -319,7 +318,7 @@ private fun LegendItem(sleepType: SleepType) {
             modifier = Modifier
                 .size(10.dp)
                 .clip(CircleShape)
-                .background(sleepType.color)
+                .background(colorForSleepType(sleepType))
         )
         Text(
             stringResource(id = sleepType.title),
@@ -340,17 +339,19 @@ private val barHeight = 24.dp
 private const val animationDuration = 500
 private val textPadding = 4.dp
 
-private val sleepGradientBarColorStops: List<Pair<Float, Color>> = SleepType.values().map {
-    Pair(
-        when (it) {
-            SleepType.Awake -> 0f
-            SleepType.REM -> 0.33f
-            SleepType.Light -> 0.66f
-            SleepType.Deep -> 1f
-        },
-        it.color
-    )
-}
+@Composable
+fun sleepGradientBarColorStops(): List<Pair<Float, Color>> =
+    SleepType.entries.map {
+        Pair(
+            when (it) {
+                SleepType.Awake -> 0f
+                SleepType.REM -> 0.33f
+                SleepType.Light -> 0.66f
+                SleepType.Deep -> 1f
+            },
+            colorForSleepType(it)
+        )
+    }
 
 private fun SleepType.heightSleepType(): Float {
     return when (this) {
@@ -360,3 +361,12 @@ private fun SleepType.heightSleepType(): Float {
         SleepType.Deep -> 0.75f
     }
 }
+
+@Composable
+fun colorForSleepType(sleepType: SleepType): Color =
+    when (sleepType) {
+        SleepType.Awake -> JetLaggedTheme.colors.sleepAwake
+        SleepType.REM -> JetLaggedTheme.colors.sleepRem
+        SleepType.Light -> JetLaggedTheme.colors.sleepLight
+        SleepType.Deep -> JetLaggedTheme.colors.sleepDeep
+    }

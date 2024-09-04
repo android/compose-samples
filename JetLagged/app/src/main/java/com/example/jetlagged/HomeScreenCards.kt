@@ -64,9 +64,7 @@ import com.example.jetlagged.backgrounds.BubbleBackground
 import com.example.jetlagged.backgrounds.FadingCircleBackground
 import com.example.jetlagged.data.WellnessData
 import com.example.jetlagged.ui.theme.HeadingStyle
-import com.example.jetlagged.ui.theme.LightBlue
-import com.example.jetlagged.ui.theme.Lilac
-import com.example.jetlagged.ui.theme.MintGreen
+import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 
 @Composable
@@ -78,7 +76,7 @@ fun BasicInformationalCard(
     val shape = RoundedCornerShape(24.dp)
     Card(
         shape = shape,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = JetLaggedTheme.colors.cardBackground),
         modifier = modifier
             .padding(8.dp),
         border = BorderStroke(2.dp, borderColor)
@@ -174,7 +172,7 @@ fun TwoLineInfoCard(
 @Composable
 fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
     TwoLineInfoCard(
-        borderColor = Lilac,
+        borderColor = JetLaggedTheme.colors.bed,
         firstLineText = stringResource(R.string.ave_time_in_bed_heading),
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
@@ -189,7 +187,7 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
 @Composable
 fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
     TwoLineInfoCard(
-        borderColor = MintGreen,
+        borderColor = JetLaggedTheme.colors.sleep,
         firstLineText = stringResource(R.string.ave_time_sleep_heading),
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
@@ -207,12 +205,12 @@ fun WellnessCard(
     wellnessData: WellnessData = WellnessData(0, 0, 0)
 ) {
     BasicInformationalCard(
-        borderColor = LightBlue,
+        borderColor = JetLaggedTheme.colors.wellness,
         modifier = modifier
             .widthIn(max = 400.dp)
             .heightIn(min = 200.dp)
     ) {
-        FadingCircleBackground(36.dp, LightBlue.copy(0.25f))
+        FadingCircleBackground(36.dp, JetLaggedTheme.colors.wellness.copy(0.25f))
         Column(
             horizontalAlignment = CenterHorizontally,
             modifier = Modifier
@@ -249,7 +247,8 @@ fun WellnessBubble(
     titleText: String,
     countText: String,
     metric: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    bubbleColor: Color = JetLaggedTheme.colors.wellness
 ) {
     Column(
         modifier = modifier
@@ -257,7 +256,7 @@ fun WellnessBubble(
             .sizeIn(maxHeight = 100.dp)
             .aspectRatio(1f)
             .drawBehind {
-                drawCircle(LightBlue)
+                drawCircle(bubbleColor)
             },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = CenterHorizontally
