@@ -31,15 +31,15 @@ import com.example.jetlagged.ui.theme.Yellow
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
-private data object StripesBackgroundElement : ModifierNodeElement<StripesBackgroundNode>() {
+private data object MovingStripesBackgroundElement : ModifierNodeElement<MovingStripesBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun create() = StripesBackgroundNode()
-    override fun update(node: StripesBackgroundNode) {
+    override fun create() = MovingStripesBackgroundNode()
+    override fun update(node: MovingStripesBackgroundNode) {
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private class StripesBackgroundNode : DrawModifierNode, Modifier.Node() {
+private class MovingStripesBackgroundNode : DrawModifierNode, Modifier.Node() {
 
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
@@ -72,9 +72,9 @@ private class StripesBackgroundNode : DrawModifierNode, Modifier.Node() {
     }
 }
 
-fun Modifier.stripesBackground(): Modifier =
+fun Modifier.movingStripesBackground(): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        this.then(StripesBackgroundElement)
+        this.then(MovingStripesBackgroundElement)
     } else {
         this.then(Modifier.simpleGradient())
     }
