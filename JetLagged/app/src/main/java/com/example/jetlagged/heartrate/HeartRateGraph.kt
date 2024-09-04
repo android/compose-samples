@@ -64,6 +64,9 @@ private fun Graph(
     waveLineColors: List<Color> = JetLaggedTheme.colors.heartWave,
     pathBackground: Color = JetLaggedTheme.colors.heartWaveBackground,
 ) {
+    if (waveLineColors.size < 2) {
+        throw IllegalArgumentException("waveLineColors requires 2+ colors; $waveLineColors")
+    }
     Box(
         modifier
             .fillMaxSize()
