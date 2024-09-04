@@ -23,27 +23,24 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
-import com.example.jetlagged.ui.theme.White
 import com.example.jetlagged.ui.theme.Yellow
-import com.example.jetlagged.ui.theme.YellowVariant
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
-private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
+private data object MovingStripesBackgroundElement :
+    ModifierNodeElement<MovingStripesBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun create() = YellowBackgroundNode()
-    override fun update(node: YellowBackgroundNode) {
+    override fun create() = MovingStripesBackgroundNode()
+    override fun update(node: MovingStripesBackgroundNode) {
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
+private class MovingStripesBackgroundNode : DrawModifierNode, Modifier.Node() {
 
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
@@ -59,7 +56,6 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
     override fun ContentDrawScope.draw() {
         shader.setFloatUniform("resolution", size.width, size.height)
         shader.setFloatUniform("time", time.floatValue)
-        shader.setFloatUniform("waves", 7f)
 
         drawRect(shaderBrush)
 
@@ -77,23 +73,17 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
     }
 }
 
-fun Modifier.yellowBackground(): Modifier =
+fun Modifier.movingStripesBackground(): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        this.then(YellowBackgroundElement)
+        this.then(MovingStripesBackgroundElement)
     } else {
-        drawWithCache {
-            val gradientBrush = Brush.verticalGradient(listOf(Yellow, YellowVariant, White))
-            onDrawBehind {
-                drawRect(gradientBrush, alpha = 1f)
-            }
-        }
+        this.then(Modifier.simpleGradient())
     }
 
 @Language("AGSL")
-val SHADER = """
+private val SHADER = """
     uniform float2 resolution;
     uniform float time;
-    uniform float waves;
     layout(color) uniform half4 color;
     
     float calculateColorMultiplier(float yCoord, float factor) {
@@ -104,7 +94,7 @@ val SHADER = """
         // Config values
         const float speedMultiplier = 1.5;
         const float waveDensity = 1.0;
-        //const float loops = iWaves;
+        const float waves = 7.0;
         const float energy = 0.6;
         
         // Calculated values
@@ -114,8 +104,7 @@ val SHADER = """
         float hAdjustment = uv.x * 4.3;
         float3 loopColor = vec3(1.0 - rgbColor.r, 1.0 - rgbColor.g, 1.0 - rgbColor.b) / waves;
         
-        for (float i = 1.0; i <= 100; i += 1.0) {
-            if (i > waves) break;
+        for (float i = 1.0; i <= waves; i += 1.0) {
             float loopFactor = i * 0.1;
             float sinInput = (timeOffset + hAdjustment) * energy;
             float curve = sin(sinInput) * (1.0 - loopFactor) * 0.05;

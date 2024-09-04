@@ -40,7 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.jetlagged.backgrounds.yellowBackground
+import com.example.jetlagged.backgrounds.movingStripesBackground
 import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
 import com.example.jetlagged.heartrate.HeartRateCard
 import com.example.jetlagged.sleep.JetLaggedHeader
@@ -63,7 +63,7 @@ fun JetLaggedScreen(
             .verticalScroll(rememberScrollState())
             .background(Color.White)
     ) {
-        Column(modifier = Modifier.yellowBackground()) {
+        Column(modifier = Modifier.movingStripesBackground()) {
             JetLaggedHeader(
                 modifier = Modifier.fillMaxWidth(),
                 onDrawerClicked = onDrawerClicked
