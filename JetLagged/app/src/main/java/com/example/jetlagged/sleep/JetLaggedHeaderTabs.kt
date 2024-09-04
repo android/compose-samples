@@ -60,7 +60,10 @@ fun JetLaggedHeaderTabs(
                     .tabIndicatorOffset(tabPositions[selectedTab.ordinal])
                     .fillMaxSize()
                     .padding(horizontal = 2.dp)
-                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.primary), RoundedCornerShape(10.dp))
+                    .border(
+                        BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                        RoundedCornerShape(10.dp)
+                    )
             )
         },
         divider = { }
