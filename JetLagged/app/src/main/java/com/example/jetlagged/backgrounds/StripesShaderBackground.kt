@@ -31,7 +31,8 @@ import com.example.jetlagged.ui.theme.Yellow
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
-private data object MovingStripesBackgroundElement : ModifierNodeElement<MovingStripesBackgroundNode>() {
+private data object MovingStripesBackgroundElement :
+    ModifierNodeElement<MovingStripesBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun create() = MovingStripesBackgroundNode()
     override fun update(node: MovingStripesBackgroundNode) {
