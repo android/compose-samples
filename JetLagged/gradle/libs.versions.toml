@@ -42,7 +42,7 @@ horologist = "0.6.9"
 jdkDesugar = "1.2.2"
 junit = "4.13.2"
 kotlin = "2.0.20"
-kotlinx_immutable = "1.8.1"
+kotlinx_immutable = "0.3.7"
 ksp = "2.0.20-1.0.24"
 maps-compose = "3.1.1"
 # @keep
