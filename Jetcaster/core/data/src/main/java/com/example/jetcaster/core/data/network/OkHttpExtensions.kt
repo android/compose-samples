@@ -16,9 +16,9 @@
 
 package com.example.jetcaster.core.data.network
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.IOException
 import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
