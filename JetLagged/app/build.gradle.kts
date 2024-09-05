@@ -95,11 +95,6 @@ android {
     }
 }
 
-composeCompiler {
-    // Configure compose compiler options if required
-    enableStrongSkippingMode = true
-}
-
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
