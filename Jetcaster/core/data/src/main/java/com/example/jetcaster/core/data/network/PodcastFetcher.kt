@@ -91,7 +91,7 @@ class PodcastsFetcher @Inject constructor(
             .cacheControl(cacheControl)
             .build()
 
-        val response = okHttpClient.newCall(request).await()
+        val response = okHttpClient.newCall(request).execute()
 
         // If the network request wasn't successful, throw an exception
         if (!response.isSuccessful) throw HttpException(response)

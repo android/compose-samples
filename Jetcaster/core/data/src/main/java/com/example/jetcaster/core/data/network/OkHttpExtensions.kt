@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.data.network
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.IOException
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -27,6 +28,7 @@ import okhttp3.internal.closeQuietly
 /**
  * Suspending wrapper around an OkHttp [Call], using [Call.enqueue].
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->
     enqueue(
         object : Callback {
