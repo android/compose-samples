@@ -10,8 +10,6 @@ androidx-appcompat = "1.7.0"
 androidx-benchmark = "1.2.4"
 androidx-benchmark-junit4 = "1.2.4"
 androidx-compose-bom = "2024.09.00"
-androidx-compose-latest = "1.7.0-beta07"
-androidx-compose-material3-adaptive = "1.0.0-beta04"
 androidx-constraintlayout = "1.1.0-alpha13"
 androidx-core-splashscreen = "1.0.1"
 androidx-corektx = "1.13.1"
@@ -72,20 +70,20 @@ androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-benchmark-macrobenchmark = { module = "androidx.benchmark:benchmark-macro", version.ref = "androidx-benchmark" }
 androidx-benchmark-macrobenchmark-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-junit4" }
-androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose-latest" }
+androidx-compose-animation = { module = "androidx.compose.animation:animation" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
-androidx-compose-foundation = { module = "androidx.compose.foundation:foundation",  version.ref = "androidx-compose-latest"}
-androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" ,version.ref = "androidx-compose-latest"}
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
-androidx-compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "androidx-compose-material3-adaptive" }
-androidx-compose-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "androidx-compose-material3-adaptive" }
-androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "androidx-compose-material3-adaptive" }
+androidx-compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
+androidx-compose-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }
+androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation" }
 androidx-compose-material3-adaptive-navigationSuite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite" }
 androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
-androidx-compose-ui = { module = "androidx.compose.ui:ui" , version.ref = "androidx-compose-latest"}
+androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-googlefonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test" }
