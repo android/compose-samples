@@ -31,9 +31,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
+import com.example.reply.ui.navigation.ArticlesRoute
+import com.example.reply.ui.navigation.DirectMessagesRoute
+import com.example.reply.ui.navigation.GroupsRoute
+import com.example.reply.ui.navigation.InboxRoute
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationWrapper
-import com.example.reply.ui.navigation.ReplyRoute
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
@@ -89,12 +92,11 @@ fun ReplyApp(
         ReplyNavigationActions(navController)
     }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination =
-        navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
+    val currentDestination = navBackStackEntry?.destination
 
     Surface {
         ReplyNavigationWrapper(
-            selectedDestination = selectedDestination,
+            currentDestination = currentDestination,
             navigateToTopLevelDestination = navigationActions::navigateTo
         ) {
             ReplyNavHost(
@@ -126,9 +128,9 @@ private fun ReplyNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = ReplyRoute.INBOX,
+        startDestination = InboxRoute,
     ) {
-        composable(ReplyRoute.INBOX) {
+        composable<InboxRoute> {
             ReplyInboxScreen(
                 contentType = contentType,
                 replyHomeUIState = replyHomeUIState,
@@ -139,13 +141,13 @@ private fun ReplyNavHost(
                 toggleSelectedEmail = toggleSelectedEmail
             )
         }
-        composable(ReplyRoute.DM) {
+        composable<DirectMessagesRoute> {
             EmptyComingSoon()
         }
-        composable(ReplyRoute.ARTICLES) {
+        composable<ArticlesRoute> {
             EmptyComingSoon()
         }
-        composable(ReplyRoute.GROUPS) {
+        composable<GroupsRoute> {
             EmptyComingSoon()
         }
     }

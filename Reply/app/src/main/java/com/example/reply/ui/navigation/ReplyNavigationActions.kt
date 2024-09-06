@@ -25,16 +25,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.reply.R
+import kotlinx.serialization.Serializable
 
-object ReplyRoute {
-    const val INBOX = "Inbox"
-    const val ARTICLES = "Articles"
-    const val DM = "DirectMessages"
-    const val GROUPS = "Groups"
-}
+@Serializable data object InboxRoute
+@Serializable data object ArticlesRoute
+@Serializable data object DirectMessagesRoute
+@Serializable data object GroupsRoute
 
 data class ReplyTopLevelDestination(
-    val route: String,
+    val route: Any,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val iconTextId: Int
@@ -61,25 +60,25 @@ class ReplyNavigationActions(private val navController: NavHostController) {
 
 val TOP_LEVEL_DESTINATIONS = listOf(
     ReplyTopLevelDestination(
-        route = ReplyRoute.INBOX,
+        route = InboxRoute,
         selectedIcon = Icons.Default.Inbox,
         unselectedIcon = Icons.Default.Inbox,
         iconTextId = R.string.tab_inbox
     ),
     ReplyTopLevelDestination(
-        route = ReplyRoute.ARTICLES,
+        route = ArticlesRoute,
         selectedIcon = Icons.AutoMirrored.Filled.Article,
         unselectedIcon = Icons.AutoMirrored.Filled.Article,
         iconTextId = R.string.tab_article
     ),
     ReplyTopLevelDestination(
-        route = ReplyRoute.DM,
+        route = DirectMessagesRoute,
         selectedIcon = Icons.Outlined.ChatBubbleOutline,
         unselectedIcon = Icons.Outlined.ChatBubbleOutline,
         iconTextId = R.string.tab_inbox
     ),
     ReplyTopLevelDestination(
-        route = ReplyRoute.GROUPS,
+        route = GroupsRoute,
         selectedIcon = Icons.Default.People,
         unselectedIcon = Icons.Default.People,
         iconTextId = R.string.tab_article
