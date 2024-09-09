@@ -482,5 +482,5 @@ enum class LayoutType {
     HEADER, CONTENT
 }
 
-fun NavDestination?.hasRoute(destination: ReplyTopLevelDestination) : Boolean =
+fun NavDestination?.hasRoute(destination: ReplyTopLevelDestination): Boolean =
     this?.hasRoute(destination.route::class) ?: false
