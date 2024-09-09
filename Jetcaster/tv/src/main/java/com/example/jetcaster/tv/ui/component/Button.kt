@@ -33,12 +33,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ButtonScale
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.IconButton
 import com.example.jetcaster.tv.R
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun PlayButton(
     onClick: () -> Unit,
@@ -53,7 +51,6 @@ internal fun PlayButton(
         scale = scale
     )
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun EnqueueButton(
     onClick: () -> Unit,
@@ -67,7 +64,6 @@ internal fun EnqueueButton(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun InfoButton(
     onClick: () -> Unit,
@@ -81,7 +77,6 @@ internal fun InfoButton(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun PreviousButton(
     onClick: () -> Unit,
@@ -95,7 +90,6 @@ internal fun PreviousButton(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun NextButton(
     onClick: () -> Unit,
@@ -109,7 +103,6 @@ internal fun NextButton(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun PlayPauseButton(
     isPlaying: Boolean,
@@ -126,7 +119,6 @@ internal fun PlayPauseButton(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun RewindButton(
     onClick: () -> Unit,
@@ -140,7 +132,6 @@ internal fun RewindButton(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 internal fun SkipButton(
     onClick: () -> Unit,

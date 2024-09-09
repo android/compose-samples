@@ -16,7 +16,7 @@
 
 package com.example.jetcaster.tv.ui
 
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,8 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -76,16 +76,16 @@ private fun GlobalNavigationContainer(
             Column(
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused) {
+                    .focusProperties {
+                        enter = {
                             when (currentRoute) {
                                 Screen.Discover.route -> discover
                                 Screen.Library.route -> library
                                 else -> FocusRequester.Default
-                            }.requestFocus()
+                            }
                         }
                     }
-                    .focusable()
+                    .focusGroup()
             ) {
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Profile.route,
@@ -94,21 +94,34 @@ private fun GlobalNavigationContainer(
                 ) {
                     Column {
                         Text(text = "Name")
-                        Text(text = "Switch Account", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            text = "Switch Account",
+                            style = MaterialTheme.typography.labelSmall
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Search.route,
                     onClick = jetcasterAppState::navigateToSearch,
-                    leadingContent = { Icon(Icons.Default.Search, contentDescription = null) }
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null
+                        )
+                    }
                 ) {
                     Text(text = "Search")
                 }
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Discover.route,
                     onClick = jetcasterAppState::navigateToDiscover,
-                    leadingContent = { Icon(Icons.Default.Home, contentDescription = null) },
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Home,
+                            contentDescription = null
+                        )
+                    },
                     modifier = Modifier.focusRequester(discover)
                 ) {
                     Text(text = "Discover")
@@ -137,7 +150,7 @@ private fun GlobalNavigationContainer(
             }
         },
         content = content,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
