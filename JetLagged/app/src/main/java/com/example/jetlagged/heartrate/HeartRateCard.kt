@@ -45,7 +45,7 @@ fun HeartRateCard(
     heartRateData: HeartRateOverallData = HeartRateOverallData()
 ) {
     BasicInformationalCard(
-        borderColor = JetLaggedTheme.colors.heart,
+        borderColor = JetLaggedTheme.extraColors.heart,
         modifier = modifier
             .height(260.dp)
     ) {

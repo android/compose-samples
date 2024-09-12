@@ -61,8 +61,8 @@ fun HeartRateGraph(listData: List<HeartRateData>) {
 private fun Graph(
     listData: List<HeartRateData>,
     modifier: Modifier = Modifier,
-    waveLineColors: List<Color> = JetLaggedTheme.colors.heartWave,
-    pathBackground: Color = JetLaggedTheme.colors.heartWaveBackground,
+    waveLineColors: List<Color> = JetLaggedTheme.extraColors.heartWave,
+    pathBackground: Color = JetLaggedTheme.extraColors.heartWaveBackground,
 ) {
     if (waveLineColors.size < 2) {
         throw IllegalArgumentException("waveLineColors requires 2+ colors; $waveLineColors")

@@ -365,8 +365,8 @@ private fun SleepType.heightSleepType(): Float {
 @Composable
 fun colorForSleepType(sleepType: SleepType): Color =
     when (sleepType) {
-        SleepType.Awake -> JetLaggedTheme.colors.sleepAwake
-        SleepType.REM -> JetLaggedTheme.colors.sleepRem
-        SleepType.Light -> JetLaggedTheme.colors.sleepLight
-        SleepType.Deep -> JetLaggedTheme.colors.sleepDeep
+        SleepType.Awake -> JetLaggedTheme.extraColors.sleepAwake
+        SleepType.REM -> JetLaggedTheme.extraColors.sleepRem
+        SleepType.Light -> JetLaggedTheme.extraColors.sleepLight
+        SleepType.Deep -> JetLaggedTheme.extraColors.sleepDeep
     }

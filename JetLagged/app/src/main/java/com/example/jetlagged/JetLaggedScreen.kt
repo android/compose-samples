@@ -65,7 +65,7 @@ fun JetLaggedScreen(
     ) {
         Column(
             modifier = Modifier.movingStripesBackground(
-                stripeColor = JetLaggedTheme.colors.header,
+                stripeColor = JetLaggedTheme.extraColors.header,
                 backgroundColor = MaterialTheme.colorScheme.background,
             )
         ) {

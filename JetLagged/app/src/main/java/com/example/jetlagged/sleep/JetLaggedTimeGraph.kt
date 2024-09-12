@@ -127,8 +127,8 @@ private fun DayLabel(dayOfWeek: DayOfWeek) {
 @Composable
 private fun HoursHeader(hours: List<Int>) {
     val brushColors = listOf(
-        JetLaggedTheme.colors.sleepChartPrimary,
-        JetLaggedTheme.colors.sleepChartSecondary,
+        JetLaggedTheme.extraColors.sleepChartPrimary,
+        JetLaggedTheme.extraColors.sleepChartSecondary,
     )
     Row(
         Modifier

@@ -76,7 +76,9 @@ fun BasicInformationalCard(
     val shape = RoundedCornerShape(24.dp)
     Card(
         shape = shape,
-        colors = CardDefaults.cardColors(containerColor = JetLaggedTheme.colors.cardBackground),
+        colors = CardDefaults.cardColors(
+            containerColor = JetLaggedTheme.extraColors.cardBackground
+        ),
         modifier = modifier
             .padding(8.dp),
         border = BorderStroke(2.dp, borderColor)
@@ -172,7 +174,7 @@ fun TwoLineInfoCard(
 @Composable
 fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
     TwoLineInfoCard(
-        borderColor = JetLaggedTheme.colors.bed,
+        borderColor = JetLaggedTheme.extraColors.bed,
         firstLineText = stringResource(R.string.ave_time_in_bed_heading),
         secondLineText = "8h42min",
         icon = Icons.Default.Watch,
@@ -187,7 +189,7 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
 @Composable
 fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
     TwoLineInfoCard(
-        borderColor = JetLaggedTheme.colors.sleep,
+        borderColor = JetLaggedTheme.extraColors.sleep,
         firstLineText = stringResource(R.string.ave_time_sleep_heading),
         secondLineText = "7h42min",
         icon = Icons.Default.SingleBed,
@@ -205,12 +207,12 @@ fun WellnessCard(
     wellnessData: WellnessData = WellnessData(0, 0, 0)
 ) {
     BasicInformationalCard(
-        borderColor = JetLaggedTheme.colors.wellness,
+        borderColor = JetLaggedTheme.extraColors.wellness,
         modifier = modifier
             .widthIn(max = 400.dp)
             .heightIn(min = 200.dp)
     ) {
-        FadingCircleBackground(36.dp, JetLaggedTheme.colors.wellness.copy(0.25f))
+        FadingCircleBackground(36.dp, JetLaggedTheme.extraColors.wellness.copy(0.25f))
         Column(
             horizontalAlignment = CenterHorizontally,
             modifier = Modifier
@@ -248,7 +250,7 @@ fun WellnessBubble(
     countText: String,
     metric: String,
     modifier: Modifier = Modifier,
-    bubbleColor: Color = JetLaggedTheme.colors.wellness
+    bubbleColor: Color = JetLaggedTheme.extraColors.wellness
 ) {
     Column(
         modifier = modifier

@@ -126,7 +126,7 @@ fun JetLaggedTheme(
 }
 
 object JetLaggedTheme {
-    val colors: JetLaggedExtraColors
+    val extraColors: JetLaggedExtraColors
         @Composable
         get() = LocalExtraColors.current
 }
