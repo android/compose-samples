@@ -86,20 +86,20 @@ class PodcastsFetcher @Inject constructor(
     }
 
     private suspend fun fetchPodcast(url: String): PodcastRssResponse {
-        val request = Request.Builder()
-            .url(url)
-            .cacheControl(cacheControl)
-            .build()
-
-        val response = okHttpClient.newCall(request).execute()
-
-        // If the network request wasn't successful, throw an exception
-        if (!response.isSuccessful) throw HttpException(response)
-
-        // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
-        // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
-        // from a stream.
         return withContext(ioDispatcher) {
+            val request = Request.Builder()
+                .url(url)
+                .cacheControl(cacheControl)
+                .build()
+
+            val response = okHttpClient.newCall(request).execute()
+
+            // If the network request wasn't successful, throw an exception
+            if (!response.isSuccessful) throw HttpException(response)
+
+            // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
+            // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
+            // from a stream.
             response.body!!.use { body ->
                 syndFeedInput.build(body.charStream()).toPodcastResponse(url)
             }
