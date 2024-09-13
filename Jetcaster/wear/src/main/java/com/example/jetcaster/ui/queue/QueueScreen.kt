@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
@@ -47,7 +48,6 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -100,14 +100,13 @@ fun QueueScreen(
     ) {
         when (uiState) {
             is QueueScreenState.Loaded -> QueueScreenLoaded(
-                columnState = columnState,
                 episodeList = uiState.episodeList,
-                onDeleteQueueEpisodes = onDeleteQueueEpisodes,
-                onPlayEpisodes = onPlayEpisodes,
                 onPlayButtonClick = onPlayButtonClick,
+                onPlayEpisodes = onPlayEpisodes,
+                onDeleteQueueEpisodes = onDeleteQueueEpisodes,
                 onEpisodeItemClick = onEpisodeItemClick
             )
-            QueueScreenState.Loading -> QueueScreenLoading(columnState)
+            QueueScreenState.Loading -> QueueScreenLoading()
             QueueScreenState.Empty -> QueueScreenEmpty(onDismiss)
         }
     }
@@ -115,7 +114,6 @@ fun QueueScreen(
 
 @Composable
 fun QueueScreenLoaded(
-    columnState: ScalingLazyColumnState,
     episodeList: List<PlayerEpisode>,
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
@@ -124,7 +122,6 @@ fun QueueScreenLoaded(
     modifier: Modifier = Modifier
 ) {
     EntityScreen(
-        columnState = columnState,
         modifier = modifier,
         headerContent = {
             ResponsiveListHeader(
@@ -156,13 +153,12 @@ fun QueueScreenLoaded(
     )
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun QueueScreenLoading(
-    columnState: ScalingLazyColumnState,
     modifier: Modifier = Modifier
 ) {
     EntityScreen(
-        columnState = columnState,
         modifier = modifier,
         headerContent = {
             DefaultEntityScreenHeader(
@@ -255,12 +251,11 @@ fun QueueScreenLoadedPreview(
         )
     )
     QueueScreenLoaded(
-        columnState = columnState,
         episodeList = listOf(episode),
         onPlayButtonClick = { },
         onPlayEpisodes = { },
-        onEpisodeItemClick = { },
-        onDeleteQueueEpisodes = { }
+        onDeleteQueueEpisodes = { },
+        onEpisodeItemClick = { }
     )
 }
 
@@ -274,9 +269,7 @@ fun QueueScreenLoadingPreview() {
             last = ScalingLazyColumnDefaults.ItemType.Chip
         )
     )
-    QueueScreenLoading(
-        columnState = columnState,
-    )
+    QueueScreenLoading()
 }
 
 @WearPreviewDevices

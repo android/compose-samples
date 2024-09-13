@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
@@ -41,7 +42,6 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -91,7 +91,6 @@ fun LatestEpisodeScreen(
         when (uiState) {
             is LatestEpisodeScreenState.Loaded -> {
                 LatestEpisodesScreen(
-                    columnState = columnState,
                     episodeList = uiState.episodeList,
                     onPlayButtonClick = onPlayButtonClick,
                     onPlayEpisode = onPlayEpisode,
@@ -110,7 +109,6 @@ fun LatestEpisodeScreen(
 
             is LatestEpisodeScreenState.Loading -> {
                 LatestEpisodesScreenLoading(
-                    columnState = columnState,
                     modifier = modifier
                 )
             }
@@ -139,7 +137,6 @@ fun ButtonsContent(
 
 @Composable
 fun LatestEpisodesScreen(
-    columnState: ScalingLazyColumnState,
     episodeList: List<PlayerEpisode>,
     onPlayButtonClick: () -> Unit,
     onPlayEpisode: (PlayerEpisode) -> Unit,
@@ -148,7 +145,6 @@ fun LatestEpisodesScreen(
 ) {
     EntityScreen(
         modifier = modifier,
-        columnState = columnState,
         headerContent = {
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
@@ -181,14 +177,13 @@ fun LatestEpisodesScreen(
     )
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun LatestEpisodesScreenLoading(
-    columnState: ScalingLazyColumnState,
     modifier: Modifier = Modifier
 ) {
     EntityScreen(
         modifier = modifier,
-        columnState = columnState,
         headerContent = {
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
@@ -225,7 +220,6 @@ fun LatestEpisodeScreenLoadedPreview(
         )
     )
     LatestEpisodesScreen(
-        columnState = columnState,
         episodeList = listOf(episode),
         onPlayButtonClick = { },
         onPlayEpisode = { },
@@ -243,7 +237,5 @@ fun LatestEpisodeScreenLoadingPreview() {
             last = ScalingLazyColumnDefaults.ItemType.Chip
         )
     )
-    LatestEpisodesScreenLoading(
-        columnState = columnState,
-    )
+    LatestEpisodesScreenLoading()
 }
