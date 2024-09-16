@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.LocalContentColor
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
@@ -49,7 +50,6 @@ import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.listTextPadding
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -101,7 +101,6 @@ fun EpisodeScreen(
                 val title = uiState.episode.episode.title
 
                 EntityScreen(
-                    columnState = columnState,
                     headerContent = {
                         ResponsiveListHeader(
                             contentPadding = ListHeaderDefaults.firstItemPadding()
@@ -136,7 +135,7 @@ fun EpisodeScreen(
                 )
             }
             EpisodeScreenState.Loading -> {
-                LoadingScreen(columnState)
+                LoadingScreen()
             }
         }
     }
@@ -182,10 +181,10 @@ fun LoadedButtonsContent(
         )
     }
 }
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
-fun LoadingScreen(columnState: ScalingLazyColumnState) {
+fun LoadingScreen() {
     EntityScreen(
-        columnState = columnState,
         headerContent = {
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()

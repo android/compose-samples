@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.example.jetcaster.R
@@ -71,7 +72,6 @@ fun LibraryScreen(
     when (val s = uiState) {
         is LibraryScreenUiState.Loading ->
             LoadingScreen(
-                columnState = columnState,
                 modifier = modifier
             )
         is LibraryScreenUiState.NoSubscribedPodcast ->
@@ -94,13 +94,12 @@ fun LibraryScreen(
     }
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun LoadingScreen(
-    columnState: ScalingLazyColumnState,
     modifier: Modifier,
 ) {
     EntityScreen(
-        columnState = columnState,
         headerContent = {
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
@@ -117,6 +116,7 @@ fun LoadingScreen(
     )
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun NoSubscribedPodcastScreen(
     columnState: ScalingLazyColumnState,
