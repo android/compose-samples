@@ -16,12 +16,7 @@
 
 package com.example.jetlagged.sleep
 
-import androidx.compose.ui.graphics.Color
 import com.example.jetlagged.R
-import com.example.jetlagged.ui.theme.Yellow_Awake
-import com.example.jetlagged.ui.theme.Yellow_Deep
-import com.example.jetlagged.ui.theme.Yellow_Light
-import com.example.jetlagged.ui.theme.Yellow_Rem
 import java.time.Duration
 import java.time.LocalDateTime
 
@@ -84,9 +79,9 @@ data class SleepPeriod(
     }
 }
 
-enum class SleepType(val title: Int, val color: Color) {
-    Awake(R.string.sleep_type_awake, Yellow_Awake),
-    REM(R.string.sleep_type_rem, Yellow_Rem),
-    Light(R.string.sleep_type_light, Yellow_Light),
-    Deep(R.string.sleep_type_deep, Yellow_Deep)
+enum class SleepType(val title: Int) {
+    Awake(R.string.sleep_type_awake),
+    REM(R.string.sleep_type_rem),
+    Light(R.string.sleep_type_light),
+    Deep(R.string.sleep_type_deep)
 }

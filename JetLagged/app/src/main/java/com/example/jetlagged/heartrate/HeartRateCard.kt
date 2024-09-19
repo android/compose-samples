@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -35,11 +34,10 @@ import com.example.jetlagged.BasicInformationalCard
 import com.example.jetlagged.HomeScreenCardHeading
 import com.example.jetlagged.R
 import com.example.jetlagged.data.HeartRateOverallData
-import com.example.jetlagged.ui.theme.Coral
+import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.TitleStyle
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun HeartRateCard(
@@ -47,7 +45,7 @@ fun HeartRateCard(
     heartRateData: HeartRateOverallData = HeartRateOverallData()
 ) {
     BasicInformationalCard(
-        borderColor = Coral,
+        borderColor = JetLaggedTheme.extraColors.heart,
         modifier = modifier
             .height(260.dp)
     ) {

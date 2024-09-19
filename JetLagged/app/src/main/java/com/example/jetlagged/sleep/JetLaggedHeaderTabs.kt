@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
@@ -30,13 +31,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetlagged.R
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
-import com.example.jetlagged.ui.theme.White
-import com.example.jetlagged.ui.theme.Yellow
 
 enum class SleepTab(val title: Int) {
     Day(R.string.sleep_tab_day_heading),
@@ -56,19 +54,21 @@ fun JetLaggedHeaderTabs(
         modifier = modifier,
         edgePadding = 12.dp,
         selectedTabIndex = selectedTab.ordinal,
-        containerColor = White,
         indicator = { tabPositions: List<TabPosition> ->
             Box(
                 Modifier
                     .tabIndicatorOffset(tabPositions[selectedTab.ordinal])
                     .fillMaxSize()
                     .padding(horizontal = 2.dp)
-                    .border(BorderStroke(2.dp, Yellow), RoundedCornerShape(10.dp))
+                    .border(
+                        BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                        RoundedCornerShape(10.dp)
+                    )
             )
         },
         divider = { }
     ) {
-        SleepTab.values().forEachIndexed { index, sleepTab ->
+        SleepTab.entries.forEachIndexed { index, sleepTab ->
             val selected = index == selectedTab.ordinal
             SleepTabText(
                 sleepTab = sleepTab,
@@ -94,10 +94,10 @@ private fun SleepTabText(
             .padding(horizontal = 2.dp)
             .clip(RoundedCornerShape(16.dp)),
         selected = selected,
-        unselectedContentColor = Color.Black,
-        selectedContentColor = Color.Black,
+        unselectedContentColor = MaterialTheme.colorScheme.onBackground,
+        selectedContentColor = MaterialTheme.colorScheme.onBackground,
         onClick = {
-            onTabSelected(SleepTab.values()[index])
+            onTabSelected(SleepTab.entries[index])
         }
     ) {
         Text(

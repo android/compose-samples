@@ -36,9 +36,6 @@ android {
 kotlin {
   jvmToolchain(17)
 }
-composeCompiler {
-  enableStrongSkippingMode = true
-}
 
 dependencies {
   val composeBom = platform(libs.androidx.compose.bom)

@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
@@ -37,7 +38,6 @@ import com.example.jetcaster.ui.preview.WearPreviewPodcasts
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -95,27 +95,24 @@ fun PodcastsScreen(
     ) {
         when (podcastsScreenState) {
             is PodcastsScreenState.Loaded -> PodcastScreenLoaded(
-                columnState = columnState,
                 podcastList = podcastsScreenState.podcastList,
                 onPodcastsItemClick = onPodcastsItemClick
             )
             PodcastsScreenState.Empty ->
                 PodcastScreenEmpty(onDismiss)
             PodcastsScreenState.Loading ->
-                PodcastScreenLoading(columnState)
+                PodcastScreenLoading()
         }
     }
 }
 
 @Composable
 fun PodcastScreenLoaded(
-    columnState: ScalingLazyColumnState,
     podcastList: List<PodcastInfo>,
     onPodcastsItemClick: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     EntityScreen(
-        columnState = columnState,
         modifier = modifier,
         headerContent = {
             ResponsiveListHeader(
@@ -154,13 +151,12 @@ fun PodcastScreenEmpty(
     )
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun PodcastScreenLoading(
-    columnState: ScalingLazyColumnState,
     modifier: Modifier = Modifier
 ) {
     EntityScreen(
-        columnState = columnState,
         modifier = modifier,
         headerContent = {
             DefaultEntityScreenHeader(
@@ -188,7 +184,6 @@ fun PodcastScreenLoadedPreview(
         )
     )
     PodcastScreenLoaded(
-        columnState = columnState,
         podcastList = listOf(podcasts),
         onPodcastsItemClick = {}
     )
@@ -204,7 +199,7 @@ fun PodcastScreenLoadingPreview() {
             last = ScalingLazyColumnDefaults.ItemType.Chip
         )
     )
-    PodcastScreenLoading(columnState)
+    PodcastScreenLoading()
 }
 
 @WearPreviewDevices
