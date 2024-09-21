@@ -210,7 +210,7 @@ fun WellnessCard(
         borderColor = LightBlue,
         modifier = modifier
             .widthIn(max = 400.dp)
-            .heightIn(min = 200.dp)
+            .heightIn(min = 100.dp, max = 200.dp)
     ) {
         FadingCircleBackground(36.dp, LightBlue.copy(0.25f))
         Column(
@@ -219,9 +219,8 @@ fun WellnessCard(
                 .fillMaxWidth()
         ) {
             HomeScreenCardHeading(text = stringResource(R.string.wellness_heading))
-            FlowRow(
+            Row(
                 horizontalArrangement = Arrangement.Center,
-                verticalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxHeight()
             ) {
                 WellnessBubble(

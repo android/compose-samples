@@ -18,6 +18,9 @@ package com.example.jetlagged
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateBounds
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,7 +40,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.unit.dp
@@ -78,7 +84,24 @@ fun JetLaggedScreen(
         val insets = WindowInsets.safeDrawing.only(
             WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
         )
+        val boundsTransform = { _ : Rect, _: Rect ->
+            spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMedium,
+                visibilityThreshold = Rect.VisibilityThreshold
+            )
+        }
+
         LookaheadScope {
+            val animateBoundsModifier = Modifier.animateBounds(
+                lookaheadScope = this@LookaheadScope,
+                boundsTransform = boundsTransform)
+            val timeSleepSummaryCards = remember {
+                movableContentOf {
+                    AverageTimeInBedCard(animateBoundsModifier)
+                    AverageTimeAsleepCard(animateBoundsModifier)
+                }
+            }
             FlowRow(
                 modifier = Modifier
                     .fillMaxSize()
@@ -87,28 +110,24 @@ fun JetLaggedScreen(
                 verticalArrangement = Arrangement.Center,
                 maxItemsInEachRow = 3
             ) {
-                JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
+                JetLaggedSleepGraphCard(uiState.value.sleepGraphData, animateBoundsModifier.widthIn(max = 600.dp))
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    AverageTimeInBedCard(modifier = Modifier.animateBounds(this@LookaheadScope))
-                    AverageTimeAsleepCard(modifier = Modifier.animateBounds(this@LookaheadScope))
+                    timeSleepSummaryCards()
                 } else {
                     FlowColumn {
-                        AverageTimeInBedCard(modifier = Modifier.animateBounds(this@LookaheadScope))
-                        AverageTimeAsleepCard(modifier = Modifier.animateBounds(this@LookaheadScope))
+                        timeSleepSummaryCards()
                     }
                 }
 
                 FlowColumn {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
-                        modifier = Modifier
-                            .animateBounds(this@LookaheadScope)
+                        modifier = animateBoundsModifier
                             .widthIn(max = 400.dp)
                             .heightIn(min = 200.dp)
                     )
                     HeartRateCard(
-                        modifier = Modifier
-                            .animateBounds(this@LookaheadScope)
+                        modifier = animateBoundsModifier
                             .widthIn(max = 400.dp, min = 200.dp),
                         uiState.value.heartRateData
                     )
