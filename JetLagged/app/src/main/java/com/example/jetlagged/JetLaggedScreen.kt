@@ -16,6 +16,8 @@
 
 package com.example.jetlagged
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.animateBounds
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +39,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -47,7 +50,7 @@ import com.example.jetlagged.sleep.JetLaggedHeader
 import com.example.jetlagged.sleep.JetLaggedSleepGraphCard
 import com.example.jetlagged.ui.util.MultiDevicePreview
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
 @MultiDevicePreview
 @Composable
 fun JetLaggedScreen(
@@ -75,43 +78,38 @@ fun JetLaggedScreen(
         val insets = WindowInsets.safeDrawing.only(
             WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
         )
-        FlowRow(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(insets),
-            horizontalArrangement = Arrangement.Center,
-            verticalArrangement = Arrangement.Center,
-            maxItemsInEachRow = 3
-        ) {
-            JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
-            if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                AverageTimeInBedCard()
-                AverageTimeAsleepCard()
-            } else {
-                FlowColumn {
-                    AverageTimeInBedCard()
-                    AverageTimeAsleepCard()
+        LookaheadScope {
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(insets),
+                horizontalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center,
+                maxItemsInEachRow = 3
+            ) {
+                JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
+                if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    AverageTimeInBedCard(modifier = Modifier.animateBounds(this@LookaheadScope))
+                    AverageTimeAsleepCard(modifier = Modifier.animateBounds(this@LookaheadScope))
+                } else {
+                    FlowColumn {
+                        AverageTimeInBedCard(modifier = Modifier.animateBounds(this@LookaheadScope))
+                        AverageTimeAsleepCard(modifier = Modifier.animateBounds(this@LookaheadScope))
+                    }
                 }
-            }
-            if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                WellnessCard(
-                    wellnessData = uiState.value.wellnessData,
-                    modifier = Modifier.widthIn(max = 400.dp)
-                        .heightIn(min = 200.dp)
-                )
-                HeartRateCard(
-                    modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                    uiState.value.heartRateData
-                )
-            } else {
+
                 FlowColumn {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
-                        modifier = Modifier.widthIn(max = 400.dp)
+                        modifier = Modifier
+                            .animateBounds(this@LookaheadScope)
+                            .widthIn(max = 400.dp)
                             .heightIn(min = 200.dp)
                     )
                     HeartRateCard(
-                        modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
+                        modifier = Modifier
+                            .animateBounds(this@LookaheadScope)
+                            .widthIn(max = 400.dp, min = 200.dp),
                         uiState.value.heartRateData
                     )
                 }
