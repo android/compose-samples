@@ -16,7 +16,6 @@
 
 package com.example.jetnews.ui
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -54,15 +53,10 @@ fun JetnewsApp(
         val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
         val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
-        BackHandler(sizeAwareDrawerState.isOpen) {
-            coroutineScope.launch {
-                sizeAwareDrawerState.close()
-            }
-        }
-
         ModalNavigationDrawer(
             drawerContent = {
                 AppDrawer(
+                    drawerState = sizeAwareDrawerState,
                     currentRoute = currentRoute,
                     navigateToHome = navigationActions.navigateToHome,
                     navigateToInterests = navigationActions.navigateToInterests,
