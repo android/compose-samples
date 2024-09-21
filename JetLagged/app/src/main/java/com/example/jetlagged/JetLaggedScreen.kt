@@ -92,7 +92,7 @@ fun JetLaggedScreen(
         val insets = WindowInsets.safeDrawing.only(
             WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
         )
-        val boundsTransform = { _ : Rect, _: Rect ->
+        val boundsTransform = { _: Rect, _: Rect ->
             spring(
                 dampingRatio = Spring.DampingRatioNoBouncy,
                 stiffness = Spring.StiffnessMedium,
@@ -102,42 +102,34 @@ fun JetLaggedScreen(
         LookaheadScope {
             val animateBoundsModifier = Modifier.animateBounds(
                 lookaheadScope = this@LookaheadScope,
-                boundsTransform = boundsTransform)
+                boundsTransform = boundsTransform
+            )
             val timeSleepSummaryCards = remember {
                 movableContentOf {
                     AverageTimeInBedCard(animateBoundsModifier)
                     AverageTimeAsleepCard(animateBoundsModifier)
                 }
             }
-        FlowRow(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(insets),
-            horizontalArrangement = Arrangement.Center,
-            verticalArrangement = Arrangement.Center,
-            maxItemsInEachRow = 3
-        ) {
-            JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
-            if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                timeSleepSummaryCards()
-            } else {
-                FlowColumn {
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(insets),
+                horizontalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center,
+                maxItemsInEachRow = 3
+            ) {
+                JetLaggedSleepGraphCard(
+                    uiState.value.sleepGraphData,
+                    Modifier.widthIn(max = 600.dp)
+                )
+                if (windowSizeClass == WindowWidthSizeClass.Compact) {
                     timeSleepSummaryCards()
+                } else {
+                    FlowColumn {
+                        timeSleepSummaryCards()
+                    }
                 }
-            }
-            if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                WellnessCard(
-                    wellnessData = uiState.value.wellnessData,
-                    modifier = animateBoundsModifier
-                        .widthIn(max = 400.dp)
-                        .heightIn(min = 200.dp)
-                )
-                HeartRateCard(
-                    modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),
-                    uiState.value.heartRateData
-                )
-            } else {
-                FlowColumn {
+                if (windowSizeClass == WindowWidthSizeClass.Compact) {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
                         modifier = animateBoundsModifier
@@ -148,9 +140,21 @@ fun JetLaggedScreen(
                         modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),
                         uiState.value.heartRateData
                     )
+                } else {
+                    FlowColumn {
+                        WellnessCard(
+                            wellnessData = uiState.value.wellnessData,
+                            modifier = animateBoundsModifier
+                                .widthIn(max = 400.dp)
+                                .heightIn(min = 200.dp)
+                        )
+                        HeartRateCard(
+                            modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),
+                            uiState.value.heartRateData
+                        )
+                    }
                 }
             }
         }
     }
-        }
 }
