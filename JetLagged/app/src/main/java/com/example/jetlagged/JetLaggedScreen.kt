@@ -38,8 +38,11 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -54,6 +57,7 @@ import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
 import com.example.jetlagged.heartrate.HeartRateCard
 import com.example.jetlagged.sleep.JetLaggedHeader
 import com.example.jetlagged.sleep.JetLaggedSleepGraphCard
+import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.util.MultiDevicePreview
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
@@ -67,12 +71,16 @@ fun JetLaggedScreen(
 ) {
     Column(
         modifier = modifier
-            .background(Color.White)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(modifier = Modifier.movingStripesBackground()) {
+        Column(
+            modifier = Modifier.movingStripesBackground(
+                stripeColor = JetLaggedTheme.extraColors.header,
+                backgroundColor = MaterialTheme.colorScheme.background,
+            )
+        ) {
             JetLaggedHeader(
                 modifier = Modifier.fillMaxWidth(),
                 onDrawerClicked = onDrawerClicked
@@ -91,7 +99,6 @@ fun JetLaggedScreen(
                 visibilityThreshold = Rect.VisibilityThreshold
             )
         }
-
         LookaheadScope {
             val animateBoundsModifier = Modifier.animateBounds(
                 lookaheadScope = this@LookaheadScope,
@@ -102,23 +109,34 @@ fun JetLaggedScreen(
                     AverageTimeAsleepCard(animateBoundsModifier)
                 }
             }
-            FlowRow(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(insets),
-                horizontalArrangement = Arrangement.Center,
-                verticalArrangement = Arrangement.Center,
-                maxItemsInEachRow = 3
-            ) {
-                JetLaggedSleepGraphCard(uiState.value.sleepGraphData, animateBoundsModifier.widthIn(max = 600.dp))
-                if (windowSizeClass == WindowWidthSizeClass.Compact) {
+        FlowRow(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(insets),
+            horizontalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center,
+            maxItemsInEachRow = 3
+        ) {
+            JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
+            if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                timeSleepSummaryCards()
+            } else {
+                FlowColumn {
                     timeSleepSummaryCards()
-                } else {
-                    FlowColumn {
-                        timeSleepSummaryCards()
-                    }
                 }
-
+            }
+            if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                WellnessCard(
+                    wellnessData = uiState.value.wellnessData,
+                    modifier = animateBoundsModifier
+                        .widthIn(max = 400.dp)
+                        .heightIn(min = 200.dp)
+                )
+                HeartRateCard(
+                    modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),
+                    uiState.value.heartRateData
+                )
+            } else {
                 FlowColumn {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
@@ -127,12 +145,12 @@ fun JetLaggedScreen(
                             .heightIn(min = 200.dp)
                     )
                     HeartRateCard(
-                        modifier = animateBoundsModifier
-                            .widthIn(max = 400.dp, min = 200.dp),
+                        modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),
                         uiState.value.heartRateData
                     )
                 }
             }
         }
     }
+        }
 }

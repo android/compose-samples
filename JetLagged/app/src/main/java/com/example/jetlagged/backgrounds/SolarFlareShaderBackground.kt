@@ -22,11 +22,11 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
-import com.example.jetlagged.ui.theme.Yellow
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
@@ -34,31 +34,59 @@ import org.intellij.lang.annotations.Language
  * Background modifier that displays a custom shader for Android T and above and a linear gradient
  * for older versions of Android
  */
-fun Modifier.solarFlareShaderBackground(): Modifier =
+fun Modifier.solarFlareShaderBackground(
+    baseColor: Color,
+    backgroundColor: Color,
+): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        this.then(SolarFlareShaderBackgroundElement)
+        this.then(SolarFlareShaderBackgroundElement(baseColor, backgroundColor))
     } else {
         this.then(Modifier.simpleGradient())
     }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private data object SolarFlareShaderBackgroundElement :
+private data class SolarFlareShaderBackgroundElement(
+    val baseColor: Color,
+    val backgroundColor: Color,
+) :
     ModifierNodeElement<SolarFlairShaderBackgroundNode>() {
-    override fun create() = SolarFlairShaderBackgroundNode()
+    override fun create() = SolarFlairShaderBackgroundNode(baseColor, backgroundColor)
     override fun update(node: SolarFlairShaderBackgroundNode) {
+        node.updateColors(baseColor, backgroundColor)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private class SolarFlairShaderBackgroundNode : DrawModifierNode, Modifier.Node() {
+private class SolarFlairShaderBackgroundNode(
+    baseColor: Color,
+    backgroundColor: Color,
+) : DrawModifierNode, Modifier.Node() {
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
     private val time = mutableFloatStateOf(0f)
 
     init {
+        updateColors(baseColor, backgroundColor)
+    }
+
+    fun updateColors(baseColor: Color, backgroundColor: Color) {
         shader.setColorUniform(
             "baseColor",
-            android.graphics.Color.valueOf(Yellow.red, Yellow.green, Yellow.blue, Yellow.alpha)
+            android.graphics.Color.valueOf(
+                baseColor.red,
+                baseColor.green,
+                baseColor.blue,
+                baseColor.alpha
+            )
+        )
+        shader.setColorUniform(
+            "backgroundColor",
+            android.graphics.Color.valueOf(
+                backgroundColor.red,
+                backgroundColor.green,
+                backgroundColor.blue,
+                backgroundColor.alpha
+            )
         )
     }
 
@@ -86,6 +114,7 @@ private val SHADER = """
     uniform float2 resolution;
     uniform float time;
     layout(color) uniform half4 baseColor;
+    layout(color) uniform half4 backgroundColor;
     
     const int ITERATIONS = 2;
     const float INTENSITY = 100.0;
@@ -119,9 +148,16 @@ private val SHADER = """
         colorPart = 1.6 - (colorPart / float(ITERATIONS));
         
         // Fade out the bottom on a curve
-        float alpha = 1.0 - (uv.y * uv.y);
+        float mixRatio = 1.0 - (uv.y * uv.y);
         // Mix calculated color with the incoming base color
-        float4 color = float4(colorPart * baseColor.r, colorPart * baseColor.g, colorPart * baseColor.b, alpha);
+        float4 color = float4(colorPart * baseColor.r, colorPart * baseColor.g, colorPart * baseColor.b, 1.0);
+        // Mix color with the background
+        color = float4(
+            mix(backgroundColor.r, color.r, mixRatio),
+            mix(backgroundColor.g, color.g, mixRatio),
+            mix(backgroundColor.b, color.b, mixRatio),
+            1.0
+        );
         // Keep all channels within valid bounds of 0.0 and 1.0
         return clamp(color, 0.0, 1.0);
     }

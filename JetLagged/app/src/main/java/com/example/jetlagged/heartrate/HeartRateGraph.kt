@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -45,10 +44,7 @@ import com.example.jetlagged.data.HeartRateData
 import com.example.jetlagged.data.bracketInSeconds
 import com.example.jetlagged.data.heartRateGraphData
 import com.example.jetlagged.data.numberEntries
-import com.example.jetlagged.ui.theme.Coral
-import com.example.jetlagged.ui.theme.Green
-import com.example.jetlagged.ui.theme.Pink
-import com.example.jetlagged.ui.theme.Purple
+import com.example.jetlagged.ui.theme.JetLaggedTheme
 import kotlin.math.roundToInt
 
 @Composable
@@ -64,18 +60,23 @@ fun HeartRateGraph(listData: List<HeartRateData>) {
 @Composable
 private fun Graph(
     listData: List<HeartRateData>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    waveLineColors: List<Color> = JetLaggedTheme.extraColors.heartWave,
+    pathBackground: Color = JetLaggedTheme.extraColors.heartWaveBackground,
 ) {
+    if (waveLineColors.size < 2) {
+        throw IllegalArgumentException("waveLineColors requires 2+ colors; $waveLineColors")
+    }
     Box(
         modifier
             .fillMaxSize()
             .drawWithCache {
                 val paths = generateSmoothPath(listData, size)
-                val lineBrush = Brush.verticalGradient(listOf(Pink, Purple, Green))
+                val lineBrush = Brush.verticalGradient(waveLineColors)
                 onDrawBehind {
                     drawPath(
                         paths.second,
-                        Coral.copy(alpha = 0.2f),
+                        pathBackground,
                         style = Fill
                     )
                     drawPath(
@@ -204,7 +205,6 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
     return path to variancePath
 }
 
-@OptIn(ExperimentalTextApi::class)
 fun DrawScope.drawHighlight(
     highlightedWeek: Int,
     graphData: List<HeartRateData>,
