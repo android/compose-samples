@@ -39,19 +39,16 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.movableContentOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.jetlagged.backgrounds.movingStripesBackground
 import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
 import com.example.jetlagged.heartrate.HeartRateCard
@@ -65,7 +62,7 @@ import com.example.jetlagged.ui.util.MultiDevicePreview
 @Composable
 fun JetLaggedScreen(
     modifier: Modifier = Modifier,
-    windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
+    windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.COMPACT,
     viewModel: JetLaggedHomeScreenViewModel = viewModel(),
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -122,14 +119,14 @@ fun JetLaggedScreen(
                     uiState.value.sleepGraphData,
                     Modifier.widthIn(max = 600.dp)
                 )
-                if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                if (windowSizeClass == WindowWidthSizeClass.COMPACT) {
                     timeSleepSummaryCards()
                 } else {
                     FlowColumn {
                         timeSleepSummaryCards()
                     }
                 }
-                if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                if (windowSizeClass == WindowWidthSizeClass.COMPACT) {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
                         modifier = animateBoundsModifier
