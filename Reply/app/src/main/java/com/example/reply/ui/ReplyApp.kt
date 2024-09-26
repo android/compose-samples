@@ -31,9 +31,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
-import com.example.reply.ui.navigation.Route
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationWrapper
+import com.example.reply.ui.navigation.Route
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
