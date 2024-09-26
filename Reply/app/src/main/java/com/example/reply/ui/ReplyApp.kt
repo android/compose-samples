@@ -33,7 +33,7 @@ import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationWrapper
-import com.example.reply.ui.navigation.ReplyRoute
+import com.example.reply.ui.navigation.Route
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
@@ -89,12 +89,11 @@ fun ReplyApp(
         ReplyNavigationActions(navController)
     }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val selectedDestination =
-        navBackStackEntry?.destination?.route ?: ReplyRoute.INBOX
+    val currentDestination = navBackStackEntry?.destination
 
     Surface {
         ReplyNavigationWrapper(
-            selectedDestination = selectedDestination,
+            currentDestination = currentDestination,
             navigateToTopLevelDestination = navigationActions::navigateTo
         ) {
             ReplyNavHost(
@@ -126,9 +125,9 @@ private fun ReplyNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = ReplyRoute.INBOX,
+        startDestination = Route.Inbox,
     ) {
-        composable(ReplyRoute.INBOX) {
+        composable<Route.Inbox> {
             ReplyInboxScreen(
                 contentType = contentType,
                 replyHomeUIState = replyHomeUIState,
@@ -139,13 +138,13 @@ private fun ReplyNavHost(
                 toggleSelectedEmail = toggleSelectedEmail
             )
         }
-        composable(ReplyRoute.DM) {
+        composable<Route.DirectMessages> {
             EmptyComingSoon()
         }
-        composable(ReplyRoute.ARTICLES) {
+        composable<Route.Articles> {
             EmptyComingSoon()
         }
-        composable(ReplyRoute.GROUPS) {
+        composable<Route.Groups> {
             EmptyComingSoon()
         }
     }
