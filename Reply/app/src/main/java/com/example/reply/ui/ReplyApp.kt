@@ -31,10 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
-import com.example.reply.ui.navigation.ArticlesRoute
-import com.example.reply.ui.navigation.DirectMessagesRoute
-import com.example.reply.ui.navigation.GroupsRoute
-import com.example.reply.ui.navigation.InboxRoute
+import com.example.reply.ui.navigation.Route
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationWrapper
 import com.example.reply.ui.utils.DevicePosture
@@ -128,9 +125,9 @@ private fun ReplyNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = InboxRoute,
+        startDestination = Route.Inbox,
     ) {
-        composable<InboxRoute> {
+        composable<Route.Inbox> {
             ReplyInboxScreen(
                 contentType = contentType,
                 replyHomeUIState = replyHomeUIState,
@@ -141,13 +138,13 @@ private fun ReplyNavHost(
                 toggleSelectedEmail = toggleSelectedEmail
             )
         }
-        composable<DirectMessagesRoute> {
+        composable<Route.DirectMessages> {
             EmptyComingSoon()
         }
-        composable<ArticlesRoute> {
+        composable<Route.Articles> {
             EmptyComingSoon()
         }
-        composable<GroupsRoute> {
+        composable<Route.Groups> {
             EmptyComingSoon()
         }
     }

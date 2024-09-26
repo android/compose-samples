@@ -27,13 +27,15 @@ import androidx.navigation.NavHostController
 import com.example.reply.R
 import kotlinx.serialization.Serializable
 
-@Serializable data object InboxRoute
-@Serializable data object ArticlesRoute
-@Serializable data object DirectMessagesRoute
-@Serializable data object GroupsRoute
+sealed interface Route {
+    @Serializable data object Inbox : Route
+    @Serializable data object Articles : Route
+    @Serializable data object DirectMessages : Route
+    @Serializable data object Groups : Route
+}
 
 data class ReplyTopLevelDestination(
-    val route: Any,
+    val route: Route,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val iconTextId: Int
@@ -60,25 +62,25 @@ class ReplyNavigationActions(private val navController: NavHostController) {
 
 val TOP_LEVEL_DESTINATIONS = listOf(
     ReplyTopLevelDestination(
-        route = InboxRoute,
+        route = Route.Inbox,
         selectedIcon = Icons.Default.Inbox,
         unselectedIcon = Icons.Default.Inbox,
         iconTextId = R.string.tab_inbox
     ),
     ReplyTopLevelDestination(
-        route = ArticlesRoute,
+        route = Route.Articles,
         selectedIcon = Icons.AutoMirrored.Filled.Article,
         unselectedIcon = Icons.AutoMirrored.Filled.Article,
         iconTextId = R.string.tab_article
     ),
     ReplyTopLevelDestination(
-        route = DirectMessagesRoute,
+        route = Route.DirectMessages,
         selectedIcon = Icons.Outlined.ChatBubbleOutline,
         unselectedIcon = Icons.Outlined.ChatBubbleOutline,
         iconTextId = R.string.tab_inbox
     ),
     ReplyTopLevelDestination(
-        route = GroupsRoute,
+        route = Route.Groups,
         selectedIcon = Icons.Default.People,
         unselectedIcon = Icons.Default.People,
         iconTextId = R.string.tab_article
