@@ -94,7 +94,7 @@ To make any other manual updates to dependencies (ie add a new dependency or set
 Over time some of our samples become a little stale and are removed to keep the
 repository easy to navigate. If you are curious you can still find them in the 
 history, however if you are new you might be better served sticking to
-the most upto date resources.
+the most up to date resources.
 
 | Project                                          | Removed    | Commit                                                              |
 | ------------------------------------------------ | -----------|-------------------------------------------------------------------- |
