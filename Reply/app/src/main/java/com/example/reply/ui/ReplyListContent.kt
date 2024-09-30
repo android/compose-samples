@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
@@ -35,11 +34,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -113,20 +118,17 @@ fun ReplyInboxScreen(
             )
             // When we have bottom navigation we show FAB at the bottom end.
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-                LargeFloatingActionButton(
+                ExtendedFloatingActionButton (
+                    text = { Text(text = stringResource(id = R.string.compose)) },
+                    icon = { Icon(Icons.Default.Edit, stringResource(id = R.string.compose)) },
                     onClick = { /*TODO*/ },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(16.dp),
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = stringResource(id = R.string.compose),
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    expanded = emailLazyListState.isScrollingUp()
+                )
             }
         }
     }
@@ -230,4 +232,25 @@ fun ReplyEmailDetail(
             Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
         }
     }
+}
+
+/**
+ * Returns whether the lazy list is currently scrolling up.
+ */
+@Composable
+private fun LazyListState.isScrollingUp(): Boolean {
+    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
 }
