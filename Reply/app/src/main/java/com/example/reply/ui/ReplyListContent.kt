@@ -128,7 +128,8 @@ fun ReplyInboxScreen(
                         .padding(16.dp),
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    expanded = emailLazyListState.isScrollingUp()
+                    expanded = emailLazyListState.lastScrolledBackward ||
+                            !emailLazyListState.canScrollBackward
                 )
             }
         }
@@ -233,25 +234,4 @@ fun ReplyEmailDetail(
             Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
         }
     }
-}
-
-/**
- * Returns whether the lazy list is currently scrolling up.
- */
-@Composable
-private fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
-    return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
-            } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
-            }
-        }
-    }.value
 }
