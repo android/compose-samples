@@ -34,7 +34,6 @@ import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +44,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
@@ -67,6 +67,7 @@ import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.model.EpisodeList
+import com.example.jetcaster.tv.ui.Screen
 import com.example.jetcaster.tv.ui.component.BackgroundContainer
 import com.example.jetcaster.tv.ui.component.EnqueueButton
 import com.example.jetcaster.tv.ui.component.EpisodeDetails
@@ -80,9 +81,9 @@ import com.example.jetcaster.tv.ui.component.RewindButton
 import com.example.jetcaster.tv.ui.component.Seekbar
 import com.example.jetcaster.tv.ui.component.SkipButton
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
-import java.time.Duration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -319,8 +320,12 @@ private fun PlayerControl(
             ),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
+                .focusProperties {
+                    enter = {
+                        playPauseButton
+                    }
+                }
                 .focusGroup()
-                .focusRestorer()
                 .fillMaxWidth(),
         ) {
             PreviousButton(
