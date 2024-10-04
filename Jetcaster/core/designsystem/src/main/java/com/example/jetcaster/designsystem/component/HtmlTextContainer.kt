@@ -31,7 +31,7 @@ fun HtmlTextContainer(
     text: String,
     content: @Composable (AnnotatedString) -> Unit
 ) {
-    val annotatedString = remember(key1 = text) {
+    val annotatedString = remember(text) {
         AnnotatedString.fromHtml(htmlString = text)
     }
     SelectionContainer {

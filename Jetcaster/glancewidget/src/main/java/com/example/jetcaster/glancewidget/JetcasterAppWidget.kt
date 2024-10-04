@@ -255,7 +255,7 @@ private fun WidgetAsyncImage(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(key1 = uri) {
+    LaunchedEffect(uri) {
         val request = ImageRequest.Builder(context)
             .data(uri)
             .size(200, 200)
