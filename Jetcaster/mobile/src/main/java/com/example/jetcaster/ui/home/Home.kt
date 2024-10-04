@@ -83,6 +83,7 @@ import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
 import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -378,6 +379,11 @@ private fun HomeAppBar(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val viewModel: HomeViewModel = hiltViewModel()
+
+    val searchText by viewModel.searchText.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
+
     Row(
         horizontalArrangement = Arrangement.End,
         modifier = modifier
@@ -386,14 +392,14 @@ private fun HomeAppBar(
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
     ) {
         SearchBar(
-            query = "",
-            onQueryChange = {},
+            query = searchText,
+            onQueryChange = { viewModel.onSearchTextChange(it) },
             placeholder = {
                 Text(stringResource(id = R.string.search_for_a_podcast))
             },
-            onSearch = {},
+            onSearch = { viewModel.onSearchTextChange(it) },
             active = false,
-            onActiveChange = {},
+            onActiveChange = { viewModel.onToggleSearch() },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
