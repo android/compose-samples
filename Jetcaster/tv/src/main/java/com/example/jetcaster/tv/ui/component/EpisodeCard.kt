@@ -30,9 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.Border
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
-import androidx.tv.material3.CardScale
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.WideCardContainer
@@ -72,8 +72,18 @@ private fun EpisodeThumbnail(
     Card(
         onClick = onClick,
         interactionSource = interactionSource,
-        scale = CardScale.None,
+        scale = CardDefaults.scale(scale = 0.85f, focusedScale = 1.0f),
         shape = CardDefaults.shape(RoundedCornerShape(12.dp)),
+        border = CardDefaults.border(
+            focusedBorder = Border(
+                border = _root_ide_package_.androidx.compose.foundation.BorderStroke(
+                    3.dp,
+                    color = MaterialTheme.colorScheme.border
+                ),
+                inset = 3.dp,
+                shape = RoundedCornerShape(15.dp)
+            )
+        ),
         modifier = modifier,
     ) {
         Thumbnail(episode = playerEpisode, size = JetcasterAppDefaults.thumbnailSize.episode)

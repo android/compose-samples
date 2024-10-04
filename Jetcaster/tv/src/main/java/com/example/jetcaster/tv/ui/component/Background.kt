@@ -70,7 +70,7 @@ private fun Background(
 ) {
     ImageBackgroundRadialGradientScrim(
         url = imageUrl,
-        colors = listOf(Color.Black, Color.Transparent),
+        colors = listOf(Color(0xE0000000), Color(0xB0000000)),
         modifier = modifier,
     )
 }

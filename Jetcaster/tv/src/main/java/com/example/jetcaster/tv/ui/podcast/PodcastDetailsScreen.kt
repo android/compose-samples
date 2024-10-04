@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -201,13 +202,16 @@ private fun PodcastInfo(
         )
         Text(
             text = podcastInfo.title,
+            maxLines = 2,
             style = MaterialTheme.typography.headlineSmall,
         )
         Text(
             text = podcastInfo.description,
-            maxLines = 2,
+            maxLines = 3,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .padding(top = JetcasterAppDefaults.gap.paragraph)
         )
         ToggleSubscriptionButton(
             podcastInfo,
@@ -283,8 +287,8 @@ private fun EpisodeListItem(
     onInfoClicked: () -> Unit,
     onEnqueueClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    borderWidth: Dp = 2.dp,
-    cornerRadius: Dp = 12.dp,
+    borderWidth: Dp = 3.dp,
+    cornerRadius: Dp = 32.dp,
 ) {
     var hasFocus by remember {
         mutableStateOf(false)
@@ -321,7 +325,7 @@ private fun EpisodeListItem(
             .border(borderWidth, borderColor, shape)
             .background(backgroundColor)
             .shadow(elevation, shape)
-            .padding(start = 12.dp, top = 12.dp, bottom = 12.dp, end = 16.dp)
+            .padding(start = 18.dp, top = 16.dp, bottom = 16.dp, end = 16.dp)
     )
 }
 
@@ -339,7 +343,6 @@ private fun EpisodeListItemContentLayer(
         contentAlignment = Alignment.CenterStart,
         modifier = modifier
     ) {
-
         Column(
             verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.tiny),
         ) {
@@ -352,14 +355,14 @@ private fun EpisodeListItemContentLayer(
             ) {
                 PlayButton(
                     onClick = onEpisodeSelected,
-                    modifier = Modifier.focusRequester(playButton)
+                    modifier = Modifier.focusRequester(playButton).height(36.dp)
                 )
                 if (duration != null) {
                     EpisodeDataAndDuration(playerEpisode.published, duration)
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                EnqueueButton(onClick = onEnqueueClicked)
-                InfoButton(onClick = onInfoClicked)
+                EnqueueButton(onClick = onEnqueueClicked, modifier = Modifier.size(36.dp))
+                InfoButton(onClick = onInfoClicked, modifier = Modifier.size(36.dp))
             }
         }
     }

@@ -21,9 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.Border
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
-import androidx.tv.material3.CardScale
+import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.StandardCardContainer
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.PodcastInfo
@@ -40,8 +41,18 @@ internal fun PodcastCard(
             Card(
                 onClick = onClick,
                 interactionSource = it,
-                scale = CardScale.None,
-                shape = CardDefaults.shape(RoundedCornerShape(12.dp))
+                scale = CardDefaults.scale(scale = 0.9f, focusedScale = 1.0f),
+                shape = CardDefaults.shape(RoundedCornerShape(16.dp)),
+                border = CardDefaults.border(
+                    focusedBorder = Border(
+                        border = _root_ide_package_.androidx.compose.foundation.BorderStroke(
+                            3.dp,
+                            color = MaterialTheme.colorScheme.border
+                        ),
+                        inset = 3.dp,
+                        shape = RoundedCornerShape(19.dp)
+                    ),
+                )
             ) {
                 Thumbnail(
                     podcastInfo = podcastInfo,

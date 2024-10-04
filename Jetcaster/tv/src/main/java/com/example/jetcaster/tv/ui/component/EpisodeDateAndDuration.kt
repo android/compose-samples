@@ -37,7 +37,7 @@ internal fun EpisodeDataAndDuration(
     offsetDateTime: OffsetDateTime,
     duration: Duration,
     modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodySmall,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
         text = stringResource(

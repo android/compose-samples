@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.ui.component
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -36,10 +37,10 @@ internal fun ButtonWithIcon(
     modifier: Modifier = Modifier,
     scale: ButtonScale = ButtonDefaults.scale(),
 ) {
-    Button(onClick = onClick, modifier = modifier, scale = scale) {
+    Button(onClick = onClick, contentPadding = PaddingValues(start = 6.dp, end = 16.dp), modifier = modifier, scale = scale) {
         Icon(
             icon,
-            contentDescription = null,
+            contentDescription = null
         )
         Spacer(modifier = Modifier.width(6.dp))
         Text(text = label)
