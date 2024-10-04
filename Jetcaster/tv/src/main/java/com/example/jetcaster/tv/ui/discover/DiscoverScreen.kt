@@ -87,7 +87,6 @@ fun DiscoverScreen(
 private fun CatalogWithCategorySelection(
     categoryInfoList: CategoryInfoList,
     podcastList: PodcastList,
-
     selectedCategory: CategoryInfo,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastInfo) -> Unit,

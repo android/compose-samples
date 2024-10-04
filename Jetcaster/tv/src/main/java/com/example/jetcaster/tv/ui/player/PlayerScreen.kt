@@ -127,7 +127,7 @@ private fun Player(
     modifier: Modifier = Modifier,
     autoStart: Boolean = true
 ) {
-    LaunchedEffect(key1 = autoStart) {
+    LaunchedEffect(autoStart) {
         if (autoStart && !episodePlayerState.isPlaying) {
             play()
         }
