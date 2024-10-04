@@ -17,7 +17,7 @@
 package com.example.jetcaster.tv.ui.player
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,21 +34,25 @@ import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -80,6 +84,7 @@ import java.time.Duration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PlayerScreen(
     backToHome: () -> Unit,
@@ -106,12 +111,13 @@ fun PlayerScreen(
                 rewind = playScreenViewModel::rewind,
                 enqueue = playScreenViewModel::enqueue,
                 playEpisode = playScreenViewModel::play,
-                showDetails = showDetails,
+                showDetails = showDetails
             )
         }
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 private fun Player(
     episodePlayerState: EpisodePlayerState,
@@ -155,6 +161,7 @@ private fun Player(
     }
 }
 
+@ExperimentalComposeUiApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun EpisodePlayerWithBackground(
@@ -173,18 +180,11 @@ private fun EpisodePlayerWithBackground(
     playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val episodePlayer = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        episodePlayer.requestFocus()
-    }
-
     BackgroundContainer(
         playerEpisode = playerEpisode,
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-
         EpisodePlayer(
             playerEpisode = playerEpisode,
             isPlaying = isPlaying,
@@ -197,7 +197,6 @@ private fun EpisodePlayerWithBackground(
             rewind = rewind,
             enqueue = enqueue,
             showDetails = showDetails,
-            focusRequester = episodePlayer,
             modifier = Modifier
                 .padding(JetcasterAppDefaults.overScanMargin.player.intoPaddingValues())
         )
@@ -213,6 +212,7 @@ private fun EpisodePlayerWithBackground(
     }
 }
 
+@ExperimentalComposeUiApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun EpisodePlayer(
@@ -229,8 +229,7 @@ private fun EpisodePlayer(
     showDetails: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     bringIntoViewRequester: BringIntoViewRequester = remember { BringIntoViewRequester() },
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
@@ -264,8 +263,7 @@ private fun EpisodePlayer(
             previous = previous,
             next = next,
             skip = skip,
-            rewind = rewind,
-            focusRequester = focusRequester
+            rewind = rewind
         )
     }
 }
@@ -291,6 +289,7 @@ private fun EpisodeControl(
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 private fun PlayerControl(
     isPlaying: Boolean,
@@ -302,10 +301,12 @@ private fun PlayerControl(
     next: () -> Unit,
     skip: () -> Unit,
     rewind: () -> Unit,
-    modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    modifier: Modifier = Modifier
 ) {
     val playPauseButton = remember { FocusRequester() }
+
+    // Flag to determine if it is safe to set initial focus or not
+    var isSafeToSetInitialFocus by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
@@ -318,14 +319,9 @@ private fun PlayerControl(
             ),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester)
-                .onFocusChanged {
-                    if (it.isFocused) {
-                        playPauseButton.requestFocus()
-                    }
-                }
-                .focusable(),
+                .focusGroup()
+                .focusRestorer()
+                .fillMaxWidth(),
         ) {
             PreviousButton(
                 onClick = previous,
@@ -347,6 +343,10 @@ private fun PlayerControl(
                 modifier = Modifier
                     .size(JetcasterAppDefaults.iconButtonSize.large.intoDpSize())
                     .focusRequester(playPauseButton)
+                    .onGloballyPositioned {
+                        // Set the flag true if the element is in the viewport
+                        isSafeToSetInitialFocus = true
+                    }
             )
             SkipButton(
                 onClick = skip,
@@ -359,6 +359,12 @@ private fun PlayerControl(
         }
         if (length != null) {
             ElapsedTimeIndicator(timeElapsed, length, skip, rewind)
+        }
+    }
+    LaunchedEffect(isSafeToSetInitialFocus) {
+        // Your app should set initial focus only if the UI element is in viewport
+        if (isSafeToSetInitialFocus) {
+            playPauseButton.requestFocus()
         }
     }
 }
