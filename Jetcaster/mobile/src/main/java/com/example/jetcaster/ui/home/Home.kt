@@ -84,8 +84,10 @@ import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -378,6 +380,9 @@ private fun HomeAppBar(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    var queryText by remember {
+        mutableStateOf("")
+    }
     Row(
         horizontalArrangement = Arrangement.End,
         modifier = modifier
@@ -386,8 +391,8 @@ private fun HomeAppBar(
             .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
     ) {
         SearchBar(
-            query = "",
-            onQueryChange = {},
+            query = queryText,
+            onQueryChange = { queryText = it },
             placeholder = {
                 Text(stringResource(id = R.string.search_for_a_podcast))
             },
