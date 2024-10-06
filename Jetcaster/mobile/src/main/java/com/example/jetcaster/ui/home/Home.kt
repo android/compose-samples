@@ -378,6 +378,12 @@ private fun HomeAppBar(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val viewModel : HomeViewModel = hiltViewModel()
+
+    val searchText by viewModel.searchText.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
+
+
     Row(
         horizontalArrangement = Arrangement.End,
         modifier = modifier
@@ -386,14 +392,14 @@ private fun HomeAppBar(
             .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
     ) {
         SearchBar(
-            query = "",
-            onQueryChange = {},
+            query = searchText,
+            onQueryChange = {viewModel.onSearchTextChange(it)},
             placeholder = {
                 Text(stringResource(id = R.string.search_for_a_podcast))
             },
-            onSearch = {},
+            onSearch = {viewModel.onSearchTextChange(it)},
             active = false,
-            onActiveChange = {},
+            onActiveChange = {viewModel.onToogleSearch()},
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
