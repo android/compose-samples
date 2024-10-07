@@ -36,10 +36,10 @@ private val LightColorScheme = lightColorScheme(
     surface = White
 )
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkYellow,
+    primary = Red,
     secondary = DarkMintGreen,
     tertiary = DarkCoral,
-    secondaryContainer = DarkYellow,
+    secondaryContainer = Red,
     surface = Black
 )
 
@@ -79,7 +79,7 @@ private val LightExtraColors = JetLaggedExtraColors(
     sleepDeep = SleepDeep,
 )
 private val DarkExtraColors = JetLaggedExtraColors(
-    header = DarkYellow,
+    header = Red,
     cardBackground = Black,
     bed = DarkLilac,
     sleep = DarkMintGreen,
@@ -87,8 +87,8 @@ private val DarkExtraColors = JetLaggedExtraColors(
     heart = DarkCoral,
     heartWave = listOf(DarkPink, DarkPurple, DarkGreen),
     heartWaveBackground = DarkCoral.copy(alpha = 0.4f),
-    sleepChartPrimary = DarkYellow,
-    sleepChartSecondary = DarkYellowVariant,
+    sleepChartPrimary = Red,
+    sleepChartSecondary = RedVariant,
     sleepAwake = SleepAwakeDark,
     sleepRem = SleepRemDark,
     sleepLight = SleepLightDark,
