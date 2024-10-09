@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.player
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -98,6 +100,8 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
 import com.example.jetcaster.designsystem.component.PodcastImage
+import com.example.jetcaster.ui.LocalAnimatedVisibilityScope
+import com.example.jetcaster.ui.LocalSharedTransitionScope
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.isBookPosture
@@ -107,8 +111,8 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
-import java.time.Duration
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 /**
  * Stateful version of the Podcast player
@@ -350,6 +354,12 @@ private fun PlayerContentRegular(
 ) {
     val playerEpisode = uiState.episodePlayerState
     val currentEpisode = playerEpisode.currentEpisode ?: return
+
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -370,10 +380,20 @@ private fun PlayerContentRegular(
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            PlayerImage(
-                podcastImageUrl = currentEpisode.podcastImageUrl,
-                modifier = Modifier.weight(10f)
-            )
+            // HERE 3
+            with(sharedTransitionScope) {
+                PlayerImage(
+                    podcastImageUrl = currentEpisode.podcastImageUrl,
+                    modifier = Modifier.weight(10f),
+                    imageModifier = Modifier.sharedElement(
+                        state = rememberSharedContentState(
+                            key = currentEpisode.title
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                    ),
+                )
+            }
             Spacer(modifier = Modifier.height(32.dp))
             PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
             Spacer(modifier = Modifier.height(32.dp))
@@ -596,7 +616,8 @@ private fun TopAppBar(
 @Composable
 private fun PlayerImage(
     podcastImageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier,
 ) {
     PodcastImage(
         podcastImageUrl = podcastImageUrl,
@@ -605,11 +626,11 @@ private fun PlayerImage(
         modifier = modifier
             .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
             .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.medium),
+        imageModifier = imageModifier
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PodcastDescription(
     title: String,

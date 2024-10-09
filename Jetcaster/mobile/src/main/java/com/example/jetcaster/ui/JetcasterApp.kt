@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,7 +37,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.ui.home.MainScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun JetcasterApp(
     displayFeatures: List<DisplayFeature>,
@@ -38,24 +45,38 @@ fun JetcasterApp(
 ) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     if (appState.isOnline) {
-        NavHost(
-            navController = appState.navController,
-            startDestination = Screen.Home.route
-        ) {
-            composable(Screen.Home.route) { backStackEntry ->
-                MainScreen(
-                    windowSizeClass = adaptiveInfo.windowSizeClass,
-                    navigateToPlayer = { episode ->
-                        appState.navigateToPlayer(episode.uri, backStackEntry)
+        SharedTransitionLayout {
+            CompositionLocalProvider(
+                LocalSharedTransitionScope provides this
+            ) {
+                NavHost(
+                    navController = appState.navController,
+                    startDestination = Screen.Home.route
+                ) {
+                    composable(Screen.Home.route) { backStackEntry ->
+                        CompositionLocalProvider(
+                            LocalAnimatedVisibilityScope provides this
+                        ) {
+                            MainScreen(
+                                windowSizeClass = adaptiveInfo.windowSizeClass,
+                                navigateToPlayer = { episode ->
+                                    appState.navigateToPlayer(episode.uri, backStackEntry)
+                                },
+                            )
+                        }
                     }
-                )
-            }
-            composable(Screen.Player.route) {
-                PlayerScreen(
-                    windowSizeClass = adaptiveInfo.windowSizeClass,
-                    displayFeatures = displayFeatures,
-                    onBackPress = appState::navigateBack
-                )
+                    composable(Screen.Player.route) {
+                        CompositionLocalProvider(
+                            LocalAnimatedVisibilityScope provides this
+                        ) {
+                            PlayerScreen(
+                                windowSizeClass = adaptiveInfo.windowSizeClass,
+                                displayFeatures = displayFeatures,
+                                onBackPress = appState::navigateBack,
+                            )
+                        }
+                    }
+                }
             }
         }
     } else {
@@ -76,3 +97,6 @@ fun OfflineDialog(onRetry: () -> Unit) {
         }
     )
 }
+
+val LocalAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
+val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }

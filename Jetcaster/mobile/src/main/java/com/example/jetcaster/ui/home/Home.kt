@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.example.jetcaster.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -125,12 +122,12 @@ import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
@@ -149,6 +146,7 @@ data class HomeState(
     val onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     val onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     val onQueueEpisode: (PlayerEpisode) -> Unit,
+    val removeFromQueue: (EpisodeInfo) -> Unit = {},
 )
 
 private val HomeState.showHomeCategoryTabs: Boolean
@@ -326,7 +324,8 @@ private fun HomeScreenReady(
         navigateToPlayer = navigateToPlayer,
         onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
         onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
-        onQueueEpisode = viewModel::onQueueEpisode
+        onQueueEpisode = viewModel::onQueueEpisode,
+        removeFromQueue = viewModel::deleteEpisode
     )
 
     Surface {
@@ -492,7 +491,8 @@ private fun HomeScreen(
                         snackbarHostState.showSnackbar(snackBarText)
                     }
                     homeState.onQueueEpisode(it)
-                }
+                },
+                removeFromQueue = homeState.removeFromQueue
             )
         }
     }
@@ -517,6 +517,7 @@ private fun HomeContent(
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
     LaunchedEffect(pagerState, featuredPodcasts) {
@@ -549,6 +550,7 @@ private fun HomeContent(
             navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = onTogglePodcastFollowed,
             onQueueEpisode = onQueueEpisode,
+            removeFromQueue = removeFromQueue,
         )
     } else {
         HomeContentColumn(
@@ -568,11 +570,11 @@ private fun HomeContent(
             navigateToPlayer = navigateToPlayer,
             onTogglePodcastFollowed = onTogglePodcastFollowed,
             onQueueEpisode = onQueueEpisode,
+            removeFromQueue = removeFromQueue
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContentColumn(
     showHomeCategoryTabs: Boolean,
@@ -591,6 +593,7 @@ private fun HomeContentColumn(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize()
@@ -624,7 +627,8 @@ private fun HomeContentColumn(
                 libraryItems(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
-                    onQueueEpisode = onQueueEpisode
+                    onQueueEpisode = onQueueEpisode,
+                    removeFromQueue = removeFromQueue,
                 )
             }
 
@@ -636,7 +640,8 @@ private fun HomeContentColumn(
                     navigateToPlayer = navigateToPlayer,
                     onCategorySelected = onCategorySelected,
                     onTogglePodcastFollowed = onTogglePodcastFollowed,
-                    onQueueEpisode = onQueueEpisode
+                    onQueueEpisode = onQueueEpisode,
+                    removeFromQueue = removeFromQueue
                 )
             }
         }
@@ -661,6 +666,7 @@ private fun HomeContentGrid(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
@@ -698,7 +704,8 @@ private fun HomeContentGrid(
                 libraryItems(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
-                    onQueueEpisode = onQueueEpisode
+                    onQueueEpisode = onQueueEpisode,
+                    removeFromQueue = removeFromQueue,
                 )
             }
 
@@ -710,7 +717,8 @@ private fun HomeContentGrid(
                     navigateToPlayer = navigateToPlayer,
                     onCategorySelected = onCategorySelected,
                     onTogglePodcastFollowed = onTogglePodcastFollowed,
-                    onQueueEpisode = onQueueEpisode
+                    onQueueEpisode = onQueueEpisode,
+                    removeFromQueue = removeFromQueue,
                 )
             }
         }
@@ -733,7 +741,7 @@ private fun FollowedPodcastItem(
             items = items,
             onPodcastUnfollowed = onPodcastUnfollowed,
             navigateToPodcastDetails = navigateToPodcastDetails,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(Modifier.height(16.dp))

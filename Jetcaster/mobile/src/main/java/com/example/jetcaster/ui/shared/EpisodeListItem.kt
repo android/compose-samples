@@ -23,17 +23,23 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -66,35 +72,73 @@ fun EpisodeListItem(
     episode: EpisodeInfo,
     podcast: PodcastInfo,
     onClick: (EpisodeInfo) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit = {},
     onQueueEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier,
     showPodcastImage: Boolean = true,
     showSummary: Boolean = false,
 ) {
-    Box(modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
-        Surface(
-            shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surfaceContainer,
-            onClick = { onClick(episode) }
-        ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    val dismissState = rememberSwipeToDismissBoxState()
+    SwipeToDismissBox(
+        modifier = modifier,
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        backgroundContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 40.dp)
             ) {
-                // Top Part
-                EpisodeListItemHeader(
-                    episode = episode,
-                    podcast = podcast,
-                    showPodcastImage = showPodcastImage,
-                    showSummary = showSummary,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.CenterEnd)
                 )
+            }
+        }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                onClick = { onClick(episode) }
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    // Top Part
+                    EpisodeListItemHeader(
+                        episode = episode,
+                        podcast = podcast,
+                        showPodcastImage = showPodcastImage,
+                        showSummary = showSummary,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        imageModifier = imageModifier
+                    )
 
-                // Bottom Part
-                EpisodeListItemFooter(
-                    episode = episode,
-                    podcast = podcast,
-                    onQueueEpisode = onQueueEpisode,
-                )
+                    // Bottom Part
+                    EpisodeListItemFooter(
+                        episode = episode,
+                        podcast = podcast,
+                        onQueueEpisode = onQueueEpisode,
+                    )
+                }
+            }
+        }
+        when (dismissState.currentValue) {
+            SwipeToDismissBoxValue.EndToStart -> {
+                removeFromQueue(episode)
+            }
+
+            SwipeToDismissBoxValue.StartToEnd -> {
+            }
+
+            SwipeToDismissBoxValue.Settled -> {
             }
         }
     }
@@ -184,7 +228,8 @@ private fun EpisodeListItemHeader(
     podcast: PodcastInfo,
     showPodcastImage: Boolean,
     showSummary: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         Column(
@@ -227,7 +272,8 @@ private fun EpisodeListItemHeader(
                 podcast = podcast,
                 modifier = Modifier
                     .size(56.dp)
-                    .clip(MaterialTheme.shapes.medium)
+                    .clip(MaterialTheme.shapes.medium),
+                imageModifier = imageModifier
             )
         }
     }
@@ -236,12 +282,14 @@ private fun EpisodeListItemHeader(
 @Composable
 private fun EpisodeListItemImage(
     podcast: PodcastInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier
 ) {
     PodcastImage(
         podcastImageUrl = podcast.imageUrl,
         contentDescription = null,
         modifier = modifier,
+        imageModifier = imageModifier
     )
 }
 

@@ -58,6 +58,7 @@ fun LazyListScope.discoverItems(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     if (filterableCategoriesModel.isEmpty) {
@@ -83,6 +84,7 @@ fun LazyListScope.discoverItems(
         navigateToPlayer = navigateToPlayer,
         onTogglePodcastFollowed = onTogglePodcastFollowed,
         onQueueEpisode = onQueueEpisode,
+        removeFromQueue = removeFromQueue,
     )
 }
 
@@ -91,6 +93,7 @@ fun LazyGridScope.discoverItems(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
     onCategorySelected: (CategoryInfo) -> Unit,
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
@@ -118,6 +121,7 @@ fun LazyGridScope.discoverItems(
         navigateToPlayer = navigateToPlayer,
         onTogglePodcastFollowed = onTogglePodcastFollowed,
         onQueueEpisode = onQueueEpisode,
+        removeFromQueue = removeFromQueue,
     )
 }
 

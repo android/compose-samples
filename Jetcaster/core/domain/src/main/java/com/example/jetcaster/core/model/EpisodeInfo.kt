@@ -43,3 +43,15 @@ fun Episode.asExternalModel(): EpisodeInfo =
         published = published,
         duration = duration,
     )
+
+fun EpisodeInfo.asDaoModel(): Episode =
+    Episode(
+        uri = uri,
+        title = title,
+        subtitle = subTitle,
+        summary = summary,
+        author = author,
+        published = published,
+        duration = duration,
+        podcastUri = ""
+    )

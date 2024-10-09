@@ -38,7 +38,8 @@ import com.example.jetcaster.util.fullWidthItem
 fun LazyListScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
 ) {
     item {
         Text(
@@ -60,7 +61,10 @@ fun LazyListScope.libraryItems(
             podcast = item.podcast,
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
-            modifier = Modifier.fillParentMaxWidth(),
+            modifier = Modifier
+                .fillParentMaxWidth()
+                .animateItem(),
+            removeFromQueue = removeFromQueue,
         )
     }
 }
@@ -68,7 +72,8 @@ fun LazyListScope.libraryItems(
 fun LazyGridScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
 ) {
     fullWidthItem {
         Text(
@@ -90,7 +95,10 @@ fun LazyGridScope.libraryItems(
             podcast = item.podcast,
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateItem(),
+            removeFromQueue = removeFromQueue,
         )
     }
 }

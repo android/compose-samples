@@ -57,6 +57,11 @@ interface EpisodeStore {
      */
     suspend fun addEpisodes(episodes: Collection<Episode>)
 
+    /**
+     * Deletes an [Episode] from this store.
+     */
+    suspend fun deleteEpisode(episode: Episode)
+
     suspend fun isEmpty(): Boolean
 }
 
@@ -86,6 +91,7 @@ class LocalEpisodeStore(
     ): Flow<List<EpisodeToPodcast>> {
         return episodesDao.episodesForPodcastUri(podcastUri, limit)
     }
+
     /**
      * Returns a list of episodes for the given podcast URIs ordering by most recently published
      * to least recently published.
@@ -103,6 +109,13 @@ class LocalEpisodeStore(
      */
     override suspend fun addEpisodes(episodes: Collection<Episode>) =
         episodesDao.insertAll(episodes)
+
+    /**
+     * Deletes an [Episode] from this store.
+     */
+    override suspend fun deleteEpisode(episode: Episode) {
+        episodesDao.delete(episode)
+    }
 
     override suspend fun isEmpty(): Boolean = episodesDao.count() == 0
 }
