@@ -69,7 +69,6 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -211,7 +210,6 @@ private fun SleepRoundedBar(
     )
 }
 
-@OptIn(ExperimentalTextApi::class)
 private fun DrawScope.drawSleepBar(
     roundedRectPath: Path,
     sleepGraphPath: Path,

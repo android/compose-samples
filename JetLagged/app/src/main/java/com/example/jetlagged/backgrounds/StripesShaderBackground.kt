@@ -120,7 +120,7 @@ private val SHADER = """
     float calculateColorMultiplier(float yCoord, float factor, bool fadeToDark) {
         float result = step(yCoord, 1.0 + factor * 2.0) - step(yCoord, factor - 0.1);
         if (fadeToDark) {
-            result *= -1.2;
+            result *= -2.4;
         }
         return result;
     }
