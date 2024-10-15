@@ -4,7 +4,7 @@
 #####
 [versions]
 accompanist = "0.36.0"
-androidGradlePlugin = "8.7.0"
+androidGradlePlugin = "8.7.1"
 androidx-activity-compose = "1.9.2"
 androidx-appcompat = "1.7.0"
 androidx-benchmark = "1.2.4"
@@ -41,7 +41,7 @@ horologist = "0.6.19"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "1.2.2"
 junit = "4.13.2"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 kotlinx-serialization-json = "1.7.3"
 kotlinx_immutable = "0.3.8"
 ksp = "2.0.20-1.0.24"
