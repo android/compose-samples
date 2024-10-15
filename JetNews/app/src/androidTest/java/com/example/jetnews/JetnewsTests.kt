@@ -16,8 +16,10 @@
 
 package com.example.jetnews
 
+import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -25,16 +27,18 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToString
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.jetnews.data.posts.impl.manuel
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
 class JetnewsTests {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     @Before
     fun setUp() {
@@ -44,14 +48,16 @@ class JetnewsTests {
 
     @Test
     fun app_launches() {
-        composeTestRule.onNodeWithText("Top stories for you").assertExists()
+        composeTestRule
+            .onNodeWithText(composeTestRule.activity.getString(R.string.home_top_section_title))
+            .assertExists()
     }
 
     @Test
     fun app_opensArticle() {
 
         println(composeTestRule.onRoot().printToString())
-        composeTestRule.onAllNodes(hasText("Manuel Vivo", substring = true))[0].performClick()
+        composeTestRule.onAllNodes(hasText(manuel.name, substring = true))[0].performClick()
 
         println(composeTestRule.onRoot().printToString())
         try {
@@ -69,7 +75,6 @@ class JetnewsTests {
             useUnmergedTree = true
         ).performClick()
         composeTestRule.onNodeWithText("Interests").performClick()
-        // TODO - this fails on CI but not locally. (https://github.com/android/compose-samples/issues/1442)
-        // composeTestRule.waitUntilAtLeastOneExists(hasText("Topics"), 5000L)
+        composeTestRule.waitUntilAtLeastOneExists(hasText("Topics"), 5000L)
     }
 }
