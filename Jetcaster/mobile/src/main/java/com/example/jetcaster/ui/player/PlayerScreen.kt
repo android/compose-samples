@@ -380,7 +380,6 @@ private fun PlayerContentRegular(
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            // HERE 3
             with(sharedTransitionScope) {
                 PlayerImage(
                     podcastImageUrl = currentEpisode.podcastImageUrl,

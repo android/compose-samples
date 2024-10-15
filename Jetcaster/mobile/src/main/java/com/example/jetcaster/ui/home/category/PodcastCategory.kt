@@ -81,7 +81,6 @@ fun LazyListScope.podcastCategory(
             ?: throw IllegalStateException("No SharedElementScope found")
         val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
             ?: throw IllegalStateException("No SharedElementScope found")
-        // HERE 3
         with(sharedTransitionScope) {
             EpisodeListItem(
                 episode = item.episode,
