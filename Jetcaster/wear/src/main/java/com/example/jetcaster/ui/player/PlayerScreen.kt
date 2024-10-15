@@ -41,7 +41,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.rememberActiveFocusRequester
-import androidx.wear.compose.foundation.rotary.rotary
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
 import com.example.jetcaster.R
 import com.example.jetcaster.ui.components.SettingsButtons
@@ -74,7 +75,7 @@ fun PlayerScreen(
     )
 }
 
-@OptIn(ExperimentalWearFoundationApi::class)
+@OptIn(ExperimentalWearFoundationApi::class, ExperimentalWearMaterialApi::class)
 @Composable
 private fun PlayerScreen(
     playerScreenViewModel: PlayerViewModel,
@@ -164,7 +165,7 @@ private fun PlayerScreen(
                     )
                 },
                 modifier = modifier
-                    .rotary(
+                    .rotaryScrollable(
                         volumeRotaryBehavior(
                             volumeUiStateProvider = { volumeUiState },
                             onRotaryVolumeInput = { onUpdateVolume },

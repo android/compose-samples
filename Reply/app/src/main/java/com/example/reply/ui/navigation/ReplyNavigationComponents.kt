@@ -70,6 +70,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.toSize
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
@@ -87,7 +89,7 @@ class ReplyNavSuiteScope(
 
 @Composable
 fun ReplyNavigationWrapper(
-    selectedDestination: String,
+    currentDestination: NavDestination?,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     content: @Composable ReplyNavSuiteScope.() -> Unit
 ) {
@@ -128,7 +130,7 @@ fun ReplyNavigationWrapper(
         gesturesEnabled = gesturesEnabled,
         drawerContent = {
             ModalNavigationDrawerContent(
-                selectedDestination = selectedDestination,
+                currentDestination = currentDestination,
                 navigationContentPosition = navContentPosition,
                 navigateToTopLevelDestination = navigateToTopLevelDestination,
                 onDrawerClicked = {
@@ -144,11 +146,11 @@ fun ReplyNavigationWrapper(
             navigationSuite = {
                 when (navLayoutType) {
                     NavigationSuiteType.NavigationBar -> ReplyBottomNavigationBar(
-                        selectedDestination = selectedDestination,
+                        currentDestination = currentDestination,
                         navigateToTopLevelDestination = navigateToTopLevelDestination
                     )
                     NavigationSuiteType.NavigationRail -> ReplyNavigationRail(
-                        selectedDestination = selectedDestination,
+                        currentDestination = currentDestination,
                         navigationContentPosition = navContentPosition,
                         navigateToTopLevelDestination = navigateToTopLevelDestination,
                         onDrawerClicked = {
@@ -158,7 +160,7 @@ fun ReplyNavigationWrapper(
                         }
                     )
                     NavigationSuiteType.NavigationDrawer -> PermanentNavigationDrawerContent(
-                        selectedDestination = selectedDestination,
+                        currentDestination = currentDestination,
                         navigationContentPosition = navContentPosition,
                         navigateToTopLevelDestination = navigateToTopLevelDestination
                     )
@@ -172,7 +174,7 @@ fun ReplyNavigationWrapper(
 
 @Composable
 fun ReplyNavigationRail(
-    selectedDestination: String,
+    currentDestination: NavDestination?,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {},
@@ -219,7 +221,7 @@ fun ReplyNavigationRail(
         ) {
             TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                 NavigationRailItem(
-                    selected = selectedDestination == replyDestination.route,
+                    selected = currentDestination.hasRoute(replyDestination),
                     onClick = { navigateToTopLevelDestination(replyDestination) },
                     icon = {
                         Icon(
@@ -237,13 +239,13 @@ fun ReplyNavigationRail(
 
 @Composable
 fun ReplyBottomNavigationBar(
-    selectedDestination: String,
+    currentDestination: NavDestination?,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit
 ) {
     NavigationBar(modifier = Modifier.fillMaxWidth()) {
         TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
             NavigationBarItem(
-                selected = selectedDestination == replyDestination.route,
+                selected = currentDestination.hasRoute(replyDestination),
                 onClick = { navigateToTopLevelDestination(replyDestination) },
                 icon = {
                     Icon(
@@ -258,7 +260,7 @@ fun ReplyBottomNavigationBar(
 
 @Composable
 fun PermanentNavigationDrawerContent(
-    selectedDestination: String,
+    currentDestination: NavDestination?,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
 ) {
@@ -313,7 +315,7 @@ fun PermanentNavigationDrawerContent(
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                         NavigationDrawerItem(
-                            selected = selectedDestination == replyDestination.route,
+                            selected = currentDestination.hasRoute(replyDestination),
                             label = {
                                 Text(
                                     text = stringResource(id = replyDestination.iconTextId),
@@ -343,7 +345,7 @@ fun PermanentNavigationDrawerContent(
 
 @Composable
 fun ModalNavigationDrawerContent(
-    selectedDestination: String,
+    currentDestination: NavDestination?,
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
     onDrawerClicked: () -> Unit = {}
@@ -409,7 +411,7 @@ fun ModalNavigationDrawerContent(
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
                         NavigationDrawerItem(
-                            selected = selectedDestination == replyDestination.route,
+                            selected = currentDestination.hasRoute(replyDestination),
                             label = {
                                 Text(
                                     text = stringResource(id = replyDestination.iconTextId),
@@ -479,3 +481,6 @@ fun navigationMeasurePolicy(
 enum class LayoutType {
     HEADER, CONTENT
 }
+
+fun NavDestination?.hasRoute(destination: ReplyTopLevelDestination): Boolean =
+    this?.hasRoute(destination.route::class) ?: false

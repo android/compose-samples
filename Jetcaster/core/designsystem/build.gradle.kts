@@ -33,9 +33,8 @@ android {
     targetCompatibility = JavaVersion.VERSION_17
   }
 }
-
-composeCompiler {
-  enableStrongSkippingMode = true
+kotlin {
+  jvmToolchain(17)
 }
 
 dependencies {

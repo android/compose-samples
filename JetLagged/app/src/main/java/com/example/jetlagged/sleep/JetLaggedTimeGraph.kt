@@ -25,13 +25,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
@@ -40,14 +40,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.jetlagged.BasicInformationalCard
 import com.example.jetlagged.HomeScreenCardHeading
+import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
-import com.example.jetlagged.ui.theme.Yellow
-import com.example.jetlagged.ui.theme.YellowVariant
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun JetLaggedSleepGraphCard(
     sleepState: SleepGraphData,
@@ -56,7 +54,7 @@ fun JetLaggedSleepGraphCard(
     var selectedTab by remember { mutableStateOf(SleepTab.Week) }
 
     BasicInformationalCard(
-        borderColor = Yellow,
+        borderColor = MaterialTheme.colorScheme.primary,
         modifier = modifier
     ) {
         Column {
@@ -128,11 +126,15 @@ private fun DayLabel(dayOfWeek: DayOfWeek) {
 
 @Composable
 private fun HoursHeader(hours: List<Int>) {
+    val brushColors = listOf(
+        JetLaggedTheme.extraColors.sleepChartPrimary,
+        JetLaggedTheme.extraColors.sleepChartSecondary,
+    )
     Row(
         Modifier
             .padding(bottom = 16.dp)
             .drawBehind {
-                val brush = Brush.linearGradient(listOf(YellowVariant, Yellow))
+                val brush = Brush.linearGradient(brushColors)
                 drawRoundRect(
                     brush,
                     cornerRadius = CornerRadius(10.dp.toPx(), 10.dp.toPx()),

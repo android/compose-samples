@@ -16,6 +16,7 @@
 
 package com.example.jetlagged
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,5 +37,11 @@ class MainActivity : ComponentActivity() {
                 HomeScreenDrawer(windowSizeClass)
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Changing the theme doesn't recreate the activity, so set the E2E values again
+        enableEdgeToEdge()
     }
 }

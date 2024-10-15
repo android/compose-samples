@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
@@ -73,6 +74,7 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     )
 }
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun PodcastDetailsScreen(
     uiState: PodcastDetailsScreenState,
@@ -95,7 +97,6 @@ fun PodcastDetailsScreen(
         when (uiState) {
             is PodcastDetailsScreenState.Loaded -> {
                 EntityScreen(
-                    columnState = columnState,
                     headerContent = {
                         ResponsiveListHeader(
                             contentPadding = ListHeaderDefaults.firstItemPadding()
@@ -134,7 +135,6 @@ fun PodcastDetailsScreen(
             }
             PodcastDetailsScreenState.Loading -> {
                 EntityScreen(
-                    columnState = columnState,
                     headerContent = {
                         ResponsiveListHeader(
                             contentPadding = ListHeaderDefaults.firstItemPadding()

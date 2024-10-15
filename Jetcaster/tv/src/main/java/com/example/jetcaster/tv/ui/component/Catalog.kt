@@ -21,11 +21,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -33,12 +35,6 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.tv.foundation.lazy.list.TvLazyColumn
-import androidx.tv.foundation.lazy.list.TvLazyListState
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.itemsIndexed
-import androidx.tv.foundation.lazy.list.rememberTvLazyListState
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.PodcastInfo
@@ -55,10 +51,10 @@ internal fun Catalog(
     onPodcastSelected: (PodcastInfo) -> Unit,
     onEpisodeSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    state: TvLazyListState = rememberTvLazyListState(),
+    state: LazyListState = rememberLazyListState(),
     header: (@Composable () -> Unit)? = null,
 ) {
-    TvLazyColumn(
+    LazyColumn(
         modifier = modifier,
         contentPadding = JetcasterAppDefaults.overScanMargin.catalog.intoPaddingValues(),
         verticalArrangement =
@@ -121,7 +117,6 @@ private fun LatestEpisodeSection(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun Section(
     modifier: Modifier = Modifier,
@@ -151,23 +146,20 @@ private fun PodcastRow(
     horizontalArrangement: Arrangement.Horizontal =
         Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
 ) {
-    val (focusRequester, firstItem) = remember { FocusRequester.createRefs() }
-    var previousPodcastListHash by remember { mutableIntStateOf(podcastList.hashCode()) }
-    val isSamePodcastList = previousPodcastListHash == podcastList.hashCode()
+    val (focusRequester, firstItem) = remember(podcastList) { FocusRequester.createRefs() }
 
-    TvLazyRow(
+    LazyRow(
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
         modifier = modifier
             .focusRequester(focusRequester)
             .focusProperties {
                 exit = {
-                    previousPodcastListHash = podcastList.hashCode()
                     focusRequester.saveFocusedChild()
                     FocusRequester.Default
                 }
                 enter = {
-                    if (isSamePodcastList && focusRequester.restoreFocusedChild()) {
+                    if (focusRequester.restoreFocusedChild()) {
                         FocusRequester.Cancel
                     } else {
                         firstItem
