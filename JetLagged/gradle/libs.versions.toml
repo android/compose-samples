@@ -31,7 +31,7 @@ androidxHiltNavigationCompose = "1.2.0"
 androix-test-uiautomator = "2.3.0"
 coil = "2.6.0"
 # @keep
-compileSdk = "34"
+compileSdk = "35"
 coroutines = "1.9.0"
 google-maps = "18.2.0"
 gradle-versions = "0.51.0"
@@ -56,7 +56,7 @@ rome = "1.18.0"
 room = "2.6.0"
 secrets = "2.0.1"
 # @keep
-targetSdk = "33"
+targetSdk = "35"
 version-catalog-update = "0.8.4"
 
 [libraries]
@@ -72,7 +72,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-benchmark-macrobenchmark = { module = "androidx.benchmark:benchmark-macro", version.ref = "androidx-benchmark" }
 androidx-benchmark-macrobenchmark-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-junit4" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation" }
-androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom-alpha", version.ref = "androidx-compose-bom" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended" }

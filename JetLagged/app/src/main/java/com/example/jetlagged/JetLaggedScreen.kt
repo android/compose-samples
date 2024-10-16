@@ -16,6 +16,11 @@
 
 package com.example.jetlagged
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.animateBounds
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,12 +39,16 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.jetlagged.backgrounds.movingStripesBackground
 import com.example.jetlagged.data.JetLaggedHomeScreenViewModel
 import com.example.jetlagged.heartrate.HeartRateCard
@@ -48,12 +57,12 @@ import com.example.jetlagged.sleep.JetLaggedSleepGraphCard
 import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.util.MultiDevicePreview
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
 @MultiDevicePreview
 @Composable
 fun JetLaggedScreen(
     modifier: Modifier = Modifier,
-    windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
+    windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.COMPACT,
     viewModel: JetLaggedHomeScreenViewModel = viewModel(),
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -80,47 +89,67 @@ fun JetLaggedScreen(
         val insets = WindowInsets.safeDrawing.only(
             WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
         )
-        FlowRow(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(insets),
-            horizontalArrangement = Arrangement.Center,
-            verticalArrangement = Arrangement.Center,
-            maxItemsInEachRow = 3
-        ) {
-            JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
-            if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                AverageTimeInBedCard()
-                AverageTimeAsleepCard()
-            } else {
-                FlowColumn {
-                    AverageTimeInBedCard()
-                    AverageTimeAsleepCard()
+        val boundsTransform = { _: Rect, _: Rect ->
+            spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMedium,
+                visibilityThreshold = Rect.VisibilityThreshold
+            )
+        }
+        LookaheadScope {
+            val animateBoundsModifier = Modifier.animateBounds(
+                lookaheadScope = this@LookaheadScope,
+                boundsTransform = boundsTransform
+            )
+            val timeSleepSummaryCards = remember {
+                movableContentOf {
+                    AverageTimeInBedCard(animateBoundsModifier)
+                    AverageTimeAsleepCard(animateBoundsModifier)
                 }
             }
-            if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                WellnessCard(
-                    wellnessData = uiState.value.wellnessData,
-                    modifier = Modifier
-                        .widthIn(max = 400.dp)
-                        .heightIn(min = 200.dp)
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(insets),
+                horizontalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center,
+                maxItemsInEachRow = 3
+            ) {
+                JetLaggedSleepGraphCard(
+                    uiState.value.sleepGraphData,
+                    Modifier.widthIn(max = 600.dp)
                 )
-                HeartRateCard(
-                    modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                    uiState.value.heartRateData
-                )
-            } else {
-                FlowColumn {
+                if (windowSizeClass == WindowWidthSizeClass.COMPACT) {
+                    timeSleepSummaryCards()
+                } else {
+                    FlowColumn {
+                        timeSleepSummaryCards()
+                    }
+                }
+                if (windowSizeClass == WindowWidthSizeClass.COMPACT) {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
-                        modifier = Modifier
+                        modifier = animateBoundsModifier
                             .widthIn(max = 400.dp)
                             .heightIn(min = 200.dp)
                     )
                     HeartRateCard(
-                        modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
+                        modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),
                         uiState.value.heartRateData
                     )
+                } else {
+                    FlowColumn {
+                        WellnessCard(
+                            wellnessData = uiState.value.wellnessData,
+                            modifier = animateBoundsModifier
+                                .widthIn(max = 400.dp)
+                                .heightIn(min = 200.dp)
+                        )
+                        HeartRateCard(
+                            modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),
+                            uiState.value.heartRateData
+                        )
+                    }
                 }
             }
         }
