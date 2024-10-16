@@ -43,6 +43,8 @@ fun PodcastImage(
     podcastImageUrl: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,
+    // TODO: Remove the nested component modifier when shared elements are applied to entire app
+    imageModifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     placeholderBrush: Brush = thumbnailPlaceholderDefaultBrush(),
 ) {
@@ -92,7 +94,7 @@ fun PodcastImage(
             painter = imageLoader,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = modifier,
+            modifier = modifier.then(imageModifier)
         )
     }
 }
