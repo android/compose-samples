@@ -18,6 +18,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -118,6 +119,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)

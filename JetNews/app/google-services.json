@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "936267983792",
+    "project_id": "jetnewsfirebase",
+    "storage_bucket": "jetnewsfirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936267983792:android:c32699b980ee589e3e4475",
+        "android_client_info": {
+          "package_name": "com.example.jetnews"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYt5vxIP5ejWkFpPS5h6BgPaKk7H7IZkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
