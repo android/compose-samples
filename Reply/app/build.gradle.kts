@@ -17,6 +17,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose)
 }
 
@@ -84,6 +85,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
     buildFeatures {
         compose = true
     }
@@ -100,6 +105,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
