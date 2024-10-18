@@ -17,6 +17,7 @@
 package com.example.jetcaster.ui.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +37,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
@@ -74,12 +74,12 @@ import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
 import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -113,6 +113,7 @@ import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
+import com.example.jetcaster.ui.LocalAnimatedVisibilityScope
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
@@ -153,15 +154,6 @@ data class HomeState(
 
 private val HomeState.showHomeCategoryTabs: Boolean
     get() = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun HomeState.showGrid(
-    scaffoldValue: ThreePaneScaffoldValue
-): Boolean = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
-    (
-        windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM &&
-            scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
-        )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
@@ -238,6 +230,7 @@ private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy
 @Composable
 fun MainScreen(
     windowSizeClass: WindowSizeClass,
+    animatedContentScope: AnimatedContentScope,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -251,6 +244,7 @@ fun MainScreen(
                 windowSizeClass = windowSizeClass,
                 navigateToPlayer = navigateToPlayer,
                 viewModel = viewModel,
+                animatedContentScope = animatedContentScope
             )
         }
     }
@@ -299,6 +293,7 @@ fun HomeScreenErrorPreview() {
 private fun HomeScreenReady(
     uiState: HomeScreenUiState.Ready,
     windowSizeClass: WindowSizeClass,
+    animatedContentScope: AnimatedContentScope,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -332,13 +327,15 @@ private fun HomeScreenReady(
 
     Surface {
         val podcastUri = navigator.currentDestination?.content
-        val showGrid = homeState.showGrid(navigator.scaffoldValue)
         if (podcastUri.isNullOrEmpty()) {
-            HomeScreen(
-                homeState = homeState,
-                showGrid = showGrid,
-                modifier = Modifier.fillMaxSize()
-            )
+            CompositionLocalProvider(
+                LocalAnimatedVisibilityScope provides animatedContentScope
+            ) {
+                HomeScreen(
+                    homeState = homeState,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         } else {
             SupportingPaneScaffold(
                 value = navigator.scaffoldValue,
@@ -364,7 +361,6 @@ private fun HomeScreenReady(
                 mainPane = {
                     HomeScreen(
                         homeState = homeState,
-                        showGrid = showGrid,
                         modifier = Modifier.fillMaxSize()
                     )
                 },
@@ -445,7 +441,6 @@ private fun HomeScreenBackground(
 @Composable
 private fun HomeScreen(
     homeState: HomeState,
-    showGrid: Boolean,
     modifier: Modifier = Modifier
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
@@ -475,7 +470,6 @@ private fun HomeScreen(
             // Main Content
             val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
             HomeContent(
-                showGrid = showGrid,
                 showHomeCategoryTabs = homeState.showHomeCategoryTabs,
                 featuredPodcasts = homeState.featuredPodcasts,
                 selectedHomeCategory = homeState.selectedHomeCategory,
@@ -505,7 +499,6 @@ private fun HomeScreen(
 
 @Composable
 private fun HomeContent(
-    showGrid: Boolean,
     showHomeCategoryTabs: Boolean,
     featuredPodcasts: PersistentList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
@@ -533,124 +526,25 @@ private fun HomeContent(
             }
     }
 
-    // Note: ideally, `HomeContentColumn` and `HomeContentGrid` would be the same implementation
-    // (i.e. a grid). However, LazyVerticalGrid does not have the concept of a sticky header.
-    // So we are using two different composables here depending on the provided window size class.
-    // See: https://issuetracker.google.com/issues/231557184
-    if (showGrid) {
-        HomeContentGrid(
-            pagerState = pagerState,
-            showHomeCategoryTabs = showHomeCategoryTabs,
-            featuredPodcasts = featuredPodcasts,
-            selectedHomeCategory = selectedHomeCategory,
-            homeCategories = homeCategories,
-            filterableCategoriesModel = filterableCategoriesModel,
-            podcastCategoryFilterResult = podcastCategoryFilterResult,
-            library = library,
-            modifier = modifier,
-            onPodcastUnfollowed = onPodcastUnfollowed,
-            onHomeCategorySelected = onHomeCategorySelected,
-            onCategorySelected = onCategorySelected,
-            navigateToPodcastDetails = navigateToPodcastDetails,
-            navigateToPlayer = navigateToPlayer,
-            onTogglePodcastFollowed = onTogglePodcastFollowed,
-            onQueueEpisode = onQueueEpisode,
-            removeFromQueue = removeFromQueue,
-        )
-    } else {
-        HomeContentColumn(
-            pagerState = pagerState,
-            showHomeCategoryTabs = showHomeCategoryTabs,
-            featuredPodcasts = featuredPodcasts,
-            selectedHomeCategory = selectedHomeCategory,
-            homeCategories = homeCategories,
-            filterableCategoriesModel = filterableCategoriesModel,
-            podcastCategoryFilterResult = podcastCategoryFilterResult,
-            library = library,
-            modifier = modifier,
-            onPodcastUnfollowed = onPodcastUnfollowed,
-            onHomeCategorySelected = onHomeCategorySelected,
-            onCategorySelected = onCategorySelected,
-            navigateToPodcastDetails = navigateToPodcastDetails,
-            navigateToPlayer = navigateToPlayer,
-            onTogglePodcastFollowed = onTogglePodcastFollowed,
-            onQueueEpisode = onQueueEpisode,
-            removeFromQueue = removeFromQueue
-        )
-    }
-}
-
-@Composable
-private fun HomeContentColumn(
-    showHomeCategoryTabs: Boolean,
-    pagerState: PagerState,
-    featuredPodcasts: PersistentList<PodcastInfo>,
-    selectedHomeCategory: HomeCategory,
-    homeCategories: List<HomeCategory>,
-    filterableCategoriesModel: FilterableCategoriesModel,
-    podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    library: LibraryInfo,
-    modifier: Modifier = Modifier,
-    onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
-    navigateToPodcastDetails: (PodcastInfo) -> Unit,
-    navigateToPlayer: (EpisodeInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
-    removeFromQueue: (EpisodeInfo) -> Unit,
-) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize()
-    ) {
-        if (featuredPodcasts.isNotEmpty()) {
-            item {
-                FollowedPodcastItem(
-                    pagerState = pagerState,
-                    items = featuredPodcasts,
-                    onPodcastUnfollowed = onPodcastUnfollowed,
-                    navigateToPodcastDetails = navigateToPodcastDetails,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-        }
-
-        if (showHomeCategoryTabs) {
-            item {
-                HomeCategoryTabs(
-                    categories = homeCategories,
-                    selectedCategory = selectedHomeCategory,
-                    showHorizontalLine = true,
-                    onCategorySelected = onHomeCategorySelected
-                )
-            }
-        }
-
-        when (selectedHomeCategory) {
-            HomeCategory.Library -> {
-                libraryItems(
-                    library = library,
-                    navigateToPlayer = navigateToPlayer,
-                    onQueueEpisode = onQueueEpisode,
-                    removeFromQueue = removeFromQueue,
-                )
-            }
-
-            HomeCategory.Discover -> {
-                discoverItems(
-                    filterableCategoriesModel = filterableCategoriesModel,
-                    podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    navigateToPodcastDetails = navigateToPodcastDetails,
-                    navigateToPlayer = navigateToPlayer,
-                    onCategorySelected = onCategorySelected,
-                    onTogglePodcastFollowed = onTogglePodcastFollowed,
-                    onQueueEpisode = onQueueEpisode,
-                    removeFromQueue = removeFromQueue
-                )
-            }
-        }
-    }
+    HomeContentGrid(
+        pagerState = pagerState,
+        showHomeCategoryTabs = showHomeCategoryTabs,
+        featuredPodcasts = featuredPodcasts,
+        selectedHomeCategory = selectedHomeCategory,
+        homeCategories = homeCategories,
+        filterableCategoriesModel = filterableCategoriesModel,
+        podcastCategoryFilterResult = podcastCategoryFilterResult,
+        library = library,
+        modifier = modifier,
+        onPodcastUnfollowed = onPodcastUnfollowed,
+        onHomeCategorySelected = onHomeCategorySelected,
+        onCategorySelected = onCategorySelected,
+        navigateToPodcastDetails = navigateToPodcastDetails,
+        navigateToPlayer = navigateToPlayer,
+        onTogglePodcastFollowed = onTogglePodcastFollowed,
+        onQueueEpisode = onQueueEpisode,
+        removeFromQueue = removeFromQueue,
+    )
 }
 
 @Composable
@@ -960,7 +854,6 @@ private fun PreviewHome() {
         )
         HomeScreen(
             homeState = homeState,
-            showGrid = false
         )
     }
 }

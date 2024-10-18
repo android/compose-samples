@@ -54,16 +54,13 @@ fun JetcasterApp(
                     startDestination = Screen.Home.route
                 ) {
                     composable(Screen.Home.route) { backStackEntry ->
-                        CompositionLocalProvider(
-                            LocalAnimatedVisibilityScope provides this
-                        ) {
-                            MainScreen(
-                                windowSizeClass = adaptiveInfo.windowSizeClass,
-                                navigateToPlayer = { episode ->
-                                    appState.navigateToPlayer(episode.uri, backStackEntry)
-                                },
-                            )
-                        }
+                        MainScreen(
+                            windowSizeClass = adaptiveInfo.windowSizeClass,
+                            navigateToPlayer = { episode ->
+                                appState.navigateToPlayer(episode.uri, backStackEntry)
+                            },
+                            animatedContentScope = this,
+                        )
                     }
                     composable(Screen.Player.route) {
                         CompositionLocalProvider(
