@@ -17,6 +17,7 @@
 package com.example.jetcaster.ui.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -78,6 +79,7 @@ import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaf
 import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
 import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -111,6 +113,7 @@ import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
+import com.example.jetcaster.ui.LocalAnimatedVisibilityScope
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
@@ -227,6 +230,7 @@ private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy
 @Composable
 fun MainScreen(
     windowSizeClass: WindowSizeClass,
+    animatedContentScope: AnimatedContentScope,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -240,6 +244,7 @@ fun MainScreen(
                 windowSizeClass = windowSizeClass,
                 navigateToPlayer = navigateToPlayer,
                 viewModel = viewModel,
+                animatedContentScope = animatedContentScope
             )
         }
     }
@@ -288,6 +293,7 @@ fun HomeScreenErrorPreview() {
 private fun HomeScreenReady(
     uiState: HomeScreenUiState.Ready,
     windowSizeClass: WindowSizeClass,
+    animatedContentScope: AnimatedContentScope,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -322,10 +328,14 @@ private fun HomeScreenReady(
     Surface {
         val podcastUri = navigator.currentDestination?.content
         if (podcastUri.isNullOrEmpty()) {
-            HomeScreen(
-                homeState = homeState,
-                modifier = Modifier.fillMaxSize()
-            )
+            CompositionLocalProvider(
+                LocalAnimatedVisibilityScope provides animatedContentScope
+            ) {
+                HomeScreen(
+                    homeState = homeState,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         } else {
             SupportingPaneScaffold(
                 value = navigator.scaffoldValue,
