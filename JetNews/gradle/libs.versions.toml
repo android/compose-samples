@@ -47,7 +47,7 @@ kotlinx_immutable = "0.3.8"
 ksp = "2.0.20-1.0.24"
 maps-compose = "3.1.1"
 # @keep
-minSdk = "21"
+minSdk = "23"
 okhttp = "4.11.0"
 play-services-wearable = "18.1.0"
 robolectric = "4.13"
@@ -60,6 +60,7 @@ targetSdk = "33"
 version-catalog-update = "0.8.4"
 google-services = "4.4.2"
 firebase-bom = "33.4.0"
+crashlytics-plugin = "3.0.2"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -168,6 +169,11 @@ rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics"}
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics"}
+firebase-remote-config = { module = "com.google.firebase:firebase-config"}
+firebase-auth = { module = "com.google.firebase:firebase-auth"}
+firebase-realtime-database = { module = "com.google.firebase:firebase-database"}
+firebase-performance = { module = "com.google.firebase:firebase-perf"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -185,3 +191,4 @@ roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-plugin" }

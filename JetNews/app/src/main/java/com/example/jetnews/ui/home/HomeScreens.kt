@@ -700,11 +700,12 @@ private fun HomeTopAppBar(
         },
         actions = {
             IconButton(onClick = {
-                Toast.makeText(
-                    context,
-                    "Search is not yet implemented in this configuration",
-                    Toast.LENGTH_LONG
-                ).show()
+//                Toast.makeText(
+//                    context,
+//                    "Search is not yet implemented in this configuration",
+//                    Toast.LENGTH_LONG
+//                ).show()
+                throw RuntimeException("Test Crash") // Force a crash
             }) {
                 Icon(
                     imageVector = Icons.Filled.Search,

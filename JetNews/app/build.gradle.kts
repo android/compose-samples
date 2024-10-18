@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
@@ -121,6 +122,11 @@ dependencies {
     implementation(libs.androidx.window)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.remote.config)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.realtime.database)
+    implementation(libs.firebase.performance)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
