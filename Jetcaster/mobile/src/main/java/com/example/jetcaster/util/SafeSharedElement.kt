@@ -92,9 +92,6 @@ class ShapeBasedClip(
 @Composable
 fun Modifier.safeSharedElement(
     key: Any,
-    // todo figure out how to allow this with null scope:
-    //  rememberSharedContentState requires a SharedTransitionScope
-    // state: SharedContentState,
     sharedTransitionScope: SharedTransitionScope? = LocalSharedTransitionScope.current,
     animatedVisibilityScope: AnimatedVisibilityScope? = LocalAnimatedVisibilityScope.current,
     boundsTransform: BoundsTransform = DefaultBoundsTransform,
