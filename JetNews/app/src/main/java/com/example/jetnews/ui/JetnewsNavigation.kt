@@ -25,12 +25,17 @@ import androidx.navigation.NavHostController
 object JetnewsDestinations {
     const val HOME_ROUTE = "home"
     const val INTERESTS_ROUTE = "interests"
+    const val SPLASH_ROUTE = "splash"
+    const val SIGNUP_ROUTE = "signup"
+    const val SIGNIN_ROUTE = "signin"
 }
 
 /**
  * Models the navigation actions in the app.
  */
-class JetnewsNavigationActions(navController: NavHostController) {
+class JetnewsNavigationActions(
+    navController: NavHostController,
+) {
     val navigateToHome: () -> Unit = {
         navController.navigate(JetnewsDestinations.HOME_ROUTE) {
             // Pop up to the start destination of the graph to
