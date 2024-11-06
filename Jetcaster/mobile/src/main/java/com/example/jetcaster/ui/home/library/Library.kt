@@ -16,9 +16,9 @@
 
 package com.example.jetcaster.ui.home.library
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -33,42 +33,11 @@ import com.example.jetcaster.core.model.LibraryInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.shared.EpisodeListItem
+import com.example.jetcaster.util.ShapeBasedClip
 import com.example.jetcaster.util.fullWidthItem
+import com.example.jetcaster.util.safeSharedElement
 
-fun LazyListScope.libraryItems(
-    library: LibraryInfo,
-    navigateToPlayer: (EpisodeInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
-    removeFromQueue: (EpisodeInfo) -> Unit,
-) {
-    item {
-        Text(
-            text = stringResource(id = R.string.latest_episodes),
-            modifier = Modifier.padding(
-                start = Keyline1,
-                top = 16.dp,
-            ),
-            style = MaterialTheme.typography.titleLarge,
-        )
-    }
-
-    items(
-        library,
-        key = { it.episode.uri }
-    ) { item ->
-        EpisodeListItem(
-            episode = item.episode,
-            podcast = item.podcast,
-            onClick = navigateToPlayer,
-            onQueueEpisode = onQueueEpisode,
-            modifier = Modifier
-                .fillParentMaxWidth()
-                .animateItem(),
-            removeFromQueue = removeFromQueue,
-        )
-    }
-}
-
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyGridScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
@@ -98,6 +67,10 @@ fun LazyGridScope.libraryItems(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateItem(),
+            imageModifier = Modifier.safeSharedElement(
+                key = item.episode.title,
+                clipInOverlayDuringTransition = ShapeBasedClip(MaterialTheme.shapes.medium),
+            ),
             removeFromQueue = removeFromQueue,
         )
     }

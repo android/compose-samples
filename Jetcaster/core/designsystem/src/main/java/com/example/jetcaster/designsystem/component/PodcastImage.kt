@@ -28,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -46,7 +45,6 @@ fun PodcastImage(
     // TODO: Remove the nested component modifier when shared elements are applied to entire app
     imageModifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholderBrush: Brush = thumbnailPlaceholderDefaultBrush(),
 ) {
     if (LocalInspectionMode.current) {
         Box(modifier = modifier.background(MaterialTheme.colorScheme.primary))
@@ -80,14 +78,7 @@ fun PodcastImage(
                         .fillMaxSize()
                 )
             }
-            else -> {
-                Box(
-                    modifier = Modifier
-                        .background(placeholderBrush)
-                        .fillMaxSize()
-
-                )
-            }
+            else -> { /* */ }
         }
 
         Image(

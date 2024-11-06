@@ -100,13 +100,13 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
 import com.example.jetcaster.designsystem.component.PodcastImage
-import com.example.jetcaster.ui.LocalAnimatedVisibilityScope
-import com.example.jetcaster.ui.LocalSharedTransitionScope
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.tooling.DevicePreviews
+import com.example.jetcaster.util.ShapeBasedClip
 import com.example.jetcaster.util.isBookPosture
 import com.example.jetcaster.util.isSeparatingPosture
 import com.example.jetcaster.util.isTableTopPosture
+import com.example.jetcaster.util.safeSharedElement
 import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
@@ -355,11 +355,6 @@ private fun PlayerContentRegular(
     val playerEpisode = uiState.episodePlayerState
     val currentEpisode = playerEpisode.currentEpisode ?: return
 
-    val sharedTransitionScope = LocalSharedTransitionScope.current
-        ?: throw IllegalStateException("No SharedElementScope found")
-    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
-        ?: throw IllegalStateException("No SharedElementScope found")
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -380,19 +375,11 @@ private fun PlayerContentRegular(
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            with(sharedTransitionScope) {
-                PlayerImage(
-                    podcastImageUrl = currentEpisode.podcastImageUrl,
-                    modifier = Modifier.weight(10f),
-                    imageModifier = Modifier.sharedElement(
-                        state = rememberSharedContentState(
-                            key = currentEpisode.title
-                        ),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
-                    ),
-                )
-            }
+            PlayerImage(
+                podcastImageUrl = currentEpisode.podcastImageUrl,
+                modifier = Modifier.weight(10f),
+                episodeTitle = currentEpisode.title
+            )
             Spacer(modifier = Modifier.height(32.dp))
             PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
             Spacer(modifier = Modifier.height(32.dp))
@@ -449,7 +436,10 @@ private fun PlayerContentTableTopTop(
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PlayerImage(episode.podcastImageUrl)
+        PlayerImage(
+            podcastImageUrl = episode.podcastImageUrl,
+            episodeTitle = episode.title,
+        )
     }
 }
 
@@ -560,6 +550,7 @@ private fun PlayerContentBookEnd(
     ) {
         PlayerImage(
             podcastImageUrl = episode.podcastImageUrl,
+            episodeTitle = episode.title,
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .weight(1f)
@@ -615,8 +606,8 @@ private fun TopAppBar(
 @Composable
 private fun PlayerImage(
     podcastImageUrl: String,
+    episodeTitle: String,
     modifier: Modifier = Modifier,
-    imageModifier: Modifier = Modifier,
 ) {
     PodcastImage(
         podcastImageUrl = podcastImageUrl,
@@ -626,7 +617,10 @@ private fun PlayerImage(
             .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
             .aspectRatio(1f)
             .clip(MaterialTheme.shapes.medium),
-        imageModifier = imageModifier
+        imageModifier = Modifier.safeSharedElement(
+            key = episodeTitle,
+            clipInOverlayDuringTransition = ShapeBasedClip(MaterialTheme.shapes.medium),
+        ),
     )
 }
 
