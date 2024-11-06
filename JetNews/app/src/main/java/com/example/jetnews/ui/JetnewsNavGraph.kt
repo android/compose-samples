@@ -18,6 +18,7 @@ package com.example.jetnews.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,6 +31,12 @@ import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
+import com.example.jetnews.ui.signin.SignInScreen
+import com.example.jetnews.ui.signin.SignInScreenViewModel
+import com.example.jetnews.ui.signup.SignUpScreen
+import com.example.jetnews.ui.signup.SignUpScreenViewModel
+import com.example.jetnews.ui.splash.SplashScreen
+import com.example.jetnews.ui.splash.SplashScreenViewModel
 
 const val POST_ID = "postId"
 
@@ -40,28 +47,31 @@ fun JetnewsNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit = {},
-    startDestination: String = JetnewsDestinations.HOME_ROUTE,
+    startDestination: String = JetnewsDestinations.SPLASH_ROUTE,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable(
             route = JetnewsDestinations.HOME_ROUTE,
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern =
-                        "$JETNEWS_APP_URI/${JetnewsDestinations.HOME_ROUTE}?$POST_ID={$POST_ID}"
-                }
-            )
+            deepLinks =
+                listOf(
+                    navDeepLink {
+                        uriPattern =
+                            "$JETNEWS_APP_URI/${JetnewsDestinations.HOME_ROUTE}?$POST_ID={$POST_ID}"
+                    },
+                ),
         ) { navBackStackEntry ->
-            val homeViewModel: HomeViewModel = viewModel(
-                factory = HomeViewModel.provideFactory(
-                    postsRepository = appContainer.postsRepository,
-                    preSelectedPostId = navBackStackEntry.arguments?.getString(POST_ID)
+            val homeViewModel: HomeViewModel =
+                viewModel(
+                    factory =
+                        HomeViewModel.provideFactory(
+                            postsRepository = appContainer.postsRepository,
+                            preSelectedPostId = navBackStackEntry.arguments?.getString(POST_ID),
+                        ),
                 )
-            )
             HomeRoute(
                 homeViewModel = homeViewModel,
                 isExpandedScreen = isExpandedScreen,
@@ -69,13 +79,45 @@ fun JetnewsNavGraph(
             )
         }
         composable(JetnewsDestinations.INTERESTS_ROUTE) {
-            val interestsViewModel: InterestsViewModel = viewModel(
-                factory = InterestsViewModel.provideFactory(appContainer.interestsRepository)
-            )
+            val interestsViewModel: InterestsViewModel =
+                viewModel(
+                    factory = InterestsViewModel.provideFactory(appContainer.interestsRepository),
+                )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
                 isExpandedScreen = isExpandedScreen,
-                openDrawer = openDrawer
+                openDrawer = openDrawer,
+            )
+        }
+        composable(JetnewsDestinations.SPLASH_ROUTE) {
+            val splashViewModel = SplashScreenViewModel()
+            SplashScreen(
+                navHostController = navController,
+                splashVm = splashViewModel,
+            )
+        }
+        composable(JetnewsDestinations.SIGNIN_ROUTE) {
+            val context = LocalContext.current
+            val viewModel: SignInScreenViewModel =
+                viewModel(
+                    factory = ViewModelFactory(context),
+                )
+
+            SignInScreen(
+                navHostController = navController,
+                viewModel = viewModel,
+            )
+        }
+        composable(JetnewsDestinations.SIGNUP_ROUTE) {
+            val context = LocalContext.current
+            val viewModel: SignUpScreenViewModel =
+                viewModel(
+                    factory = ViewModelFactory(context),
+                )
+
+            SignUpScreen(
+                navHostController = navController,
+                viewModel = viewModel,
             )
         }
     }

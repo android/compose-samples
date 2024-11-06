@@ -23,13 +23,22 @@ plugins {
 }
 
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.compileSdk
+            .get()
+            .toInt()
     namespace = "com.example.jetnews"
 
     defaultConfig {
         applicationId = "com.example.jetnews"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        minSdk =
+            libs.versions.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.targetSdk
+                .get()
+                .toInt()
         versionCode = 1
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
@@ -51,14 +60,15 @@ android {
 
     buildTypes {
         getByName("debug") {
-
         }
 
         getByName("release") {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 
@@ -127,6 +137,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.realtime.database)
     implementation(libs.firebase.performance)
+    implementation(libs.play.services.auth)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
@@ -138,4 +149,3 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }
-
