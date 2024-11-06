@@ -47,10 +47,6 @@ public object JetcasterNavController {
     public fun NavController.navigateToEpisode(episodeUri: String) {
         navigate(Episode.destination(episodeUri))
     }
-
-    public fun NavController.navigateToPlaybackSpeed() {
-        navigate(PlaybackSpeed.destination())
-    }
 }
 
 public object YourPodcasts : NavigationScreens("yourPodcasts") {
@@ -92,9 +88,5 @@ public object Episode : NavigationScreens("episode?episodeUri={episodeUri}") {
 }
 
 public object UpNext : NavigationScreens("upNext") {
-    public fun destination(): String = navRoute
-}
-
-public object PlaybackSpeed : NavigationScreens("playbackSpeed") {
     public fun destination(): String = navRoute
 }

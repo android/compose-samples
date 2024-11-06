@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -50,43 +49,6 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
 import com.example.jetcaster.util.fullWidthItem
-
-fun LazyListScope.discoverItems(
-    filterableCategoriesModel: FilterableCategoriesModel,
-    podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    navigateToPodcastDetails: (PodcastInfo) -> Unit,
-    navigateToPlayer: (EpisodeInfo) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    removeFromQueue: (EpisodeInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
-) {
-    if (filterableCategoriesModel.isEmpty) {
-        // TODO: empty state
-        return
-    }
-
-    item {
-        Spacer(Modifier.height(8.dp))
-
-        PodcastCategoryTabs(
-            filterableCategoriesModel = filterableCategoriesModel,
-            onCategorySelected = onCategorySelected,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(8.dp))
-    }
-
-    podcastCategory(
-        podcastCategoryFilterResult = podcastCategoryFilterResult,
-        navigateToPodcastDetails = navigateToPodcastDetails,
-        navigateToPlayer = navigateToPlayer,
-        onTogglePodcastFollowed = onTogglePodcastFollowed,
-        onQueueEpisode = onQueueEpisode,
-        removeFromQueue = removeFromQueue,
-    )
-}
 
 fun LazyGridScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
@@ -131,7 +93,7 @@ private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
 private fun PodcastCategoryTabs(
     filterableCategoriesModel: FilterableCategoriesModel,
     onCategorySelected: (CategoryInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val selectedIndex = filterableCategoriesModel.categories.indexOf(
         filterableCategoriesModel.selectedCategory
@@ -161,7 +123,7 @@ private fun ChoiceChipContent(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // When adding onClick to Surface, it automatically makes this item higher.
     // On the other hand, adding .clickable modifier, doesn't use the same shape as Surface.
