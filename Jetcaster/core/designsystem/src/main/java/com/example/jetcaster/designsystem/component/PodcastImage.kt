@@ -82,7 +82,7 @@ fun PodcastImage(
             }
             else -> {
                 Box(
-                    modifier = Modifier
+                    modifier = modifier
                         .background(placeholderBrush)
                         .fillMaxSize()
 
