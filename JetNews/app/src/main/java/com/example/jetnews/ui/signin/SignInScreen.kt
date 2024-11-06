@@ -1,6 +1,5 @@
 package com.example.jetnews.ui.signin
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,34 +19,64 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.jetnews.model.authentication.AuthUiState
 import com.example.jetnews.ui.JetnewsDestinations
+import com.example.jetnews.ui.ViewModelFactory
 import com.example.jetnews.ui.components.buttons.AuthButton
-import com.example.jetnews.ui.components.buttons.SocialAuthButton
+import com.example.jetnews.ui.components.buttons.FirebaseGoogleButton
+import com.example.jetnews.ui.components.buttons.rememberFirebaseAuthLauncher
 import com.example.jetnews.ui.components.textfields.AuthTextField
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.GoogleAuthProvider
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun SignInScreen(
     navHostController: NavHostController,
-    signInViewModel: SignInScreenViewModel,
+    viewModel: SignInScreenViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val email by signInViewModel.email
-    val password by signInViewModel.password
-    val isLoading by signInViewModel.isLoading
-    val error by signInViewModel.error
+    val context = LocalContext.current
+    // State
+    val email by viewModel.email
+    val password by viewModel.password
+    val uiState by viewModel.uiState
+
+    LaunchedEffect(uiState) {
+        if (uiState is AuthUiState.Success) {
+            navHostController.navigate(JetnewsDestinations.HOME_ROUTE) {
+                popUpTo(JetnewsDestinations.SIGNIN_ROUTE) { inclusive = true }
+            }
+        }
+    }
+
+    // Firebase Auth launcher
+    val launcher =
+        rememberFirebaseAuthLauncher(
+            onAuthComplete = { account ->
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                viewModel.handleGoogleCredential(credential)
+            },
+            onAuthError = { exception ->
+                viewModel.handleError(exception.message ?: "Authentication failed")
+            },
+        )
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -87,14 +116,14 @@ fun SignInScreen(
             // Form
             AuthTextField(
                 value = email,
-                onValueChange = signInViewModel::onEmailChange,
+                onValueChange = viewModel::onEmailChange,
                 label = "Email",
                 keyboardType = KeyboardType.Email,
             )
 
             AuthTextField(
                 value = password,
-                onValueChange = signInViewModel::onPasswordChange,
+                onValueChange = viewModel::onPasswordChange,
                 label = "Password",
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done,
@@ -109,9 +138,10 @@ fun SignInScreen(
                 Text("Forgot Password?")
             }
 
-            if (error != null) {
+            // Error message
+            if (uiState is AuthUiState.Error) {
                 Text(
-                    text = error!!,
+                    text = (uiState as AuthUiState.Error).message,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -120,8 +150,8 @@ fun SignInScreen(
             // Sign In Button
             AuthButton(
                 text = "Sign In",
-                onClick = signInViewModel::onSignInClick,
-                isLoading = isLoading,
+                onClick = viewModel::onSignInClick,
+                isLoading = uiState is AuthUiState.Loading,
             )
 
             // OR Divider
@@ -139,16 +169,18 @@ fun SignInScreen(
             }
 
             // Social Sign In
-            SocialAuthButton(
-                text = "Continue with Google",
-                onClick = { /* TODO */ },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = android.R.drawable.ic_dialog_info), // Replace with Google icon
-                        contentDescription = "Google Icon",
-                        modifier = Modifier.size(24.dp),
-                    )
+            FirebaseGoogleButton(
+                onClick = {
+                    val gso =
+                        GoogleSignInOptions
+                            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken("") // No lo subi al repo, cualquier cosa pedirlo
+                            .requestEmail()
+                            .build()
+                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                    launcher.launch(googleSignInClient.signInIntent)
                 },
+                enabled = uiState !is AuthUiState.Loading,
             )
 
             // Sign Up Link
@@ -171,16 +203,26 @@ fun SignInScreen(
 }
 
 @Suppress("ktlint:standard:function-naming")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Sign In Light Theme",
+    showBackground = true,
+    heightDp = 800,
+)
 @Composable
 fun SignInScreenPreview() {
     val previewNavController = rememberNavController()
-    val previewViewModel = SignInScreenViewModel()
+    val context = LocalContext.current
+    val viewModel: SignInScreenViewModel =
+        viewModel(
+            factory = ViewModelFactory(context),
+        )
 
-    MaterialTheme {
+    MaterialTheme(
+        colorScheme = lightColorScheme(),
+    ) {
         SignInScreen(
             navHostController = previewNavController,
-            signInViewModel = previewViewModel,
+            viewModel = viewModel,
         )
     }
 }

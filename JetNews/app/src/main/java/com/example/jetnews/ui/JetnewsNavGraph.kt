@@ -18,6 +18,7 @@ package com.example.jetnews.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -46,7 +47,7 @@ fun JetnewsNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     openDrawer: () -> Unit = {},
-    startDestination: String = JetnewsDestinations.HOME_ROUTE,
+    startDestination: String = JetnewsDestinations.SPLASH_ROUTE,
 ) {
     NavHost(
         navController = navController,
@@ -96,17 +97,27 @@ fun JetnewsNavGraph(
             )
         }
         composable(JetnewsDestinations.SIGNIN_ROUTE) {
-            val signInViewModel = SignInScreenViewModel()
+            val context = LocalContext.current
+            val viewModel: SignInScreenViewModel =
+                viewModel(
+                    factory = ViewModelFactory(context),
+                )
+
             SignInScreen(
                 navHostController = navController,
-                signInViewModel = signInViewModel,
+                viewModel = viewModel,
             )
         }
         composable(JetnewsDestinations.SIGNUP_ROUTE) {
-            val signUpViewModel = SignUpScreenViewModel()
+            val context = LocalContext.current
+            val viewModel: SignUpScreenViewModel =
+                viewModel(
+                    factory = ViewModelFactory(context),
+                )
+
             SignUpScreen(
                 navHostController = navController,
-                signUpViewModel = signUpViewModel,
+                viewModel = viewModel,
             )
         }
     }

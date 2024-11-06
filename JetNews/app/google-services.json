@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "936267983792",
     "project_id": "jetnewsfirebase",
-    "storage_bucket": "jetnewsfirebase.appspot.com"
+    "storage_bucket": "jetnewsfirebase.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +12,20 @@
           "package_name": "com.example.jetnews"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "936267983792-l32a689k0lv8u0jqatoqaa65lfjpdhhm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jetnews",
+            "certificate_hash": "3a71e35b243215a6d0d4cfe23e519243b124a722"
+          }
+        },
+        {
+          "client_id": "936267983792-3mss913g02agqdn675n4g8opinnab1km.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDYt5vxIP5ejWkFpPS5h6BgPaKk7H7IZkk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936267983792-3mss913g02agqdn675n4g8opinnab1km.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

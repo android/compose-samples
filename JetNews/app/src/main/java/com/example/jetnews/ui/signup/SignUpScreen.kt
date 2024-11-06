@@ -22,34 +22,64 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.jetnews.model.authentication.AuthUiState
+import com.example.jetnews.ui.JetnewsDestinations
+import com.example.jetnews.ui.ViewModelFactory
 import com.example.jetnews.ui.components.buttons.AuthButton
-import com.example.jetnews.ui.components.buttons.SocialAuthButton
+import com.example.jetnews.ui.components.buttons.FirebaseGoogleButton
+import com.example.jetnews.ui.components.buttons.rememberFirebaseAuthLauncher
 import com.example.jetnews.ui.components.textfields.AuthTextField
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.GoogleAuthProvider
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun SignUpScreen(
     navHostController: NavHostController,
-    signUpViewModel: SignUpScreenViewModel,
+    viewModel: SignUpScreenViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val name by signUpViewModel.name
-    val email by signUpViewModel.email
-    val password by signUpViewModel.password
-    val confirmPassword by signUpViewModel.confirmPassword
-    val isLoading by signUpViewModel.isLoading
-    val error by signUpViewModel.error
+    val context = LocalContext.current
+    // State
+    val name by viewModel.name
+    val email by viewModel.email
+    val password by viewModel.password
+    val confirmPassword by viewModel.confirmPassword
+    val uiState by viewModel.uiState
+
+    LaunchedEffect(uiState) {
+        if (uiState is AuthUiState.Success) {
+            navHostController.navigate(JetnewsDestinations.HOME_ROUTE) {
+                popUpTo(JetnewsDestinations.SIGNUP_ROUTE) { inclusive = true }
+            }
+        }
+    }
+
+    // Firebase Auth launcher
+    val launcher =
+        rememberFirebaseAuthLauncher(
+            onAuthComplete = { account ->
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                viewModel.handleGoogleCredential(credential)
+            },
+            onAuthError = { exception ->
+                viewModel.handleError(exception.message ?: "Authentication failed")
+            },
+        )
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -89,20 +119,20 @@ fun SignUpScreen(
             // Form
             AuthTextField(
                 value = name,
-                onValueChange = signUpViewModel::onNameChange,
+                onValueChange = viewModel::onNameChange,
                 label = "Full Name",
             )
 
             AuthTextField(
                 value = email,
-                onValueChange = signUpViewModel::onEmailChange,
+                onValueChange = viewModel::onEmailChange,
                 label = "Email",
                 keyboardType = KeyboardType.Email,
             )
 
             AuthTextField(
                 value = password,
-                onValueChange = signUpViewModel::onPasswordChange,
+                onValueChange = viewModel::onPasswordChange,
                 label = "Password",
                 keyboardType = KeyboardType.Password,
                 visualTransformation = PasswordVisualTransformation(),
@@ -110,16 +140,17 @@ fun SignUpScreen(
 
             AuthTextField(
                 value = confirmPassword,
-                onValueChange = signUpViewModel::onConfirmPasswordChange,
+                onValueChange = viewModel::onConfirmPasswordChange,
                 label = "Confirm Password",
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done,
                 visualTransformation = PasswordVisualTransformation(),
             )
 
-            if (error != null) {
+            // Error message
+            if (uiState is AuthUiState.Error) {
                 Text(
-                    text = error!!,
+                    text = (uiState as AuthUiState.Error).message,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -128,8 +159,8 @@ fun SignUpScreen(
             // Sign Up Button
             AuthButton(
                 text = "Create Account",
-                onClick = signUpViewModel::onSignUpClick,
-                isLoading = isLoading,
+                onClick = viewModel::onSignUpClick,
+                isLoading = uiState is AuthUiState.Loading,
             )
 
             // OR Divider
@@ -146,20 +177,21 @@ fun SignUpScreen(
                 Divider(modifier = Modifier.weight(1f))
             }
 
-            // Social Sign Up
-            SocialAuthButton(
-                text = "Continue with Google",
-                onClick = { /* TODO */ },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = android.R.drawable.ic_dialog_info), // Replace with Google icon
-                        contentDescription = "Google Icon",
-                        modifier = Modifier.size(24.dp),
-                    )
+            // Firebase Google Button
+            FirebaseGoogleButton(
+                onClick = {
+                    val gso =
+                        GoogleSignInOptions
+                            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken("") // No lo subi al repo, cualquier cosa pedirlo
+                            .requestEmail()
+                            .build()
+                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                    launcher.launch(googleSignInClient.signInIntent)
                 },
+                enabled = uiState !is AuthUiState.Loading,
             )
 
-            // Sign In Link
             Row(
                 modifier = Modifier.padding(top = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -187,7 +219,11 @@ fun SignUpScreen(
 @Composable
 fun SignUpScreenLightPreview() {
     val previewNavController = rememberNavController()
-    val previewViewModel = SignUpScreenViewModel()
+    val context = LocalContext.current
+    val viewModel: SignUpScreenViewModel =
+        viewModel(
+            factory = ViewModelFactory(context),
+        )
 
     MaterialTheme(
         colorScheme = lightColorScheme(),
@@ -195,7 +231,7 @@ fun SignUpScreenLightPreview() {
         Surface {
             SignUpScreen(
                 navHostController = previewNavController,
-                signUpViewModel = previewViewModel,
+                viewModel = viewModel,
             )
         }
     }

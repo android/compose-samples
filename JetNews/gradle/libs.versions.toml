@@ -61,6 +61,7 @@ version-catalog-update = "0.8.4"
 google-services = "4.4.2"
 firebase-bom = "33.4.0"
 crashlytics-plugin = "3.0.2"
+play-services-auth = "21.2.0"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -174,7 +175,7 @@ firebase-remote-config = { module = "com.google.firebase:firebase-config"}
 firebase-auth = { module = "com.google.firebase:firebase-auth"}
 firebase-realtime-database = { module = "com.google.firebase:firebase-database"}
 firebase-performance = { module = "com.google.firebase:firebase-perf"}
-
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "play-services-auth" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
