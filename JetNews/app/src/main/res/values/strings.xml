@@ -56,4 +56,8 @@
     <string name="cd_navigate_home">Navigate to the home screen</string>
     <string name="cd_navigate_interests">Navigate to the interests screen</string>
 
+    <!-- Authentication -->
+    <string name="auth_logout">Log Out</string>
+
+
 </resources>

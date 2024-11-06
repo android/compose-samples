@@ -60,4 +60,11 @@ class JetnewsNavigationActions(
             restoreState = true
         }
     }
+    val navigateToSplash: () -> Unit = {
+        navController.navigate(JetnewsDestinations.SPLASH_ROUTE) {
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
+        }
+    }
 }

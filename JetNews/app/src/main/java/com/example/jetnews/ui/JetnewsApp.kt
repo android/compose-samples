@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.data.authentication.AuthRepository
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
@@ -38,11 +39,13 @@ fun JetnewsApp(
     appContainer: AppContainer,
     widthSizeClass: WindowWidthSizeClass,
 ) {
+    val authRepository = AuthRepository()
     JetnewsTheme {
         val navController = rememberNavController()
-        val navigationActions = remember(navController) {
-            JetnewsNavigationActions(navController)
-        }
+        val navigationActions =
+            remember(navController) {
+                JetnewsNavigationActions(navController)
+            }
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -60,12 +63,16 @@ fun JetnewsApp(
                     currentRoute = currentRoute,
                     navigateToHome = navigationActions.navigateToHome,
                     navigateToInterests = navigationActions.navigateToInterests,
-                    closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
+                    closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
+                    signOut = {
+                        authRepository.signOut()
+                        navigationActions.navigateToSplash()
+                    },
                 )
             },
             drawerState = sizeAwareDrawerState,
             // Only enable opening the drawer via gestures if the screen is not expanded
-            gesturesEnabled = !isExpandedScreen
+            gesturesEnabled = !isExpandedScreen,
         ) {
             Row {
                 if (isExpandedScreen) {
@@ -73,6 +80,10 @@ fun JetnewsApp(
                         currentRoute = currentRoute,
                         navigateToHome = navigationActions.navigateToHome,
                         navigateToInterests = navigationActions.navigateToInterests,
+                        onLogout = {
+                            authRepository.signOut()
+                            navigationActions.navigateToSplash()
+                        },
                     )
                 }
                 JetnewsNavGraph(
