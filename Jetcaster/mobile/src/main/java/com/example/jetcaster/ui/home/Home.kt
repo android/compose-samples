@@ -145,8 +145,8 @@ data class HomeState(
     val navigateToPlayer: (EpisodeInfo) -> Unit,
     val onTogglePodcastFollowed: (PodcastInfo) -> Unit,
     val onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
-    val onQueueEpisode: (PlayerEpisode) -> Unit,
     val removeFromQueue: (EpisodeInfo) -> Unit = {},
+    val onQueueEpisode: (PlayerEpisode) -> Unit,
 )
 
 private val HomeState.showHomeCategoryTabs: Boolean
