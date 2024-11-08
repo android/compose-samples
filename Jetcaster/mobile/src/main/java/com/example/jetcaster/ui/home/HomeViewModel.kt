@@ -16,7 +16,6 @@
 
 package com.example.jetcaster.ui.home
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,6 +35,7 @@ import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -47,7 +47,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -112,12 +111,6 @@ class HomeViewModel @Inject constructor(
                 podcastCategoryFilterResult,
                 libraryEpisodes ->
 
-                if (refreshing) {
-                    Log.d("Jetcaster", "refreshing: $refreshing, podcasts $podcasts")
-                    // TODO(mlykotom): this is equivalent of what we had before
-                    return@combine HomeScreenUiState(isLoading = true)
-                }
-
                 _selectedCategory.value = filterableCategories.selectedCategory
 
                 // Override selected home category to show 'DISCOVER' if there are no
@@ -126,7 +119,7 @@ class HomeViewModel @Inject constructor(
                     if (podcasts.isEmpty()) HomeCategory.Discover else homeCategory
 
                 HomeScreenUiState(
-                    isLoading = false,
+                    isLoading = refreshing,
                     homeCategories = homeCategories,
                     selectedHomeCategory = homeCategory,
                     featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
@@ -144,7 +137,6 @@ class HomeViewModel @Inject constructor(
             }.collect {
                 _state.value = it
             }
-
         }
 
         refresh(force = false)
@@ -161,7 +153,6 @@ class HomeViewModel @Inject constructor(
             refreshing.value = false
         }
     }
-
 
     fun onCategorySelected(category: CategoryInfo) {
         _selectedCategory.value = category
