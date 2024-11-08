@@ -22,13 +22,13 @@ import com.example.jetcaster.core.data.database.dao.TransactionRunner
 import com.example.jetcaster.core.data.network.PodcastRssResponse
 import com.example.jetcaster.core.data.network.PodcastsFetcher
 import com.example.jetcaster.core.data.network.SampleFeeds
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Data repository for Podcasts.
@@ -49,8 +49,7 @@ class PodcastsRepository @Inject constructor(
         if (refreshingJob?.isActive == true) {
             refreshingJob?.join()
         } else if (force || podcastStore.isEmpty()) {
-
-            refreshingJob = scope.launch {
+            val job = scope.launch {
                 // Now fetch the podcasts, and add each to each store
                 podcastsFetcher(SampleFeeds)
                     .filter { it is PodcastRssResponse.Success }
@@ -72,6 +71,9 @@ class PodcastsRepository @Inject constructor(
                         }
                     }
             }
+            refreshingJob = job
+            // We need to wait here for the job to finish, otherwise the coroutine completes ~immediatelly
+            job.join()
         }
     }
 }
