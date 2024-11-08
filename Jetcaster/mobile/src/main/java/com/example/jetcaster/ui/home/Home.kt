@@ -106,13 +106,11 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.domain.testing.PreviewCategories
 import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
 import com.example.jetcaster.core.domain.testing.PreviewPodcasts
-import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
-import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
@@ -284,16 +282,11 @@ private fun HomeScreenReady(
                     filterableCategoriesModel = uiState.filterableCategoriesModel,
                     podcastCategoryFilterResult = uiState.podcastCategoryFilterResult,
                     library = uiState.library,
-                    onHomeCategorySelected = viewModel::onHomeCategorySelected,
-                    onCategorySelected = viewModel::onCategorySelected,
-                    onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
+                    onHomeAction = viewModel::onHomeAction,
                     navigateToPodcastDetails = {
                         navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
                     },
                     navigateToPlayer = navigateToPlayer,
-                    onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-                    onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
-                    onQueueEpisode = viewModel::onQueueEpisode,
                     modifier = Modifier.fillMaxSize()
                 )
             },
@@ -401,20 +394,15 @@ private fun HomeScreen(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     library: LibraryInfo,
-    onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
+    onHomeAction: (HomeAction) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
     LaunchedEffect(key1 = featuredPodcasts) {
         if (featuredPodcasts.isEmpty()) {
-            onHomeCategorySelected(HomeCategory.Discover)
+            onHomeAction(HomeAction.HomeCategorySelected(HomeCategory.Discover))
         }
     }
 
@@ -456,19 +444,16 @@ private fun HomeScreen(
                 podcastCategoryFilterResult = podcastCategoryFilterResult,
                 library = library,
                 modifier = Modifier.padding(contentPadding),
-                onPodcastUnfollowed = onPodcastUnfollowed,
-                onHomeCategorySelected = onHomeCategorySelected,
-                onCategorySelected = onCategorySelected,
+                onHomeAction = { action ->
+                    if (action is HomeAction.QueueEpisode) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(snackBarText)
+                        }
+                    }
+                    onHomeAction(action)
+                },
                 navigateToPodcastDetails = navigateToPodcastDetails,
                 navigateToPlayer = navigateToPlayer,
-                onTogglePodcastFollowed = onTogglePodcastFollowed,
-                onLibraryPodcastSelected = onLibraryPodcastSelected,
-                onQueueEpisode = {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(snackBarText)
-                    }
-                    onQueueEpisode(it)
-                }
             )
         }
     }
@@ -484,21 +469,16 @@ private fun HomeContent(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     library: LibraryInfo,
     modifier: Modifier = Modifier,
-    onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
+    onHomeAction: (HomeAction) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
     LaunchedEffect(pagerState, featuredPodcasts) {
         snapshotFlow { pagerState.currentPage }
             .collect {
                 val podcast = featuredPodcasts.getOrNull(it)
-                onLibraryPodcastSelected(podcast)
+                onHomeAction(HomeAction.LibraryPodcastSelected(podcast))
             }
     }
 
@@ -512,13 +492,9 @@ private fun HomeContent(
         podcastCategoryFilterResult = podcastCategoryFilterResult,
         library = library,
         modifier = modifier,
-        onPodcastUnfollowed = onPodcastUnfollowed,
-        onHomeCategorySelected = onHomeCategorySelected,
-        onCategorySelected = onCategorySelected,
+        onHomeAction = onHomeAction,
         navigateToPodcastDetails = navigateToPodcastDetails,
         navigateToPlayer = navigateToPlayer,
-        onTogglePodcastFollowed = onTogglePodcastFollowed,
-        onQueueEpisode = onQueueEpisode,
     )
 }
 
@@ -533,13 +509,9 @@ private fun HomeContentGrid(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     library: LibraryInfo,
     modifier: Modifier = Modifier,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
-    onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
+    onHomeAction: (HomeAction) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
@@ -550,7 +522,7 @@ private fun HomeContentGrid(
                 FollowedPodcastItem(
                     pagerState = pagerState,
                     items = featuredPodcasts,
-                    onPodcastUnfollowed = onPodcastUnfollowed,
+                    onPodcastUnfollowed = { onHomeAction(HomeAction.PodcastUnfollowed(it)) },
                     navigateToPodcastDetails = navigateToPodcastDetails,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -565,7 +537,7 @@ private fun HomeContentGrid(
                         categories = homeCategories,
                         selectedCategory = selectedHomeCategory,
                         showHorizontalLine = false,
-                        onCategorySelected = onHomeCategorySelected,
+                        onCategorySelected = { onHomeAction(HomeAction.HomeCategorySelected(it)) },
                         modifier = Modifier.width(240.dp)
                     )
                 }
@@ -577,7 +549,7 @@ private fun HomeContentGrid(
                 libraryItems(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
-                    onQueueEpisode = onQueueEpisode
+                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) }
                 )
             }
 
@@ -587,9 +559,11 @@ private fun HomeContentGrid(
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPodcastDetails = navigateToPodcastDetails,
                     navigateToPlayer = navigateToPlayer,
-                    onCategorySelected = onCategorySelected,
-                    onTogglePodcastFollowed = onTogglePodcastFollowed,
-                    onQueueEpisode = onQueueEpisode
+                    onCategorySelected = { onHomeAction(HomeAction.CategorySelected(it)) },
+                    onTogglePodcastFollowed = {
+                        onHomeAction(HomeAction.TogglePodcastFollowed(it))
+                    },
+                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
                 )
             }
         }
@@ -816,14 +790,9 @@ private fun PreviewHome() {
                 episodes = PreviewPodcastEpisodes
             ),
             library = LibraryInfo(),
-            onCategorySelected = {},
-            onPodcastUnfollowed = {},
+            onHomeAction = {},
             navigateToPodcastDetails = {},
             navigateToPlayer = {},
-            onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {},
-            onQueueEpisode = {}
         )
     }
 }

@@ -154,31 +154,42 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onCategorySelected(category: CategoryInfo) {
+    fun onHomeAction(action: HomeAction) {
+        when (action) {
+            is HomeAction.CategorySelected -> onCategorySelected(action.category)
+            is HomeAction.HomeCategorySelected -> onHomeCategorySelected(action.category)
+            is HomeAction.LibraryPodcastSelected -> onLibraryPodcastSelected(action.podcast)
+            is HomeAction.PodcastUnfollowed -> onPodcastUnfollowed(action.podcast)
+            is HomeAction.QueueEpisode -> onQueueEpisode(action.episode)
+            is HomeAction.TogglePodcastFollowed -> onTogglePodcastFollowed(action.podcast)
+        }
+    }
+
+    private fun onCategorySelected(category: CategoryInfo) {
         _selectedCategory.value = category
     }
 
-    fun onHomeCategorySelected(category: HomeCategory) {
+    private fun onHomeCategorySelected(category: HomeCategory) {
         selectedHomeCategory.value = category
     }
 
-    fun onPodcastUnfollowed(podcast: PodcastInfo) {
+    private fun onPodcastUnfollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
             podcastStore.unfollowPodcast(podcast.uri)
         }
     }
 
-    fun onTogglePodcastFollowed(podcast: PodcastInfo) {
+    private fun onTogglePodcastFollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
             podcastStore.togglePodcastFollowed(podcast.uri)
         }
     }
 
-    fun onLibraryPodcastSelected(podcast: PodcastInfo?) {
+    private fun onLibraryPodcastSelected(podcast: PodcastInfo?) {
         selectedLibraryPodcast.value = podcast
     }
 
-    fun onQueueEpisode(episode: PlayerEpisode) {
+    private fun onQueueEpisode(episode: PlayerEpisode) {
         episodePlayer.addToQueue(episode)
     }
 }
@@ -190,6 +201,16 @@ private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
 
 enum class HomeCategory {
     Library, Discover
+}
+
+@Immutable
+sealed interface HomeAction {
+    data class CategorySelected(val category: CategoryInfo) : HomeAction
+    data class HomeCategorySelected(val category: HomeCategory) : HomeAction
+    data class PodcastUnfollowed(val podcast: PodcastInfo) : HomeAction
+    data class TogglePodcastFollowed(val podcast: PodcastInfo) : HomeAction
+    data class LibraryPodcastSelected(val podcast: PodcastInfo?) : HomeAction
+    data class QueueEpisode(val episode: PlayerEpisode) : HomeAction
 }
 
 @Immutable
