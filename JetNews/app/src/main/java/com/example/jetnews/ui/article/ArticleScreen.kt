@@ -66,6 +66,7 @@ import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -115,10 +116,16 @@ fun ArticleScreen(
                 if (!isExpandedScreen) {
                     BottomAppBar(
                         actions = {
-                            FavoriteButton(onClick = { showUnimplementedActionDialog = true })
+                            FavoriteButton(onClick = {
+                                showUnimplementedActionDialog = true
+                                triggerCrash("FavoriteButton")
+                            })
                             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
                             ShareButton(onClick = { sharePost(post, context) })
-                            TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
+                            TextSettingsButton(onClick = {
+                                showUnimplementedActionDialog = true
+                                triggerCrash("TextSettingsButton")
+                            })
                         }
                     )
                 }
@@ -217,6 +224,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
             }
         }
     )
+
 }
 
 /**
@@ -267,4 +275,9 @@ fun PreviewArticleNavRail() {
         }
         ArticleScreen(post, true, {}, false, {})
     }
+}
+
+fun triggerCrash(nameButton: String){
+    FirebaseCrashlytics.getInstance().log("Forzando un crash desde $nameButton en ArticleScreen")
+    throw RuntimeException("Crash simulado")
 }

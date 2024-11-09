@@ -1,17 +1,17 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Instrumented tests" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
-    <module name="JetNews.app" />
     <option name="TESTING_TYPE" value="1" />
     <option name="METHOD_NAME" value="" />
     <option name="CLASS_NAME" value="" />
     <option name="PACKAGE_NAME" value="com.example.jetnews" />
+    <option name="TEST_NAME_REGEX" value="" />
     <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
     <option name="EXTRA_OPTIONS" value="" />
-    <option name="INCLUDE_GRADLE_EXTRA_OPTIONS" value="true" />
+    <option name="RETENTION_ENABLED" value="No" />
+    <option name="RETENTION_MAX_SNAPSHOTS" value="2" />
+    <option name="RETENTION_COMPRESS_SNAPSHOTS" value="false" />
     <option name="CLEAR_LOGCAT" value="false" />
     <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-    <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-    <option name="FORCE_STOP_RUNNING_APP" value="true" />
     <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
     <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
     <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
@@ -22,6 +22,8 @@
       <option name="WORKING_DIR" value="" />
       <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
       <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      <option name="DEBUG_SANDBOX_SDK" value="false" />
     </Auto>
     <Hybrid>
       <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
@@ -29,25 +31,30 @@
       <option name="WORKING_DIR" value="" />
       <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
       <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      <option name="DEBUG_SANDBOX_SDK" value="false" />
     </Hybrid>
-    <Java />
+    <Java>
+      <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      <option name="DEBUG_SANDBOX_SDK" value="false" />
+    </Java>
     <Native>
       <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
       <option name="SHOW_STATIC_VARS" value="true" />
       <option name="WORKING_DIR" value="" />
       <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
       <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      <option name="DEBUG_SANDBOX_SDK" value="false" />
     </Native>
     <Profilers>
       <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       <option name="STARTUP_PROFILING_ENABLED" value="false" />
       <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-      <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Callstack Sample" />
       <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
       <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
     </Profilers>
-    <method v="2">
-      <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>
