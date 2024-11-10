@@ -23,6 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name=".JetchatApplication"
         android:theme="@style/Theme.Jetchat.NoActionBar">
 
         <activity
@@ -42,7 +43,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/my_app_widget_info" />
+                android:resource="@xml/widget_unread_messages_info" />
         </receiver>
     </application>
 </manifest>

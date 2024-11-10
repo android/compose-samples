@@ -20,7 +20,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
-import android.widget.Toast
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -83,7 +83,9 @@ fun JetchatDrawerContent(
         }
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
         DrawerItemHeader("Settings")
-        WidgetDiscoverability()
+        if (widgetAddingIsSupported(LocalContext.current)) {
+            WidgetDiscoverability()
+        }
     }
 }
 
@@ -252,22 +254,13 @@ private fun WidgetDiscoverability() {
 private fun addWidgetToHomeScreen(context: Context) {
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val myProvider = ComponentName(context, WidgetReceiver::class.java)
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        if (appWidgetManager.isRequestPinAppWidgetSupported) {
-            appWidgetManager.requestPinAppWidget(myProvider, null, null)
-        } else {
-            Toast.makeText(
-                context,
-                "Unable to add widget, please add from home screen",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    } else {
-        Toast.makeText(
-            context,
-            "Unable to add widget, please add from home screen",
-            Toast.LENGTH_LONG
-        ).show()
+    if (widgetAddingIsSupported(context)) {
+        appWidgetManager.requestPinAppWidget(myProvider, null, null)
     }
+}
+
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
+private fun widgetAddingIsSupported(context: Context): Boolean {
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appWidgetManager.isRequestPinAppWidgetSupported
 }
