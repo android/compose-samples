@@ -50,7 +50,6 @@ import com.example.jetcaster.ui.queue.QueueScreen
 import com.google.android.horologist.audio.ui.VolumeScreen
 import com.google.android.horologist.audio.ui.VolumeViewModel
 import com.google.android.horologist.compose.layout.AppScaffold
-import com.google.android.horologist.compose.layout.ResponsiveTimeText
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToPlayer
 import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToVolume
@@ -65,9 +64,7 @@ fun WearApp() {
     val volumeViewModel: VolumeViewModel = viewModel(factory = VolumeViewModel.Factory)
 
     WearAppTheme {
-        AppScaffold(
-            timeText = { ResponsiveTimeText() },
-        ) {
+        AppScaffold {
             SwipeDismissableNavHost(
                 startDestination = NavigationScreens.Player.navRoute,
                 navController = navController,
