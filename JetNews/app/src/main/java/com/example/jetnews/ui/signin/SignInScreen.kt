@@ -1,5 +1,7 @@
 package com.example.jetnews.ui.signin
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,9 +25,12 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,16 +39,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.jetnews.R
+import com.example.jetnews.model.authentication.AuthResult
 import com.example.jetnews.model.authentication.AuthUiState
 import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.ViewModelFactory
 import com.example.jetnews.ui.components.buttons.AuthButton
-import com.example.jetnews.ui.components.buttons.FirebaseGoogleButton
-import com.example.jetnews.ui.components.buttons.rememberFirebaseAuthLauncher
+import com.example.jetnews.ui.components.buttons.SocialAuthButton
 import com.example.jetnews.ui.components.textfields.AuthTextField
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.launch
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -53,6 +59,7 @@ fun SignInScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     // State
     val email by viewModel.email
     val password by viewModel.password
@@ -67,16 +74,28 @@ fun SignInScreen(
     }
 
     // Firebase Auth launcher
-    val launcher =
-        rememberFirebaseAuthLauncher(
-            onAuthComplete = { account ->
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                viewModel.handleGoogleCredential(credential)
-            },
-            onAuthError = { exception ->
-                viewModel.handleError(exception.message ?: "Authentication failed")
-            },
-        )
+    // ActivityResultLauncher for Google Sign-In
+    val googleSignInLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult(),
+        ) { result ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            when (val accountResult = viewModel.handleSignInResult(task)) {
+                is AuthResult.Success -> {
+                    val account = accountResult.data
+                    val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+                    scope.launch {
+                        viewModel.handleGoogleCredential(credential)
+                    }
+                }
+                is AuthResult.Error -> {
+                    viewModel.handleError(accountResult.message)
+                }
+                else -> {
+                    viewModel.handleError("Unknown error during Google Sign-In")
+                }
+            }
+        }
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -169,18 +188,19 @@ fun SignInScreen(
             }
 
             // Social Sign In
-            FirebaseGoogleButton(
+            SocialAuthButton(
+                text = "Sign in with Google",
                 onClick = {
-                    val gso =
-                        GoogleSignInOptions
-                            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken("") // No lo subi al repo, cualquier cosa pedirlo
-                            .requestEmail()
-                            .build()
-                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                    launcher.launch(googleSignInClient.signInIntent)
+                    viewModel.signInWithGoogle(googleSignInLauncher)
                 },
-                enabled = uiState !is AuthUiState.Loading,
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_google),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified,
+                    )
+                },
             )
 
             // Sign Up Link
