@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PersonAdd
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -39,12 +38,7 @@ import com.example.jetnews.model.authentication.AuthUiState
 import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.ViewModelFactory
 import com.example.jetnews.ui.components.buttons.AuthButton
-import com.example.jetnews.ui.components.buttons.FirebaseGoogleButton
-import com.example.jetnews.ui.components.buttons.rememberFirebaseAuthLauncher
 import com.example.jetnews.ui.components.textfields.AuthTextField
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.GoogleAuthProvider
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -69,18 +63,6 @@ fun SignUpScreen(
         }
     }
 
-    // Firebase Auth launcher
-    val launcher =
-        rememberFirebaseAuthLauncher(
-            onAuthComplete = { account ->
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                viewModel.handleGoogleCredential(credential)
-            },
-            onAuthError = { exception ->
-                viewModel.handleError(exception.message ?: "Authentication failed")
-            },
-        )
-
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -89,18 +71,20 @@ fun SignUpScreen(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(24.dp)
+                    .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.Center,
         ) {
             // Header
             Icon(
                 imageVector = Icons.Rounded.PersonAdd,
                 contentDescription = null,
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier.size(80.dp),
                 tint = MaterialTheme.colorScheme.primary,
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "Create Account",
@@ -114,7 +98,7 @@ fun SignUpScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Form
             AuthTextField(
@@ -153,8 +137,11 @@ fun SignUpScreen(
                     text = (uiState as AuthUiState.Error).message,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 8.dp),
                 )
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Sign Up Button
             AuthButton(
@@ -163,37 +150,10 @@ fun SignUpScreen(
                 isLoading = uiState is AuthUiState.Loading,
             )
 
-            // OR Divider
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Divider(modifier = Modifier.weight(1f))
-                Text(
-                    text = "OR",
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Divider(modifier = Modifier.weight(1f))
-            }
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Firebase Google Button
-            FirebaseGoogleButton(
-                onClick = {
-                    val gso =
-                        GoogleSignInOptions
-                            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken("") // No lo subi al repo, cualquier cosa pedirlo
-                            .requestEmail()
-                            .build()
-                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                    launcher.launch(googleSignInClient.signInIntent)
-                },
-                enabled = uiState !is AuthUiState.Loading,
-            )
-
+            // Sign In Link
             Row(
-                modifier = Modifier.padding(top = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(

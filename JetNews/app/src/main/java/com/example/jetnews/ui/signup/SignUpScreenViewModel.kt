@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.authentication.AuthRepository
 import com.example.jetnews.model.authentication.AuthResult
 import com.example.jetnews.model.authentication.AuthUiState
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
@@ -69,20 +68,8 @@ class SignUpScreenViewModel(
         }
     }
 
-    fun handleGoogleCredential(credential: AuthCredential) {
-        viewModelScope.launch {
-            _uiState.value = AuthUiState.Loading
-            try {
-                val result = repository.signInWithGoogle(credential)
-                handleAuthResult(result)
-            } catch (e: Exception) {
-                handleError(e.message ?: "Google sign in failed")
-            }
-        }
-    }
-
     fun handleError(message: String) {
-        Log.e("SignInError", message)
+        Log.e("SignUpError", message)
         _uiState.value = AuthUiState.Error(message)
     }
 
