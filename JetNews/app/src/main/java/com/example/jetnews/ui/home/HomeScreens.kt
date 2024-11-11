@@ -18,6 +18,8 @@ package com.example.jetnews.ui.home
 
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
@@ -73,8 +75,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -112,10 +116,14 @@ import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 /**
  * The home screen displaying the feed along with an article details.
  */
@@ -154,9 +162,9 @@ fun HomeFeedWithArticleDetailsScreen(
                 onToggleFavorite = onToggleFavorite,
                 contentPadding = contentPadding,
                 modifier =
-                    Modifier
-                        .width(334.dp)
-                        .notifyInput(onInteractWithList),
+                Modifier
+                    .width(334.dp)
+                    .notifyInput(onInteractWithList),
                 state = homeListLazyListState,
                 searchInput = hasPostsUiState.searchInput,
                 onSearchInputChanged = onSearchInputChanged,
@@ -180,12 +188,12 @@ fun HomeFeedWithArticleDetailsScreen(
                             state = detailLazyListState,
                             contentPadding = contentPadding,
                             modifier =
-                                Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .fillMaxSize()
-                                    .notifyInput {
-                                        onInteractWithDetail(detailPost.id)
-                                    },
+                            Modifier
+                                .padding(horizontal = 16.dp)
+                                .fillMaxSize()
+                                .notifyInput {
+                                    onInteractWithDetail(detailPost.id)
+                                },
                         ) {
                             postContentItems(detailPost)
                         }
@@ -197,10 +205,10 @@ fun HomeFeedWithArticleDetailsScreen(
                             onToggleFavorite = { onToggleFavorite(detailPost.id) },
                             onSharePost = { sharePost(detailPost, context) },
                             modifier =
-                                Modifier
-                                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.End),
+                            Modifier
+                                .windowInsetsPadding(WindowInsets.safeDrawing)
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.End),
                         )
                     }
                 }
@@ -326,7 +334,9 @@ private fun HomeScreenWithList(
                             // if there are no posts, and no error, let the user refresh manually
                             TextButton(
                                 onClick = onRefreshPosts,
-                                modifier.padding(innerPadding).fillMaxSize(),
+                                modifier
+                                    .padding(innerPadding)
+                                    .fillMaxSize(),
                             ) {
                                 Text(
                                     stringResource(id = R.string.home_tap_to_load_content),
@@ -475,9 +485,9 @@ private fun PostList(
 private fun FullScreenLoading() {
     Box(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .wrapContentSize(Alignment.Center),
+        Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center),
     ) {
         CircularProgressIndicator()
     }
@@ -551,10 +561,10 @@ private fun PostListPopularSection(
         )
         Row(
             modifier =
-                Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .height(IntrinsicSize.Max)
-                    .padding(horizontal = 16.dp),
+            Modifier
+                .horizontalScroll(rememberScrollState())
+                .height(IntrinsicSize.Max)
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             for (post in posts) {
@@ -618,14 +628,14 @@ private fun HomeSearch(
         placeholder = { Text(stringResource(R.string.home_search)) },
         leadingIcon = { Icon(Icons.Filled.Search, null) },
         modifier =
-            modifier
-                .fillMaxWidth()
-                .interceptKey(Key.Enter) {
-                    // submit a search query when Enter is pressed
-                    submitSearch(onSearchInputChanged, context)
-                    keyboardController?.hide()
-                    focusManager.clearFocus(force = true)
-                },
+        modifier
+            .fillMaxWidth()
+            .interceptKey(Key.Enter) {
+                // submit a search query when Enter is pressed
+                submitSearch(onSearchInputChanged, context)
+                keyboardController?.hide()
+                focusManager.clearFocus(force = true)
+            },
         singleLine = true,
         // keyboardOptions change the newline key to a search key on the soft keyboard
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -694,15 +704,37 @@ private fun HomeTopAppBar(
 ) {
     val context = LocalContext.current
     val title = stringResource(id = R.string.app_name)
+    var toastText = stringResource(id = R.string.toast_text_default)
+
+    // Estado que controla la visibilidad del ícono de búsqueda
+    var showSearchIcon by remember { mutableStateOf(false) }
+
+    // Inicializa Firebase Remote Config
+    val remoteConfig = Firebase.remoteConfig
+
+    LaunchedEffect(Unit) {
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 1
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(mapOf("show_search_icon" to true, "toast_text" to ""))
+
+        while (true) {
+            // Obtiene el valor de Remote Config y actualiza el estado
+            remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    showSearchIcon = remoteConfig.getBoolean("show_search_icon")
+                    toastText = remoteConfig.getString("toast_text")
+                }
+            }
+            // Espera 5 segundos antes de la próxima verificación
+            delay(5000L)
+        }
+    }
+
     CenterAlignedTopAppBar(
         title = {
-            Image(
-                painter = painterResource(R.drawable.ic_jetnews_wordmark),
-                contentDescription = title,
-                contentScale = ContentScale.Inside,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                modifier = Modifier.fillMaxWidth(),
-            )
+            Text(title)
         },
         navigationIcon = {
             IconButton(onClick = openDrawer) {
@@ -713,18 +745,19 @@ private fun HomeTopAppBar(
             }
         },
         actions = {
-            IconButton(onClick = {
-//                Toast.makeText(
-//                    context,
-//                    "Search is not yet implemented in this configuration",
-//                    Toast.LENGTH_LONG
-//                ).show()
-                throw RuntimeException("Test Crash") // Force a crash
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = stringResource(R.string.cd_search),
-                )
+            if (showSearchIcon) {
+                IconButton(onClick = {
+                    Toast.makeText(
+                        context,
+                        toastText,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.cd_search),
+                    )
+                }
             }
         },
         scrollBehavior = scrollBehavior,

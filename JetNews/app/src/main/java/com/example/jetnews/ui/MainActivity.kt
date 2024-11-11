@@ -40,31 +40,5 @@ class MainActivity : ComponentActivity() {
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
             JetnewsApp(appContainer, widthSizeClass)
         }
-
-        // Inicializa Firebase Remote Config
-        val remoteConfig = Firebase.remoteConfig
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 3600 // Intervalo de fetch mínimo en segundos
-        }
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        remoteConfig.setDefaultsAsync(mapOf(
-            "property_1" to "default_value_1",
-            "property_2" to "default_value_2"
-        ))
-
-        // Realiza el fetch de los valores remotos
-        remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val updated = task.result
-                Log.d("RemoteConfig", "Config params updated: $updated")
-                // Usa los valores de remoteConfig
-                val property1 = remoteConfig.getString("property_1")
-                val property2 = remoteConfig.getString("property_2")
-                // Actualiza la UI o lógica de negocio con estos valores
-            } else {
-                Log.w("RemoteConfig", "Fetch failed")
-            }
-        }
-
     }
 }
