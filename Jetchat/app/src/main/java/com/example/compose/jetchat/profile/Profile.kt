@@ -89,13 +89,13 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(nestedScrollInteropConnection)
-            .systemBarsPadding()
     ) {
         Surface {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(scrollState),
+                    .verticalScroll(scrollState)
+                    .padding(16.dp),
             ) {
                 ProfileHeader(
                     scrollState,
