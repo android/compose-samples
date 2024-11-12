@@ -17,12 +17,14 @@
 package com.example.jetnews
 
 import android.app.Application
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
 
 class JetnewsApplication : Application() {
     companion object {
         const val JETNEWS_APP_URI = "https://developer.android.com/jetnews"
+        lateinit var firebaseAnalytics: FirebaseAnalytics
     }
 
     // AppContainer instance used by the rest of classes to obtain dependencies
@@ -31,5 +33,6 @@ class JetnewsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         container = AppContainerImpl(this)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
     }
 }

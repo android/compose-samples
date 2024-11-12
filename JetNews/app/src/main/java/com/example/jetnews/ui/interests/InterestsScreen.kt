@@ -76,7 +76,11 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.google.firebase.analytics.logEvent
 import kotlin.math.max
 import kotlinx.coroutines.runBlocking
 
@@ -263,6 +267,8 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
+    val analytics = Firebase.analytics // Inicialización de Firebase Analytics
+
     InterestsAdaptiveContentLayout(
         topPadding = 16.dp,
         modifier = tabContainerModifier.verticalScroll(rememberScrollState())
@@ -271,7 +277,13 @@ private fun TabWithTopics(
             TopicItem(
                 itemTitle = topic,
                 selected = selectedTopics.contains(topic),
-                onToggle = { onTopicSelect(topic) },
+                onToggle = {
+                    onTopicSelect(topic)
+                    // Evento personalizado de Analytics
+                    analytics.logEvent("select_interest_topic") {
+                        param("interest_name", topic)
+                    }
+                },
             )
         }
     }
@@ -290,6 +302,8 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
+    val analytics = Firebase.analytics // Inicialización de Firebase Analytics
+
     Column(tabContainerModifier.verticalScroll(rememberScrollState())) {
         sections.forEach { (section, topics) ->
             Text(
@@ -304,7 +318,14 @@ private fun TabWithSections(
                     TopicItem(
                         itemTitle = topic,
                         selected = selectedTopics.contains(TopicSelection(section, topic)),
-                        onToggle = { onTopicSelect(TopicSelection(section, topic)) },
+                        onToggle = {
+                            onTopicSelect(TopicSelection(section, topic))
+                            // Evento personalizado de Analytics
+                            analytics.logEvent("select_interest_section_topic") {
+                                param("section_name", section)
+                                param("topic_name", topic)
+                            }
+                        },
                     )
                 }
             }

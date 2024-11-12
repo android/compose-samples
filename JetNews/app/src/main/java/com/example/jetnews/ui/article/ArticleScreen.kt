@@ -66,6 +66,10 @@ import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.logEvent
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.runBlocking
 
@@ -90,6 +94,7 @@ fun ArticleScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
+    val analytics = Firebase.analytics // Inicializa FirebaseAnalytics
     var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
     if (showUnimplementedActionDialog) {
         FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
@@ -120,8 +125,20 @@ fun ArticleScreen(
                                 showUnimplementedActionDialog = true
                                 triggerCrash("FavoriteButton")
                             })
-                            BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
-                            ShareButton(onClick = { sharePost(post, context) })
+                            BookmarkButton(isBookmarked = isFavorite, onClick = {
+                                onToggleFavorite()
+                                // Evento personalizado de GOOGLE ANALYTICS para el botón de marcador
+                                analytics.logEvent("bookmark_event") {
+                                    param("is_bookmarked", isFavorite.toString())
+                                }
+                            })
+                            ShareButton(onClick = {
+                                sharePost(post, context)
+                                // Evento personalizado de GOOGLE ANALYTICS para el botón de compartir
+                                analytics.logEvent("share_event") {
+                                    param("post_title", post.title)
+                                }
+                            })
                             TextSettingsButton(onClick = {
                                 showUnimplementedActionDialog = true
                                 triggerCrash("TextSettingsButton")
