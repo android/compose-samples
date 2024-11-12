@@ -55,8 +55,8 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun JetchatDrawerContent(
     onProfileClicked: (String) -> Unit,
-    onChatClicked: (String) ->
-    Unit
+    onChatClicked: (String) -> Unit,
+    selectedMenu: String = "composers"
 ) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
@@ -65,12 +65,12 @@ fun JetchatDrawerContent(
         DrawerHeader()
         DividerItem()
         DrawerItemHeader("Chats")
-        ChatItem("composers", true) { onChatClicked("composers") }
-        ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
+        ChatItem("composers", selectedMenu == "composers") { onChatClicked("composers") }
+        ChatItem("droidcon-nyc", selectedMenu == "droidcon-nyc") { onChatClicked("droidcon-nyc") }
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
         DrawerItemHeader("Recent Profiles")
-        ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
-        ProfileItem("Taylor Brooks", colleagueProfile.photo) {
+        ProfileItem("Ali Conors (you)", meProfile.photo, selectedMenu == meProfile.userId) { onProfileClicked(meProfile.userId) }
+        ProfileItem("Taylor Brooks", colleagueProfile.photo, selectedMenu == colleagueProfile.userId) {
             onProfileClicked(colleagueProfile.userId)
         }
     }
@@ -148,13 +148,19 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
 }
 
 @Composable
-private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: () -> Unit) {
+private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, selected: Boolean = false, onProfileClicked: () -> Unit) {
+    val background = if (selected) {
+        Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+    } else {
+        Modifier
+    }
     Row(
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .clip(CircleShape)
+            .then(background)
             .clickable(onClick = onProfileClicked),
         verticalAlignment = CenterVertically
     ) {

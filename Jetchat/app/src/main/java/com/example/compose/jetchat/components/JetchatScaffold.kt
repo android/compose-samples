@@ -28,6 +28,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun JetchatDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
+    selectedMenu: String,
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
     content: @Composable () -> Unit
@@ -43,7 +44,8 @@ fun JetchatDrawer(
                 ) {
                     JetchatDrawerContent(
                         onProfileClicked = onProfileClicked,
-                        onChatClicked = onChatClicked
+                        onChatClicked = onChatClicked,
+                        selectedMenu = selectedMenu
                     )
                 }
             },
