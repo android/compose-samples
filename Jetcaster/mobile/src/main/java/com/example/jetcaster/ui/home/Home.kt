@@ -324,6 +324,12 @@ private fun HomeScreenReady(
         SupportingPaneScaffold(
             value = navigator.scaffoldValue,
             directive = navigator.scaffoldDirective,
+            mainPane = {
+                HomeScreen(
+                    homeState = homeState,
+                    modifier = Modifier.fillMaxSize()
+                )
+            },
             supportingPane = {
                 val podcastUri = navigator.currentDestination?.content
                 if (!podcastUri.isNullOrEmpty()) {
@@ -344,12 +350,6 @@ private fun HomeScreenReady(
                         showBackButton = navigator.isMainPaneHidden(),
                     )
                 }
-            },
-            mainPane = {
-                HomeScreen(
-                    homeState = homeState,
-                    modifier = Modifier.fillMaxSize()
-                )
             },
             modifier = Modifier.fillMaxSize()
         )
