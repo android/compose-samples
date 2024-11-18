@@ -50,10 +50,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -134,6 +134,7 @@ import kotlinx.coroutines.launch
 
 data class HomeState(
     val windowSizeClass: WindowSizeClass,
+    val isLoading: Boolean,
     val featuredPodcasts: PersistentList<PodcastInfo>,
     val selectedHomeCategory: HomeCategory,
     val homeCategories: List<HomeCategory>,
@@ -180,10 +181,12 @@ fun calculateScaffoldDirective(
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             WindowWidthSizeClass.MEDIUM -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             else -> {
                 maxHorizontalPartitions = 2
                 verticalSpacerSize = 24.dp
@@ -233,27 +236,17 @@ fun MainScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val homeScreenUiState by viewModel.state.collectAsStateWithLifecycle()
-    when (val uiState = homeScreenUiState) {
-        is HomeScreenUiState.Loading -> HomeScreenLoading()
-        is HomeScreenUiState.Error -> HomeScreenError(onRetry = viewModel::refresh)
-        is HomeScreenUiState.Ready -> {
-            HomeScreenReady(
-                uiState = uiState,
-                windowSizeClass = windowSizeClass,
-                navigateToPlayer = navigateToPlayer,
-                viewModel = viewModel,
-            )
-        }
-    }
-}
+    val uiState = homeScreenUiState
+    Box {
+        HomeScreenReady(
+            uiState = uiState,
+            windowSizeClass = windowSizeClass,
+            navigateToPlayer = navigateToPlayer,
+            viewModel = viewModel,
+        )
 
-@Composable
-private fun HomeScreenLoading(modifier: Modifier = Modifier) {
-    Surface(modifier.fillMaxSize()) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
+        if (uiState.errorMessage != null) {
+            HomeScreenError(onRetry = viewModel::refresh)
         }
     }
 }
@@ -288,7 +281,7 @@ fun HomeScreenErrorPreview() {
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun HomeScreenReady(
-    uiState: HomeScreenUiState.Ready,
+    uiState: HomeScreenUiState,
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
@@ -302,6 +295,7 @@ private fun HomeScreenReady(
 
     val homeState = HomeState(
         windowSizeClass = windowSizeClass,
+        isLoading = uiState.isLoading,
         featuredPodcasts = uiState.featuredPodcasts,
         homeCategories = uiState.homeCategories,
         selectedHomeCategory = uiState.selectedHomeCategory,
@@ -443,10 +437,19 @@ private fun HomeScreen(
     ) {
         Scaffold(
             topBar = {
-                HomeAppBar(
-                    isExpanded = homeState.windowSizeClass.isCompact,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column {
+                    HomeAppBar(
+                        isExpanded = homeState.windowSizeClass.isCompact,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    if (homeState.isLoading) {
+                        LinearProgressIndicator(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        )
+                    }
+                }
             },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
@@ -811,6 +814,7 @@ private fun PreviewHome() {
     JetcasterTheme {
         val homeState = HomeState(
             windowSizeClass = CompactWindowSizeClass,
+            isLoading = true,
             featuredPodcasts = PreviewPodcasts.toPersistentList(),
             homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
