@@ -49,8 +49,7 @@ class PodcastsRepository @Inject constructor(
         if (refreshingJob?.isActive == true) {
             refreshingJob?.join()
         } else if (force || podcastStore.isEmpty()) {
-
-            refreshingJob = scope.launch {
+            val job = scope.launch {
                 // Now fetch the podcasts, and add each to each store
                 podcastsFetcher(SampleFeeds)
                     .filter { it is PodcastRssResponse.Success }
@@ -72,6 +71,9 @@ class PodcastsRepository @Inject constructor(
                         }
                     }
             }
+            refreshingJob = job
+            // We need to wait here for the job to finish, otherwise the coroutine completes ~immediatelly
+            job.join()
         }
     }
 }
