@@ -321,17 +321,18 @@ private fun HomeScreenReady(
     )
 
     Surface {
-        val podcastUri = navigator.currentDestination?.content
-        if (podcastUri.isNullOrEmpty()) {
-            HomeScreen(
-                homeState = homeState,
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            SupportingPaneScaffold(
-                value = navigator.scaffoldValue,
-                directive = navigator.scaffoldDirective,
-                supportingPane = {
+        SupportingPaneScaffold(
+            value = navigator.scaffoldValue,
+            directive = navigator.scaffoldDirective,
+            mainPane = {
+                HomeScreen(
+                    homeState = homeState,
+                    modifier = Modifier.fillMaxSize()
+                )
+            },
+            supportingPane = {
+                val podcastUri = navigator.currentDestination?.content
+                if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel =
                         hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory>(
                             key = podcastUri
@@ -348,16 +349,10 @@ private fun HomeScreenReady(
                         },
                         showBackButton = navigator.isMainPaneHidden(),
                     )
-                },
-                mainPane = {
-                    HomeScreen(
-                        homeState = homeState,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                },
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
