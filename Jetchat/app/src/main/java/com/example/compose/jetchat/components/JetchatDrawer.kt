@@ -65,12 +65,24 @@ fun JetchatDrawerContent(
         DrawerHeader()
         DividerItem()
         DrawerItemHeader("Chats")
-        ChatItem("composers", selectedMenu == "composers") { onChatClicked("composers") }
-        ChatItem("droidcon-nyc", selectedMenu == "droidcon-nyc") { onChatClicked("droidcon-nyc") }
+        ChatItem("composers", selectedMenu == "composers") {
+            onChatClicked("composers")
+        }
+        ChatItem("droidcon-nyc", selectedMenu == "droidcon-nyc") {
+            onChatClicked("droidcon-nyc")
+        }
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
         DrawerItemHeader("Recent Profiles")
-        ProfileItem("Ali Conors (you)", meProfile.photo, selectedMenu == meProfile.userId) { onProfileClicked(meProfile.userId) }
-        ProfileItem("Taylor Brooks", colleagueProfile.photo, selectedMenu == colleagueProfile.userId) {
+        ProfileItem(
+            "Ali Conors (you)", meProfile.photo,
+            selectedMenu == meProfile.userId
+        ) {
+            onProfileClicked(meProfile.userId)
+        }
+        ProfileItem(
+            "Taylor Brooks", colleagueProfile.photo,
+            selectedMenu == colleagueProfile.userId
+        ) {
             onProfileClicked(colleagueProfile.userId)
         }
     }
