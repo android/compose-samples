@@ -89,7 +89,6 @@ fun JetchatDrawerContent(
     }
 }
 
-
 @Composable
 private fun DrawerHeader() {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
@@ -227,7 +226,6 @@ fun DrawerPreviewDark() {
     }
 }
 
-
 @Composable
 private fun WidgetDiscoverability() {
     val context = LocalContext.current
@@ -263,5 +261,5 @@ private fun addWidgetToHomeScreen(context: Context) {
 private fun widgetAddingIsSupported(context: Context): Boolean {
     val appWidgetManager = AppWidgetManager.getInstance(context)
     return Build.VERSION.SDK_INT >=
-            Build.VERSION_CODES.O && appWidgetManager.isRequestPinAppWidgetSupported
+        Build.VERSION_CODES.O && appWidgetManager.isRequestPinAppWidgetSupported
 }
