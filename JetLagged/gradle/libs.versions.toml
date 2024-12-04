@@ -65,7 +65,6 @@ accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayo
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
