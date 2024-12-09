@@ -39,7 +39,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
@@ -51,13 +50,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -76,7 +76,6 @@ import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
@@ -84,8 +83,10 @@ import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -105,13 +106,11 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.domain.testing.PreviewCategories
 import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
 import com.example.jetcaster.core.domain.testing.PreviewPodcasts
-import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
-import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.ui.home.discover.discoverItems
 import com.example.jetcaster.ui.home.library.libraryItems
@@ -130,37 +129,6 @@ import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
-
-data class HomeState(
-    val windowSizeClass: WindowSizeClass,
-    val featuredPodcasts: PersistentList<PodcastInfo>,
-    val selectedHomeCategory: HomeCategory,
-    val homeCategories: List<HomeCategory>,
-    val filterableCategoriesModel: FilterableCategoriesModel,
-    val podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    val library: LibraryInfo,
-    val modifier: Modifier = Modifier,
-    val onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    val onHomeCategorySelected: (HomeCategory) -> Unit,
-    val onCategorySelected: (CategoryInfo) -> Unit,
-    val navigateToPodcastDetails: (PodcastInfo) -> Unit,
-    val navigateToPlayer: (EpisodeInfo) -> Unit,
-    val onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    val onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
-    val onQueueEpisode: (PlayerEpisode) -> Unit,
-)
-
-private val HomeState.showHomeCategoryTabs: Boolean
-    get() = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun HomeState.showGrid(
-    scaffoldValue: ThreePaneScaffoldValue
-): Boolean = windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
-    (
-        windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM &&
-            scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
-        )
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
@@ -188,10 +156,12 @@ fun calculateScaffoldDirective(
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             WindowWidthSizeClass.MEDIUM -> {
                 maxHorizontalPartitions = 1
                 verticalSpacerSize = 0.dp
             }
+
             else -> {
                 maxHorizontalPartitions = 2
                 verticalSpacerSize = 24.dp
@@ -241,27 +211,17 @@ fun MainScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val homeScreenUiState by viewModel.state.collectAsStateWithLifecycle()
-    when (val uiState = homeScreenUiState) {
-        is HomeScreenUiState.Loading -> HomeScreenLoading()
-        is HomeScreenUiState.Error -> HomeScreenError(onRetry = viewModel::refresh)
-        is HomeScreenUiState.Ready -> {
-            HomeScreenReady(
-                uiState = uiState,
-                windowSizeClass = windowSizeClass,
-                navigateToPlayer = navigateToPlayer,
-                viewModel = viewModel,
-            )
-        }
-    }
-}
+    val uiState = homeScreenUiState
+    Box {
+        HomeScreenReady(
+            uiState = uiState,
+            windowSizeClass = windowSizeClass,
+            navigateToPlayer = navigateToPlayer,
+            viewModel = viewModel,
+        )
 
-@Composable
-private fun HomeScreenLoading(modifier: Modifier = Modifier) {
-    Surface(modifier.fillMaxSize()) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
+        if (uiState.errorMessage != null) {
+            HomeScreenError(onRetry = viewModel::refresh)
         }
     }
 }
@@ -296,7 +256,7 @@ fun HomeScreenErrorPreview() {
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun HomeScreenReady(
-    uiState: HomeScreenUiState.Ready,
+    uiState: HomeScreenUiState,
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
@@ -308,40 +268,31 @@ private fun HomeScreenReady(
         navigator.navigateBack()
     }
 
-    val homeState = HomeState(
-        windowSizeClass = windowSizeClass,
-        featuredPodcasts = uiState.featuredPodcasts,
-        homeCategories = uiState.homeCategories,
-        selectedHomeCategory = uiState.selectedHomeCategory,
-        filterableCategoriesModel = uiState.filterableCategoriesModel,
-        podcastCategoryFilterResult = uiState.podcastCategoryFilterResult,
-        library = uiState.library,
-        onHomeCategorySelected = viewModel::onHomeCategorySelected,
-        onCategorySelected = viewModel::onCategorySelected,
-        onPodcastUnfollowed = viewModel::onPodcastUnfollowed,
-        navigateToPodcastDetails = {
-            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
-        },
-        navigateToPlayer = navigateToPlayer,
-        onTogglePodcastFollowed = viewModel::onTogglePodcastFollowed,
-        onLibraryPodcastSelected = viewModel::onLibraryPodcastSelected,
-        onQueueEpisode = viewModel::onQueueEpisode
-    )
-
     Surface {
-        val podcastUri = navigator.currentDestination?.content
-        val showGrid = homeState.showGrid(navigator.scaffoldValue)
-        if (podcastUri.isNullOrEmpty()) {
-            HomeScreen(
-                homeState = homeState,
-                showGrid = showGrid,
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            SupportingPaneScaffold(
-                value = navigator.scaffoldValue,
-                directive = navigator.scaffoldDirective,
-                supportingPane = {
+        SupportingPaneScaffold(
+            value = navigator.scaffoldValue,
+            directive = navigator.scaffoldDirective,
+            mainPane = {
+                HomeScreen(
+                    windowSizeClass = windowSizeClass,
+                    isLoading = uiState.isLoading,
+                    featuredPodcasts = uiState.featuredPodcasts,
+                    homeCategories = uiState.homeCategories,
+                    selectedHomeCategory = uiState.selectedHomeCategory,
+                    filterableCategoriesModel = uiState.filterableCategoriesModel,
+                    podcastCategoryFilterResult = uiState.podcastCategoryFilterResult,
+                    library = uiState.library,
+                    onHomeAction = viewModel::onHomeAction,
+                    navigateToPodcastDetails = {
+                        navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                    },
+                    navigateToPlayer = navigateToPlayer,
+                    modifier = Modifier.fillMaxSize()
+                )
+            },
+            supportingPane = {
+                val podcastUri = navigator.currentDestination?.content
+                if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel =
                         hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory>(
                             key = podcastUri
@@ -358,17 +309,10 @@ private fun HomeScreenReady(
                         },
                         showBackButton = navigator.isMainPaneHidden(),
                     )
-                },
-                mainPane = {
-                    HomeScreen(
-                        homeState = homeState,
-                        showGrid = showGrid,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                },
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -378,36 +322,47 @@ private fun HomeAppBar(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    var queryText by remember {
+        mutableStateOf("")
+    }
     Row(
         horizontalArrangement = Arrangement.End,
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .padding(end = 16.dp, top = 8.dp, bottom = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         SearchBar(
-            query = "",
-            onQueryChange = {},
-            placeholder = {
-                Text(stringResource(id = R.string.search_for_a_podcast))
-            },
-            onSearch = {},
-            active = false,
-            onActiveChange = {},
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null
+            inputField = {
+                SearchBarDefaults.InputField(
+                    query = queryText,
+                    onQueryChange = { queryText = it },
+                    onSearch = {},
+                    expanded = false,
+                    onExpandedChange = {},
+                    enabled = true,
+                    placeholder = {
+                        Text(stringResource(id = R.string.search_for_a_podcast))
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = stringResource(R.string.cd_account)
+                        )
+                    },
+                    interactionSource = null,
+                    modifier = if (isExpanded) Modifier.fillMaxWidth() else Modifier
                 )
             },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = stringResource(R.string.cd_account)
-                )
-            },
-            modifier = if (isExpanded) Modifier else Modifier.fillMaxWidth()
-        ) { }
+            expanded = false,
+            onExpandedChange = {}
+        ) {}
     }
 }
 
@@ -431,14 +386,23 @@ private fun HomeScreenBackground(
 
 @Composable
 private fun HomeScreen(
-    homeState: HomeState,
-    showGrid: Boolean,
+    windowSizeClass: WindowSizeClass,
+    isLoading: Boolean,
+    featuredPodcasts: PersistentList<PodcastInfo>,
+    selectedHomeCategory: HomeCategory,
+    homeCategories: List<HomeCategory>,
+    filterableCategoriesModel: FilterableCategoriesModel,
+    podcastCategoryFilterResult: PodcastCategoryFilterResult,
+    library: LibraryInfo,
+    onHomeAction: (HomeAction) -> Unit,
+    navigateToPodcastDetails: (PodcastInfo) -> Unit,
+    navigateToPlayer: (EpisodeInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
-    LaunchedEffect(key1 = homeState.featuredPodcasts) {
-        if (homeState.featuredPodcasts.isEmpty()) {
-            homeState.onHomeCategorySelected(HomeCategory.Discover)
+    LaunchedEffect(key1 = featuredPodcasts) {
+        if (featuredPodcasts.isEmpty()) {
+            onHomeAction(HomeAction.HomeCategorySelected(HomeCategory.Discover))
         }
     }
 
@@ -449,10 +413,19 @@ private fun HomeScreen(
     ) {
         Scaffold(
             topBar = {
-                HomeAppBar(
-                    isExpanded = homeState.windowSizeClass.isCompact,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column {
+                    HomeAppBar(
+                        isExpanded = windowSizeClass.isCompact,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    if (isLoading) {
+                        LinearProgressIndicator(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        )
+                    }
+                }
             },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
@@ -461,29 +434,26 @@ private fun HomeScreen(
         ) { contentPadding ->
             // Main Content
             val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
+            val showHomeCategoryTabs = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
             HomeContent(
-                showGrid = showGrid,
-                showHomeCategoryTabs = homeState.showHomeCategoryTabs,
-                featuredPodcasts = homeState.featuredPodcasts,
-                selectedHomeCategory = homeState.selectedHomeCategory,
-                homeCategories = homeState.homeCategories,
-                filterableCategoriesModel = homeState.filterableCategoriesModel,
-                podcastCategoryFilterResult = homeState.podcastCategoryFilterResult,
-                library = homeState.library,
+                showHomeCategoryTabs = showHomeCategoryTabs,
+                featuredPodcasts = featuredPodcasts,
+                selectedHomeCategory = selectedHomeCategory,
+                homeCategories = homeCategories,
+                filterableCategoriesModel = filterableCategoriesModel,
+                podcastCategoryFilterResult = podcastCategoryFilterResult,
+                library = library,
                 modifier = Modifier.padding(contentPadding),
-                onPodcastUnfollowed = homeState.onPodcastUnfollowed,
-                onHomeCategorySelected = homeState.onHomeCategorySelected,
-                onCategorySelected = homeState.onCategorySelected,
-                navigateToPodcastDetails = homeState.navigateToPodcastDetails,
-                navigateToPlayer = homeState.navigateToPlayer,
-                onTogglePodcastFollowed = homeState.onTogglePodcastFollowed,
-                onLibraryPodcastSelected = homeState.onLibraryPodcastSelected,
-                onQueueEpisode = {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(snackBarText)
+                onHomeAction = { action ->
+                    if (action is HomeAction.QueueEpisode) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(snackBarText)
+                        }
                     }
-                    homeState.onQueueEpisode(it)
-                }
+                    onHomeAction(action)
+                },
+                navigateToPodcastDetails = navigateToPodcastDetails,
+                navigateToPlayer = navigateToPlayer,
             )
         }
     }
@@ -491,7 +461,6 @@ private fun HomeScreen(
 
 @Composable
 private fun HomeContent(
-    showGrid: Boolean,
     showHomeCategoryTabs: Boolean,
     featuredPodcasts: PersistentList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
@@ -500,138 +469,33 @@ private fun HomeContent(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     library: LibraryInfo,
     modifier: Modifier = Modifier,
-    onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
+    onHomeAction: (HomeAction) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    onLibraryPodcastSelected: (PodcastInfo?) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     val pagerState = rememberPagerState { featuredPodcasts.size }
     LaunchedEffect(pagerState, featuredPodcasts) {
         snapshotFlow { pagerState.currentPage }
             .collect {
                 val podcast = featuredPodcasts.getOrNull(it)
-                onLibraryPodcastSelected(podcast)
+                onHomeAction(HomeAction.LibraryPodcastSelected(podcast))
             }
     }
 
-    // Note: ideally, `HomeContentColumn` and `HomeContentGrid` would be the same implementation
-    // (i.e. a grid). However, LazyVerticalGrid does not have the concept of a sticky header.
-    // So we are using two different composables here depending on the provided window size class.
-    // See: https://issuetracker.google.com/issues/231557184
-    if (showGrid) {
-        HomeContentGrid(
-            pagerState = pagerState,
-            showHomeCategoryTabs = showHomeCategoryTabs,
-            featuredPodcasts = featuredPodcasts,
-            selectedHomeCategory = selectedHomeCategory,
-            homeCategories = homeCategories,
-            filterableCategoriesModel = filterableCategoriesModel,
-            podcastCategoryFilterResult = podcastCategoryFilterResult,
-            library = library,
-            modifier = modifier,
-            onPodcastUnfollowed = onPodcastUnfollowed,
-            onHomeCategorySelected = onHomeCategorySelected,
-            onCategorySelected = onCategorySelected,
-            navigateToPodcastDetails = navigateToPodcastDetails,
-            navigateToPlayer = navigateToPlayer,
-            onTogglePodcastFollowed = onTogglePodcastFollowed,
-            onQueueEpisode = onQueueEpisode,
-        )
-    } else {
-        HomeContentColumn(
-            pagerState = pagerState,
-            showHomeCategoryTabs = showHomeCategoryTabs,
-            featuredPodcasts = featuredPodcasts,
-            selectedHomeCategory = selectedHomeCategory,
-            homeCategories = homeCategories,
-            filterableCategoriesModel = filterableCategoriesModel,
-            podcastCategoryFilterResult = podcastCategoryFilterResult,
-            library = library,
-            modifier = modifier,
-            onPodcastUnfollowed = onPodcastUnfollowed,
-            onHomeCategorySelected = onHomeCategorySelected,
-            onCategorySelected = onCategorySelected,
-            navigateToPodcastDetails = navigateToPodcastDetails,
-            navigateToPlayer = navigateToPlayer,
-            onTogglePodcastFollowed = onTogglePodcastFollowed,
-            onQueueEpisode = onQueueEpisode,
-        )
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun HomeContentColumn(
-    showHomeCategoryTabs: Boolean,
-    pagerState: PagerState,
-    featuredPodcasts: PersistentList<PodcastInfo>,
-    selectedHomeCategory: HomeCategory,
-    homeCategories: List<HomeCategory>,
-    filterableCategoriesModel: FilterableCategoriesModel,
-    podcastCategoryFilterResult: PodcastCategoryFilterResult,
-    library: LibraryInfo,
-    modifier: Modifier = Modifier,
-    onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
-    navigateToPodcastDetails: (PodcastInfo) -> Unit,
-    navigateToPlayer: (EpisodeInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
-) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize()
-    ) {
-        if (featuredPodcasts.isNotEmpty()) {
-            item {
-                FollowedPodcastItem(
-                    pagerState = pagerState,
-                    items = featuredPodcasts,
-                    onPodcastUnfollowed = onPodcastUnfollowed,
-                    navigateToPodcastDetails = navigateToPodcastDetails,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-        }
-
-        if (showHomeCategoryTabs) {
-            item {
-                HomeCategoryTabs(
-                    categories = homeCategories,
-                    selectedCategory = selectedHomeCategory,
-                    showHorizontalLine = true,
-                    onCategorySelected = onHomeCategorySelected
-                )
-            }
-        }
-
-        when (selectedHomeCategory) {
-            HomeCategory.Library -> {
-                libraryItems(
-                    library = library,
-                    navigateToPlayer = navigateToPlayer,
-                    onQueueEpisode = onQueueEpisode
-                )
-            }
-
-            HomeCategory.Discover -> {
-                discoverItems(
-                    filterableCategoriesModel = filterableCategoriesModel,
-                    podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    navigateToPodcastDetails = navigateToPodcastDetails,
-                    navigateToPlayer = navigateToPlayer,
-                    onCategorySelected = onCategorySelected,
-                    onTogglePodcastFollowed = onTogglePodcastFollowed,
-                    onQueueEpisode = onQueueEpisode
-                )
-            }
-        }
-    }
+    HomeContentGrid(
+        pagerState = pagerState,
+        showHomeCategoryTabs = showHomeCategoryTabs,
+        featuredPodcasts = featuredPodcasts,
+        selectedHomeCategory = selectedHomeCategory,
+        homeCategories = homeCategories,
+        filterableCategoriesModel = filterableCategoriesModel,
+        podcastCategoryFilterResult = podcastCategoryFilterResult,
+        library = library,
+        modifier = modifier,
+        onHomeAction = onHomeAction,
+        navigateToPodcastDetails = navigateToPodcastDetails,
+        navigateToPlayer = navigateToPlayer,
+    )
 }
 
 @Composable
@@ -645,13 +509,9 @@ private fun HomeContentGrid(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     library: LibraryInfo,
     modifier: Modifier = Modifier,
-    onHomeCategorySelected: (HomeCategory) -> Unit,
-    onPodcastUnfollowed: (PodcastInfo) -> Unit,
-    onCategorySelected: (CategoryInfo) -> Unit,
+    onHomeAction: (HomeAction) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onTogglePodcastFollowed: (PodcastInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
@@ -662,7 +522,7 @@ private fun HomeContentGrid(
                 FollowedPodcastItem(
                     pagerState = pagerState,
                     items = featuredPodcasts,
-                    onPodcastUnfollowed = onPodcastUnfollowed,
+                    onPodcastUnfollowed = { onHomeAction(HomeAction.PodcastUnfollowed(it)) },
                     navigateToPodcastDetails = navigateToPodcastDetails,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -677,7 +537,7 @@ private fun HomeContentGrid(
                         categories = homeCategories,
                         selectedCategory = selectedHomeCategory,
                         showHorizontalLine = false,
-                        onCategorySelected = onHomeCategorySelected,
+                        onCategorySelected = { onHomeAction(HomeAction.HomeCategorySelected(it)) },
                         modifier = Modifier.width(240.dp)
                     )
                 }
@@ -689,7 +549,7 @@ private fun HomeContentGrid(
                 libraryItems(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
-                    onQueueEpisode = onQueueEpisode
+                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) }
                 )
             }
 
@@ -699,9 +559,11 @@ private fun HomeContentGrid(
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     navigateToPodcastDetails = navigateToPodcastDetails,
                     navigateToPlayer = navigateToPlayer,
-                    onCategorySelected = onCategorySelected,
-                    onTogglePodcastFollowed = onTogglePodcastFollowed,
-                    onQueueEpisode = onQueueEpisode
+                    onCategorySelected = { onHomeAction(HomeAction.CategorySelected(it)) },
+                    onTogglePodcastFollowed = {
+                        onHomeAction(HomeAction.TogglePodcastFollowed(it))
+                    },
+                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
                 )
             }
         }
@@ -913,8 +775,9 @@ private val CompactWindowSizeClass = WindowSizeClass.compute(360f, 780f)
 @Composable
 private fun PreviewHome() {
     JetcasterTheme {
-        val homeState = HomeState(
+        HomeScreen(
             windowSizeClass = CompactWindowSizeClass,
+            isLoading = true,
             featuredPodcasts = PreviewPodcasts.toPersistentList(),
             homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
@@ -927,18 +790,9 @@ private fun PreviewHome() {
                 episodes = PreviewPodcastEpisodes
             ),
             library = LibraryInfo(),
-            onCategorySelected = {},
-            onPodcastUnfollowed = {},
+            onHomeAction = {},
             navigateToPodcastDetails = {},
             navigateToPlayer = {},
-            onHomeCategorySelected = {},
-            onTogglePodcastFollowed = {},
-            onLibraryPodcastSelected = {},
-            onQueueEpisode = {}
-        )
-        HomeScreen(
-            homeState = homeState,
-            showGrid = false
         )
     }
 }
