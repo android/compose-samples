@@ -100,7 +100,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.accompanist.swiperefresh)
-    implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.ktx)
