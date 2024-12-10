@@ -160,7 +160,12 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
 }
 
 @Composable
-private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, selected: Boolean = false, onProfileClicked: () -> Unit) {
+private fun ProfileItem(
+    text: String,
+    @DrawableRes profilePic: Int?,
+    selected: Boolean = false,
+    onProfileClicked: () -> Unit
+) {
     val background = if (selected) {
         Modifier.background(MaterialTheme.colorScheme.primaryContainer)
     } else {
