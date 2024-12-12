@@ -25,7 +25,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -93,6 +92,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -664,37 +664,31 @@ private fun FollowedPodcasts(
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // TODO: Using BoxWithConstraints is not quite performant since it requires 2 passes to compute
-    // the content padding. This should be revisited once a carousel component is available.
-    // Alternatively, version 1.7.0-alpha05 of Compose Foundation supports `snapPosition`
-    // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
-    // stable, this implementation can be updated.
-    BoxWithConstraints(
-        modifier = modifier.background(Color.Transparent)
-    ) {
-        val horizontalPadding = (this.maxWidth - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
-        HorizontalPager(
-            state = pagerState,
-            contentPadding = PaddingValues(
-                horizontal = horizontalPadding,
-                vertical = 16.dp,
-            ),
-            pageSpacing = 24.dp,
-            pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_SIZE_DP)
-        ) { page ->
-            val podcast = items[page]
-            FollowedPodcastCarouselItem(
-                podcastImageUrl = podcast.imageUrl,
-                podcastTitle = podcast.title,
-                onUnfollowedClick = { onPodcastUnfollowed(podcast) },
-                lastEpisodeDateText = podcast.lastEpisodeDate?.let { lastUpdated(it) },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        navigateToPodcastDetails(podcast)
-                    }
-            )
-        }
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
+    val horizontalPadding = (screenWidthDp - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
+
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(
+            horizontal = horizontalPadding,
+            vertical = 16.dp,
+        ),
+        pageSpacing = 24.dp,
+        pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_SIZE_DP),
+        modifier = modifier,
+    ) { page ->
+        val podcast = items[page]
+        FollowedPodcastCarouselItem(
+            podcastImageUrl = podcast.imageUrl,
+            podcastTitle = podcast.title,
+            onUnfollowedClick = { onPodcastUnfollowed(podcast) },
+            lastEpisodeDateText = podcast.lastEpisodeDate?.let { lastUpdated(it) },
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable {
+                    navigateToPodcastDetails(podcast)
+                }
+        )
     }
 }
 
