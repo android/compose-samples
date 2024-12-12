@@ -28,7 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val JetchatDarkColorScheme = darkColorScheme(
+val JetchatDarkColorScheme = darkColorScheme(
     primary = Blue80,
     onPrimary = Blue20,
     primaryContainer = Blue30,
@@ -57,7 +57,7 @@ private val JetchatDarkColorScheme = darkColorScheme(
     outline = BlueGrey60
 )
 
-private val JetchatLightColorScheme = lightColorScheme(
+val JetchatLightColorScheme = lightColorScheme(
     primary = Blue40,
     onPrimary = Color.White,
     primaryContainer = Blue90,
@@ -83,7 +83,7 @@ private val JetchatLightColorScheme = lightColorScheme(
     inverseOnSurface = Grey95,
     surfaceVariant = BlueGrey90,
     onSurfaceVariant = BlueGrey30,
-    outline = BlueGrey50
+    outline = BlueGrey50,
 )
 
 @SuppressLint("NewApi")
