@@ -67,6 +67,7 @@ sealed interface HomeUiState {
         val selectedPost: Post,
         val isArticleOpen: Boolean,
         val favorites: Set<String>,
+        val marks: Set<String>,
         override val isLoading: Boolean,
         override val errorMessages: List<ErrorMessage>,
         override val searchInput: String
@@ -81,6 +82,7 @@ private data class HomeViewModelState(
     val selectedPostId: String? = null, // TODO back selectedPostId in a SavedStateHandle
     val isArticleOpen: Boolean = false,
     val favorites: Set<String> = emptySet(),
+    val marks: Set<String> = emptySet(),
     val isLoading: Boolean = false,
     val errorMessages: List<ErrorMessage> = emptyList(),
     val searchInput: String = "",
@@ -108,6 +110,7 @@ private data class HomeViewModelState(
                 } ?: postsFeed.highlightedPost,
                 isArticleOpen = isArticleOpen,
                 favorites = favorites,
+                marks = marks,
                 isLoading = isLoading,
                 errorMessages = errorMessages,
                 searchInput = searchInput
@@ -149,6 +152,12 @@ class HomeViewModel(
                 viewModelState.update { it.copy(favorites = favorites) }
             }
         }
+
+        viewModelScope.launch {
+            postsRepository.observeMarks().collect { marks ->
+                viewModelState.update { it.copy(marks = marks) }
+            }
+        }
     }
 
     /**
@@ -181,6 +190,15 @@ class HomeViewModel(
     fun toggleFavourite(postId: String) {
         viewModelScope.launch {
             postsRepository.toggleFavorite(postId)
+        }
+    }
+
+    /**
+     * Toggle mark of a post
+     */
+    fun toggleMark(postId: String) {
+        viewModelScope.launch {
+            postsRepository.toggleMark(postId)
         }
     }
 

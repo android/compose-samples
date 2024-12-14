@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.ThumbUpAlt
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,16 +33,32 @@ import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import com.example.jetnews.R
 
+// FavoriteButton
 @Composable
-fun FavoriteButton(onClick: () -> Unit) {
-    IconButton(onClick) {
+fun FavoriteButton(
+    isFavorite: Boolean,
+    onClick: () -> Unit
+) {
+    val clickLabel = stringResource(
+        if (isFavorite) R.string.unfavorite else R.string.favorite
+    )
+    IconToggleButton(
+        checked = isFavorite,
+        onCheckedChange = { onClick() },
+        modifier = Modifier.semantics {
+            // Use a custom click label that accessibility services can communicate to the user.
+            // We only want to override the label, not the actual action, so for the action we pass null.
+            this.onClick(label = clickLabel, action = null)
+        }
+    ) {
         Icon(
-            imageVector = Icons.Filled.ThumbUpOffAlt,
-            contentDescription = stringResource(R.string.cd_add_to_favorites)
+            imageVector = if (isFavorite) Icons.Filled.ThumbUpAlt else Icons.Filled.ThumbUpOffAlt,
+            contentDescription = null // handled by click label of parent
         )
     }
 }
 
+// BookmarkButton
 @Composable
 fun BookmarkButton(
     isBookmarked: Boolean,

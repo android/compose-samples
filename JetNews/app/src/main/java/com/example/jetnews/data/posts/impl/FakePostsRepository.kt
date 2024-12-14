@@ -37,6 +37,8 @@ class FakePostsRepository : PostsRepository {
     // for now, store these in memory
     private val favorites = MutableStateFlow<Set<String>>(setOf())
 
+    private val marks = MutableStateFlow<Set<String>>(setOf())
+
     private val postsFeed = MutableStateFlow<PostsFeed?>(null)
 
     // Used to make suspend functions that read and update state safe to call from any thread
@@ -65,10 +67,17 @@ class FakePostsRepository : PostsRepository {
     }
 
     override fun observeFavorites(): Flow<Set<String>> = favorites
+    override fun observeMarks(): Flow<Set<String>> = marks
     override fun observePostsFeed(): Flow<PostsFeed?> = postsFeed
 
     override suspend fun toggleFavorite(postId: String) {
         favorites.update {
+            it.addOrRemove(postId)
+        }
+    }
+
+    override suspend fun toggleMark(postId: String) {
+        marks.update {
             it.addOrRemove(postId)
         }
     }
