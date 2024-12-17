@@ -23,6 +23,8 @@
     <string name="cd_more_actions">More actions</string>
     <string name="unbookmark">unbookmark</string>
     <string name="bookmark">bookmark</string>
+    <string name="unfavorite">unfavorite</string>
+    <string name="favorite">favorite</string>
     <string name="cd_search">Search</string>
     <string name="cd_interests">Interests</string>
     <string name="published_in">Published in: \n%1$s</string>

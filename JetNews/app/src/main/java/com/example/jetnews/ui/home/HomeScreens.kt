@@ -54,6 +54,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -124,6 +125,7 @@ fun HomeFeedWithArticleDetailsScreen(
     uiState: HomeUiState,
     showTopAppBar: Boolean,
     onToggleFavorite: (String) -> Unit,
+    onToggleMark: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
@@ -193,6 +195,8 @@ fun HomeFeedWithArticleDetailsScreen(
                         PostTopBar(
                             isFavorite = hasPostsUiState.favorites.contains(detailPost.id),
                             onToggleFavorite = { onToggleFavorite(detailPost.id) },
+                            isMark = hasPostsUiState.marks.contains(detailPost.id),
+                            onToggleMark = { onToggleMark(detailPost.id) },
                             onSharePost = { sharePost(detailPost, context) },
                             modifier = Modifier
                                 .windowInsetsPadding(WindowInsets.safeDrawing)
@@ -582,7 +586,7 @@ private fun PostListHistorySection(
  */
 @Composable
 private fun PostListDivider() {
-    Divider(
+    HorizontalDivider(
         modifier = Modifier.padding(horizontal = 14.dp),
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
     )
@@ -649,6 +653,8 @@ private fun submitSearch(
 private fun PostTopBar(
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
+    isMark: Boolean,
+    onToggleMark: () -> Unit,
     onSharePost: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -658,7 +664,7 @@ private fun PostTopBar(
         modifier = modifier.padding(end = 16.dp)
     ) {
         Row(Modifier.padding(horizontal = 8.dp)) {
-            FavoriteButton(onClick = { /* Functionality not available */ })
+            FavoriteButton(isFavorite = isMark, onClick = onToggleMark)
             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
             ShareButton(onClick = onSharePost)
             TextSettingsButton(onClick = { /* Functionality not available */ })
@@ -732,6 +738,7 @@ fun PreviewHomeListDrawerScreen() {
                 selectedPost = postsFeed.highlightedPost,
                 isArticleOpen = false,
                 favorites = emptySet(),
+                marks = emptySet(),
                 isLoading = false,
                 errorMessages = emptyList(),
                 searchInput = ""
@@ -768,6 +775,7 @@ fun PreviewHomeListNavRailScreen() {
                 selectedPost = postsFeed.highlightedPost,
                 isArticleOpen = false,
                 favorites = emptySet(),
+                marks = emptySet(),
                 isLoading = false,
                 errorMessages = emptyList(),
                 searchInput = ""
@@ -800,12 +808,14 @@ fun PreviewHomeListDetailScreen() {
                 selectedPost = postsFeed.highlightedPost,
                 isArticleOpen = false,
                 favorites = emptySet(),
+                marks = emptySet(),
                 isLoading = false,
                 errorMessages = emptyList(),
                 searchInput = ""
             ),
             showTopAppBar = true,
             onToggleFavorite = {},
+            onToggleMark = {},
             onSelectPost = {},
             onRefreshPosts = {},
             onErrorDismiss = {},
