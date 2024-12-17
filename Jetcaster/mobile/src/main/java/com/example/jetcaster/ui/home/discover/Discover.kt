@@ -16,30 +16,27 @@
 
 package com.example.jetcaster.ui.home.discover
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Surface
-import androidx.compose.material3.TabPosition
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.CategoryInfo
@@ -122,8 +119,6 @@ fun LazyGridScope.discoverItems(
     )
 }
 
-private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}
-
 @Composable
 private fun PodcastCategoryTabs(
     filterableCategoriesModel: FilterableCategoriesModel,
@@ -133,15 +128,15 @@ private fun PodcastCategoryTabs(
     val selectedIndex = filterableCategoriesModel.categories.indexOf(
         filterableCategoriesModel.selectedCategory
     )
-    ScrollableTabRow(
-        selectedTabIndex = selectedIndex,
-        containerColor = Color.Transparent,
-        divider = {}, /* Disable the built-in divider */
-        edgePadding = Keyline1,
-        indicator = emptyTabIndicator,
-        modifier = modifier
+    LazyRow(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = Keyline1),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        filterableCategoriesModel.categories.forEachIndexed { index, category ->
+        itemsIndexed(
+            items = filterableCategoriesModel.categories,
+            key = { i, category -> category.id }
+        ) { index, category ->
             ChoiceChipContent(
                 text = category.name,
                 selected = index == selectedIndex,
@@ -160,47 +155,33 @@ private fun ChoiceChipContent(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // When adding onClick to Surface, it automatically makes this item higher.
-    // On the other hand, adding .clickable modifier, doesn't use the same shape as Surface.
-    // This way we disable the minimum height requirement
-    CompositionLocalProvider(value = LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-        Surface(
-            color = when {
-                selected -> MaterialTheme.colorScheme.secondaryContainer
-                else -> MaterialTheme.colorScheme.surfaceContainer
-            },
-            contentColor = when {
-                selected -> MaterialTheme.colorScheme.onSecondaryContainer
-                else -> MaterialTheme.colorScheme.onSurfaceVariant
-            },
-            shape = MaterialTheme.shapes.medium,
-            modifier = modifier,
-            onClick = onClick,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(
-                    horizontal = when {
-                        selected -> 8.dp
-                        else -> 16.dp
-                    },
-                    vertical = 8.dp
-                )
-            ) {
-                if (selected) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = stringResource(id = R.string.cd_selected_category),
-                        modifier = Modifier
-                            .height(18.dp)
-                            .padding(end = 8.dp)
-                    )
-                }
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyMedium,
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        leadingIcon = {
+            if (selected) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = stringResource(id = R.string.cd_selected_category),
+                    modifier = Modifier.height(18.dp)
                 )
             }
-        }
-    }
+        },
+        label = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        },
+        colors = FilterChipDefaults.filterChipColors().copy(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            selectedLeadingIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        ),
+        shape = MaterialTheme.shapes.medium,
+        border = null,
+        modifier = modifier,
+    )
 }
