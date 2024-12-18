@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -45,7 +46,7 @@ internal fun PodcastCard(
                 shape = CardDefaults.shape(RoundedCornerShape(16.dp)),
                 border = CardDefaults.border(
                     focusedBorder = Border(
-                        border = _root_ide_package_.androidx.compose.foundation.BorderStroke(
+                        border = BorderStroke(
                             3.dp,
                             color = MaterialTheme.colorScheme.border
                         ),
