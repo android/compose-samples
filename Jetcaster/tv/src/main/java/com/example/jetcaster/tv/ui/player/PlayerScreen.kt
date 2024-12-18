@@ -306,9 +306,6 @@ private fun PlayerControl(
 ) {
     val playPauseButton = remember { FocusRequester() }
 
-    // Flag to determine if it is safe to set initial focus or not
-    var isSafeToSetInitialFocus by remember { mutableStateOf(false) }
-
     Column(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
         modifier = modifier,
@@ -348,10 +345,6 @@ private fun PlayerControl(
                 modifier = Modifier
                     .size(JetcasterAppDefaults.iconButtonSize.large.intoDpSize())
                     .focusRequester(playPauseButton)
-                    .onGloballyPositioned {
-                        // Set the flag true if the element is in the viewport
-                        isSafeToSetInitialFocus = true
-                    }
             )
             SkipButton(
                 onClick = skip,
@@ -364,12 +357,6 @@ private fun PlayerControl(
         }
         if (length != null) {
             ElapsedTimeIndicator(timeElapsed, length, skip, rewind)
-        }
-    }
-    LaunchedEffect(isSafeToSetInitialFocus) {
-        // Your app should set initial focus only if the UI element is in viewport
-        if (isSafeToSetInitialFocus) {
-            playPauseButton.requestFocus()
         }
     }
 }
