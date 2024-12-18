@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -76,7 +77,7 @@ private fun EpisodeThumbnail(
         shape = CardDefaults.shape(RoundedCornerShape(12.dp)),
         border = CardDefaults.border(
             focusedBorder = Border(
-                border = _root_ide_package_.androidx.compose.foundation.BorderStroke(
+                border = BorderStroke(
                     3.dp,
                     color = MaterialTheme.colorScheme.border
                 ),
