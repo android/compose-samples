@@ -26,7 +26,7 @@
 
 set -xe
 
-./Reply/gradlew -p ./Reply versionCatalogUpdate 
+./Jetsnack/gradlew -p ./Jetsnack versionCatalogUpdate 
 
-cp Reply/gradle/libs.versions.toml scripts/libs.versions.toml
+cp Jetsnack/gradle/libs.versions.toml scripts/libs.versions.toml
 ./scripts/duplicate_version_config.sh
