@@ -26,7 +26,7 @@
 
 set -xe
 
-./Jetsnack/gradlew -p ./Jetsnack versionCatalogUpdate 
+./Jetcaster/gradlew -p ./Jetcaster versionCatalogUpdate 
 
-cp Jetsnack/gradle/libs.versions.toml scripts/libs.versions.toml
+cp Jetcaster/gradle/libs.versions.toml scripts/libs.versions.toml
 ./scripts/duplicate_version_config.sh
