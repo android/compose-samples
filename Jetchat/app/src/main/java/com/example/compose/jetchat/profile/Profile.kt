@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -89,13 +88,13 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(nestedScrollInteropConnection)
-            .systemBarsPadding()
     ) {
         Surface {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(scrollState),
+                    .verticalScroll(scrollState)
+                    .padding(16.dp),
             ) {
                 ProfileHeader(
                     scrollState,
