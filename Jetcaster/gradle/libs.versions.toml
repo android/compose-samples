@@ -50,7 +50,7 @@ okhttp = "4.12.0"
 play-services-wearable = "18.1.0"
 robolectric = "4.14.1"
 roborazzi = "1.37.0"
-rome = "2.1.0"
+rome = "1.18.0"
 room = "2.6.1"
 secrets = "2.0.1"
 # @keep
