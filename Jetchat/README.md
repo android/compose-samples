@@ -25,6 +25,10 @@ This sample showcases:
 
 <img src="screenshots/screenshots.png"/>
 
+<img src="screenshots/widget.png" width="300"/>
+
+<img src="screenshots/widget_discoverability.png" width="300"/>
+
 ### Status: 🚧 In progress
 
 Jetchat is still in under development, and some features are not yet implemented.
