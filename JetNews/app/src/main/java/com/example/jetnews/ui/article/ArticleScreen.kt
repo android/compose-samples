@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
@@ -86,6 +87,8 @@ fun ArticleScreen(
     onBack: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
+    isMarked: Boolean,
+    onToggleMark: () -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
@@ -103,7 +106,7 @@ fun ArticleScreen(
                 if (!isExpandedScreen) {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_navigate_up),
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -115,7 +118,7 @@ fun ArticleScreen(
                 if (!isExpandedScreen) {
                     BottomAppBar(
                         actions = {
-                            FavoriteButton(onClick = { showUnimplementedActionDialog = true })
+                            FavoriteButton(isFavorite = isMarked, onClick = onToggleMark)
                             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
                             ShareButton(onClick = { sharePost(post, context) })
                             TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
@@ -248,7 +251,7 @@ fun PreviewArticleDrawer() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, false, {}, false, {})
+        ArticleScreen(post, false, {}, false, {}, false, {})
     }
 }
 
@@ -265,6 +268,6 @@ fun PreviewArticleNavRail() {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, true, {}, false, {})
+        ArticleScreen(post, true, {}, false, {}, false, {})
     }
 }
