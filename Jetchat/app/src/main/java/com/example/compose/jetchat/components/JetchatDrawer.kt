@@ -81,9 +81,9 @@ fun JetchatDrawerContent(
         ProfileItem("Taylor Brooks", colleagueProfile.photo) {
             onProfileClicked(colleagueProfile.userId)
         }
-        DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-        DrawerItemHeader("Settings")
         if (widgetAddingIsSupported(LocalContext.current)) {
+            DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+            DrawerItemHeader("Settings")
             WidgetDiscoverability()
         }
     }
