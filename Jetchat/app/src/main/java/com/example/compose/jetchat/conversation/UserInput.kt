@@ -440,7 +440,7 @@ private fun UserInputText(
                         keyboardType,
                         focusState,
                         onMessageSent,
-                        Modifier.semantics {
+                        Modifier.fillMaxWidth().semantics {
                             contentDescription = a11ylabel
                             keyboardShownProperty = keyboardShown
                         }
