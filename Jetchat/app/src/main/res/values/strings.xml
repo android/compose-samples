@@ -67,5 +67,7 @@
     <string name="more_options">More options</string>
     <string name="touch_and_hold_to_record">Touch and hold to record</string>
     <string name="record_message">Record voice message</string>
+    <string name="messages_widget_title">JetChat unread messages</string>
+    <string name="add_widget_to_home_page">Add Widget to Home Page</string>
 
 </resources>
