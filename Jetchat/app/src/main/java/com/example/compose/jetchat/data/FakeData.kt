@@ -80,6 +80,8 @@ val initialMessages = listOf(
     ),
 )
 
+val unreadMessages = initialMessages.filter { it.author != "me" }
+
 val exampleUiState = ConversationUiState(
     initialMessages = initialMessages,
     channelName = "#composers",

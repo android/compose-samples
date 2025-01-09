@@ -23,7 +23,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name=".JetchatApplication"
         android:theme="@style/Theme.Jetchat.NoActionBar">
 
         <activity

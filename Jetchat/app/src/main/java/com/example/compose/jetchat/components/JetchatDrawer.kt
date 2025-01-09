@@ -22,6 +22,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -226,6 +227,7 @@ fun DrawerPreviewDark() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun WidgetDiscoverability() {
     val context = LocalContext.current
@@ -249,6 +251,7 @@ private fun WidgetDiscoverability() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun addWidgetToHomeScreen(context: Context) {
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val myProvider = ComponentName(context, WidgetReceiver::class.java)
@@ -259,7 +262,6 @@ private fun addWidgetToHomeScreen(context: Context) {
 
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
 private fun widgetAddingIsSupported(context: Context): Boolean {
-    val appWidgetManager = AppWidgetManager.getInstance(context)
-    return Build.VERSION.SDK_INT >=
-        Build.VERSION_CODES.O && appWidgetManager.isRequestPinAppWidgetSupported
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            && AppWidgetManager.getInstance(context).isRequestPinAppWidgetSupported
 }
