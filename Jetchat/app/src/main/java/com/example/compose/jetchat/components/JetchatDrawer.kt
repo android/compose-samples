@@ -262,6 +262,6 @@ private fun addWidgetToHomeScreen(context: Context) {
 
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
 private fun widgetAddingIsSupported(context: Context): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-            && AppWidgetManager.getInstance(context).isRequestPinAppWidgetSupported
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+        AppWidgetManager.getInstance(context).isRequestPinAppWidgetSupported
 }
