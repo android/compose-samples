@@ -16,7 +16,13 @@
 
 package com.example.compose.jetchat.components
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
+import android.os.Build
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +39,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -44,13 +50,16 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.widget.WidgetReceiver
 
 @Composable
 fun JetchatDrawerContent(
@@ -73,6 +82,11 @@ fun JetchatDrawerContent(
         ProfileItem("Taylor Brooks", colleagueProfile.photo) {
             onProfileClicked(colleagueProfile.userId)
         }
+        if (widgetAddingIsSupported(LocalContext.current)) {
+            DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+            DrawerItemHeader("Settings")
+            WidgetDiscoverability()
+        }
     }
 }
 
@@ -90,6 +104,7 @@ private fun DrawerHeader() {
         )
     }
 }
+
 @Composable
 private fun DrawerItemHeader(text: String) {
     Box(
@@ -182,7 +197,7 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
 
 @Composable
 fun DividerItem(modifier: Modifier = Modifier) {
-    Divider(
+    HorizontalDivider(
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
@@ -199,6 +214,7 @@ fun DrawerPreview() {
         }
     }
 }
+
 @Composable
 @Preview
 fun DrawerPreviewDark() {
@@ -209,4 +225,43 @@ fun DrawerPreviewDark() {
             }
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+private fun WidgetDiscoverability() {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .clip(CircleShape)
+            .clickable(onClick = {
+                addWidgetToHomeScreen(context)
+            }),
+        verticalAlignment = CenterVertically
+    ) {
+        Text(
+            stringResource(id = R.string.add_widget_to_home_page),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(start = 12.dp)
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun addWidgetToHomeScreen(context: Context) {
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    val myProvider = ComponentName(context, WidgetReceiver::class.java)
+    if (widgetAddingIsSupported(context)) {
+        appWidgetManager.requestPinAppWidget(myProvider, null, null)
+    }
+}
+
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
+private fun widgetAddingIsSupported(context: Context): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+        AppWidgetManager.getInstance(context).isRequestPinAppWidgetSupported
 }
