@@ -26,7 +26,7 @@ import com.example.compose.jetchat.data.EMOJIS.EMOJI_PINK_HEART
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_POINTS
 import com.example.compose.jetchat.profile.ProfileScreenState
 
-private val initialMessages = listOf(
+val initialMessages = listOf(
     Message(
         "me",
         "Check it out!",
@@ -62,8 +62,25 @@ private val initialMessages = listOf(
             "loading but haven’t found any good ones $EMOJI_MELTING $EMOJI_CLOUDS. " +
             "What’s the recommended way to load async data and emit composable widgets?",
         "8:03 PM"
-    )
+    ),
+    Message(
+        "Shangeeth Sivan",
+        "Does anyone know about Glance Widgets its the new way to build widgets in Android!",
+        "8:08 PM"
+    ),
+    Message(
+        "Taylor Brooks",
+        "Wow! I never knew about Glance Widgets when was this added to the android ecosystem",
+        "8:10 PM"
+    ),
+    Message(
+        "John Glenn",
+        "Yeah its seems to be pretty new!",
+        "8:12 PM"
+    ),
 )
+
+val unreadMessages = initialMessages.filter { it.author != "me" }
 
 val exampleUiState = ConversationUiState(
     initialMessages = initialMessages,
