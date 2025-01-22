@@ -261,8 +261,12 @@ private fun HomeScreenReady(
     val navigator = rememberSupportingPaneScaffoldNavigator<String>(
         scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo())
     )
+    val scope = rememberCoroutineScope()
+
     BackHandler(enabled = navigator.canNavigateBack()) {
-        navigator.navigateBack()
+        scope.launch {
+            navigator.navigateBack()
+        }
     }
 
     Surface {
@@ -281,14 +285,16 @@ private fun HomeScreenReady(
                     library = uiState.library,
                     onHomeAction = viewModel::onHomeAction,
                     navigateToPodcastDetails = {
-                        navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                        scope.launch {
+                            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                        }
                     },
                     navigateToPlayer = navigateToPlayer,
                     modifier = Modifier.fillMaxSize()
                 )
             },
             supportingPane = {
-                val podcastUri = navigator.currentDestination?.content
+                val podcastUri = navigator.currentDestination?.contentKey
                 if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel =
                         hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory>(
@@ -301,7 +307,9 @@ private fun HomeScreenReady(
                         navigateToPlayer = navigateToPlayer,
                         navigateBack = {
                             if (navigator.canNavigateBack()) {
-                                navigator.navigateBack()
+                                scope.launch {
+                                    navigator.navigateBack()
+                                }
                             }
                         },
                         showBackButton = navigator.isMainPaneHidden(),

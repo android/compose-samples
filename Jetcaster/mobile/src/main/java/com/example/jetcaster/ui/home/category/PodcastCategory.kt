@@ -91,7 +91,7 @@ fun LazyGridScope.podcastCategory(
                     .fillMaxWidth()
                     .animateItem(),
                 imageModifier = Modifier.sharedElement(
-                    state = rememberSharedContentState(
+                    sharedContentState = rememberSharedContentState(
                         key = item.episode.title
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,

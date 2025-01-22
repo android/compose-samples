@@ -395,7 +395,7 @@ private fun PlayerContentRegular(
                                 exit = fadeOut()
                             ),
                         imageModifier = Modifier.sharedElement(
-                            state = rememberSharedContentState(
+                            sharedContentState = rememberSharedContentState(
                                 key = currentEpisode.title
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
