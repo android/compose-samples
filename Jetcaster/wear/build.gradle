@@ -65,7 +65,7 @@ android {
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "rome-utils-1.18.0.jar"
+            excludes += "rome-utils-" + libs.rometools.rome.get().version + ".jar"
         }
     }
 }
