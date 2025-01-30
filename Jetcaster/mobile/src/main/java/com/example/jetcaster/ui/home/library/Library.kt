@@ -36,7 +36,8 @@ import com.example.jetcaster.util.fullWidthItem
 fun LazyGridScope.libraryItems(
     library: LibraryInfo,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    onQueueEpisode: (PlayerEpisode) -> Unit
+    onQueueEpisode: (PlayerEpisode) -> Unit,
+    removeFromQueue: (EpisodeInfo) -> Unit,
 ) {
     fullWidthItem {
         Text(
@@ -58,7 +59,10 @@ fun LazyGridScope.libraryItems(
             podcast = item.podcast,
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateItem(),
+            removeFromQueue = removeFromQueue,
         )
     }
 }
