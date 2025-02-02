@@ -42,6 +42,11 @@ interface PostsRepository {
     fun observeFavorites(): Flow<Set<String>>
 
     /**
+     * Observe the current marks
+     */
+    fun observeMarks(): Flow<Set<String>>
+
+    /**
      * Observe the posts feed.
      */
     fun observePostsFeed(): Flow<PostsFeed?>
@@ -50,4 +55,9 @@ interface PostsRepository {
      * Toggle a postId to be a favorite or not.
      */
     suspend fun toggleFavorite(postId: String)
+
+    /**
+     * Toggle a postId to be a mark or not.
+     */
+    suspend fun toggleMark(postId: String)
 }
