@@ -522,19 +522,6 @@ private fun HomeContentGrid(
         columns = GridCells.Adaptive(362.dp),
         modifier = modifier.fillMaxSize()
     ) {
-        if (featuredPodcasts.isNotEmpty()) {
-            fullWidthItem {
-                FollowedPodcastItem(
-                    pagerState = pagerState,
-                    items = featuredPodcasts,
-                    onPodcastUnfollowed = { onHomeAction(HomeAction.PodcastUnfollowed(it)) },
-                    navigateToPodcastDetails = navigateToPodcastDetails,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-        }
-
         if (showHomeCategoryTabs) {
             fullWidthItem {
                 Row {
@@ -551,6 +538,19 @@ private fun HomeContentGrid(
 
         when (selectedHomeCategory) {
             HomeCategory.Library -> {
+                if (featuredPodcasts.isNotEmpty()) {
+                    fullWidthItem {
+                        FollowedPodcastItem(
+                            pagerState = pagerState,
+                            items = featuredPodcasts,
+                            onPodcastUnfollowed = { onHomeAction(HomeAction.PodcastUnfollowed(it)) },
+                            navigateToPodcastDetails = navigateToPodcastDetails,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+
                 libraryItems(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
