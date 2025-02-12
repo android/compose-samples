@@ -23,6 +23,9 @@ android {
             )
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17

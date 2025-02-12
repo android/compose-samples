@@ -59,6 +59,9 @@ android {
                     "proguard-rules.pro")
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

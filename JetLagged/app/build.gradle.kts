@@ -68,6 +68,9 @@ android {
             isDebuggable = false
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
