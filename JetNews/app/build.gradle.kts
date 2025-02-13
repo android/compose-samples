@@ -59,6 +59,9 @@ android {
                     "proguard-rules.pro")
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -75,10 +78,6 @@ android {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
-}
-
-kotlin {
-    jvmToolchain(17)
 }
 
 dependencies {

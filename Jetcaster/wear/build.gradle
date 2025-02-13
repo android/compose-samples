@@ -54,6 +54,7 @@ android {
             includeAndroidResources true
         }
     }
+    
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.majorVersion
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
@@ -62,6 +63,7 @@ android {
     buildFeatures {
         compose true
     }
+    
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -69,9 +71,7 @@ android {
         }
     }
 }
-kotlin {
-    jvmToolchain(17)
-}
+
 dependencies {
 
 

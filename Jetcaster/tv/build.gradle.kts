@@ -61,6 +61,9 @@ android {
             )
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -81,9 +84,7 @@ android {
         }
     }
 }
-kotlin {
-    jvmToolchain(17)
-}
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
