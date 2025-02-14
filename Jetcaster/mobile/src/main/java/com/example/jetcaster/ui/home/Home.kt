@@ -1,18 +1,18 @@
 /*
- * Copyright 2020 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2020 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.example.jetcaster.ui.home
 
@@ -38,9 +38,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -77,6 +74,8 @@ import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
 import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
+import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -89,6 +88,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -136,7 +136,6 @@ private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
  * Copied from `calculatePaneScaffoldDirective()` in [PaneScaffoldDirective], with modifications to
  * only show 1 pane horizontally if either width or height size class is compact.
  */
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun calculateScaffoldDirective(
     windowAdaptiveInfo: WindowAdaptiveInfo,
     verticalHingePolicy: HingePolicy = HingePolicy.AvoidSeparating
@@ -191,7 +190,6 @@ fun calculateScaffoldDirective(
 /**
  * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
  */
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> {
     return when (hingePolicy) {
         HingePolicy.AvoidSeparating -> posture.separatingVerticalHingeBounds
@@ -488,7 +486,6 @@ private fun HomeContent(
     }
 
     HomeContentGrid(
-        pagerState = pagerState,
         showHomeCategoryTabs = showHomeCategoryTabs,
         featuredPodcasts = featuredPodcasts,
         selectedHomeCategory = selectedHomeCategory,
@@ -506,7 +503,6 @@ private fun HomeContent(
 @Composable
 private fun HomeContentGrid(
     showHomeCategoryTabs: Boolean,
-    pagerState: PagerState,
     featuredPodcasts: PersistentList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
@@ -541,7 +537,6 @@ private fun HomeContentGrid(
                 if (featuredPodcasts.isNotEmpty()) {
                     fullWidthItem {
                         FollowedPodcastItem(
-                            pagerState = pagerState,
                             items = featuredPodcasts,
                             onPodcastUnfollowed = { onHomeAction(HomeAction.PodcastUnfollowed(it)) },
                             navigateToPodcastDetails = navigateToPodcastDetails,
@@ -579,7 +574,6 @@ private fun HomeContentGrid(
 
 @Composable
 private fun FollowedPodcastItem(
-    pagerState: PagerState,
     items: PersistentList<PodcastInfo>,
     onPodcastUnfollowed: (PodcastInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
@@ -589,7 +583,6 @@ private fun FollowedPodcastItem(
         Spacer(Modifier.height(16.dp))
 
         FollowedPodcasts(
-            pagerState = pagerState,
             items = items,
             onPodcastUnfollowed = onPodcastUnfollowed,
             navigateToPodcastDetails = navigateToPodcastDetails,
@@ -661,11 +654,9 @@ private fun HomeCategoryTabIndicator(
     )
 }
 
-private val FEATURED_PODCAST_IMAGE_SIZE_DP = 160.dp
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FollowedPodcasts(
-    pagerState: PagerState,
     items: PersistentList<PodcastInfo>,
     onPodcastUnfollowed: (PodcastInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
@@ -679,15 +670,12 @@ private fun FollowedPodcasts(
     BoxWithConstraints(
         modifier = modifier.background(Color.Transparent)
     ) {
-        val horizontalPadding = (this.maxWidth - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
-        HorizontalPager(
-            state = pagerState,
-            contentPadding = PaddingValues(
-                horizontal = horizontalPadding,
-                vertical = 16.dp,
-            ),
-            pageSpacing = 24.dp,
-            pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_SIZE_DP)
+        val horizontalPadding = this.maxWidth
+        HorizontalMultiBrowseCarousel(
+            state = rememberCarouselState { items.count() },
+            preferredItemWidth = 205.dp,
+            itemSpacing = 12.dp,
+            contentPadding = PaddingValues(8.dp)
         ) { page ->
             val podcast = items[page]
             FollowedPodcastCarouselItem(
@@ -697,6 +685,7 @@ private fun FollowedPodcasts(
                 lastEpisodeDateText = podcast.lastEpisodeDate?.let { lastUpdated(it) },
                 modifier = Modifier
                     .fillMaxSize()
+                    .maskClip(MaterialTheme.shapes.large)
                     .clickable {
                         navigateToPodcastDetails(podcast)
                     }
@@ -713,36 +702,37 @@ private fun FollowedPodcastCarouselItem(
     lastEpisodeDateText: String? = null,
     onUnfollowedClick: () -> Unit,
 ) {
-    Column(modifier) {
-        Box(
-            Modifier
-                .size(FEATURED_PODCAST_IMAGE_SIZE_DP)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            PodcastImage(
-                podcastImageUrl = podcastImageUrl,
-                contentDescription = podcastTitle,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(MaterialTheme.shapes.medium),
-            )
+    val gradient = Brush.verticalGradient(listOf(Color.Transparent, Color.Black))
 
-            ToggleFollowPodcastIconButton(
-                onClick = onUnfollowedClick,
-                isFollowed = true, /* All podcasts are followed in this feed */
-                modifier = Modifier.align(Alignment.BottomEnd)
-            )
-        }
+    Box(
+        modifier
+            .height(230.dp)
+    ) {
+        PodcastImage(
+            podcastImageUrl = podcastImageUrl,
+            contentDescription = podcastTitle,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(MaterialTheme.shapes.medium),
+        )
+
+        ToggleFollowPodcastIconButton(
+            onClick = onUnfollowedClick,
+            isFollowed = true, /* All podcasts are followed in this feed */
+            modifier = Modifier.align(Alignment.TopStart)
+        )
+        Box(modifier = Modifier.matchParentSize().background(gradient))
 
         if (lastEpisodeDateText != null) {
             Text(
                 text = lastEpisodeDateText,
                 style = MaterialTheme.typography.bodySmall,
+                color = Color.White,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .padding(top = 8.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .padding(12.dp)
+                    .align(Alignment.BottomStart)
             )
         }
     }
@@ -765,7 +755,6 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun HomeAppBarPreview() {
