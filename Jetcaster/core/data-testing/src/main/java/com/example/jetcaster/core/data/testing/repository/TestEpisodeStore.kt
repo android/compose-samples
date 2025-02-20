@@ -75,6 +75,11 @@ class TestEpisodeStore : EpisodeStore {
             it + episodes
         }
 
+    override suspend fun deleteEpisode(episode: Episode) =
+        episodesFlow.update {
+            it - episode
+        }
+
     override suspend fun isEmpty(): Boolean =
         episodesFlow.first().isEmpty()
 }

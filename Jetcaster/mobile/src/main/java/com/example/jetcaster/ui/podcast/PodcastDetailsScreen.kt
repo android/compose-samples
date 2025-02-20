@@ -102,6 +102,7 @@ fun PodcastDetailsScreen(
                 episodes = s.episodes,
                 toggleSubscribe = viewModel::toggleSusbcribe,
                 onQueueEpisode = viewModel::onQueueEpisode,
+                removeFromQueue = viewModel::deleteEpisode,
                 navigateToPlayer = navigateToPlayer,
                 navigateBack = navigateBack,
                 showBackButton = showBackButton,
@@ -127,7 +128,8 @@ fun PodcastDetailsScreen(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
     showBackButton: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    removeFromQueue: (EpisodeInfo) -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -150,6 +152,7 @@ fun PodcastDetailsScreen(
             podcast = podcast,
             episodes = episodes,
             toggleSubscribe = toggleSubscribe,
+            removeFromQueue = removeFromQueue,
             onQueueEpisode = {
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar(snackBarText)
@@ -166,6 +169,7 @@ fun PodcastDetailsScreen(
 fun PodcastDetailsContent(
     podcast: PodcastInfo,
     episodes: List<EpisodeInfo>,
+    removeFromQueue: (EpisodeInfo) -> Unit,
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
@@ -179,7 +183,7 @@ fun PodcastDetailsContent(
             PodcastDetailsHeaderItem(
                 podcast = podcast,
                 toggleSubscribe = toggleSubscribe,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
         items(episodes, key = { it.uri }) { episode ->
@@ -187,8 +191,11 @@ fun PodcastDetailsContent(
                 episode = episode,
                 podcast = podcast,
                 onClick = navigateToPlayer,
+                removeFromQueue = removeFromQueue,
                 onQueueEpisode = onQueueEpisode,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItem(),
                 showPodcastImage = false,
                 showSummary = true
             )

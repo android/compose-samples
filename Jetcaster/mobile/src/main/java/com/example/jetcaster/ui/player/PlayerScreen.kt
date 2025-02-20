@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.player
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -98,6 +104,8 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
 import com.example.jetcaster.designsystem.component.PodcastImage
+import com.example.jetcaster.ui.LocalAnimatedVisibilityScope
+import com.example.jetcaster.ui.LocalSharedTransitionScope
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.isBookPosture
@@ -153,7 +161,7 @@ private fun PlayerScreen(
     onAddToQueue: () -> Unit,
     onStop: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DisposableEffect(Unit) {
         onDispose {
@@ -212,7 +220,7 @@ fun PlayerContentWithBackground(
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         PlayerBackground(
@@ -254,7 +262,7 @@ fun PlayerContent(
     onBackPress: () -> Unit,
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
@@ -346,10 +354,16 @@ private fun PlayerContentRegular(
     onBackPress: () -> Unit,
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val playerEpisode = uiState.episodePlayerState
     val currentEpisode = playerEpisode.currentEpisode ?: return
+
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -370,36 +384,52 @@ private fun PlayerContentRegular(
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            PlayerImage(
-                podcastImageUrl = currentEpisode.podcastImageUrl,
-                modifier = Modifier.weight(10f)
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
-            Spacer(modifier = Modifier.height(32.dp))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(10f)
-            ) {
-                PlayerSlider(
-                    timeElapsed = playerEpisode.timeElapsed,
-                    episodeDuration = currentEpisode.duration,
-                    onSeekingStarted = playerControlActions.onSeekingStarted,
-                    onSeekingFinished = playerControlActions.onSeekingFinished
-                )
-                PlayerButtons(
-                    hasNext = playerEpisode.queue.isNotEmpty(),
-                    isPlaying = playerEpisode.isPlaying,
-                    onPlayPress = playerControlActions.onPlayPress,
-                    onPausePress = playerControlActions.onPausePress,
-                    onAdvanceBy = playerControlActions.onAdvanceBy,
-                    onRewindBy = playerControlActions.onRewindBy,
-                    onNext = playerControlActions.onNext,
-                    onPrevious = playerControlActions.onPrevious,
-                    Modifier.padding(vertical = 8.dp)
-                )
+            with(sharedTransitionScope) {
+                with(animatedVisibilityScope) {
+                    PlayerImage(
+                        podcastImageUrl = currentEpisode.podcastImageUrl,
+                        modifier = Modifier
+                            .weight(10f)
+                            .animateEnterExit(
+                                enter = fadeIn(spring(stiffness = Spring.StiffnessLow)),
+                                exit = fadeOut()
+                            ),
+                        imageModifier = Modifier.sharedElement(
+                            state = rememberSharedContentState(
+                                key = currentEpisode.title
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                        ),
+                    )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
+                Spacer(modifier = Modifier.height(32.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(10f)
+                ) {
+                    PlayerSlider(
+                        timeElapsed = playerEpisode.timeElapsed,
+                        episodeDuration = currentEpisode.duration,
+                        onSeekingStarted = playerControlActions.onSeekingStarted,
+                        onSeekingFinished = playerControlActions.onSeekingFinished
+                    )
+                    PlayerButtons(
+                        hasNext = playerEpisode.queue.isNotEmpty(),
+                        isPlaying = playerEpisode.isPlaying,
+                        onPlayPress = playerControlActions.onPlayPress,
+                        onPausePress = playerControlActions.onPausePress,
+                        onAdvanceBy = playerControlActions.onAdvanceBy,
+                        onRewindBy = playerControlActions.onRewindBy,
+                        onNext = playerControlActions.onNext,
+                        onPrevious = playerControlActions.onPrevious,
+                        Modifier.padding(vertical = 8.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
@@ -410,7 +440,7 @@ private fun PlayerContentRegular(
 @Composable
 private fun PlayerContentTableTopTop(
     uiState: PlayerUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // Content for the top part of the screen
     val episode = uiState.episodePlayerState.currentEpisode ?: return
@@ -443,7 +473,7 @@ private fun PlayerContentTableTopBottom(
     onBackPress: () -> Unit,
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val episodePlayerState = uiState.episodePlayerState
     val episode = uiState.episodePlayerState.currentEpisode ?: return
@@ -500,7 +530,7 @@ private fun PlayerContentTableTopBottom(
 @Composable
 private fun PlayerContentBookStart(
     uiState: PlayerUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val episode = uiState.episodePlayerState.currentEpisode ?: return
     Column(
@@ -528,7 +558,7 @@ private fun PlayerContentBookStart(
 private fun PlayerContentBookEnd(
     uiState: PlayerUiState,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val episodePlayerState = uiState.episodePlayerState
     val episode = episodePlayerState.currentEpisode ?: return
@@ -596,7 +626,8 @@ private fun TopAppBar(
 @Composable
 private fun PlayerImage(
     podcastImageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier,
 ) {
     PodcastImage(
         podcastImageUrl = podcastImageUrl,
@@ -605,16 +636,16 @@ private fun PlayerImage(
         modifier = modifier
             .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
             .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.medium),
+        imageModifier = imageModifier
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PodcastDescription(
     title: String,
     podcastName: String,
-    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall
+    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall,
 ) {
     Text(
         text = title,

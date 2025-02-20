@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.example.jetcaster.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -549,7 +546,8 @@ private fun HomeContentGrid(
                 libraryItems(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
-                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) }
+                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
+                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) },
                 )
             }
 
@@ -564,6 +562,7 @@ private fun HomeContentGrid(
                         onHomeAction(HomeAction.TogglePodcastFollowed(it))
                     },
                     onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
+                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) },
                 )
             }
         }
@@ -586,7 +585,7 @@ private fun FollowedPodcastItem(
             items = items,
             onPodcastUnfollowed = onPodcastUnfollowed,
             navigateToPodcastDetails = navigateToPodcastDetails,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(Modifier.height(16.dp))
