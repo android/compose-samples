@@ -16,6 +16,8 @@
 
 package com.example.jetcaster.ui
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.scaleOut
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,7 +42,9 @@ fun JetcasterApp(
     if (appState.isOnline) {
         NavHost(
             navController = appState.navController,
-            startDestination = Screen.Home.route
+            startDestination = Screen.Home.route,
+            popExitTransition = { scaleOut(targetScale = 0.9f) },
+            popEnterTransition = { EnterTransition.None }
         ) {
             composable(Screen.Home.route) { backStackEntry ->
                 MainScreen(
