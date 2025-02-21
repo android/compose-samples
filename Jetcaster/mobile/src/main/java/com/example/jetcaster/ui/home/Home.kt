@@ -726,14 +726,12 @@ private fun FollowedPodcastCarouselItem(
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.medium),
         )
-
         ToggleFollowPodcastIconButton(
             onClick = onUnfollowedClick,
             isFollowed = true, /* All podcasts are followed in this feed */
             modifier = Modifier.align(Alignment.TopStart)
         )
         Box(modifier = Modifier.matchParentSize().background(gradient))
-
         if (lastEpisodeDateText != null) {
             Text(
                 text = lastEpisodeDateText,
