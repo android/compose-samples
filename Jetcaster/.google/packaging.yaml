@@ -23,6 +23,7 @@ categories:
     - AndroidArchitectureUILayer
     - JetpackComposeDesignSystems
     - JetpackComposeAnimation
+    - Android TV
 languages:    [Kotlin]
 solutions:
     - Mobile
@@ -30,8 +31,10 @@ solutions:
     - JetpackRoom
     - JetpackLifecycle
     - JetpackNavigation
+    - TV
 github:       android/compose-samples
 level:        ADVANCED
 apiRefs:
     - android:androidx.compose.Composable
+    - android:androidx.tv.material3
 license: apache2
