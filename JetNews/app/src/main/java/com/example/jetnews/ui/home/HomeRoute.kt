@@ -54,6 +54,7 @@ fun HomeRoute(
         uiState = uiState,
         isExpandedScreen = isExpandedScreen,
         onToggleFavorite = { homeViewModel.toggleFavourite(it) },
+        onToggleMark = { homeViewModel.toggleMark(it) },
         onSelectPost = { homeViewModel.selectArticle(it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
         onErrorDismiss = { homeViewModel.errorShown(it) },
@@ -87,6 +88,7 @@ fun HomeRoute(
     uiState: HomeUiState,
     isExpandedScreen: Boolean,
     onToggleFavorite: (String) -> Unit,
+    onToggleMark: (String) -> Unit,
     onSelectPost: (String) -> Unit,
     onRefreshPosts: () -> Unit,
     onErrorDismiss: (Long) -> Unit,
@@ -116,6 +118,7 @@ fun HomeRoute(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
                 onToggleFavorite = onToggleFavorite,
+                onToggleMark = onToggleMark,
                 onSelectPost = onSelectPost,
                 onRefreshPosts = onRefreshPosts,
                 onErrorDismiss = onErrorDismiss,
@@ -146,6 +149,7 @@ fun HomeRoute(
             // Guaranteed by above condition for home screen type
             check(uiState is HomeUiState.HasPosts)
 
+            // TODO: This
             ArticleScreen(
                 post = uiState.selectedPost,
                 isExpandedScreen = isExpandedScreen,
@@ -153,6 +157,10 @@ fun HomeRoute(
                 isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
                 onToggleFavorite = {
                     onToggleFavorite(uiState.selectedPost.id)
+                },
+                isMarked = uiState.marks.contains(uiState.selectedPost.id),
+                onToggleMark = {
+                    onToggleMark(uiState.selectedPost.id)
                 },
                 lazyListState = articleDetailLazyListStates.getValue(
                     uiState.selectedPost.id
