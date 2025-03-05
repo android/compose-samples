@@ -50,7 +50,7 @@ data class JetLaggedExtraColors(
     val sleep: Color = Color.Unspecified,
     val wellness: Color = Color.Unspecified,
     val heart: Color = Color.Unspecified,
-    val heartWave: List<Color> = listOf(Color.Unspecified),
+    val heartWave: List<Color> = listOf(Color.Unspecified, Color.Unspecified),
     val heartWaveBackground: Color = Color.Unspecified,
     val sleepChartPrimary: Color = Color.Unspecified,
     val sleepChartSecondary: Color = Color.Unspecified,
