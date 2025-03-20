@@ -99,7 +99,7 @@ private object Sizes {
     val condensed = 48.dp
 }
 
-private enum class SizeBucket { Invalid, Narrow, Normal, NarrowShort }
+private enum class SizeBucket { Invalid, Narrow, Normal, NarrowShort, NormalShort }
 
 @Composable
 private fun calculateSizeBucket(): SizeBucket {
@@ -111,7 +111,8 @@ private fun calculateSizeBucket(): SizeBucket {
         width < Sizes.minWidth -> SizeBucket.Invalid
         width <= Sizes.smallBucketCutoffWidth ->
             if (height >= Sizes.short) SizeBucket.Narrow else SizeBucket.NarrowShort
-        else -> SizeBucket.Normal
+        else ->
+            if (height >= Sizes.short) SizeBucket.Normal else SizeBucket.NormalShort
     }
 }
 
@@ -151,6 +152,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
                     )
 
                     SizeBucket.Normal -> WidgetUiNormal(
+                        iconSize = Sizes.normal,
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
                         imageUri = artUri,
@@ -159,6 +161,14 @@ class JetcasterAppWidget : GlanceAppWidget() {
 
                     SizeBucket.NarrowShort -> WidgetUiNarrow(
                         iconSize = Sizes.condensed,
+                        imageUri = artUri,
+                        playPauseIcon = playPauseIcon
+                    )
+
+                    SizeBucket.NormalShort -> WidgetUiNormal(
+                        iconSize = Sizes.condensed,
+                        title = testState.episodeTitle,
+                        subtitle = testState.podcastTitle,
                         imageUri = artUri,
                         playPauseIcon = playPauseIcon
                     )
@@ -174,14 +184,16 @@ private fun WidgetUiNormal(
     subtitle: String,
     imageUri: Uri,
     playPauseIcon: PlayPauseIcon,
+    iconSize: Dp,
 ) {
+    Log.d(TAG, "WidgetUiNormal: ${iconSize.toString()}")
     Scaffold(titleBar = {} /* title bar will be optional starting in glance 1.1.0-beta3*/) {
         Row(
             GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
-            AlbumArt(imageUri, GlanceModifier.size(Sizes.normal))
+            AlbumArt(imageUri, GlanceModifier.size(iconSize))
             PodcastText(title, subtitle, modifier = GlanceModifier.padding(16.dp).defaultWeight())
-            PlayPauseButton(GlanceModifier.size(Sizes.normal), playPauseIcon, {})
+            PlayPauseButton(GlanceModifier.size(iconSize), playPauseIcon, {})
         }
     }
 }
@@ -222,17 +234,28 @@ private fun AlbumArt(
 @Composable
 fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = GlanceModifier) {
     val fgColor = GlanceTheme.colors.onPrimaryContainer
-    Column(modifier) {
-        Text(
-            text = title,
-            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = fgColor),
-            maxLines = 2,
-        )
-        Text(
-            text = subtitle,
-            style = TextStyle(fontSize = 14.sp, color = fgColor),
-            maxLines = 2,
-        )
+    val size = LocalSize.current
+    when {
+        size.height >= Sizes.short -> Column(modifier) {
+            Text(
+                text = title,
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = fgColor),
+                maxLines = 2,
+            )
+            Text(
+                text = subtitle,
+                style = TextStyle(fontSize = 14.sp, color = fgColor),
+                maxLines = 2,
+            )
+        }
+        else -> Column(modifier) {
+            Text(
+                text = title,
+                style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = fgColor),
+                maxLines = 1,
+            )
+        }
+
     }
 }
 
