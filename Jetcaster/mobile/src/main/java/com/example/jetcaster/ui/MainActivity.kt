@@ -20,9 +20,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.jetcaster.glancewidget.JetcasterAppWidgetPreview
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -30,7 +32,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-
+        runBlocking { com.example.jetcaster.glancewidget.updateWidgetPreview(this@MainActivity) }
         setContent {
             val displayFeatures = calculateDisplayFeatures(this)
 

@@ -68,7 +68,7 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-internal val TAG = "JetcasterAppWidegt"
+internal val TAG = "JetcasterAppWidget"
 
 /**
  * Implementation of App Widget functionality.
@@ -125,7 +125,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             podcastTitle = "Now in Android",
             isPlaying = false,
             albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
-                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
+                    "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
         )
 
         provideContent {
@@ -136,7 +136,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             GlanceTheme {
                 when (sizeBucket) {
                     SizeBucket.Invalid -> WidgetUiInvalidSize()
-                    SizeBucket.Narrow -> WidgetUiNarrow(
+                    SizeBucket.Narrow -> Widget(
                         iconSize = Sizes.medium,
                         imageUri = artUri,
                         playPauseIcon = playPauseIcon
@@ -150,7 +150,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
                         playPauseIcon = playPauseIcon
                     )
 
-                    SizeBucket.NarrowShort -> WidgetUiNarrow(
+                    SizeBucket.NarrowShort -> Widget(
                         iconSize = Sizes.condensed,
                         imageUri = artUri,
                         playPauseIcon = playPauseIcon
@@ -177,7 +177,7 @@ private fun WidgetUiNormal(
     playPauseIcon: PlayPauseIcon,
     iconSize: Dp,
 ) {
-    Log.d(TAG, "WidgetUiNormal: ${iconSize.toString()}")
+
     Scaffold {
         Row(
             GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Vertical.CenterVertically
@@ -190,7 +190,7 @@ private fun WidgetUiNormal(
 }
 
 @Composable
-private fun WidgetUiNarrow(
+private fun Widget(
     iconSize: Dp,
     imageUri: Uri,
     playPauseIcon: PlayPauseIcon,
