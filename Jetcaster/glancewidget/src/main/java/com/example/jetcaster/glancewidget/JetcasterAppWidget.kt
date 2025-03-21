@@ -86,7 +86,7 @@ data class JetcasterAppWidgetViewState(
 )
 
 private object Sizes {
-    val short=  72.dp
+    val short = 72.dp
     val minWidth = 140.dp
     val smallBucketCutoffWidth = 250.dp // anything from minWidth to this will have no title
 
@@ -94,7 +94,6 @@ private object Sizes {
     val medium = 56.dp
     val condensed = 48.dp
 }
-
 
 private enum class SizeBucket { Invalid, Narrow, Normal, NarrowShort, NormalShort }
 
@@ -125,7 +124,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             podcastTitle = "Now in Android",
             isPlaying = false,
             albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
-                    "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
+                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
         )
 
         provideContent {
@@ -230,7 +229,11 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
         size.height >= Sizes.short -> Column(modifier) {
             Text(
                 text = title,
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = fgColor),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = fgColor
+                ),
                 maxLines = 2,
             )
             Text(
@@ -242,16 +245,23 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
         else -> Column(modifier) {
             Text(
                 text = title,
-                style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, color = fgColor),
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = fgColor
+                ),
                 maxLines = 1,
             )
         }
-
     }
 }
 
 @Composable
-private fun PlayPauseButton(modifier:GlanceModifier = GlanceModifier.size(Sizes.normal), state: PlayPauseIcon, onClick: () -> Unit) {
+private fun PlayPauseButton(
+    modifier: GlanceModifier = GlanceModifier.size(Sizes.normal),
+    state: PlayPauseIcon,
+    onClick: () -> Unit
+) {
     val (iconRes: Int, description: Int) = when (state) {
         PlayPauseIcon.Play -> R.drawable.outline_play_arrow_24 to R.string.content_description_play
         PlayPauseIcon.Pause -> R.drawable.outline_pause_24 to R.string.content_description_pause
@@ -262,7 +272,7 @@ private fun PlayPauseButton(modifier:GlanceModifier = GlanceModifier.size(Sizes.
 
     SquareIconButton(
         modifier = modifier,
-        imageProvider =  provider,
+        imageProvider = provider,
         contentDescription = contentDescription,
         onClick = onClick
     )

@@ -9,6 +9,7 @@
     android:maxResizeHeight="64dp"
     android:resizeMode="horizontal"
     android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewImage="@drawable/widget_preview"
     android:previewLayout="@layout/widget_preview"
     android:targetCellWidth="2"
     android:targetCellHeight="1"
