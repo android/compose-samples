@@ -22,8 +22,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,7 +58,6 @@ import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.material3.ColorProviders
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -86,7 +83,6 @@ data class JetcasterAppWidgetViewState(
     val podcastTitle: String,
     val isPlaying: Boolean,
     val albumArtUri: String,
-    val useDynamicColor: Boolean
 )
 
 private object Sizes {
@@ -98,6 +94,7 @@ private object Sizes {
     val medium = 56.dp
     val condensed = 48.dp
 }
+
 
 private enum class SizeBucket { Invalid, Narrow, Normal, NarrowShort, NormalShort }
 
@@ -128,8 +125,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             podcastTitle = "Now in Android",
             isPlaying = false,
             albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
-                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png",
-            useDynamicColor = false
+                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
         )
 
         provideContent {
@@ -137,12 +133,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             val playPauseIcon = if (testState.isPlaying) PlayPauseIcon.Pause else PlayPauseIcon.Play
             val artUri = Uri.parse(testState.albumArtUri)
 
-            GlanceTheme(
-                colors = ColorProviders(
-                    light = lightColorScheme(),
-                    dark = darkColorScheme()
-                )
-            ) {
+            GlanceTheme {
                 when (sizeBucket) {
                     SizeBucket.Invalid -> WidgetUiInvalidSize()
                     SizeBucket.Narrow -> WidgetUiNarrow(
@@ -187,7 +178,7 @@ private fun WidgetUiNormal(
     iconSize: Dp,
 ) {
     Log.d(TAG, "WidgetUiNormal: ${iconSize.toString()}")
-    Scaffold(titleBar = {} /* title bar will be optional starting in glance 1.1.0-beta3*/) {
+    Scaffold {
         Row(
             GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
