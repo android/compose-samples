@@ -43,7 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/colorPrimary"
-            android:tint="?attr/colorOnPrimary"
             android:padding="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/outline_play_arrow_24"
