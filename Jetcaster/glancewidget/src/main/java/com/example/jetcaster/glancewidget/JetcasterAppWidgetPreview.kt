@@ -42,26 +42,37 @@ import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.size
 import androidx.glance.layout.wrapContentSize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private object SizesPreview {
     val medium = 56.dp
 }
 
-suspend fun updateWidgetPreview(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-        try {
-            val appwidgetManager = AppWidgetManager.getInstance(context)
+/**
+ * This is a convenience function for updating the widget preview using Generated Previews.
+ *
+ * In a real application, this would be called whenever the widget's state changes.
+ */
+fun updateWidgetPreview(context: Context) {
 
-            appwidgetManager.setWidgetPreview(
-                ComponentName(context, JetcasterAppWidgetReceiver::class.java),
-                AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN,
-                JetcasterAppWidgetPreview().compose(
-                    context,
-                    size = DpSize(160.dp, 64.dp)
-                ),
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, e.message, e)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val appwidgetManager = AppWidgetManager.getInstance(context)
+
+                appwidgetManager.setWidgetPreview(
+                    ComponentName(context, JetcasterAppWidgetReceiver::class.java),
+                    AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN,
+                    JetcasterAppWidgetPreview().compose(
+                        context,
+                        size = DpSize(160.dp, 64.dp)
+                    ),
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, e.message, e)
+            }
         }
     }
 }
