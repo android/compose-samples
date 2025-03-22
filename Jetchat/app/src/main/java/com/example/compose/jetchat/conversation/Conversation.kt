@@ -18,13 +18,16 @@
 
 package com.example.compose.jetchat.conversation
 
-import android.content.ClipDescription
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.content.ReceiveContentListener
+import androidx.compose.foundation.content.TransferableContent
+import androidx.compose.foundation.content.consume
+import androidx.compose.foundation.content.contentReceiver
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +51,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
@@ -72,15 +76,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draganddrop.DragAndDropEvent
-import androidx.compose.ui.draganddrop.DragAndDropTarget
-import androidx.compose.ui.draganddrop.mimeTypes
-import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
@@ -89,6 +90,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
@@ -128,41 +132,40 @@ fun ConversationContent(
         mutableStateOf(Color.Transparent)
     }
 
-    val dragAndDropCallback = remember {
-        object : DragAndDropTarget {
-            override fun onDrop(event: DragAndDropEvent): Boolean {
-                val clipData = event.toAndroidDragEvent().clipData
+    val textFieldState = rememberTextFieldState()
+    var contentReceiverImages by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
-                if (clipData.itemCount < 1) {
-                    return false
-                }
-
-                uiState.addMessage(
-                    Message(authorMe, clipData.getItemAt(0).text.toString(), timeNow)
-                )
-
-                return true
+    val receiveContentListener = remember {
+        object : ReceiveContentListener {
+            override fun onDragEnd() {
+                background = Color.Transparent
+                borderStroke = Color.Transparent
             }
 
-            override fun onStarted(event: DragAndDropEvent) {
-                super.onStarted(event)
-                borderStroke = Color.Red
-            }
-
-            override fun onEntered(event: DragAndDropEvent) {
-                super.onEntered(event)
+            override fun onDragEnter() {
                 background = Color.Red.copy(alpha = .3f)
             }
 
-            override fun onExited(event: DragAndDropEvent) {
-                super.onExited(event)
+            override fun onDragExit() {
                 background = Color.Transparent
             }
 
-            override fun onEnded(event: DragAndDropEvent) {
-                super.onEnded(event)
-                background = Color.Transparent
-                borderStroke = Color.Transparent
+            override fun onDragStart() {
+                borderStroke = Color.Red
+            }
+
+            override fun onReceive(transferableContent: TransferableContent): TransferableContent? {
+                return transferableContent.consume { clipDataItem ->
+                    if (!clipDataItem.text.isNullOrBlank()) {
+                        textFieldState.addText(clipDataItem.text?.toString() ?: "")
+                    }
+                    if (clipDataItem.uri != null) {
+                        contentReceiverImages += clipDataItem.uri
+                        true
+                    } else {
+                        false
+                    }
+                }
             }
         }
     }
@@ -187,13 +190,7 @@ fun ConversationContent(
             Modifier.fillMaxSize().padding(paddingValues)
                 .background(color = background)
                 .border(width = 2.dp, color = borderStroke)
-                .dragAndDropTarget(shouldStartDragAndDrop = { event ->
-                    event
-                        .mimeTypes()
-                        .contains(
-                            ClipDescription.MIMETYPE_TEXT_PLAIN
-                        )
-                }, target = dragAndDropCallback)
+                .contentReceiver(receiveContentListener)
         ) {
             Messages(
                 messages = uiState.messages,
@@ -202,14 +199,34 @@ fun ConversationContent(
                 scrollState = scrollState
             )
             UserInput(
+                textFieldState = textFieldState,
                 onMessageSent = { content ->
+                    // first send every image as a separate message
+                    contentReceiverImages.fastForEach {
+                        uiState.addMessage(
+                            Message(
+                                author = authorMe,
+                                content = "",
+                                timestamp = timeNow,
+                                image = it
+                            )
+                        )
+                    }
+                    // finally send the text content
                     uiState.addMessage(
                         Message(authorMe, content, timeNow)
                     )
+                    contentReceiverImages = emptyList()
                 },
                 resetScroll = {
                     scope.launch {
                         scrollState.scrollToItem(0)
+                    }
+                },
+                images = contentReceiverImages,
+                onClearImage = { removeIndex ->
+                    contentReceiverImages = contentReceiverImages.filterIndexed { index, _ ->
+                        index != removeIndex
                     }
                 },
                 // let this element handle the padding so that the elevation is shown behind the
@@ -491,15 +508,17 @@ fun ChatItemBubble(
     }
 
     Column {
-        Surface(
-            color = backgroundBubbleColor,
-            shape = ChatBubbleShape
-        ) {
-            ClickableMessage(
-                message = message,
-                isUserMe = isUserMe,
-                authorClicked = authorClicked
-            )
+        if (message.content.isNotBlank()) {
+            Surface(
+                color = backgroundBubbleColor,
+                shape = ChatBubbleShape
+            ) {
+                ClickableMessage(
+                    message = message,
+                    isUserMe = isUserMe,
+                    authorClicked = authorClicked
+                )
+            }
         }
 
         message.image?.let {
@@ -508,11 +527,13 @@ fun ChatItemBubble(
                 color = backgroundBubbleColor,
                 shape = ChatBubbleShape
             ) {
-                Image(
-                    painter = painterResource(it),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(it)
+                        .build(),
+                    contentDescription = stringResource(id = R.string.attached_image),
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
-                    contentDescription = stringResource(id = R.string.attached_image)
+                    modifier = Modifier.size(160.dp)
                 )
             }
         }
