@@ -22,8 +22,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,7 +58,6 @@ import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.material3.ColorProviders
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -70,7 +68,7 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-internal val TAG = "JetcasterAppWidegt"
+internal val TAG = "JetcasterAppWidget"
 
 /**
  * Implementation of App Widget functionality.
@@ -85,28 +83,32 @@ data class JetcasterAppWidgetViewState(
     val podcastTitle: String,
     val isPlaying: Boolean,
     val albumArtUri: String,
-    val useDynamicColor: Boolean
 )
 
 private object Sizes {
+    val short = 72.dp
     val minWidth = 140.dp
     val smallBucketCutoffWidth = 250.dp // anything from minWidth to this will have no title
 
-    val imageNormal = 80.dp
-    val imageCondensed = 60.dp
+    val normal = 80.dp
+    val medium = 56.dp
+    val condensed = 48.dp
 }
 
-private enum class SizeBucket { Invalid, Narrow, Normal }
+private enum class SizeBucket { Invalid, Narrow, Normal, NarrowShort, NormalShort }
 
 @Composable
 private fun calculateSizeBucket(): SizeBucket {
     val size: DpSize = LocalSize.current
     val width = size.width
+    val height = size.height
 
     return when {
         width < Sizes.minWidth -> SizeBucket.Invalid
-        width <= Sizes.smallBucketCutoffWidth -> SizeBucket.Narrow
-        else -> SizeBucket.Normal
+        width <= Sizes.smallBucketCutoffWidth ->
+            if (height >= Sizes.short) SizeBucket.Narrow else SizeBucket.NarrowShort
+        else ->
+            if (height >= Sizes.short) SizeBucket.Normal else SizeBucket.NormalShort
     }
 }
 
@@ -122,8 +124,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             podcastTitle = "Now in Android",
             isPlaying = false,
             albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
-                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png",
-            useDynamicColor = false
+                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
         )
 
         provideContent {
@@ -131,20 +132,31 @@ class JetcasterAppWidget : GlanceAppWidget() {
             val playPauseIcon = if (testState.isPlaying) PlayPauseIcon.Pause else PlayPauseIcon.Play
             val artUri = Uri.parse(testState.albumArtUri)
 
-            GlanceTheme(
-                colors = ColorProviders(
-                    light = lightColorScheme(),
-                    dark = darkColorScheme()
-                )
-            ) {
+            GlanceTheme {
                 when (sizeBucket) {
                     SizeBucket.Invalid -> WidgetUiInvalidSize()
-                    SizeBucket.Narrow -> WidgetUiNarrow(
+                    SizeBucket.Narrow -> Widget(
+                        iconSize = Sizes.medium,
                         imageUri = artUri,
                         playPauseIcon = playPauseIcon
                     )
 
                     SizeBucket.Normal -> WidgetUiNormal(
+                        iconSize = Sizes.normal,
+                        title = testState.episodeTitle,
+                        subtitle = testState.podcastTitle,
+                        imageUri = artUri,
+                        playPauseIcon = playPauseIcon
+                    )
+
+                    SizeBucket.NarrowShort -> Widget(
+                        iconSize = Sizes.condensed,
+                        imageUri = artUri,
+                        playPauseIcon = playPauseIcon
+                    )
+
+                    SizeBucket.NormalShort -> WidgetUiNormal(
+                        iconSize = Sizes.condensed,
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
                         imageUri = artUri,
@@ -162,20 +174,23 @@ private fun WidgetUiNormal(
     subtitle: String,
     imageUri: Uri,
     playPauseIcon: PlayPauseIcon,
+    iconSize: Dp,
 ) {
-    Scaffold(titleBar = {} /* title bar will be optional starting in glance 1.1.0-beta3*/) {
+
+    Scaffold {
         Row(
             GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
-            AlbumArt(imageUri, GlanceModifier.size(Sizes.imageNormal))
+            AlbumArt(imageUri, GlanceModifier.size(iconSize))
             PodcastText(title, subtitle, modifier = GlanceModifier.padding(16.dp).defaultWeight())
-            PlayPauseButton(playPauseIcon, {})
+            PlayPauseButton(GlanceModifier.size(iconSize), playPauseIcon, {})
         }
     }
 }
 
 @Composable
-private fun WidgetUiNarrow(
+private fun Widget(
+    iconSize: Dp,
     imageUri: Uri,
     playPauseIcon: PlayPauseIcon,
 ) {
@@ -184,9 +199,9 @@ private fun WidgetUiNarrow(
             modifier = GlanceModifier.fillMaxSize(),
             verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
-            AlbumArt(imageUri, GlanceModifier.size(Sizes.imageCondensed))
+            AlbumArt(imageUri, GlanceModifier.size(iconSize))
             Spacer(GlanceModifier.defaultWeight())
-            PlayPauseButton(playPauseIcon, {})
+            PlayPauseButton(GlanceModifier.size(iconSize), playPauseIcon, {})
         }
     }
 }
@@ -209,22 +224,44 @@ private fun AlbumArt(
 @Composable
 fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = GlanceModifier) {
     val fgColor = GlanceTheme.colors.onPrimaryContainer
-    Column(modifier) {
-        Text(
-            text = title,
-            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, color = fgColor),
-            maxLines = 2,
-        )
-        Text(
-            text = subtitle,
-            style = TextStyle(fontSize = 14.sp, color = fgColor),
-            maxLines = 2,
-        )
+    val size = LocalSize.current
+    when {
+        size.height >= Sizes.short -> Column(modifier) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = fgColor
+                ),
+                maxLines = 2,
+            )
+            Text(
+                text = subtitle,
+                style = TextStyle(fontSize = 14.sp, color = fgColor),
+                maxLines = 2,
+            )
+        }
+        else -> Column(modifier) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = fgColor
+                ),
+                maxLines = 1,
+            )
+        }
     }
 }
 
 @Composable
-private fun PlayPauseButton(state: PlayPauseIcon, onClick: () -> Unit) {
+private fun PlayPauseButton(
+    modifier: GlanceModifier = GlanceModifier.size(Sizes.normal),
+    state: PlayPauseIcon,
+    onClick: () -> Unit
+) {
     val (iconRes: Int, description: Int) = when (state) {
         PlayPauseIcon.Play -> R.drawable.outline_play_arrow_24 to R.string.content_description_play
         PlayPauseIcon.Pause -> R.drawable.outline_pause_24 to R.string.content_description_pause
@@ -234,7 +271,8 @@ private fun PlayPauseButton(state: PlayPauseIcon, onClick: () -> Unit) {
     val contentDescription = LocalContext.current.getString(description)
 
     SquareIconButton(
-        provider,
+        modifier = modifier,
+        imageProvider = provider,
         contentDescription = contentDescription,
         onClick = onClick
     )
