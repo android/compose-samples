@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.theme
+package com.example.jetcaster.ui.components
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.wear.compose.material3.MaterialTheme
+import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material3.IconButtonShapes
 
 @Composable
-fun WearAppTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = wearColorPalette,
-        typography = Typography,
-        // For shapes, we generally recommend using the default Material Wear shapes which are
-        // optimized for round devices.
-        content = content
-    )
+fun PlayIconShape(): IconButtonShapes {
+    return IconButtonShapes(RoundedCornerShape(16.dp))
 }

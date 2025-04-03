@@ -20,6 +20,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -74,7 +75,6 @@ android {
 
 dependencies {
 
-
     def composeBom = platform(libs.androidx.compose.bom)
 
     // General compose dependencies
@@ -90,6 +90,9 @@ dependencies {
     // https://issuetracker.google.com/issues/new?component=1077552&template=1598429&pli=1
     implementation libs.androidx.wear.compose.material
 
+    // For using the phone Typography
+    implementation libs.androidx.material3.android
+
     implementation(libs.kotlinx.collections.immutable)
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
@@ -104,7 +107,9 @@ dependencies {
 
     //Horologist Media toolkit
     implementation libs.horologist.media.ui
+    implementation libs.horologist.media.ui.model
     implementation libs.horologist.audio.ui
+    implementation libs.horologist.audio.ui.model
     implementation libs.horologist.media.data
     implementation libs.horologist.images.coil
 
@@ -140,9 +145,7 @@ dependencies {
     testImplementation libs.roborazzi
     testImplementation libs.roborazzi.compose
     testImplementation libs.roborazzi.rule
-    testImplementation(libs.horologist.roboscreenshots) {
-      exclude(group: "com.github.QuickBirdEng.kotlin-snapshot-testing")
-    }
+    testImplementation(libs.horologist.roboscreenshots)
 
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.androidx.test.espresso.core

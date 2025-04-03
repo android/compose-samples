@@ -16,23 +16,27 @@
 
 package com.example.jetcaster.ui.podcast
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.items
-import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.Text
+import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.material3.AlertDialog
+import androidx.wear.compose.material3.Button
+import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.ListHeader
+import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
@@ -40,20 +44,12 @@ import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.ui.components.MediaContent
+import com.example.jetcaster.ui.components.PlaceholderButton
 import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
-import com.google.android.horologist.composables.PlaceholderChip
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
-import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
-import com.google.android.horologist.compose.material.AlertDialog
-import com.google.android.horologist.compose.material.Chip
-import com.google.android.horologist.compose.material.ListHeaderDefaults
-import com.google.android.horologist.compose.material.ResponsiveListHeader
-import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
+import com.google.android.horologist.compose.layout.ColumnItemType
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
 import com.google.android.horologist.images.base.util.rememberVectorPainter
-import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
 @Composable fun PodcastDetailsScreen(
     onPlayButtonClick: () -> Unit,
@@ -74,7 +70,6 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     )
 }
 
-@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun PodcastDetailsScreen(
     uiState: PodcastDetailsScreenState,
@@ -84,95 +79,142 @@ fun PodcastDetailsScreen(
     onPlayEpisode: (List<PlayerEpisode>) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
+
+    val contentPadding = rememberResponsiveColumnPadding(
+        first = ColumnItemType.ListHeader,
+        last = ColumnItemType.Button
     )
+
+    val columnState = rememberTransformingLazyColumnState()
+
     ScreenScaffold(
         scrollState = columnState,
-        modifier = modifier,
+        contentPadding = contentPadding,
+        modifier = modifier
     ) {
         when (uiState) {
             is PodcastDetailsScreenState.Loaded -> {
-                EntityScreen(
-                    headerContent = {
-                        ResponsiveListHeader(
-                            contentPadding = ListHeaderDefaults.firstItemPadding(),
-                        ) {
-                            Text(text = uiState.podcast.title)
-                        }
-                    },
-                    buttonsContent = {
-                        ButtonsContent(
-                            episodes = uiState.episodeList,
-                            onPlayButtonClick = onPlayButtonClick,
-                            onPlayEpisode = onPlayEpisode,
-                        )
-                    },
-                    content = {
-                        items(uiState.episodeList) { episode ->
-                            MediaContent(
-                                episode = episode,
-                                episodeArtworkPlaceholder = rememberVectorPainter(
-                                    image = Icons.Default.MusicNote,
-                                    tintColor = Color.Blue,
-                                ),
-                                onEpisodeItemClick,
-                            )
-                        }
-                    },
+                PodcastDetailScreenLoaded(
+                    uiState.episodeList,
+                    uiState.podcast.title,
+                    onPlayButtonClick,
+                    onPlayEpisode,
+                    onEpisodeItemClick,
+                    columnState,
+                    contentPadding,
+                    modifier
                 )
             }
 
             PodcastDetailsScreenState.Empty -> {
                 AlertDialog(
-                    showDialog = true,
-                    onDismiss = { onDismiss },
-                    message = stringResource(R.string.podcasts_no_episode_podcasts),
+                    visible = true,
+                    onDismissRequest = onDismiss,
+                    title = { stringResource(R.string.podcasts_no_episode_podcasts) },
                 )
             }
             PodcastDetailsScreenState.Loading -> {
-                EntityScreen(
-                    headerContent = {
-                        ResponsiveListHeader(
-                            contentPadding = ListHeaderDefaults.firstItemPadding(),
-                        ) {
-                            Text(text = stringResource(id = R.string.loading))
-                        }
-                    },
-                    buttonsContent = {
-                        ButtonsContent(
-                            episodes = emptyList(),
-                            onPlayButtonClick = { },
-                            onPlayEpisode = { },
-                        )
-                    },
-                    content = {
-                        items(count = 2) {
-                            PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
-                        }
-                    },
-                )
+                PodcastDetailScreenLoading(columnState, contentPadding, modifier)
             }
         }
     }
 }
 
-@OptIn(ExperimentalHorologistApi::class)
 @Composable
-fun ButtonsContent(episodes: List<PlayerEpisode>, onPlayButtonClick: () -> Unit, onPlayEpisode: (List<PlayerEpisode>) -> Unit) {
+fun PodcastDetailScreenLoaded(
+    episodeList: List<PlayerEpisode>,
+    title: String,
+    onPlayButtonClick: () -> Unit,
+    onPlayEpisode: (List<PlayerEpisode>) -> Unit,
+    onEpisodeItemClick: (PlayerEpisode) -> Unit,
+    columnState: TransformingLazyColumnState,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier
+) {
+    TransformingLazyColumn(
+        modifier = modifier,
+        state = columnState,
+        contentPadding = contentPadding
+    ) {
+        item {
+            ListHeader {
+                Text(
+                    text = title, maxLines = 1,
+                    overflow = TextOverflow.Ellipsis, modifier = modifier
+                )
+            }
+        }
+        item {
+            ButtonsContent(
+                episodes = episodeList,
+                onPlayButtonClick = onPlayButtonClick,
+                onPlayEpisode = onPlayEpisode
+            )
+        }
+        items(episodeList) { episode ->
+            MediaContent(
+                episode = episode,
+                episodeArtworkPlaceholder = painterResource(id = R.drawable.music),
+                onEpisodeItemClick
+            )
+        }
+    }
+}
 
-    Chip(
-        label = stringResource(id = R.string.button_play_content_description),
+@Composable
+fun PodcastDetailScreenLoading(
+    columnState: TransformingLazyColumnState,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier
+) {
+    TransformingLazyColumn(
+        modifier = modifier,
+        state = columnState,
+        contentPadding = contentPadding
+    ) {
+        item {
+            ListHeader {
+                Text(text = stringResource(id = R.string.loading))
+            }
+        }
+        item {
+            ButtonsContent(
+                episodes = emptyList(),
+                onPlayButtonClick = {},
+                onPlayEpisode = {},
+                enabled = false
+            )
+        }
+        items(count = 2) {
+            PlaceholderButton()
+        }
+    }
+}
+@Composable
+fun ButtonsContent(
+    episodes: List<PlayerEpisode>,
+    onPlayButtonClick: () -> Unit,
+    onPlayEpisode: (List<PlayerEpisode>) -> Unit,
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+
+    Button(
         onClick = {
             onPlayButtonClick()
             onPlayEpisode(episodes)
         },
-        modifier = Modifier.padding(bottom = 16.dp),
-        icon = Icons.Outlined.PlayArrow.asPaintable(),
-    )
+        enabled = enabled,
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.play),
+                contentDescription = stringResource(id = R.string.button_play_content_description)
+            )
+        },
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Text(stringResource(id = R.string.button_play_content_description))
+    }
 }
 
 @ExperimentalHorologistApi

@@ -36,6 +36,7 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.player.EpisodePlayer
@@ -61,9 +62,7 @@ class EpisodeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val episodeUri: String =
-        savedStateHandle.get<String>(Episode.EPISODE_URI).let {
-            Uri.decode(it)
-        }
+        savedStateHandle.toRoute<Episode>().episodeUri
 
     private val episodeFlow = if (episodeUri != null) {
         episodeStore.episodeAndPodcastWithUri(episodeUri)

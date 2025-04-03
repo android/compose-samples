@@ -31,7 +31,6 @@ import com.google.android.horologist.audio.ui.VolumeUiState
 import com.google.android.horologist.audio.ui.components.SettingsButtonsDefaults
 import com.google.android.horologist.audio.ui.components.actions.SetVolumeButton
 import com.google.android.horologist.audio.ui.components.actions.SettingsButton
-import com.google.android.horologist.compose.material.IconRtlMode
 
 /**
  * Settings buttons for the Jetcaster media app.
@@ -90,7 +89,6 @@ fun PlaybackSpeedButton(
                 ImageVector.vectorResource(R.drawable.speed_2x)
             }
         },
-        iconRtlMode = IconRtlMode.Mirrored,
         contentDescription = stringResource(R.string.change_playback_speed_content_description),
     )
 }
