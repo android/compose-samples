@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file provides an XML preview layout for the widget. This file enables dynamic color
+and dark mode support in Widget previews between android 12 and 15. Android 15+ uses Generated Previews.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@android:id/background"
+    android:background="@color/colorAppWidgetBackground"
+    android:theme="@style/MyWidgetTheme"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="12dp"
+        android:layout_gravity="center_vertical"
+
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="@dimen/widget_preview_icon_height"
+            android:layout_height="@dimen/widget_preview_icon_height"
+            android:background="@drawable/widget_preview_image_shape"
+            android:clipToOutline="true"
+            android:layout_gravity="left|center_vertical"
+            android:outlineProvider="background">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/widget_preview_thumbnail"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <RelativeLayout
+            android:layout_width="@dimen/widget_preview_icon_height"
+            android:layout_height="@dimen/widget_preview_icon_height"
+            android:background="@drawable/widget_preview_image_shape"
+            android:clipToOutline="true"
+            android:layout_gravity="right|center_vertical"
+
+            android:outlineProvider="background">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimary"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/outline_play_arrow_24"
+            />
+        </RelativeLayout>
+    </LinearLayout>
+</FrameLayout>

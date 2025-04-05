@@ -24,7 +24,9 @@ android {
         compose = true
         buildConfig = true
     }
-
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -36,9 +38,6 @@ android {
         }
     }
 }
-kotlin {
-    jvmToolchain(17)
-}
 
 dependencies {
 
@@ -49,6 +48,7 @@ dependencies {
     implementation(libs.coil.kt.compose)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.android.material3)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

@@ -25,9 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
-import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavHostState
 import com.example.jetcaster.theme.WearAppTheme
 import com.example.jetcaster.ui.Episode
@@ -57,16 +57,14 @@ import com.google.android.horologist.media.ui.navigation.NavigationScreens
 import com.google.android.horologist.media.ui.screens.playerlibrarypager.PlayerLibraryPagerScreen
 
 @Composable
-fun WearApp() {
-
-    val navController = rememberSwipeDismissableNavController()
+fun WearApp(navController: NavHostController) {
     val navHostState = rememberSwipeDismissableNavHostState()
     val volumeViewModel: VolumeViewModel = viewModel(factory = VolumeViewModel.Factory)
 
     WearAppTheme {
         AppScaffold {
             SwipeDismissableNavHost(
-                startDestination = NavigationScreens.Player.navRoute,
+                startDestination = NavigationScreens.Player.playerDestination(),
                 navController = navController,
                 modifier = Modifier.background(Color.Transparent),
                 state = navHostState,

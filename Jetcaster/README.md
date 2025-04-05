@@ -134,6 +134,7 @@ limitations under the License.
  [epstore]: mobile/src/main/java/com/example/jetcaster/data/EpisodeStore.kt
  [catstore]: mobile/src/main/java/com/example/jetcaster/data/CategoryStore.kt
  [db]: mobile/src/main/java/com/example/jetcaster/data/room/JetcasterDatabase.kt
+ [glance]: https://developer.android.com/develop/ui/compose/glance
  [homevm]: mobile/src/main/java/com/example/jetcaster/ui/home/HomeViewModel.kt
  [homeui]: mobile/src/main/java/com/example/jetcaster/ui/home/Home.kt
  [compose]: https://developer.android.com/jetpack/compose

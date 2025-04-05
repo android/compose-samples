@@ -54,6 +54,7 @@ android {
             includeAndroidResources true
         }
     }
+    
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.majorVersion
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
@@ -62,16 +63,15 @@ android {
     buildFeatures {
         compose true
     }
+    
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "rome-utils-1.18.0.jar"
+            excludes += "rome-utils-" + libs.rometools.rome.get().version + ".jar"
         }
     }
 }
-kotlin {
-    jvmToolchain(17)
-}
+
 dependencies {
 
 

@@ -61,6 +61,9 @@ android {
         }
     }
 
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -79,14 +82,13 @@ android {
     }
 }
 
-kotlin {
-    jvmToolchain(17)
-}
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
 
