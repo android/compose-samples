@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -54,7 +53,6 @@ import com.example.jetcaster.ui.components.PlayIconShape
 import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.compose.layout.ColumnItemType
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
-import com.google.android.horologist.images.base.util.rememberVectorPainter
 
 @Composable fun QueueScreen(
     onPlayButtonClick: () -> Unit,
@@ -190,9 +188,9 @@ fun QueueScreenLoading(
 fun QueueScreenEmpty(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     AlertDialog(
         visible = true,
-        onDismissRequest = onDismiss,
-        title = { stringResource(R.string.display_nothing_in_queue) },
-        text = { stringResource(R.string.no_episodes_from_queue) },
+        onDismissRequest = { onDismiss() },
+        title = { Text(stringResource(R.string.display_nothing_in_queue)) },
+        text = { Text(stringResource(R.string.no_episodes_from_queue)) },
         modifier = modifier
     )
 }

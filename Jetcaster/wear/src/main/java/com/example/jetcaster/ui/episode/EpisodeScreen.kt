@@ -335,6 +335,19 @@ private fun TransformingLazyColumnScope.episodeInfoContent(episode: PlayerEpisod
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
+fun EpisodeScreenEmptyPreview() {
+    val uiState: EpisodeScreenState = EpisodeScreenState.Empty
+    EpisodeScreen(
+        uiState = uiState,
+        onPlayButtonClick = { },
+        onPlayEpisode = { _ -> },
+        onAddToQueue = { _ -> },
+        onDismiss = {}
+    )
+}
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
 fun EpisodeScreenLoadingPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
     episode: PlayerEpisode
