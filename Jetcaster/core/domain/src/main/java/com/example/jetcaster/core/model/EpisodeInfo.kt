@@ -32,6 +32,7 @@ data class EpisodeInfo(
     val author: String = "",
     val published: OffsetDateTime = OffsetDateTime.MIN,
     val duration: Duration? = null,
+    val mediaUrls: List<String> = emptyList(),
 )
 
 fun Episode.asExternalModel(): EpisodeInfo =
@@ -44,6 +45,7 @@ fun Episode.asExternalModel(): EpisodeInfo =
         author = author ?: "",
         published = published,
         duration = duration,
+        mediaUrls = mediaUrls
     )
 
 fun EpisodeInfo.asDaoModel(): Episode =
@@ -55,5 +57,6 @@ fun EpisodeInfo.asDaoModel(): Episode =
         author = author,
         published = published,
         duration = duration,
-        podcastUri = podcastUri
+        podcastUri = podcastUri,
+        mediaUrls = mediaUrls
     )
