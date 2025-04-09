@@ -49,7 +49,6 @@ import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.util.MultiDevicePreview
 
 @OptIn(ExperimentalLayoutApi::class)
-@MultiDevicePreview
 @Composable
 fun JetLaggedScreen(
     modifier: Modifier = Modifier,
@@ -124,5 +123,13 @@ fun JetLaggedScreen(
                 }
             }
         }
+    }
+}
+
+@MultiDevicePreview
+@Composable
+private fun JetLaggedScreenPreview() {
+    JetLaggedTheme {
+        JetLaggedScreen()
     }
 }
