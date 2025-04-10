@@ -5,16 +5,10 @@ plugins {
 
 android {
     namespace = "com.example.jetcaster.core.domain.testing"
-    compileSdk =
-        libs.versions.compileSdk
-            .get()
-            .toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk =
-            libs.versions.minSdk
-                .get()
-                .toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -25,7 +19,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
     }
