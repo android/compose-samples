@@ -60,6 +60,22 @@ subprojects {
                             "unary-op-spacing"
                 )
             )
+//            suppressLintsFor {
+//                step = "ktlint"
+//                shortCode = "standard:filename"
+//            }
+//            suppressLintsFor {
+//                step = "ktlint"
+//                shortCode = "standard:property-naming"
+//            }
+//            suppressLintsFor {
+//                step = "ktlint"
+//                shortCode = "standard:backing-property-naming"
+//            }
+//            suppressLintsFor {
+//                step = "ktlint"
+//                shortCode = "standard:package-name"
+//            }
             licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
         }
         format("kts") {
