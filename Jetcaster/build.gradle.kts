@@ -32,7 +32,7 @@ apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")
 subprojects {
     apply(plugin = "com.diffplug.spotless")
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-        ratchetFrom = "57913c513a17c39a93d9a5bab4284fbf9c85dc98"
+        ratchetFrom = "origin/main"
         kotlin {
             target("**/*.kt")
             targetExclude("**/build/**/*.kt")
