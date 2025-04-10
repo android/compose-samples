@@ -38,6 +38,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           # https://github.com/diffplug/spotless/issues/710
+          # Check out full history for Spotless to ensure ratchetFrom can find the ratchet version
           fetch-depth: 0
 
       - name: Copy CI gradle.properties
