@@ -53,6 +53,7 @@ roborazzi = "1.42.0"
 rome = "2.1.0"
 room = "2.6.1"
 secrets = "2.0.1"
+spotless = "7.0.3"
 # @keep
 targetSdk = "33"
 version-catalog-update = "0.8.5"
@@ -171,4 +172,5 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
