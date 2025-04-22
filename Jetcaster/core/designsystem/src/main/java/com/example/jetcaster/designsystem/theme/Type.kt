@@ -18,15 +18,16 @@ package com.example.jetcaster.designsystem.theme
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 val JetcasterTypography = androidx.compose.material3.Typography(
     displayLarge = TextStyle(
-        fontFamily = Montserrat,
-        fontSize = 57.sp,
-        fontWeight = FontWeight.W400,
-        lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp
+        fontSize = 64.sp,
+        lineHeight = 56.sp,
+        fontFamily = Roboto,
+        fontWeight = FontWeight(738),
+        textAlign = TextAlign.Center,
     ),
     displayMedium = TextStyle(
         fontFamily = Montserrat,

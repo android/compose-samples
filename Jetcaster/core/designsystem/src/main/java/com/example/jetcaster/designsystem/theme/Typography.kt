@@ -27,3 +27,7 @@ val Montserrat = FontFamily(
     Font(R.font.montserrat_medium, FontWeight.Medium),
     Font(R.font.montserrat_semibold, FontWeight.SemiBold)
 )
+
+val Roboto = FontFamily(
+    Font(R.font.roboto_flex),
+)
