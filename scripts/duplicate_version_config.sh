@@ -39,9 +39,12 @@ cp scripts/toml-updater-config.gradle JetNews/buildscripts/toml-updater-config.g
 cp scripts/toml-updater-config.gradle Jetsnack/buildscripts/toml-updater-config.gradle
 cp scripts/toml-updater-config.gradle Reply/buildscripts/toml-updater-config.gradle
 
-cp scripts/init.gradle.kts Jetcaster/buildscripts/init.gradle.kts
-cp scripts/init.gradle.kts Jetchat/buildscripts/init.gradle.kts
-cp scripts/init.gradle.kts JetLagged/buildscripts/init.gradle.kts
-cp scripts/init.gradle.kts JetNews/buildscripts/init.gradle.kts
-cp scripts/init.gradle.kts Jetsnack/buildscripts/init.gradle.kts
-cp scripts/init.gradle.kts Reply/buildscripts/init.gradle.kts
+# TODO: Figure out a way of copying the spotless config into each project following
+# this PR: https://github.com/android/compose-samples/pull/1549
+
+#cp scripts/init.gradle.kts Jetcaster/buildscripts/init.gradle.kts
+#cp scripts/init.gradle.kts Jetchat/buildscripts/init.gradle.kts
+#cp scripts/init.gradle.kts JetLagged/buildscripts/init.gradle.kts
+#cp scripts/init.gradle.kts JetNews/buildscripts/init.gradle.kts
+#cp scripts/init.gradle.kts Jetsnack/buildscripts/init.gradle.kts
+#cp scripts/init.gradle.kts Reply/buildscripts/init.gradle.kts

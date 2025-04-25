@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2020-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,9 +131,8 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
-    return scaffoldValue[SupportingPaneScaffoldRole.Main] == PaneAdaptedValue.Hidden
-}
+private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean =
+    scaffoldValue[SupportingPaneScaffoldRole.Main] == PaneAdaptedValue.Hidden
 
 /**
  * Copied from `calculatePaneScaffoldDirective()` in [PaneScaffoldDirective], with modifications to
@@ -142,7 +141,7 @@ private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun calculateScaffoldDirective(
     windowAdaptiveInfo: WindowAdaptiveInfo,
-    verticalHingePolicy: HingePolicy = HingePolicy.AvoidSeparating
+    verticalHingePolicy: HingePolicy = HingePolicy.AvoidSeparating,
 ): PaneScaffoldDirective {
     val maxHorizontalPartitions: Int
     val verticalSpacerSize: Dp
@@ -195,20 +194,19 @@ fun calculateScaffoldDirective(
  * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
  */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> {
-    return when (hingePolicy) {
+private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> =
+    when (hingePolicy) {
         HingePolicy.AvoidSeparating -> posture.separatingVerticalHingeBounds
         HingePolicy.AvoidOccluding -> posture.occludingVerticalHingeBounds
         HingePolicy.AlwaysAvoid -> posture.allVerticalHingeBounds
         else -> emptyList()
     }
-}
 
 @Composable
 fun MainScreen(
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val homeScreenUiState by viewModel.state.collectAsStateWithLifecycle()
     val uiState = homeScreenUiState
@@ -217,7 +215,7 @@ fun MainScreen(
             uiState = uiState,
             windowSizeClass = windowSizeClass,
             navigateToPlayer = navigateToPlayer,
-            viewModel = viewModel,
+            viewModel = viewModel
         )
 
         if (uiState.errorMessage != null) {
@@ -232,7 +230,7 @@ private fun HomeScreenError(onRetry: () -> Unit, modifier: Modifier = Modifier) 
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         ) {
             Text(
                 text = stringResource(id = R.string.an_error_has_occurred),
@@ -259,13 +257,16 @@ private fun HomeScreenReady(
     uiState: HomeScreenUiState,
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val navigator = rememberSupportingPaneScaffoldNavigator<String>(
         scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo())
     )
+
+    val scope = rememberCoroutineScope()
+
     BackHandler(enabled = navigator.canNavigateBack()) {
-        navigator.navigateBack()
+        scope.launch { navigator.navigateBack() }
     }
 
     Surface {
@@ -284,14 +285,16 @@ private fun HomeScreenReady(
                     library = uiState.library,
                     onHomeAction = viewModel::onHomeAction,
                     navigateToPodcastDetails = {
-                        navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                        scope.launch {
+                            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                        }
                     },
                     navigateToPlayer = navigateToPlayer,
                     modifier = Modifier.fillMaxSize()
                 )
             },
             supportingPane = {
-                val podcastUri = navigator.currentDestination?.content
+                val podcastUri = navigator.currentDestination?.contentKey
                 if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel =
                         hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory>(
@@ -304,10 +307,12 @@ private fun HomeScreenReady(
                         navigateToPlayer = navigateToPlayer,
                         navigateBack = {
                             if (navigator.canNavigateBack()) {
-                                navigator.navigateBack()
+                                scope.launch {
+                                    navigator.navigateBack()
+                                }
                             }
                         },
-                        showBackButton = navigator.isMainPaneHidden(),
+                        showBackButton = navigator.isMainPaneHidden()
                     )
                 }
             },
@@ -318,10 +323,7 @@ private fun HomeScreenReady(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeAppBar(
-    isExpanded: Boolean,
-    modifier: Modifier = Modifier,
-) {
+private fun HomeAppBar(isExpanded: Boolean, modifier: Modifier = Modifier) {
     var queryText by remember {
         mutableStateOf("")
     }
@@ -369,7 +371,7 @@ private fun HomeAppBar(
 @Composable
 private fun HomeScreenBackground(
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -397,7 +399,7 @@ private fun HomeScreen(
     onHomeAction: (HomeAction) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // Effect that changes the home category selection when there are no subscribed podcasts
     LaunchedEffect(key1 = featuredPodcasts) {
@@ -416,7 +418,7 @@ private fun HomeScreen(
                 Column {
                     HomeAppBar(
                         isExpanded = windowSizeClass.isCompact,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
                     )
                     if (isLoading) {
                         LinearProgressIndicator(
@@ -453,7 +455,7 @@ private fun HomeScreen(
                     onHomeAction(action)
                 },
                 navigateToPodcastDetails = navigateToPodcastDetails,
-                navigateToPlayer = navigateToPlayer,
+                navigateToPlayer = navigateToPlayer
             )
         }
     }
@@ -494,7 +496,7 @@ private fun HomeContent(
         modifier = modifier,
         onHomeAction = onHomeAction,
         navigateToPodcastDetails = navigateToPodcastDetails,
-        navigateToPlayer = navigateToPlayer,
+        navigateToPlayer = navigateToPlayer
     )
 }
 
@@ -563,7 +565,7 @@ private fun HomeContentGrid(
                     onTogglePodcastFollowed = {
                         onHomeAction(HomeAction.TogglePodcastFollowed(it))
                     },
-                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
+                    onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) }
                 )
             }
         }
@@ -644,7 +646,7 @@ private fun HomeCategoryTabs(
 @Composable
 private fun HomeCategoryTabIndicator(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onSurface
+    color: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Spacer(
         modifier
@@ -677,7 +679,7 @@ private fun FollowedPodcasts(
             state = pagerState,
             contentPadding = PaddingValues(
                 horizontal = horizontalPadding,
-                vertical = 16.dp,
+                vertical = 16.dp
             ),
             pageSpacing = 24.dp,
             pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_SIZE_DP)
@@ -717,7 +719,7 @@ private fun FollowedPodcastCarouselItem(
                 contentDescription = podcastTitle,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(MaterialTheme.shapes.medium),
+                    .clip(MaterialTheme.shapes.medium)
             )
 
             ToggleFollowPodcastIconButton(
@@ -764,7 +766,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 private fun HomeAppBarPreview() {
     JetcasterTheme {
         HomeAppBar(
-            isExpanded = false,
+            isExpanded = false
         )
     }
 }
@@ -792,7 +794,7 @@ private fun PreviewHome() {
             library = LibraryInfo(),
             onHomeAction = {},
             navigateToPodcastDetails = {},
-            navigateToPlayer = {},
+            navigateToPlayer = {}
         )
     }
 }

@@ -26,6 +26,6 @@ set -xe
 
 ./scripts/gradlew_recursive.sh assembleDebug
 ./scripts/gradlew_recursive.sh lintDebug
-if ! ./scripts/gradlew_recursive.sh --init-script buildscripts/init.gradle.kts spotlessCheck ; then
+if ! ./scripts/gradlew_recursive.sh spotlessCheck ; then
     echo "Formatting error. Try running scripts/format.sh"
 fi

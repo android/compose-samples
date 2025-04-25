@@ -3,19 +3,20 @@
 # Do not add a dependency to an individual sample, edit the global version instead.
 #####
 [versions]
-accompanist = "0.37.0"
-androidGradlePlugin = "8.8.1"
-androidx-activity-compose = "1.10.0"
+accompanist = "0.37.2"
+android-material3 = "1.13.0-alpha13"
+androidGradlePlugin = "8.9.2"
+androidx-activity-compose = "1.10.1"
 androidx-appcompat = "1.7.0"
-androidx-compose-bom = "2025.02.00"
+androidx-compose-bom = "2025.04.01"
 androidx-constraintlayout = "1.1.0"
 androidx-core-splashscreen = "1.0.1"
-androidx-corektx = "1.15.0"
+androidx-corektx = "1.16.0"
 androidx-glance = "1.1.1"
 androidx-lifecycle = "2.8.2"
 androidx-lifecycle-compose = "2.8.7"
 androidx-lifecycle-runtime-compose = "2.8.7"
-androidx-navigation = "2.8.7"
+androidx-navigation = "2.8.9"
 androidx-palette = "1.0.0"
 androidx-test = "1.6.1"
 androidx-test-espresso = "3.6.1"
@@ -30,37 +31,37 @@ androix-test-uiautomator = "2.3.0"
 coil = "2.7.0"
 # @keep
 compileSdk = "35"
-coroutines = "1.10.1"
+coroutines = "1.10.2"
 google-maps = "18.2.0"
 gradle-versions = "0.52.0"
-hilt = "2.55"
+hilt = "2.56.2"
 hiltExt = "1.2.0"
-horologist = "0.6.22"
-# @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
-jdkDesugar = "1.2.2"
+horologist = "0.6.23"
+jdkDesugar = "2.1.5"
 junit = "4.13.2"
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 kotlinx-serialization-json = "1.7.3"
 kotlinx_immutable = "0.3.8"
-ksp = "2.1.10-1.0.30"
+ksp = "2.1.20-2.0.0"
 maps-compose = "3.1.1"
 # @keep
 minSdk = "21"
 okhttp = "4.12.0"
 play-services-wearable = "18.1.0"
 robolectric = "4.14.1"
-roborazzi = "1.42.0"
+roborazzi = "1.43.1"
 rome = "2.1.0"
-room = "2.6.1"
+room = "2.7.1"
 secrets = "2.0.1"
 spotless = "7.0.3"
 # @keep
 targetSdk = "33"
-version-catalog-update = "0.8.5"
+version-catalog-update = "1.0.0"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+android-material3 = { module = "com.google.android.material:material", version.ref = "android-material3" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
