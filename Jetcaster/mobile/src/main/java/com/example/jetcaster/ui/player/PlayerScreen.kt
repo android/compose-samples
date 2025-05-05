@@ -23,10 +23,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -46,10 +43,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -61,9 +59,13 @@ import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -71,6 +73,8 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -80,18 +84,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
@@ -115,8 +113,8 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
-import java.time.Duration
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 /**
  * Stateful version of the Podcast player
@@ -507,7 +505,6 @@ private fun PlayerContentTableTopBottom(
                 isPlaying = episodePlayerState.isPlaying,
                 onPlayPress = playerControlActions.onPlayPress,
                 onPausePress = playerControlActions.onPausePress,
-                playerButtonSize = 92.dp,
                 onAdvanceBy = playerControlActions.onAdvanceBy,
                 onRewindBy = playerControlActions.onRewindBy,
                 onNext = playerControlActions.onNext,
@@ -739,6 +736,7 @@ private fun PlayerSlider(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun PlayerButtons(
     hasNext: Boolean,
@@ -750,93 +748,115 @@ private fun PlayerButtons(
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     modifier: Modifier = Modifier,
-    playerButtonSize: Dp = 72.dp,
-    sideButtonSize: Dp = 48.dp,
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        val sideButtonsModifier = Modifier
-            .size(sideButtonSize)
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                shape = CircleShape
-            )
-            .semantics { role = Role.Button }
-
-        val primaryButtonModifier = Modifier
-            .size(playerButtonSize)
-            .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = CircleShape
-            )
-            .semantics { role = Role.Button }
-
-        Image(
-            imageVector = Icons.Filled.SkipPrevious,
-            contentDescription = stringResource(R.string.cd_skip_previous),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
-            modifier = sideButtonsModifier
-                .clickable(enabled = isPlaying, onClick = onPrevious)
-                .alpha(if (isPlaying) 1f else 0.25f)
-        )
-        Image(
-            imageVector = Icons.Filled.Replay10,
-            contentDescription = stringResource(R.string.cd_replay10),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = sideButtonsModifier
-                .clickable {
-                    onRewindBy(Duration.ofSeconds(10))
-                }
-        )
-        if (isPlaying) {
-            Image(
-                imageVector = Icons.Outlined.Pause,
-                contentDescription = stringResource(R.string.cd_pause),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
-                modifier = primaryButtonModifier
-                    .padding(8.dp)
-                    .clickable {
-                        onPausePress()
-                    }
-            )
-        } else {
-            Image(
-                imageVector = Icons.Outlined.PlayArrow,
-                contentDescription = stringResource(R.string.cd_play),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
-                modifier = primaryButtonModifier
-                    .padding(8.dp)
-                    .clickable {
-                        onPlayPress()
-                    }
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        ToggleButton(
+            checked = isPlaying,
+            onCheckedChange = { if(isPlaying) { onPausePress() } else { onPlayPress() } },
+            colors = ToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.primary,
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                checkedContainerColor = MaterialTheme.colorScheme.primary,
+                checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            shapes = ButtonShapes(
+                shape  = RoundedCornerShape(60.dp),
+                pressedShape = if(isPlaying) RoundedCornerShape(60.dp) else RoundedCornerShape(30.dp),
+                checkedShape = RoundedCornerShape(30.dp)
+            ),
+            modifier = Modifier.width(186.dp).height(136.dp)
+        ) {
+            Icon(
+                imageVector = if(isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = null
             )
         }
-        Image(
-            imageVector = Icons.Filled.Forward10,
-            contentDescription = stringResource(R.string.cd_forward10),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = sideButtonsModifier
-                .clickable {
-                    onAdvanceBy(Duration.ofSeconds(10))
-                }
-        )
-        Image(
-            imageVector = Icons.Filled.SkipNext,
-            contentDescription = stringResource(R.string.cd_skip_next),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
-            modifier = sideButtonsModifier
-                .clickable(enabled = hasNext, onClick = onNext)
-                .alpha(if (hasNext) 1f else 0.25f)
-        )
+        ButtonGroup(
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            val skipButtonsModifier = Modifier
+                .width(56.dp)
+                .height(68.dp)
+
+            val rewindFastForwardButtonsModifier = Modifier
+                .size(68.dp)
+
+            IconButton(
+                onClick = onPrevious,
+                modifier = skipButtonsModifier,
+                shape = RoundedCornerShape(50.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                enabled = isPlaying,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.SkipPrevious,
+                    contentDescription = null
+                )
+            }
+
+            IconButton(
+                onClick = { onRewindBy(Duration.ofSeconds(10)) } ,
+                modifier = rewindFastForwardButtonsModifier,
+                shape = RoundedCornerShape(15.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondary
+                ),
+                enabled = isPlaying,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Replay10,
+                    contentDescription = null
+                )
+            }
+
+            IconButton(
+                onClick = { onAdvanceBy(Duration.ofSeconds(10)) },
+                modifier = rewindFastForwardButtonsModifier,
+                shape = RoundedCornerShape(15.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondary
+                ),
+                enabled = isPlaying,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Forward10,
+                    contentDescription = null
+                )
+            }
+
+            IconButton(
+                onClick = onNext,
+                modifier = skipButtonsModifier,
+                shape = RoundedCornerShape(50.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                enabled = hasNext,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.SkipNext,
+                    contentDescription = null
+                )
+            }
+        }
     }
 }
 
