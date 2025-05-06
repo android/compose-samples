@@ -495,7 +495,6 @@ private fun PlayerContentTableTopBottom(
         PodcastDescription(
             title = episode.title,
             podcastName = episode.podcastName,
-            titleTextStyle = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.weight(0.5f))
         Column(
@@ -644,19 +643,18 @@ private fun PlayerImage(
 @Composable
 private fun PodcastDescription(
     title: String,
-    podcastName: String,
-    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+    podcastName: String
 ) {
     Text(
         text = title,
-        style = titleTextStyle,
-        maxLines = 1,
+        style = MaterialTheme.typography.displayLarge,
+        maxLines = 2,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.basicMarquee()
     )
     Text(
         text = podcastName,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurface,
         maxLines = 1
     )
@@ -668,7 +666,7 @@ private fun PodcastInformation(
     name: String,
     summary: String,
     modifier: Modifier = Modifier,
-    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+    titleTextStyle: TextStyle = MaterialTheme.typography.headlineLarge,
     nameTextStyle: TextStyle = MaterialTheme.typography.displaySmall,
 ) {
     Column(

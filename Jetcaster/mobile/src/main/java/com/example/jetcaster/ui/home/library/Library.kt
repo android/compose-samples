@@ -46,7 +46,7 @@ fun LazyGridScope.libraryItems(
                 start = Keyline1,
                 top = 16.dp,
             ),
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineMedium,
         )
     }
 
