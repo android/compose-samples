@@ -62,6 +62,7 @@
     <string name="not_available">Functionality currently not available</string>
     <string name="not_available_subtitle">Grab a beverage and check back later!</string>
     <string name="attached_image">Attached image</string>
+    <string name="remove_image">Remove image</string>
     <string name="search">Search</string>
     <string name="info">Information</string>
     <string name="more_options">More options</string>
