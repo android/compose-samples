@@ -22,25 +22,27 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +50,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonColors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,7 +69,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetcaster.R
 import com.example.jetcaster.core.domain.testing.PreviewEpisodes
@@ -96,6 +99,7 @@ fun PodcastDetailsScreen(
                 modifier = Modifier.fillMaxSize()
             )
         }
+
         is PodcastUiState.Ready -> {
             PodcastDetailsScreen(
                 podcast = s.podcast,
@@ -209,46 +213,38 @@ fun PodcastDetailsHeaderItem(
     toggleSubscribe: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(
+    Box(
         modifier = modifier.padding(Keyline1)
     ) {
-        val maxImageSize = this.maxWidth / 2
-        val imageSize = min(maxImageSize, 148.dp)
         Column {
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                PodcastImage(
-                    modifier = Modifier
-                        .size(imageSize)
-                        .clip(MaterialTheme.shapes.large),
-                    podcastImageUrl = podcast.imageUrl,
-                    contentDescription = podcast.title
-                )
-                Column(
-                    modifier = Modifier.padding(start = 16.dp)
-                ) {
-                    Text(
-                        text = podcast.title,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    PodcastDetailsHeaderItemButtons(
-                        isSubscribed = podcast.isSubscribed ?: false,
-                        onClick = {
-                            toggleSubscribe(podcast)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
+            PodcastImage(
+                modifier = Modifier
+                    .size(280.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .align(Alignment.CenterHorizontally),
+                podcastImageUrl = podcast.imageUrl,
+                contentDescription = podcast.title
+            )
+            Text(
+                text = podcast.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier.padding(top = 16.dp)
+            )
             PodcastDetailsDescription(
                 podcast = podcast,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
+            )
+            PodcastDetailsHeaderItemButtons(
+                isSubscribed = podcast.isSubscribed ?: false,
+                onClick = {
+                    toggleSubscribe(podcast)
+                },
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -285,7 +281,6 @@ fun PodcastDetailsDescription(
                     .align(Alignment.BottomEnd)
                     .background(MaterialTheme.colorScheme.surface)
             ) {
-                // TODO: Add gradient effect
                 Text(
                     text = stringResource(id = R.string.see_more),
                     style = MaterialTheme.typography.bodyMedium.copy(
@@ -299,48 +294,67 @@ fun PodcastDetailsDescription(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PodcastDetailsHeaderItemButtons(
     isSubscribed: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier.padding(top = 16.dp)) {
-        Button(
-            onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSubscribed)
-                    MaterialTheme.colorScheme.tertiary
-                else
-                    MaterialTheme.colorScheme.secondary
+    var isNotificationOn by remember { mutableStateOf(false) }
+    ButtonGroup(modifier = modifier) {
+        ToggleButton(
+            checked = isSubscribed,
+            onCheckedChange = { onClick() },
+            colors = ToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
+                checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                checkedContentColor = MaterialTheme.colorScheme.secondary,
             ),
-            modifier = Modifier.semantics(mergeDescendants = true) { }
+            shapes = ButtonShapes(
+                shape = RoundedCornerShape(15.dp),
+                pressedShape = if (isSubscribed) RoundedCornerShape(15.dp) else RoundedCornerShape(
+                    60.dp
+                ),
+                checkedShape = RoundedCornerShape(60.dp)
+            ),
+            modifier = Modifier
+                .width(76.dp)
+                .height(56.dp)
+                .semantics(mergeDescendants = true) { }
         ) {
             Icon(
                 imageVector = if (isSubscribed)
                     Icons.Default.Check
                 else
                     Icons.Default.Add,
-                contentDescription = null
-            )
-            Text(
-                text = if (isSubscribed)
-                    stringResource(id = R.string.subscribed)
-                else
-                    stringResource(id = R.string.subscribe),
-                modifier = Modifier.padding(start = 8.dp)
+                contentDescription = null,
             )
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        IconButton(
-            onClick = { /* TODO */ },
-            modifier = Modifier.padding(start = 8.dp)
+        ToggleButton(
+            checked = isNotificationOn,
+            onCheckedChange = { isNotificationOn = !isNotificationOn },
+            colors = ToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.inverseSurface,
+                contentColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
+                checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                checkedContentColor = MaterialTheme.colorScheme.secondary,
+            ),
+            shapes = ButtonShapes(
+                shape = RoundedCornerShape(100.dp),
+                pressedShape = if (isNotificationOn) RoundedCornerShape(100.dp) else RoundedCornerShape(20.dp),
+                checkedShape = RoundedCornerShape(20.dp)
+            ),
+            modifier = Modifier.size(56.dp),
         ) {
             Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.cd_more)
+                imageVector = if (isNotificationOn) Icons.Default.NotificationsActive else Icons.Default.NotificationsNone,
+                contentDescription = stringResource(R.string.cd_more),
             )
         }
     }

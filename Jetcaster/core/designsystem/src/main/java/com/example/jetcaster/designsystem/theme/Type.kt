@@ -25,12 +25,12 @@ val JetcasterTypography = androidx.compose.material3.Typography(
     displayLarge = TextStyle(
         fontSize = 64.sp,
         lineHeight = 56.sp,
-        fontFamily = Roboto,
+        fontFamily = RobotoFlex,
         fontWeight = FontWeight(738),
         textAlign = TextAlign.Center,
     ),
     displayMedium = TextStyle(
-        fontFamily = Montserrat,
+        fontFamily = RobotoFlex,
         fontSize = 45.sp,
         fontWeight = FontWeight.W400,
         lineHeight = 52.sp
