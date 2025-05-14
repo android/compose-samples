@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.FilledTonalButton
@@ -46,20 +47,21 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 /**
  * A placeholder chip to be displayed while the contents of the [Button] is being loaded.
  */
+@OptIn(ExperimentalWearMaterialApi::class)
 @ExperimentalHorologistApi
 @Composable
 fun PlaceholderButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    placeholderState: PlaceholderState = rememberPlaceholderState { false },
+    placeholderState: PlaceholderState = rememberPlaceholderState(false),
     secondaryLabel: Boolean = true,
     icon: Boolean = true
 ) {
     var labelText by remember { mutableStateOf("") }
     var imageVector: ImageVector? by remember { mutableStateOf(null) }
-    val buttonPlaceholderState = rememberPlaceholderState {
+    val buttonPlaceholderState = rememberPlaceholderState (
         labelText.isNotEmpty() && imageVector != null
-    }
+    )
     FilledTonalButton(
         onClick = { onClick },
         enabled = true,
@@ -100,11 +102,6 @@ fun PlaceholderButton(
         } else {
             null
         },
-        colors =
-        PlaceholderDefaults.placeholderButtonColors(
-            originalButtonColors = ButtonDefaults.buttonColors(),
-            placeholderState = buttonPlaceholderState
-        ),
         modifier = modifier.fillMaxWidth()
             .placeholderShimmer(buttonPlaceholderState)
     )

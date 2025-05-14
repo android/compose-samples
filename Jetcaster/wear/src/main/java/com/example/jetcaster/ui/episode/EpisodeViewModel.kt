@@ -62,7 +62,9 @@ class EpisodeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val episodeUri: String =
-        savedStateHandle.toRoute<Episode>().episodeUri
+        savedStateHandle.get<String>(Episode.EPISODE_URI).let {
+            Uri.decode(it)
+        }
 
     private val episodeFlow = if (episodeUri != null) {
         episodeStore.episodeAndPodcastWithUri(episodeUri)

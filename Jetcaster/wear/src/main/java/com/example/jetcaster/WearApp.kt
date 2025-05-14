@@ -30,7 +30,6 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.foundation.pager.rememberPagerState
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.ScreenScaffold
-import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavHostState
 import com.example.jetcaster.theme.WearAppTheme
 import com.example.jetcaster.ui.Episode
@@ -50,12 +49,12 @@ import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.ui.podcasts.PodcastsScreen
 import com.example.jetcaster.ui.queue.QueueScreen
-import com.google.android.horologist.audio.ui.VolumeScreen
+import com.google.android.horologist.audio.ui.material3.VolumeScreen
 import com.google.android.horologist.audio.ui.VolumeViewModel
-import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToPlayer
-import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToVolume
-import com.google.android.horologist.media.ui.navigation.NavigationScreens
-import com.google.android.horologist.media.ui.screens.playerlibrarypager.PlayerLibraryPagerScreen
+import com.google.android.horologist.media.ui.material3.navigation.MediaNavController.navigateToPlayer
+import com.google.android.horologist.media.ui.material3.navigation.MediaNavController.navigateToVolume
+import com.google.android.horologist.media.ui.material3.navigation.NavigationScreens
+import com.google.android.horologist.media.ui.material3.screens.playerlibrarypager.PlayerLibraryPagerScreen
 
 @Composable
 fun WearApp(navController: NavHostController) {

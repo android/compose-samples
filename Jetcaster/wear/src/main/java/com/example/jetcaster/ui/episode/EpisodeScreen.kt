@@ -16,15 +16,19 @@
 
 package com.example.jetcaster.ui.episode
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -41,6 +45,7 @@ import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.AlertDialog
+import androidx.wear.compose.material3.ButtonGroup
 import androidx.wear.compose.material3.FilledIconButton
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ListHeader
@@ -123,6 +128,7 @@ fun EpisodeScreen(
                     title = { stringResource(R.string.episode_info_not_available) }
                 )
             }
+
             EpisodeScreenState.Loading -> {
                 EpisodeScreenLoading(columnState, contentPadding, modifier)
             }
@@ -177,44 +183,52 @@ fun LoadedButtonsContent(
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    val playInteractionSource = remember { MutableInteractionSource() }
+    val addToQueueInteractionSource = remember { MutableInteractionSource() }
 
-    Row(
+    Box(
         modifier = modifier
             .padding(bottom = 16.dp)
             .height(52.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+        contentAlignment = Alignment.Center
     ) {
+        ButtonGroup(Modifier.fillMaxWidth()) {
 
-        FilledIconButton(
-            onClick = {
-                onPlayButtonClick()
-                onPlayEpisode(episode)
-            },
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-            enabled = enabled,
-            shapes = PlayIconShape()
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.play),
-                contentDescription = stringResource(id = R.string.button_play_content_description)
-            )
-        }
+            FilledIconButton(
+                onClick = {
+                    onPlayButtonClick()
+                    onPlayEpisode(episode)
+                },
+                modifier = Modifier
+                    .weight(weight = 0.7F)
+                    .animateWidth(playInteractionSource),
+                enabled = enabled,
+                interactionSource = playInteractionSource,
+                shapes = PlayIconShape()
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.play),
+                    contentDescription = stringResource(id = R.string.button_play_content_description)
+                )
+            }
 
-        FilledIconButton(
-            onClick = { onAddToQueue(episode) },
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-            enabled = enabled
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                contentDescription = stringResource(id = R.string.add_to_queue_content_description)
-            )
+            FilledIconButton(
+                onClick = { onAddToQueue(episode) },
+                modifier = Modifier
+                    .weight(weight = 0.3F)
+                    .animateWidth(addToQueueInteractionSource),
+                interactionSource = addToQueueInteractionSource,
+                enabled = enabled
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                    contentDescription = stringResource(id = R.string.add_to_queue_content_description)
+                )
+            }
         }
     }
 }
+
 @Composable
 fun EpisodeScreenLoading(
     columnState: TransformingLazyColumnState,
@@ -345,6 +359,7 @@ fun EpisodeScreenEmptyPreview() {
         onDismiss = {}
     )
 }
+
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable

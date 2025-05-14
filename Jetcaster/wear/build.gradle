@@ -75,6 +75,7 @@ android {
 
 dependencies {
 
+    implementation libs.androidx.media3.common.ktx
     def composeBom = platform(libs.androidx.compose.bom)
 
     // General compose dependencies
@@ -100,15 +101,19 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.compose.material.iconsExtended)
 
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui.compose)
+    implementation(libs.androidx.media3.session)
+
     // Horologist for correct Compose layout
-    implementation libs.horologist.composables
     implementation libs.horologist.compose.layout
-    implementation libs.horologist.compose.material
 
     //Horologist Media toolkit
     implementation libs.horologist.media.ui
+    implementation libs.horologist.media.uimaterial3
     implementation libs.horologist.media.ui.model
     implementation libs.horologist.audio.ui
+    implementation libs.horologist.audio.uimaterial3
     implementation libs.horologist.audio.ui.model
     implementation libs.horologist.media.data
     implementation libs.horologist.images.coil

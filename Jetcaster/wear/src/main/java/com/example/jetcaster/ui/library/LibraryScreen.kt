@@ -49,7 +49,10 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ListHeader
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material3.lazy.rememberTransformationSpec
+import androidx.wear.compose.material3.lazy.transformedHeight
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import coil.compose.AsyncImage
@@ -250,10 +253,12 @@ fun LibraryScreen(
         scrollState = columnState,
         contentPadding = contentPadding,
         modifier = modifier
-    ) {
+    ) { contentPadding ->
+        val transformationSpec = rememberTransformationSpec()
         TransformingLazyColumn(state = columnState, contentPadding = contentPadding) {
             item {
-                ListHeader {
+                ListHeader (modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec)) {
                     Text(stringResource(R.string.home_library))
                 }
             }
@@ -270,7 +275,8 @@ fun LibraryScreen(
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
                     ),
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec)
                 )
             }
             item {
@@ -280,11 +286,13 @@ fun LibraryScreen(
                     icon = {
                         IconWithBackground(R.drawable.podcast, stringResource(R.string.podcasts))
                     },
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec)
                 )
             }
             item {
-                ListHeader {
+                ListHeader(modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec)) {
                     Text(stringResource(R.string.queue))
                 }
             }
@@ -298,7 +306,8 @@ fun LibraryScreen(
                         icon = {
                             IconWithBackground(R.drawable.up_next, stringResource(R.string.up_next))
                         },
-                        modifier = modifier.fillMaxWidth()
+                        modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                        transformation = SurfaceTransformation(transformationSpec)
                     )
                 }
             }

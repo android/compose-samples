@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.queue
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -204,6 +206,8 @@ fun ButtonsContent(
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource1 = remember { MutableInteractionSource() }
+    val interactionSource2 = remember { MutableInteractionSource() }
 
     Box(modifier = modifier
         .padding(bottom = 16.dp)
@@ -216,8 +220,10 @@ fun ButtonsContent(
                     onPlayEpisodes(episodes)
                 },
                 modifier = modifier
-                    .weight(weight = 0.7F),
+                    .weight(weight = 0.7F)
+                    .animateWidth(interactionSource1),
                 enabled = enabled,
+                interactionSource = interactionSource1,
                 shapes = PlayIconShape()
             ) {
                 Icon(
@@ -228,7 +234,9 @@ fun ButtonsContent(
             FilledIconButton(
                 onClick = onDeleteQueueEpisodes,
                 modifier = modifier
-                    .weight(weight = 0.3F),
+                    .weight(weight = 0.3F)
+                    .animateWidth(interactionSource2),
+                interactionSource = interactionSource2,
                 enabled = enabled
             ) {
                 Icon(
