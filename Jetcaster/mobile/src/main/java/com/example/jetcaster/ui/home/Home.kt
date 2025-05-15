@@ -119,12 +119,12 @@ import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean =
@@ -188,14 +188,13 @@ fun calculateScaffoldDirective(
 /**
  * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
  */
-private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> {
-    return when (hingePolicy) {
+private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> =
+    when (hingePolicy) {
         HingePolicy.AvoidSeparating -> posture.separatingVerticalHingeBounds
         HingePolicy.AvoidOccluding -> posture.occludingVerticalHingeBounds
         HingePolicy.AlwaysAvoid -> posture.allVerticalHingeBounds
         else -> emptyList()
     }
-}
 
 @Composable
 fun MainScreen(
@@ -468,7 +467,7 @@ private fun HomeScreen(
 fun PillToolbar(
     selectedHomeCategory: HomeCategory,
     onHomeAction: (HomeAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     HorizontalFloatingToolbar(
         modifier = modifier,
@@ -476,7 +475,7 @@ fun PillToolbar(
             toolbarContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             toolbarContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             fabContainerColor = MaterialTheme.colorScheme.tertiary,
-            fabContentColor = MaterialTheme.colorScheme.onTertiary,
+            fabContentColor = MaterialTheme.colorScheme.onTertiary
         ),
         expanded = true,
         content = {
@@ -507,7 +506,9 @@ fun PillToolbar(
                     Icon(
                         Icons.Filled.LibraryMusic,
                         modifier = Modifier.padding(end = 8.dp),
-                        contentDescription = stringResource(R.string.library_toolbar_content_description)
+                        contentDescription = stringResource(
+                            R.string.library_toolbar_content_description
+                        )
                     )
                     Text(stringResource(R.string.library_toolbar))
                 }
@@ -540,13 +541,14 @@ fun PillToolbar(
                     Icon(
                         painterResource(R.drawable.genres),
                         modifier = Modifier.padding(end = 8.dp),
-                        contentDescription = stringResource(R.string.discover_toolbar_content_description)
+                        contentDescription = stringResource(
+                            R.string.discover_toolbar_content_description
+                        )
                     )
                     Text(stringResource(R.string.discover_toolbar))
                 }
             }
-
-        },
+        }
     )
 }
 
@@ -606,7 +608,9 @@ private fun HomeContentGrid(
                     fullWidthItem {
                         FollowedPodcastItem(
                             items = featuredPodcasts,
-                            onPodcastUnfollowed = { onHomeAction(HomeAction.PodcastUnfollowed(it)) },
+                            onPodcastUnfollowed = {
+                                onHomeAction(HomeAction.PodcastUnfollowed(it))
+                            },
                             navigateToPodcastDetails = navigateToPodcastDetails,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -618,7 +622,7 @@ private fun HomeContentGrid(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
                     onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
-                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) },
+                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) }
                 )
             }
 
@@ -633,7 +637,7 @@ private fun HomeContentGrid(
                         onHomeAction(HomeAction.TogglePodcastFollowed(it))
                     },
                     onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
-                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) },
+                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) }
                 )
             }
         }
@@ -654,7 +658,7 @@ private fun FollowedPodcastItem(
             items = items,
             onPodcastUnfollowed = onPodcastUnfollowed,
             navigateToPodcastDetails = navigateToPodcastDetails,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(16.dp))
@@ -720,7 +724,7 @@ private fun FollowedPodcastCarouselItem(
             contentDescription = podcastTitle,
             modifier = Modifier
                 .fillMaxSize()
-                .clip(MaterialTheme.shapes.medium),
+                .clip(MaterialTheme.shapes.medium)
         )
         ToggleFollowPodcastIconButton(
             onClick = onUnfollowedClick,

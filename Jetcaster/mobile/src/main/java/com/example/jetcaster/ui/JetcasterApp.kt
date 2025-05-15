@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2020-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@
 package com.example.jetcaster.ui
 
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.scaleOut
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -43,7 +43,7 @@ import com.example.jetcaster.ui.player.PlayerScreen
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun JetcasterApp(
     displayFeatures: List<DisplayFeature>,
-    appState: JetcasterAppState = rememberJetcasterAppState()
+    appState: JetcasterAppState = rememberJetcasterAppState(),
 ) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     if (appState.isOnline) {
@@ -65,7 +65,7 @@ fun JetcasterApp(
                                 windowSizeClass = adaptiveInfo.windowSizeClass,
                                 navigateToPlayer = { episode ->
                                     appState.navigateToPlayer(episode.uri, backStackEntry)
-                                },
+                                }
                             )
                         }
                     }
@@ -76,7 +76,7 @@ fun JetcasterApp(
                             PlayerScreen(
                                 windowSizeClass = adaptiveInfo.windowSizeClass,
                                 displayFeatures = displayFeatures,
-                                onBackPress = appState::navigateBack,
+                                onBackPress = appState::navigateBack
                             )
                         }
                     }

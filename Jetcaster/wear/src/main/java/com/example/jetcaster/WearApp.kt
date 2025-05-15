@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2024-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,12 +67,12 @@ fun WearApp(navController: NavHostController) {
                 startDestination = NavigationScreens.Player.playerDestination(),
                 navController = navController,
                 modifier = Modifier.background(Color.Transparent),
-                state = navHostState,
+                state = navHostState
             ) {
                 composable(
                     route = NavigationScreens.Player.navRoute,
                     arguments = NavigationScreens.Player.arguments,
-                    deepLinks = NavigationScreens.Player.deepLinks(""),
+                    deepLinks = NavigationScreens.Player.deepLinks("")
                 ) {
                     val volumeState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
@@ -94,17 +94,17 @@ fun WearApp(navController: NavHostController) {
                             LibraryScreen(
                                 onLatestEpisodeClick = { navController.navigateToLatestEpisode() },
                                 onYourPodcastClick = { navController.navigateToYourPodcast() },
-                                onUpNextClick = { navController.navigateToUpNext() },
+                                onUpNextClick = { navController.navigateToUpNext() }
                             )
                         },
-                        backStack = it,
+                        backStack = it
                     )
                 }
 
                 composable(
                     route = NavigationScreens.Volume.navRoute,
                     arguments = NavigationScreens.Volume.arguments,
-                    deepLinks = NavigationScreens.Volume.deepLinks(""),
+                    deepLinks = NavigationScreens.Volume.deepLinks("")
                 ) {
                     ScreenScaffold(timeText = {}) {
                         VolumeScreen(volumeViewModel = volumeViewModel)
@@ -112,7 +112,7 @@ fun WearApp(navController: NavHostController) {
                 }
 
                 composable(
-                    route = LatestEpisodes.navRoute,
+                    route = LatestEpisodes.navRoute
                 ) {
                     LatestEpisodesScreen(
                         onPlayButtonClick = {

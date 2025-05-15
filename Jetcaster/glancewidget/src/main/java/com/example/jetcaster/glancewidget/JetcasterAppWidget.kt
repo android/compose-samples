@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2024-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,6 @@ class JetcasterAppWidget : GlanceAppWidget() {
         get() = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-
         val testState = JetcasterAppWidgetViewState(
             episodeTitle =
             "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
@@ -176,10 +175,10 @@ private fun WidgetUiNormal(
     playPauseIcon: PlayPauseIcon,
     iconSize: Dp,
 ) {
-
     Scaffold {
         Row(
-            GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Vertical.CenterVertically
+            GlanceModifier.fillMaxSize(),
+            verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
             AlbumArt(imageUri, GlanceModifier.size(iconSize))
             PodcastText(title, subtitle, modifier = GlanceModifier.padding(16.dp).defaultWeight())
@@ -189,12 +188,9 @@ private fun WidgetUiNormal(
 }
 
 @Composable
-private fun Widget(
-    iconSize: Dp,
-    imageUri: Uri,
-    playPauseIcon: PlayPauseIcon,
-) {
-    Scaffold(titleBar = {} /* title bar will be optional in scaffold in glance 1.1.0-beta3*/) {
+private fun Widget(iconSize: Dp, imageUri: Uri, playPauseIcon: PlayPauseIcon) {
+    /* title bar will be optional in scaffold in glance 1.1.0-beta3*/
+    Scaffold(titleBar = {}) {
         Row(
             modifier = GlanceModifier.fillMaxSize(),
             verticalAlignment = Alignment.Vertical.CenterVertically
@@ -214,10 +210,7 @@ private fun WidgetUiInvalidSize() {
 }
 
 @Composable
-private fun AlbumArt(
-    imageUri: Uri,
-    modifier: GlanceModifier = GlanceModifier
-) {
+private fun AlbumArt(imageUri: Uri, modifier: GlanceModifier = GlanceModifier) {
     WidgetAsyncImage(uri = imageUri, contentDescription = null, modifier = modifier)
 }
 
@@ -234,12 +227,12 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
                     fontWeight = FontWeight.Medium,
                     color = fgColor
                 ),
-                maxLines = 2,
+                maxLines = 2
             )
             Text(
                 text = subtitle,
                 style = TextStyle(fontSize = 14.sp, color = fgColor),
-                maxLines = 2,
+                maxLines = 2
             )
         }
         else -> Column(modifier) {
@@ -250,7 +243,7 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
                     fontWeight = FontWeight.Medium,
                     color = fgColor
                 ),
-                maxLines = 1,
+                maxLines = 1
             )
         }
     }
@@ -260,7 +253,7 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
 private fun PlayPauseButton(
     modifier: GlanceModifier = GlanceModifier.size(Sizes.normal),
     state: PlayPauseIcon,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val (iconRes: Int, description: Int) = when (state) {
         PlayPauseIcon.Play -> R.drawable.outline_play_arrow_24 to R.string.content_description_play
@@ -287,7 +280,7 @@ enum class PlayPauseIcon { Play, Pause }
 private fun WidgetAsyncImage(
     uri: Uri,
     contentDescription: String?,
-    modifier: GlanceModifier = GlanceModifier
+    modifier: GlanceModifier = GlanceModifier,
 ) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
