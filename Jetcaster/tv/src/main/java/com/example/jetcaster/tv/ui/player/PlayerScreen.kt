@@ -16,6 +16,8 @@
 
 package com.example.jetcaster.tv.ui.player
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +35,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +52,8 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -56,6 +61,16 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player.REPEAT_MODE_ALL
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.session.MediaSession
+import androidx.media3.ui.compose.PlayerSurface
+import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.tv.material3.Button
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
@@ -136,22 +151,59 @@ private fun Player(
     val currentEpisode = episodePlayerState.currentEpisode
 
     if (currentEpisode != null) {
-        EpisodePlayerWithBackground(
-            playerEpisode = currentEpisode,
-            queue = EpisodeList(episodePlayerState.queue),
-            isPlaying = episodePlayerState.isPlaying,
-            timeElapsed = episodePlayerState.timeElapsed,
-            play = play,
-            pause = pause,
-            previous = previous,
-            next = next,
-            skip = skip,
-            rewind = rewind,
-            enqueue = enqueue,
-            showDetails = showDetails,
-            playEpisode = playEpisode,
-            modifier = modifier,
-        )
+        val context = LocalContext.current
+
+        val exoPlayer = rememberPlayer(context)
+
+        DisposableEffect(exoPlayer, playEpisode) {
+            exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentEpisode.mediaUrls[0])))
+            val mediaSession = MediaSession.Builder(context, exoPlayer).build()
+            exoPlayer.prepare()
+            exoPlayer.play()
+            onDispose {
+                mediaSession.release()
+                exoPlayer.release()
+            }
+        }
+        //Adding PlayerSurface at the bottom of the stack
+        // as it is just the audio player
+        Box {
+            PlayerSurface(
+                player = exoPlayer,
+                modifier = Modifier.resizeWithContentScale(
+                    contentScale = ContentScale.Fit,
+                    sourceSizeDp = null
+                )
+            )
+            EpisodePlayerWithBackground(
+                playerEpisode = currentEpisode,
+                queue = EpisodeList(episodePlayerState.queue),
+                isPlaying = episodePlayerState.isPlaying,
+                timeElapsed = episodePlayerState.timeElapsed,
+                play = ({
+                    play()
+                    exoPlayer.play()
+                }),
+                pause = ({
+                    pause()
+                    exoPlayer.pause()
+                }),
+                previous = previous,
+                next = next,
+                skip = ({
+                    skip()
+                    exoPlayer.seekForward()
+                }),
+                rewind = ({
+                    rewind()
+                    exoPlayer.seekBack()
+                }),
+                enqueue = enqueue,
+                showDetails = showDetails,
+                playEpisode = playEpisode,
+                modifier = modifier,
+            )
+        }
     }
 }
 
@@ -477,4 +529,19 @@ private fun PlayerQueueOverlay(
                 .onFocusChanged { hasFocus = it.hasFocus }
         )
     }
+}
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+internal fun rememberPlayer(context: Context) = remember {
+    ExoPlayer.Builder(context)
+        .setSeekForwardIncrementMs(10 * 1000)
+        .setSeekBackIncrementMs(10 * 1000)
+        .setMediaSourceFactory(ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)))
+        .setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+        .build()
+        .apply {
+            playWhenReady = true
+            repeatMode = REPEAT_MODE_ALL
+        }
 }

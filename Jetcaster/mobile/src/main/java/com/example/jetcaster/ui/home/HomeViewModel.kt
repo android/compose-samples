@@ -26,10 +26,12 @@ import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.asDaoModel
 import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.player.EpisodePlayer
@@ -161,6 +163,7 @@ class HomeViewModel @Inject constructor(
             is HomeAction.LibraryPodcastSelected -> onLibraryPodcastSelected(action.podcast)
             is HomeAction.PodcastUnfollowed -> onPodcastUnfollowed(action.podcast)
             is HomeAction.QueueEpisode -> onQueueEpisode(action.episode)
+            is HomeAction.RemoveEpisode -> deleteEpisode(action.episodeInfo)
             is HomeAction.TogglePodcastFollowed -> onTogglePodcastFollowed(action.podcast)
         }
     }
@@ -192,6 +195,12 @@ class HomeViewModel @Inject constructor(
     private fun onQueueEpisode(episode: PlayerEpisode) {
         episodePlayer.addToQueue(episode)
     }
+
+    fun deleteEpisode(episode: EpisodeInfo) {
+        viewModelScope.launch {
+            episodeStore.deleteEpisode(episode.asDaoModel())
+        }
+    }
 }
 
 private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
@@ -211,6 +220,7 @@ sealed interface HomeAction {
     data class TogglePodcastFollowed(val podcast: PodcastInfo) : HomeAction
     data class LibraryPodcastSelected(val podcast: PodcastInfo?) : HomeAction
     data class QueueEpisode(val episode: PlayerEpisode) : HomeAction
+    data class RemoveEpisode(val episodeInfo: EpisodeInfo) : HomeAction
 }
 
 @Immutable
