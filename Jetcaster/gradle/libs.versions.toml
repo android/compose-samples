@@ -44,6 +44,7 @@ kotlinx-serialization-json = "1.8.1"
 kotlinx_immutable = "0.3.8"
 ksp = "2.1.20-2.0.1"
 maps-compose = "6.6.0"
+media3 = "1.6.1"
 # @keep
 minSdk = "21"
 okhttp = "4.12.0"
