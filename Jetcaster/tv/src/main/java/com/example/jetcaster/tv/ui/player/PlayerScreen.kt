@@ -127,6 +127,7 @@ fun PlayerScreen(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 private fun Player(
     episodePlayerState: EpisodePlayerState,
