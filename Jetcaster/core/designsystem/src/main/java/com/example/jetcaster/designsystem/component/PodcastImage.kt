@@ -63,28 +63,29 @@ fun PodcastImage(
             .crossfade(true)
             .build(),
         contentScale = contentScale,
-        onState = { state -> imagePainterState = state }
+        onState = { state -> imagePainterState = state },
     )
 
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         when (imagePainterState) {
             is AsyncImagePainter.State.Loading,
-            is AsyncImagePainter.State.Error -> {
+            is AsyncImagePainter.State.Error,
+            -> {
                 Image(
                     painter = painterResource(id = R.drawable.img_empty),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
             }
             else -> {
                 Box(
                     modifier = modifier
                         .background(placeholderBrush)
-                        .fillMaxSize()
+                        .fillMaxSize(),
 
                 )
             }
@@ -94,7 +95,7 @@ fun PodcastImage(
             painter = imageLoader,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = modifier.then(imageModifier)
+            modifier = modifier.then(imageModifier),
         )
     }
 }

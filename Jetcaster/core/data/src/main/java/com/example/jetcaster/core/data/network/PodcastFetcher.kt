@@ -54,7 +54,7 @@ import okhttp3.Request
 class PodcastsFetcher @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val syndFeedInput: SyndFeedInput,
-    @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) {
 
     /**
@@ -109,15 +109,9 @@ class PodcastsFetcher @Inject constructor(
 }
 
 sealed class PodcastRssResponse {
-    data class Error(
-        val throwable: Throwable?,
-    ) : PodcastRssResponse()
+    data class Error(val throwable: Throwable?) : PodcastRssResponse()
 
-    data class Success(
-        val podcast: Podcast,
-        val episodes: List<Episode>,
-        val categories: Set<Category>
-    ) : PodcastRssResponse()
+    data class Success(val podcast: Podcast, val episodes: List<Episode>, val categories: Set<Category>) : PodcastRssResponse()
 }
 
 /**
@@ -134,7 +128,7 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
         description = feedInfo?.summary ?: description,
         author = author,
         copyright = copyright,
-        imageUrl = feedInfo?.imageUri?.toString()
+        imageUrl = feedInfo?.imageUri?.toString(),
     )
 
     val categories = feedInfo?.categories
@@ -147,10 +141,7 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
 /**
  * Map a Rome [SyndEntry] instance to our own [Episode] data class.
  */
-private fun SyndEntry.toEpisode(
-    podcastUri: String,
-    enclosures: List<SyndEnclosure>
-): Episode {
+private fun SyndEntry.toEpisode(podcastUri: String, enclosures: List<SyndEnclosure>): Episode {
     val entryInformation = getModule(PodcastModuleDtd) as? EntryInformation
     return Episode(
         uri = uri,
@@ -161,7 +152,7 @@ private fun SyndEntry.toEpisode(
         subtitle = entryInformation?.subtitle,
         published = Instant.ofEpochMilli(publishedDate.time).atOffset(ZoneOffset.UTC),
         duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) },
-        mediaUrls = enclosures.map { it.url }
+        mediaUrls = enclosures.map { it.url },
     )
 }
 

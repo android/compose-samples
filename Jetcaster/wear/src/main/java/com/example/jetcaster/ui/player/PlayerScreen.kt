@@ -71,7 +71,7 @@ fun PlayerScreen(
         volumeUiState = volumeUiState,
         onVolumeClick = onVolumeClick,
         onUpdateVolume = { newVolume -> volumeViewModel.setVolume(newVolume) },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -93,7 +93,7 @@ private fun PlayerScreen(
                 mediaDisplay = {
                     TextMediaDisplay(
                         title = stringResource(R.string.nothing_playing),
-                        subtitle = ""
+                        subtitle = "",
                     )
                 },
                 controlButtons = {
@@ -105,7 +105,7 @@ private fun PlayerScreen(
                         onSeekBackButtonClick = playerScreenViewModel::onRewindBy,
                         seekBackButtonEnabled = false,
                         onSeekForwardButtonClick = playerScreenViewModel::onAdvanceBy,
-                        seekForwardButtonEnabled = false
+                        seekForwardButtonEnabled = false,
                     )
                 },
                 buttons = {
@@ -130,12 +130,12 @@ private fun PlayerScreen(
                     if (episode != null && episode.title.isNotEmpty()) {
                         TextMediaDisplay(
                             title = episode.podcastName,
-                            subtitle = episode.title
+                            subtitle = episode.title,
                         )
                     } else {
                         TextMediaDisplay(
                             title = stringResource(R.string.nothing_playing),
-                            subtitle = ""
+                            subtitle = "",
                         )
                     }
                 },
@@ -152,7 +152,7 @@ private fun PlayerScreen(
                         seekForwardButtonEnabled = true,
                         seekBackButtonIncrement = SeekButtonIncrement.Ten,
                         seekForwardButtonIncrement = SeekButtonIncrement.Ten,
-                        trackPositionUiModel = state.playerState.trackPositionUiModel
+                        trackPositionUiModel = state.playerState.trackPositionUiModel,
                     )
                 },
                 buttons = {
@@ -178,7 +178,7 @@ private fun PlayerScreen(
                         defaultColor = MaterialTheme.colors.primary,
                         modifier = Modifier.fillMaxSize(),
                     )
-                }
+                },
             )
         }
     }

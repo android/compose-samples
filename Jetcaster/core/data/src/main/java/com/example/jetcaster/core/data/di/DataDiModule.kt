@@ -55,9 +55,7 @@ object DataDiModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(
-        @ApplicationContext context: Context
-    ): OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient = OkHttpClient.Builder()
         .cache(Cache(File(context.cacheDir, "http_cache"), (20 * 1024 * 1024).toLong()))
         .apply {
             if (BuildConfig.DEBUG) eventListenerFactory(LoggingEventListener.Factory())
@@ -66,9 +64,7 @@ object DataDiModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(
-        @ApplicationContext context: Context
-    ): JetcasterDatabase =
+    fun provideDatabase(@ApplicationContext context: Context): JetcasterDatabase =
         Room.databaseBuilder(context, JetcasterDatabase::class.java, "data.db")
             // This is not recommended for normal apps, but the goal of this sample isn't to
             // showcase all of Room.
@@ -77,48 +73,34 @@ object DataDiModule {
 
     @Provides
     @Singleton
-    fun provideImageLoader(
-        @ApplicationContext context: Context
-    ): ImageLoader = ImageLoader.Builder(context)
+    fun provideImageLoader(@ApplicationContext context: Context): ImageLoader = ImageLoader.Builder(context)
         // Disable `Cache-Control` header support as some podcast images disable disk caching.
         .respectCacheHeaders(false)
         .build()
 
     @Provides
     @Singleton
-    fun provideCategoriesDao(
-        database: JetcasterDatabase
-    ): CategoriesDao = database.categoriesDao()
+    fun provideCategoriesDao(database: JetcasterDatabase): CategoriesDao = database.categoriesDao()
 
     @Provides
     @Singleton
-    fun providePodcastCategoryEntryDao(
-        database: JetcasterDatabase
-    ): PodcastCategoryEntryDao = database.podcastCategoryEntryDao()
+    fun providePodcastCategoryEntryDao(database: JetcasterDatabase): PodcastCategoryEntryDao = database.podcastCategoryEntryDao()
 
     @Provides
     @Singleton
-    fun providePodcastsDao(
-        database: JetcasterDatabase
-    ): PodcastsDao = database.podcastsDao()
+    fun providePodcastsDao(database: JetcasterDatabase): PodcastsDao = database.podcastsDao()
 
     @Provides
     @Singleton
-    fun provideEpisodesDao(
-        database: JetcasterDatabase
-    ): EpisodesDao = database.episodesDao()
+    fun provideEpisodesDao(database: JetcasterDatabase): EpisodesDao = database.episodesDao()
 
     @Provides
     @Singleton
-    fun providePodcastFollowedEntryDao(
-        database: JetcasterDatabase
-    ): PodcastFollowedEntryDao = database.podcastFollowedEntryDao()
+    fun providePodcastFollowedEntryDao(database: JetcasterDatabase): PodcastFollowedEntryDao = database.podcastFollowedEntryDao()
 
     @Provides
     @Singleton
-    fun provideTransactionRunner(
-        database: JetcasterDatabase
-    ): TransactionRunner = database.transactionRunnerDao()
+    fun provideTransactionRunner(database: JetcasterDatabase): TransactionRunner = database.transactionRunnerDao()
 
     @Provides
     @Singleton
@@ -136,9 +118,7 @@ object DataDiModule {
 
     @Provides
     @Singleton
-    fun provideEpisodeStore(
-        episodeDao: EpisodesDao
-    ): EpisodeStore = LocalEpisodeStore(episodeDao)
+    fun provideEpisodeStore(episodeDao: EpisodesDao): EpisodeStore = LocalEpisodeStore(episodeDao)
 
     @Provides
     @Singleton
@@ -149,7 +129,7 @@ object DataDiModule {
     ): PodcastStore = LocalPodcastStore(
         podcastDao = podcastDao,
         podcastFollowedEntryDao = podcastFollowedEntryDao,
-        transactionRunner = transactionRunner
+        transactionRunner = transactionRunner,
     )
 
     @Provides

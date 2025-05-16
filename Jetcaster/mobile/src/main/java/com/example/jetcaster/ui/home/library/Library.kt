@@ -52,7 +52,7 @@ fun LazyGridScope.libraryItems(
 
     items(
         library,
-        key = { it.episode.uri }
+        key = { it.episode.uri },
     ) { item ->
         EpisodeListItem(
             episode = item.episode,

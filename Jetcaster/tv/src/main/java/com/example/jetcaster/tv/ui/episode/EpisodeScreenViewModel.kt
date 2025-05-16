@@ -55,7 +55,7 @@ class EpisodeScreenViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        null
+        null,
     )
 
     val uiStateFlow = episodeToPodcastFlow.map {
@@ -67,7 +67,7 @@ class EpisodeScreenViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        EpisodeScreenUiState.Loading
+        EpisodeScreenUiState.Loading,
     )
 
     fun addPlayList(episode: PlayerEpisode) {

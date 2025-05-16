@@ -33,7 +33,7 @@ fun MediaContent(
     episode: PlayerEpisode,
     episodeArtworkPlaceholder: Painter?,
     onItemClick: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val mediaTitle = episode.title
     val duration = episode.duration
@@ -45,7 +45,7 @@ fun MediaContent(
             stringResource(
                 R.string.episode_date_duration,
                 MediumDateFormatter.format(episode.published),
-                duration.toMinutes().toInt()
+                duration.toMinutes().toInt(),
             )
         }
         // Otherwise we just use the date
@@ -59,7 +59,7 @@ fun MediaContent(
         icon = CoilPaintable(episode.podcastImageUrl, episodeArtworkPlaceholder),
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
-        modifier = modifier
+        modifier = modifier,
     )
 }
 

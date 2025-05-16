@@ -181,27 +181,22 @@ fun calculateScaffoldDirective(
         maxVerticalPartitions,
         horizontalSpacerSize,
         defaultPanePreferredWidth,
-        getExcludedVerticalBounds(windowAdaptiveInfo.windowPosture, verticalHingePolicy)
+        getExcludedVerticalBounds(windowAdaptiveInfo.windowPosture, verticalHingePolicy),
     )
 }
 
 /**
  * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
  */
-private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> =
-    when (hingePolicy) {
-        HingePolicy.AvoidSeparating -> posture.separatingVerticalHingeBounds
-        HingePolicy.AvoidOccluding -> posture.occludingVerticalHingeBounds
-        HingePolicy.AlwaysAvoid -> posture.allVerticalHingeBounds
-        else -> emptyList()
-    }
+private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> = when (hingePolicy) {
+    HingePolicy.AvoidSeparating -> posture.separatingVerticalHingeBounds
+    HingePolicy.AvoidOccluding -> posture.occludingVerticalHingeBounds
+    HingePolicy.AlwaysAvoid -> posture.allVerticalHingeBounds
+    else -> emptyList()
+}
 
 @Composable
-fun MainScreen(
-    windowSizeClass: WindowSizeClass,
-    navigateToPlayer: (EpisodeInfo) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel(),
-) {
+fun MainScreen(windowSizeClass: WindowSizeClass, navigateToPlayer: (EpisodeInfo) -> Unit, viewModel: HomeViewModel = hiltViewModel()) {
     val homeScreenUiState by viewModel.state.collectAsStateWithLifecycle()
     val uiState = homeScreenUiState
     Box {
@@ -209,7 +204,7 @@ fun MainScreen(
             uiState = uiState,
             windowSizeClass = windowSizeClass,
             navigateToPlayer = navigateToPlayer,
-            viewModel = viewModel
+            viewModel = viewModel,
         )
 
         if (uiState.errorMessage != null) {
@@ -224,11 +219,11 @@ private fun HomeScreenError(onRetry: () -> Unit, modifier: Modifier = Modifier) 
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             Text(
                 text = stringResource(id = R.string.an_error_has_occurred),
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
             Button(onClick = onRetry) {
                 Text(text = stringResource(id = R.string.retry_label))
@@ -254,7 +249,7 @@ private fun HomeScreenReady(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val navigator = rememberSupportingPaneScaffoldNavigator<String>(
-        scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo())
+        scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo()),
     )
     val scope = rememberCoroutineScope()
 
@@ -285,7 +280,7 @@ private fun HomeScreenReady(
                         }
                     },
                     navigateToPlayer = navigateToPlayer,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
             },
             supportingPane = {
@@ -293,7 +288,7 @@ private fun HomeScreenReady(
                 if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel =
                         hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory>(
-                            key = podcastUri
+                            key = podcastUri,
                         ) {
                             it.create(podcastUri)
                         }
@@ -307,11 +302,11 @@ private fun HomeScreenReady(
                                 }
                             }
                         },
-                        showBackButton = navigator.isMainPaneHidden()
+                        showBackButton = navigator.isMainPaneHidden(),
                     )
                 }
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }
@@ -327,7 +322,7 @@ private fun HomeAppBar(isExpanded: Boolean, modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         SearchBar(
             inputField = {
@@ -344,38 +339,35 @@ private fun HomeAppBar(isExpanded: Boolean, modifier: Modifier = Modifier) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     },
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
-                            contentDescription = stringResource(R.string.cd_account)
+                            contentDescription = stringResource(R.string.cd_account),
                         )
                     },
                     interactionSource = null,
-                    modifier = if (isExpanded) Modifier.fillMaxWidth() else Modifier
+                    modifier = if (isExpanded) Modifier.fillMaxWidth() else Modifier,
                 )
             },
             expanded = false,
-            onExpandedChange = {}
+            onExpandedChange = {},
         ) {}
     }
 }
 
 @Composable
-private fun HomeScreenBackground(
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit,
-) {
+private fun HomeScreenBackground(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     Box(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .radialGradientScrim(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                .radialGradientScrim(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
         )
         content()
     }
@@ -406,20 +398,20 @@ private fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     HomeScreenBackground(
-        modifier = modifier.windowInsetsPadding(WindowInsets.navigationBars)
+        modifier = modifier.windowInsetsPadding(WindowInsets.navigationBars),
     ) {
         Scaffold(
             topBar = {
                 Column {
                     HomeAppBar(
                         isExpanded = windowSizeClass.isCompact,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                     if (isLoading) {
                         LinearProgressIndicator(
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
+                                .padding(horizontal = 16.dp),
                         )
                     }
                 }
@@ -427,7 +419,7 @@ private fun HomeScreen(
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             },
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
         ) { contentPadding ->
             // Main Content
             val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
@@ -448,14 +440,14 @@ private fun HomeScreen(
                     onHomeAction(action)
                 },
                 navigateToPodcastDetails = navigateToPodcastDetails,
-                navigateToPlayer = navigateToPlayer
+                navigateToPlayer = navigateToPlayer,
             )
 
             if (showHomeCategoryTabs) {
                 PillToolbar(
                     selectedHomeCategory,
                     onHomeAction,
-                    Modifier.align(Alignment.BottomCenter)
+                    Modifier.align(Alignment.BottomCenter),
                 )
             }
         }
@@ -464,18 +456,14 @@ private fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PillToolbar(
-    selectedHomeCategory: HomeCategory,
-    onHomeAction: (HomeAction) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun PillToolbar(selectedHomeCategory: HomeCategory, onHomeAction: (HomeAction) -> Unit, modifier: Modifier = Modifier) {
     HorizontalFloatingToolbar(
         modifier = modifier,
         colors = FloatingToolbarColors(
             toolbarContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             toolbarContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             fabContainerColor = MaterialTheme.colorScheme.tertiary,
-            fabContentColor = MaterialTheme.colorScheme.onTertiary
+            fabContentColor = MaterialTheme.colorScheme.onTertiary,
         ),
         expanded = true,
         content = {
@@ -499,16 +487,16 @@ fun PillToolbar(
                     containerColor = libraryContainerColor,
                     contentColor = libraryContentColor,
                     disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
             ) {
                 Row(Modifier) {
                     Icon(
                         Icons.Filled.LibraryMusic,
                         modifier = Modifier.padding(end = 8.dp),
                         contentDescription = stringResource(
-                            R.string.library_toolbar_content_description
-                        )
+                            R.string.library_toolbar_content_description,
+                        ),
                     )
                     Text(stringResource(R.string.library_toolbar))
                 }
@@ -534,21 +522,21 @@ fun PillToolbar(
                     containerColor = discoverContainerColor,
                     contentColor = discoverContentColor,
                     disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                    disabledContentColor = MaterialTheme.colorScheme.surfaceContainerHighest
-                )
+                    disabledContentColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                ),
             ) {
                 Row {
                     Icon(
                         painterResource(R.drawable.genres),
                         modifier = Modifier.padding(end = 8.dp),
                         contentDescription = stringResource(
-                            R.string.discover_toolbar_content_description
-                        )
+                            R.string.discover_toolbar_content_description,
+                        ),
                     )
                     Text(stringResource(R.string.discover_toolbar))
                 }
             }
-        }
+        },
     )
 }
 
@@ -582,7 +570,7 @@ private fun HomeContent(
         modifier = modifier,
         onHomeAction = onHomeAction,
         navigateToPodcastDetails = navigateToPodcastDetails,
-        navigateToPlayer = navigateToPlayer
+        navigateToPlayer = navigateToPlayer,
     )
 }
 
@@ -600,7 +588,7 @@ private fun HomeContentGrid(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         when (selectedHomeCategory) {
             HomeCategory.Library -> {
@@ -613,7 +601,7 @@ private fun HomeContentGrid(
                             },
                             navigateToPodcastDetails = navigateToPodcastDetails,
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
                         )
                     }
                 }
@@ -622,7 +610,7 @@ private fun HomeContentGrid(
                     library = library,
                     navigateToPlayer = navigateToPlayer,
                     onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
-                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) }
+                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) },
                 )
             }
 
@@ -637,7 +625,7 @@ private fun HomeContentGrid(
                         onHomeAction(HomeAction.TogglePodcastFollowed(it))
                     },
                     onQueueEpisode = { onHomeAction(HomeAction.QueueEpisode(it)) },
-                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) }
+                    removeFromQueue = { onHomeAction(HomeAction.RemoveEpisode(it)) },
                 )
             }
         }
@@ -658,7 +646,7 @@ private fun FollowedPodcastItem(
             items = items,
             onPodcastUnfollowed = onPodcastUnfollowed,
             navigateToPodcastDetails = navigateToPodcastDetails,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(Modifier.height(16.dp))
@@ -679,14 +667,14 @@ private fun FollowedPodcasts(
     // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
     // stable, this implementation can be updated.
     BoxWithConstraints(
-        modifier = modifier.background(Color.Transparent)
+        modifier = modifier.background(Color.Transparent),
     ) {
         val horizontalPadding = this.maxWidth
         HorizontalMultiBrowseCarousel(
             state = rememberCarouselState { items.count() },
             preferredItemWidth = 205.dp,
             itemSpacing = 12.dp,
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(8.dp),
         ) { page ->
             val podcast = items[page]
             FollowedPodcastCarouselItem(
@@ -699,7 +687,7 @@ private fun FollowedPodcasts(
                     .maskClip(MaterialTheme.shapes.large)
                     .clickable {
                         navigateToPodcastDetails(podcast)
-                    }
+                    },
             )
         }
     }
@@ -717,19 +705,19 @@ private fun FollowedPodcastCarouselItem(
 
     Box(
         modifier
-            .height(230.dp)
+            .height(230.dp),
     ) {
         PodcastImage(
             podcastImageUrl = podcastImageUrl,
             contentDescription = podcastTitle,
             modifier = Modifier
                 .fillMaxSize()
-                .clip(MaterialTheme.shapes.medium)
+                .clip(MaterialTheme.shapes.medium),
         )
         ToggleFollowPodcastIconButton(
             onClick = onUnfollowedClick,
             isFollowed = true, /* All podcasts are followed in this feed */
-            modifier = Modifier.align(Alignment.TopStart)
+            modifier = Modifier.align(Alignment.TopStart),
         )
         Box(modifier = Modifier.matchParentSize().background(gradient))
         if (lastEpisodeDateText != null) {
@@ -741,7 +729,7 @@ private fun FollowedPodcastCarouselItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(12.dp)
-                    .align(Alignment.BottomStart)
+                    .align(Alignment.BottomStart),
             )
         }
     }
@@ -769,7 +757,7 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 private fun HomeAppBarPreview() {
     JetcasterTheme {
         HomeAppBar(
-            isExpanded = false
+            isExpanded = false,
         )
     }
 }
@@ -788,16 +776,16 @@ private fun PreviewHome() {
             selectedHomeCategory = HomeCategory.Discover,
             filterableCategoriesModel = FilterableCategoriesModel(
                 categories = PreviewCategories,
-                selectedCategory = PreviewCategories.firstOrNull()
+                selectedCategory = PreviewCategories.firstOrNull(),
             ),
             podcastCategoryFilterResult = PodcastCategoryFilterResult(
                 topPodcasts = PreviewPodcasts,
-                episodes = PreviewPodcastEpisodes
+                episodes = PreviewPodcastEpisodes,
             ),
             library = LibraryInfo(),
             onHomeAction = {},
             navigateToPodcastDetails = {},
-            navigateToPlayer = {}
+            navigateToPlayer = {},
         )
     }
 }
@@ -810,7 +798,7 @@ private fun PreviewPodcastCard() {
             modifier = Modifier.size(128.dp),
             podcastTitle = "",
             podcastImageUrl = "",
-            onUnfollowedClick = {}
+            onUnfollowedClick = {},
         )
     }
 }

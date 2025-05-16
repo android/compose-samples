@@ -78,12 +78,7 @@ class JetcasterAppWidgetReceiver : GlanceAppWidgetReceiver() {
         get() = JetcasterAppWidget()
 }
 
-data class JetcasterAppWidgetViewState(
-    val episodeTitle: String,
-    val podcastTitle: String,
-    val isPlaying: Boolean,
-    val albumArtUri: String,
-)
+data class JetcasterAppWidgetViewState(val episodeTitle: String, val podcastTitle: String, val isPlaying: Boolean, val albumArtUri: String)
 
 private object Sizes {
     val short = 72.dp
@@ -123,7 +118,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             podcastTitle = "Now in Android",
             isPlaying = false,
             albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
-                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
+                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png",
         )
 
         provideContent {
@@ -137,7 +132,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
                     SizeBucket.Narrow -> Widget(
                         iconSize = Sizes.medium,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
 
                     SizeBucket.Normal -> WidgetUiNormal(
@@ -145,13 +140,13 @@ class JetcasterAppWidget : GlanceAppWidget() {
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
 
                     SizeBucket.NarrowShort -> Widget(
                         iconSize = Sizes.condensed,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
 
                     SizeBucket.NormalShort -> WidgetUiNormal(
@@ -159,7 +154,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
                 }
             }
@@ -168,17 +163,11 @@ class JetcasterAppWidget : GlanceAppWidget() {
 }
 
 @Composable
-private fun WidgetUiNormal(
-    title: String,
-    subtitle: String,
-    imageUri: Uri,
-    playPauseIcon: PlayPauseIcon,
-    iconSize: Dp,
-) {
+private fun WidgetUiNormal(title: String, subtitle: String, imageUri: Uri, playPauseIcon: PlayPauseIcon, iconSize: Dp) {
     Scaffold {
         Row(
             GlanceModifier.fillMaxSize(),
-            verticalAlignment = Alignment.Vertical.CenterVertically
+            verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
             AlbumArt(imageUri, GlanceModifier.size(iconSize))
             PodcastText(title, subtitle, modifier = GlanceModifier.padding(16.dp).defaultWeight())
@@ -193,7 +182,7 @@ private fun Widget(iconSize: Dp, imageUri: Uri, playPauseIcon: PlayPauseIcon) {
     Scaffold(titleBar = {}) {
         Row(
             modifier = GlanceModifier.fillMaxSize(),
-            verticalAlignment = Alignment.Vertical.CenterVertically
+            verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
             AlbumArt(imageUri, GlanceModifier.size(iconSize))
             Spacer(GlanceModifier.defaultWeight())
@@ -225,14 +214,14 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
-                    color = fgColor
+                    color = fgColor,
                 ),
-                maxLines = 2
+                maxLines = 2,
             )
             Text(
                 text = subtitle,
                 style = TextStyle(fontSize = 14.sp, color = fgColor),
-                maxLines = 2
+                maxLines = 2,
             )
         }
         else -> Column(modifier) {
@@ -241,20 +230,16 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
                 style = TextStyle(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
-                    color = fgColor
+                    color = fgColor,
                 ),
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
 }
 
 @Composable
-private fun PlayPauseButton(
-    modifier: GlanceModifier = GlanceModifier.size(Sizes.normal),
-    state: PlayPauseIcon,
-    onClick: () -> Unit,
-) {
+private fun PlayPauseButton(modifier: GlanceModifier = GlanceModifier.size(Sizes.normal), state: PlayPauseIcon, onClick: () -> Unit) {
     val (iconRes: Int, description: Int) = when (state) {
         PlayPauseIcon.Play -> R.drawable.outline_play_arrow_24 to R.string.content_description_play
         PlayPauseIcon.Pause -> R.drawable.outline_pause_24 to R.string.content_description_pause
@@ -267,7 +252,7 @@ private fun PlayPauseButton(
         modifier = modifier,
         imageProvider = provider,
         contentDescription = contentDescription,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -277,11 +262,7 @@ enum class PlayPauseIcon { Play, Pause }
  * Uses Coil to load images.
  */
 @Composable
-private fun WidgetAsyncImage(
-    uri: Uri,
-    contentDescription: String?,
-    modifier: GlanceModifier = GlanceModifier,
-) {
+private fun WidgetAsyncImage(uri: Uri, contentDescription: String?, modifier: GlanceModifier = GlanceModifier) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -309,7 +290,7 @@ private fun WidgetAsyncImage(
             provider = ImageProvider(bitmap),
             contentDescription = contentDescription,
             contentScale = ContentScale.FillBounds,
-            modifier = modifier.cornerRadius(12.dp) // TODO: confirm radius with design
+            modifier = modifier.cornerRadius(12.dp), // TODO: confirm radius with design
         )
     }
 }

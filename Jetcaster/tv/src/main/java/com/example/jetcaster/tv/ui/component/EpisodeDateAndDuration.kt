@@ -43,9 +43,9 @@ internal fun EpisodeDataAndDuration(
         text = stringResource(
             R.string.episode_date_duration,
             MediumDateFormatter.format(offsetDateTime),
-            duration.toMinutes().toInt()
+            duration.toMinutes().toInt(),
         ),
         style = style,
-        modifier = modifier
+        modifier = modifier,
     )
 }

@@ -66,8 +66,8 @@ fun updateWidgetPreview(context: Context) {
                     AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN,
                     JetcasterAppWidgetPreview().compose(
                         context,
-                        size = DpSize(160.dp, 64.dp)
-                    )
+                        size = DpSize(160.dp, 64.dp),
+                    ),
                 )
             } catch (e: Exception) {
                 Log.e(TAG, e.message, e)
@@ -94,19 +94,19 @@ private fun Widget() {
     Scaffold {
         Row(
             modifier = GlanceModifier.fillMaxSize(),
-            verticalAlignment = Alignment.Vertical.CenterVertically
+            verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
             Image(
                 modifier = GlanceModifier.wrapContentSize().size(SizesPreview.medium),
                 provider = ImageProvider(R.drawable.widget_preview_thumbnail),
-                contentDescription = ""
+                contentDescription = "",
             )
             Spacer(GlanceModifier.defaultWeight())
             SquareIconButton(
                 modifier = GlanceModifier.size(SizesPreview.medium),
                 imageProvider = ImageProvider(R.drawable.outline_play_arrow_24),
                 contentDescription = "",
-                onClick = { }
+                onClick = { },
             )
         }
     }

@@ -64,7 +64,7 @@ class LibraryViewModel @Inject constructor(
     private val podcastStore: PodcastStore,
     private val episodePlayer: EpisodePlayer,
     private val categoryStore: CategoryStore,
-    private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase
+    private val podcastCategoryFilterUseCase: PodcastCategoryFilterUseCase,
 ) : ViewModel() {
 
     private val defaultCategory = categoryStore.getCategory(CategoryTechnology)
@@ -100,7 +100,7 @@ class LibraryViewModel @Inject constructor(
             topPodcastsFlow,
             followingPodcastListFlow,
             latestEpisodeListFlow,
-            queue
+            queue,
         ) { topPodcasts, podcastList, episodeList, queue ->
             if (podcastList.isEmpty()) {
                 LibraryScreenUiState.NoSubscribedPodcast(topPodcasts.topPodcasts)
@@ -110,7 +110,7 @@ class LibraryViewModel @Inject constructor(
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
-            LibraryScreenUiState.Loading
+            LibraryScreenUiState.Loading,
         )
 
     init {
@@ -132,12 +132,10 @@ class LibraryViewModel @Inject constructor(
 
 sealed interface LibraryScreenUiState {
     data object Loading : LibraryScreenUiState
-    data class NoSubscribedPodcast(
-        val topPodcasts: List<PodcastInfo>
-    ) : LibraryScreenUiState
+    data class NoSubscribedPodcast(val topPodcasts: List<PodcastInfo>) : LibraryScreenUiState
     data class Ready(
         val subscribedPodcastList: List<PodcastWithExtraInfo>,
         val latestEpisodeList: List<PlayerEpisode>,
-        val queue: List<PlayerEpisode>
+        val queue: List<PlayerEpisode>,
     ) : LibraryScreenUiState
 }

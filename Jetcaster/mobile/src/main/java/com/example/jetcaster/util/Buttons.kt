@@ -23,9 +23,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.IconToggleButtonColors
+import androidx.compose.material3.IconToggleButtonShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,14 +33,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
 
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun ToggleFollowPodcastIconButton(
-    isFollowed: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     IconToggleButton(
         checked = isFollowed,
         onCheckedChange = { onClick() },
@@ -51,13 +46,13 @@ fun ToggleFollowPodcastIconButton(
             disabledContainerColor = MaterialTheme.colorScheme.secondary,
             disabledContentColor = MaterialTheme.colorScheme.onSecondary,
             checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-            checkedContentColor = MaterialTheme.colorScheme.secondary
+            checkedContentColor = MaterialTheme.colorScheme.secondary,
         ),
-        shapes = IconButtonShapes(
+        shapes = IconToggleButtonShapes(
             shape = RoundedCornerShape(10.dp),
-            pressedShape = if(isFollowed) RoundedCornerShape(10.dp) else CircleShape,
-            checkedShape = CircleShape
-        )
+            pressedShape = if (isFollowed) RoundedCornerShape(10.dp) else CircleShape,
+            checkedShape = CircleShape,
+        ),
     ) {
         Icon(
             // TODO: think about animating these icons

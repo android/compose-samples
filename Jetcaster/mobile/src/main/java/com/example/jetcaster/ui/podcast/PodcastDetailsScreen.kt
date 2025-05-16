@@ -40,7 +40,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material3.ButtonGroup
-import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -52,6 +51,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonColors
+import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -90,13 +90,13 @@ fun PodcastDetailsScreen(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
     showBackButton: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     when (val s = state) {
         is PodcastUiState.Loading -> {
             PodcastDetailsLoadingScreen(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
 
@@ -117,9 +117,7 @@ fun PodcastDetailsScreen(
 }
 
 @Composable
-private fun PodcastDetailsLoadingScreen(
-    modifier: Modifier = Modifier
-) {
+private fun PodcastDetailsLoadingScreen(modifier: Modifier = Modifier) {
     Loading(modifier = modifier)
 }
 
@@ -144,13 +142,13 @@ fun PodcastDetailsScreen(
             if (showBackButton) {
                 PodcastDetailsTopAppBar(
                     navigateBack = navigateBack,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
-        }
+        },
     ) { contentPadding ->
         PodcastDetailsContent(
             podcast = podcast,
@@ -164,7 +162,7 @@ fun PodcastDetailsScreen(
                 onQueueEpisode(it)
             },
             navigateToPlayer = navigateToPlayer,
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier.padding(contentPadding),
         )
     }
 }
@@ -177,11 +175,11 @@ fun PodcastDetailsContent(
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
-        modifier.fillMaxSize()
+        modifier.fillMaxSize(),
     ) {
         fullWidthItem {
             PodcastDetailsHeaderItem(
@@ -201,20 +199,16 @@ fun PodcastDetailsContent(
                     .fillMaxWidth()
                     .animateItem(),
                 showPodcastImage = false,
-                showSummary = true
+                showSummary = true,
             )
         }
     }
 }
 
 @Composable
-fun PodcastDetailsHeaderItem(
-    podcast: PodcastInfo,
-    toggleSubscribe: (PodcastInfo) -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PodcastDetailsHeaderItem(podcast: PodcastInfo, toggleSubscribe: (PodcastInfo) -> Unit, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.padding(Keyline1)
+        modifier = modifier.padding(Keyline1),
     ) {
         Column {
             PodcastImage(
@@ -223,7 +217,7 @@ fun PodcastDetailsHeaderItem(
                     .clip(MaterialTheme.shapes.large)
                     .align(Alignment.CenterHorizontally),
                 podcastImageUrl = podcast.imageUrl,
-                contentDescription = podcast.title
+                contentDescription = podcast.title,
             )
             Text(
                 text = podcast.title,
@@ -231,34 +225,31 @@ fun PodcastDetailsHeaderItem(
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 16.dp),
             )
             PodcastDetailsDescription(
                 podcast = podcast,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 16.dp),
             )
             PodcastDetailsHeaderItemButtons(
                 isSubscribed = podcast.isSubscribed ?: false,
                 onClick = {
                     toggleSubscribe(podcast)
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
 }
 
 @Composable
-fun PodcastDetailsDescription(
-    podcast: PodcastInfo,
-    modifier: Modifier
-) {
+fun PodcastDetailsDescription(podcast: PodcastInfo, modifier: Modifier) {
     var isExpanded by remember { mutableStateOf(false) }
     var showSeeMore by remember { mutableStateOf(false) }
     Box(
-        modifier = modifier.clickable { isExpanded = !isExpanded }
+        modifier = modifier.clickable { isExpanded = !isExpanded },
     ) {
         Text(
             text = podcast.description,
@@ -271,23 +262,23 @@ fun PodcastDetailsDescription(
             modifier = Modifier.animateContentSize(
                 animationSpec = tween(
                     durationMillis = 200,
-                    easing = EaseOutExpo
-                )
-            )
+                    easing = EaseOutExpo,
+                ),
+            ),
         )
         if (showSeeMore) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.surface),
             ) {
                 Text(
                     text = stringResource(id = R.string.see_more),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     ),
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             }
         }
@@ -296,11 +287,7 @@ fun PodcastDetailsDescription(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PodcastDetailsHeaderItemButtons(
-    isSubscribed: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PodcastDetailsHeaderItemButtons(isSubscribed: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     var isNotificationOn by remember { mutableStateOf(false) }
     ButtonGroup(modifier = modifier) {
         ToggleButton(
@@ -314,17 +301,15 @@ fun PodcastDetailsHeaderItemButtons(
                 checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 checkedContentColor = MaterialTheme.colorScheme.secondary,
             ),
-            shapes = ButtonShapes(
+            shapes = ToggleButtonShapes(
                 shape = RoundedCornerShape(15.dp),
-                pressedShape = if (isSubscribed) RoundedCornerShape(15.dp) else RoundedCornerShape(
-                    60.dp
-                ),
-                checkedShape = RoundedCornerShape(60.dp)
+                pressedShape = RoundedCornerShape(if (isSubscribed) 15.dp else 60.dp),
+                checkedShape = RoundedCornerShape(60.dp),
             ),
             modifier = Modifier
                 .width(76.dp)
                 .height(56.dp)
-                .semantics(mergeDescendants = true) { }
+                .semantics(mergeDescendants = true) { },
         ) {
             Icon(
                 imageVector = if (isSubscribed)
@@ -345,15 +330,19 @@ fun PodcastDetailsHeaderItemButtons(
                 checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 checkedContentColor = MaterialTheme.colorScheme.secondary,
             ),
-            shapes = ButtonShapes(
+            shapes = ToggleButtonShapes(
                 shape = RoundedCornerShape(100.dp),
-                pressedShape = if (isNotificationOn) RoundedCornerShape(100.dp) else RoundedCornerShape(20.dp),
-                checkedShape = RoundedCornerShape(20.dp)
+                pressedShape = RoundedCornerShape(if (isNotificationOn) 100.dp else 20.dp),
+                checkedShape = RoundedCornerShape(20.dp),
             ),
             modifier = Modifier.size(56.dp),
         ) {
             Icon(
-                imageVector = if (isNotificationOn) Icons.Default.NotificationsActive else Icons.Default.NotificationsNone,
+                imageVector = if (isNotificationOn) {
+                    Icons.Default.NotificationsActive
+                } else {
+                    Icons.Default.NotificationsNone
+                },
                 contentDescription = stringResource(R.string.cd_more),
             )
         }
@@ -362,21 +351,18 @@ fun PodcastDetailsHeaderItemButtons(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PodcastDetailsTopAppBar(
-    navigateBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PodcastDetailsTopAppBar(navigateBack: () -> Unit, modifier: Modifier = Modifier) {
     TopAppBar(
         title = { },
         navigationIcon = {
             IconButton(onClick = navigateBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.cd_back)
+                    contentDescription = stringResource(id = R.string.cd_back),
                 )
             }
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 

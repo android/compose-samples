@@ -41,42 +41,39 @@ import com.example.jetcaster.ui.player.PlayerScreen
 
 @Composable
 @OptIn(ExperimentalSharedTransitionApi::class)
-fun JetcasterApp(
-    displayFeatures: List<DisplayFeature>,
-    appState: JetcasterAppState = rememberJetcasterAppState(),
-) {
+fun JetcasterApp(displayFeatures: List<DisplayFeature>, appState: JetcasterAppState = rememberJetcasterAppState()) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     if (appState.isOnline) {
         SharedTransitionLayout {
             CompositionLocalProvider(
-                LocalSharedTransitionScope provides this
+                LocalSharedTransitionScope provides this,
             ) {
                 NavHost(
                     navController = appState.navController,
                     startDestination = Screen.Home.route,
                     popExitTransition = { scaleOut(targetScale = 0.9f) },
-                    popEnterTransition = { EnterTransition.None }
+                    popEnterTransition = { EnterTransition.None },
                 ) {
                     composable(Screen.Home.route) { backStackEntry ->
                         CompositionLocalProvider(
-                            LocalAnimatedVisibilityScope provides this
+                            LocalAnimatedVisibilityScope provides this,
                         ) {
                             MainScreen(
                                 windowSizeClass = adaptiveInfo.windowSizeClass,
                                 navigateToPlayer = { episode ->
                                     appState.navigateToPlayer(episode.uri, backStackEntry)
-                                }
+                                },
                             )
                         }
                     }
                     composable(Screen.Player.route) {
                         CompositionLocalProvider(
-                            LocalAnimatedVisibilityScope provides this
+                            LocalAnimatedVisibilityScope provides this,
                         ) {
                             PlayerScreen(
                                 windowSizeClass = adaptiveInfo.windowSizeClass,
                                 displayFeatures = displayFeatures,
-                                onBackPress = appState::navigateBack
+                                onBackPress = appState::navigateBack,
                             )
                         }
                     }
@@ -98,7 +95,7 @@ fun OfflineDialog(onRetry: () -> Unit) {
             TextButton(onClick = onRetry) {
                 Text(stringResource(R.string.retry_label))
             }
-        }
+        },
     )
 }
 

@@ -36,19 +36,13 @@ interface EpisodeStore {
      * Returns a flow containing the list of episodes associated with the podcast with the
      * given [podcastUri].
      */
-    fun episodesInPodcast(
-        podcastUri: String,
-        limit: Int = Integer.MAX_VALUE
-    ): Flow<List<EpisodeToPodcast>>
+    fun episodesInPodcast(podcastUri: String, limit: Int = Integer.MAX_VALUE): Flow<List<EpisodeToPodcast>>
 
     /**
      * Returns a list of episodes for the given podcast URIs ordering by most recently published
      * to least recently published.
      */
-    fun episodesInPodcasts(
-        podcastUris: List<String>,
-        limit: Int = Integer.MAX_VALUE
-    ): Flow<List<EpisodeToPodcast>>
+    fun episodesInPodcasts(podcastUris: List<String>, limit: Int = Integer.MAX_VALUE): Flow<List<EpisodeToPodcast>>
 
     /**
      * Add a new [Episode] to this store.
@@ -68,9 +62,7 @@ interface EpisodeStore {
 /**
  * A data repository for [Episode] instances.
  */
-class LocalEpisodeStore(
-    private val episodesDao: EpisodesDao
-) : EpisodeStore {
+class LocalEpisodeStore(private val episodesDao: EpisodesDao) : EpisodeStore {
     /**
      * Returns a flow containing the episode given [episodeUri].
      */
@@ -78,17 +70,13 @@ class LocalEpisodeStore(
         return episodesDao.episode(episodeUri)
     }
 
-    override fun episodeAndPodcastWithUri(episodeUri: String): Flow<EpisodeToPodcast> =
-        episodesDao.episodeAndPodcast(episodeUri)
+    override fun episodeAndPodcastWithUri(episodeUri: String): Flow<EpisodeToPodcast> = episodesDao.episodeAndPodcast(episodeUri)
 
     /**
      * Returns a flow containing the list of episodes associated with the podcast with the
      * given [podcastUri].
      */
-    override fun episodesInPodcast(
-        podcastUri: String,
-        limit: Int
-    ): Flow<List<EpisodeToPodcast>> {
+    override fun episodesInPodcast(podcastUri: String, limit: Int): Flow<List<EpisodeToPodcast>> {
         return episodesDao.episodesForPodcastUri(podcastUri, limit)
     }
 
@@ -96,10 +84,7 @@ class LocalEpisodeStore(
      * Returns a list of episodes for the given podcast URIs ordering by most recently published
      * to least recently published.
      */
-    override fun episodesInPodcasts(
-        podcastUris: List<String>,
-        limit: Int
-    ): Flow<List<EpisodeToPodcast>> =
+    override fun episodesInPodcasts(podcastUris: List<String>, limit: Int): Flow<List<EpisodeToPodcast>> =
         episodesDao.episodesForPodcasts(podcastUris, limit)
 
     /**
@@ -107,8 +92,7 @@ class LocalEpisodeStore(
      *
      * This automatically switches to the main thread to maintain thread consistency.
      */
-    override suspend fun addEpisodes(episodes: Collection<Episode>) =
-        episodesDao.insertAll(episodes)
+    override suspend fun addEpisodes(episodes: Collection<Episode>) = episodesDao.insertAll(episodes)
 
     /**
      * Deletes an [Episode] from this store.

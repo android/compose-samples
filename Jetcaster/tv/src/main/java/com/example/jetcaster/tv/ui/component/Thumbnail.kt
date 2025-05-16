@@ -36,17 +36,16 @@ fun Thumbnail(
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
     size: DpSize = DpSize(
         JetcasterAppDefaults.cardWidth.medium,
-        JetcasterAppDefaults.cardWidth.medium
+        JetcasterAppDefaults.cardWidth.medium,
     ),
-    contentScale: ContentScale = ContentScale.Crop
-) =
-    Thumbnail(
-        podcastInfo.imageUrl,
-        modifier,
-        shape,
-        size,
-        contentScale
-    )
+    contentScale: ContentScale = ContentScale.Crop,
+) = Thumbnail(
+    podcastInfo.imageUrl,
+    modifier,
+    shape,
+    size,
+    contentScale,
+)
 
 @Composable
 fun Thumbnail(
@@ -55,17 +54,16 @@ fun Thumbnail(
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
     size: DpSize = DpSize(
         JetcasterAppDefaults.cardWidth.medium,
-        JetcasterAppDefaults.cardWidth.medium
+        JetcasterAppDefaults.cardWidth.medium,
     ),
-    contentScale: ContentScale = ContentScale.Crop
-) =
-    Thumbnail(
-        episode.podcastImageUrl,
-        modifier,
-        shape,
-        size,
-        contentScale
-    )
+    contentScale: ContentScale = ContentScale.Crop,
+) = Thumbnail(
+    episode.podcastImageUrl,
+    modifier,
+    shape,
+    size,
+    contentScale,
+)
 
 @Composable
 fun Thumbnail(
@@ -74,15 +72,14 @@ fun Thumbnail(
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
     size: DpSize = DpSize(
         JetcasterAppDefaults.cardWidth.medium,
-        JetcasterAppDefaults.cardWidth.medium
+        JetcasterAppDefaults.cardWidth.medium,
     ),
-    contentScale: ContentScale = ContentScale.Crop
-) =
-    PodcastImage(
-        podcastImageUrl = url,
-        contentDescription = null,
-        contentScale = contentScale,
-        modifier = modifier
-            .clip(shape)
-            .size(size),
-    )
+    contentScale: ContentScale = ContentScale.Crop,
+) = PodcastImage(
+    podcastImageUrl = url,
+    contentDescription = null,
+    contentScale = contentScale,
+    modifier = modifier
+        .clip(shape)
+        .size(size),
+)
