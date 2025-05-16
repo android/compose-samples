@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Following are sizes for large tablets. -->
+
+  <!-- Reference:
+  https://developer.android.com/design/ui/mobile/guides/widgets/sizing#tablet
+  -->
+
+  <!-- list of image & texts (sizes to have approximately 2x2 as default drop
+   size and 2x2 as minimum resize and 3x3 as maximum resize size)
+  -->
+  <integer name="sample_text_with_image_list_target_cell_width">2</integer>
+  <integer name="sample_text_with_image_list_target_cell_height">2</integer>
+  <dimen name="sample_text_with_image_list_widget_min_width">180dp</dimen>
+  <dimen name="sample_text_with_image_list_widget_min_height">184dp</dimen>
+  <dimen name="sample_text_with_image_widget_list_min_resize_width">180dp</dimen>
+  <dimen name="sample_text_with_image_list_widget_min_resize_height">184dp</dimen>
+  <dimen name="sample_text_with_image_list_widget_max_resize_width">488dp</dimen>
+  <dimen name="sample_text_with_image_list_widget_max_resize_height">488dp</dimen>
+</resources>
