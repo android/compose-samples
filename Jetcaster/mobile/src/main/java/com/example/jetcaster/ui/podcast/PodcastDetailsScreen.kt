@@ -22,25 +22,26 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +49,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonColors
+import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,7 +69,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetcaster.R
 import com.example.jetcaster.core.domain.testing.PreviewEpisodes
@@ -87,21 +90,23 @@ fun PodcastDetailsScreen(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
     showBackButton: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     when (val s = state) {
         is PodcastUiState.Loading -> {
             PodcastDetailsLoadingScreen(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
+
         is PodcastUiState.Ready -> {
             PodcastDetailsScreen(
                 podcast = s.podcast,
                 episodes = s.episodes,
                 toggleSubscribe = viewModel::toggleSusbcribe,
                 onQueueEpisode = viewModel::onQueueEpisode,
+                removeFromQueue = viewModel::deleteEpisode,
                 navigateToPlayer = navigateToPlayer,
                 navigateBack = navigateBack,
                 showBackButton = showBackButton,
@@ -112,9 +117,7 @@ fun PodcastDetailsScreen(
 }
 
 @Composable
-private fun PodcastDetailsLoadingScreen(
-    modifier: Modifier = Modifier
-) {
+private fun PodcastDetailsLoadingScreen(modifier: Modifier = Modifier) {
     Loading(modifier = modifier)
 }
 
@@ -127,7 +130,8 @@ fun PodcastDetailsScreen(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     navigateBack: () -> Unit,
     showBackButton: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    removeFromQueue: (EpisodeInfo) -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -138,18 +142,19 @@ fun PodcastDetailsScreen(
             if (showBackButton) {
                 PodcastDetailsTopAppBar(
                     navigateBack = navigateBack,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
-        }
+        },
     ) { contentPadding ->
         PodcastDetailsContent(
             podcast = podcast,
             episodes = episodes,
             toggleSubscribe = toggleSubscribe,
+            removeFromQueue = removeFromQueue,
             onQueueEpisode = {
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar(snackBarText)
@@ -157,7 +162,7 @@ fun PodcastDetailsScreen(
                 onQueueEpisode(it)
             },
             navigateToPlayer = navigateToPlayer,
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier.padding(contentPadding),
         )
     }
 }
@@ -166,20 +171,21 @@ fun PodcastDetailsScreen(
 fun PodcastDetailsContent(
     podcast: PodcastInfo,
     episodes: List<EpisodeInfo>,
+    removeFromQueue: (EpisodeInfo) -> Unit,
     toggleSubscribe: (PodcastInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
-        modifier.fillMaxSize()
+        modifier.fillMaxSize(),
     ) {
         fullWidthItem {
             PodcastDetailsHeaderItem(
                 podcast = podcast,
                 toggleSubscribe = toggleSubscribe,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
         items(episodes, key = { it.uri }) { episode ->
@@ -187,75 +193,63 @@ fun PodcastDetailsContent(
                 episode = episode,
                 podcast = podcast,
                 onClick = navigateToPlayer,
+                removeFromQueue = removeFromQueue,
                 onQueueEpisode = onQueueEpisode,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItem(),
                 showPodcastImage = false,
-                showSummary = true
+                showSummary = true,
             )
         }
     }
 }
 
 @Composable
-fun PodcastDetailsHeaderItem(
-    podcast: PodcastInfo,
-    toggleSubscribe: (PodcastInfo) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    BoxWithConstraints(
-        modifier = modifier.padding(Keyline1)
+fun PodcastDetailsHeaderItem(podcast: PodcastInfo, toggleSubscribe: (PodcastInfo) -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.padding(Keyline1),
     ) {
-        val maxImageSize = this.maxWidth / 2
-        val imageSize = min(maxImageSize, 148.dp)
         Column {
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                PodcastImage(
-                    modifier = Modifier
-                        .size(imageSize)
-                        .clip(MaterialTheme.shapes.large),
-                    podcastImageUrl = podcast.imageUrl,
-                    contentDescription = podcast.title
-                )
-                Column(
-                    modifier = Modifier.padding(start = 16.dp)
-                ) {
-                    Text(
-                        text = podcast.title,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    PodcastDetailsHeaderItemButtons(
-                        isSubscribed = podcast.isSubscribed ?: false,
-                        onClick = {
-                            toggleSubscribe(podcast)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
+            PodcastImage(
+                modifier = Modifier
+                    .size(280.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .align(Alignment.CenterHorizontally),
+                podcastImageUrl = podcast.imageUrl,
+                contentDescription = podcast.title,
+            )
+            Text(
+                text = podcast.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier.padding(top = 16.dp),
+            )
             PodcastDetailsDescription(
                 podcast = podcast,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 16.dp),
+            )
+            PodcastDetailsHeaderItemButtons(
+                isSubscribed = podcast.isSubscribed ?: false,
+                onClick = {
+                    toggleSubscribe(podcast)
+                },
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
 }
 
 @Composable
-fun PodcastDetailsDescription(
-    podcast: PodcastInfo,
-    modifier: Modifier
-) {
+fun PodcastDetailsDescription(podcast: PodcastInfo, modifier: Modifier) {
     var isExpanded by remember { mutableStateOf(false) }
     var showSeeMore by remember { mutableStateOf(false) }
     Box(
-        modifier = modifier.clickable { isExpanded = !isExpanded }
+        modifier = modifier.clickable { isExpanded = !isExpanded },
     ) {
         Text(
             text = podcast.description,
@@ -268,72 +262,88 @@ fun PodcastDetailsDescription(
             modifier = Modifier.animateContentSize(
                 animationSpec = tween(
                     durationMillis = 200,
-                    easing = EaseOutExpo
-                )
-            )
+                    easing = EaseOutExpo,
+                ),
+            ),
         )
         if (showSeeMore) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.surface),
             ) {
-                // TODO: Add gradient effect
                 Text(
                     text = stringResource(id = R.string.see_more),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     ),
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PodcastDetailsHeaderItemButtons(
-    isSubscribed: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(modifier.padding(top = 16.dp)) {
-        Button(
-            onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSubscribed)
-                    MaterialTheme.colorScheme.tertiary
-                else
-                    MaterialTheme.colorScheme.secondary
+fun PodcastDetailsHeaderItemButtons(isSubscribed: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    var isNotificationOn by remember { mutableStateOf(false) }
+    ButtonGroup(modifier = modifier) {
+        ToggleButton(
+            checked = isSubscribed,
+            onCheckedChange = { onClick() },
+            colors = ToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
+                checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                checkedContentColor = MaterialTheme.colorScheme.secondary,
             ),
-            modifier = Modifier.semantics(mergeDescendants = true) { }
+            shapes = ToggleButtonShapes(
+                shape = RoundedCornerShape(15.dp),
+                pressedShape = RoundedCornerShape(if (isSubscribed) 15.dp else 60.dp),
+                checkedShape = RoundedCornerShape(60.dp),
+            ),
+            modifier = Modifier
+                .width(76.dp)
+                .height(56.dp)
+                .semantics(mergeDescendants = true) { },
         ) {
             Icon(
                 imageVector = if (isSubscribed)
                     Icons.Default.Check
                 else
                     Icons.Default.Add,
-                contentDescription = null
-            )
-            Text(
-                text = if (isSubscribed)
-                    stringResource(id = R.string.subscribed)
-                else
-                    stringResource(id = R.string.subscribe),
-                modifier = Modifier.padding(start = 8.dp)
+                contentDescription = null,
             )
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        IconButton(
-            onClick = { /* TODO */ },
-            modifier = Modifier.padding(start = 8.dp)
+        ToggleButton(
+            checked = isNotificationOn,
+            onCheckedChange = { isNotificationOn = !isNotificationOn },
+            colors = ToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.inverseSurface,
+                contentColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
+                checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                checkedContentColor = MaterialTheme.colorScheme.secondary,
+            ),
+            shapes = ToggleButtonShapes(
+                shape = RoundedCornerShape(100.dp),
+                pressedShape = RoundedCornerShape(if (isNotificationOn) 100.dp else 20.dp),
+                checkedShape = RoundedCornerShape(20.dp),
+            ),
+            modifier = Modifier.size(56.dp),
         ) {
             Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.cd_more)
+                imageVector = if (isNotificationOn) {
+                    Icons.Default.NotificationsActive
+                } else {
+                    Icons.Default.NotificationsNone
+                },
+                contentDescription = stringResource(R.string.cd_more),
             )
         }
     }
@@ -341,21 +351,18 @@ fun PodcastDetailsHeaderItemButtons(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PodcastDetailsTopAppBar(
-    navigateBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PodcastDetailsTopAppBar(navigateBack: () -> Unit, modifier: Modifier = Modifier) {
     TopAppBar(
         title = { },
         navigationIcon = {
             IconButton(onClick = navigateBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.cd_back)
+                    contentDescription = stringResource(id = R.string.cd_back),
                 )
             }
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 

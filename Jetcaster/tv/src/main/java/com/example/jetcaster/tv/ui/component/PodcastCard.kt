@@ -30,22 +30,18 @@ import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
 @Composable
-internal fun PodcastCard(
-    podcastInfo: PodcastInfo,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+internal fun PodcastCard(podcastInfo: PodcastInfo, onClick: () -> Unit, modifier: Modifier = Modifier) {
     StandardCardContainer(
         imageCard = {
             Card(
                 onClick = onClick,
                 interactionSource = it,
                 scale = CardScale.None,
-                shape = CardDefaults.shape(RoundedCornerShape(12.dp))
+                shape = CardDefaults.shape(RoundedCornerShape(12.dp)),
             ) {
                 Thumbnail(
                     podcastInfo = podcastInfo,
-                    size = JetcasterAppDefaults.thumbnailSize.podcast
+                    size = JetcasterAppDefaults.thumbnailSize.podcast,
                 )
             }
         },

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.jetcaster.ui.player
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -40,10 +43,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -55,9 +59,12 @@ import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -65,6 +72,9 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonColors
+import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -74,18 +84,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
@@ -98,6 +102,8 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.ImageBackgroundColorScrim
 import com.example.jetcaster.designsystem.component.PodcastImage
+import com.example.jetcaster.ui.LocalAnimatedVisibilityScope
+import com.example.jetcaster.ui.LocalSharedTransitionScope
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.isBookPosture
@@ -153,7 +159,7 @@ private fun PlayerScreen(
     onAddToQueue: () -> Unit,
     onStop: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DisposableEffect(Unit) {
         onDispose {
@@ -168,7 +174,7 @@ private fun PlayerScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        modifier = modifier
+        modifier = modifier,
     ) { contentPadding ->
         if (uiState.episodePlayerState.currentEpisode != null) {
             PlayerContentWithBackground(
@@ -192,10 +198,7 @@ private fun PlayerScreen(
 }
 
 @Composable
-private fun PlayerBackground(
-    episode: PlayerEpisode?,
-    modifier: Modifier,
-) {
+private fun PlayerBackground(episode: PlayerEpisode?, modifier: Modifier) {
     ImageBackgroundColorScrim(
         url = episode?.podcastImageUrl,
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
@@ -212,14 +215,14 @@ fun PlayerContentWithBackground(
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         PlayerBackground(
             episode = uiState.episodePlayerState.currentEpisode,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding)
+                .padding(contentPadding),
         )
         PlayerContent(
             uiState = uiState,
@@ -254,7 +257,7 @@ fun PlayerContent(
     onBackPress: () -> Unit,
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
@@ -273,7 +276,8 @@ fun PlayerContent(
             isTableTopPosture(foldingFeature) ||
                 (
                     isSeparatingPosture(foldingFeature) &&
-                        foldingFeature.orientation == FoldingFeature.Orientation.HORIZONTAL
+                        foldingFeature.orientation ==
+                        FoldingFeature.Orientation.HORIZONTAL
                     )
 
         if (usingVerticalStrategy) {
@@ -302,10 +306,10 @@ fun PlayerContent(
                     .verticalGradientScrim(
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
                         startYPercentage = 1f,
-                        endYPercentage = 0f
+                        endYPercentage = 0f,
                     )
                     .systemBarsPadding()
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = 8.dp),
             ) {
                 TopAppBar(
                     onBackPress = onBackPress,
@@ -322,7 +326,7 @@ fun PlayerContent(
                         )
                     },
                     strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f),
-                    displayFeatures = displayFeatures
+                    displayFeatures = displayFeatures,
                 )
             }
         }
@@ -346,20 +350,26 @@ private fun PlayerContentRegular(
     onBackPress: () -> Unit,
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val playerEpisode = uiState.episodePlayerState
     val currentEpisode = playerEpisode.currentEpisode ?: return
+
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No SharedElementScope found")
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalGradientScrim(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
                 startYPercentage = 1f,
-                endYPercentage = 0f
+                endYPercentage = 0f,
             )
             .systemBarsPadding()
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp),
     ) {
         TopAppBar(
             onBackPress = onBackPress,
@@ -367,39 +377,56 @@ private fun PlayerContentRegular(
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp),
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            PlayerImage(
-                podcastImageUrl = currentEpisode.podcastImageUrl,
-                modifier = Modifier.weight(10f)
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
-            Spacer(modifier = Modifier.height(32.dp))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(10f)
-            ) {
-                PlayerSlider(
-                    timeElapsed = playerEpisode.timeElapsed,
-                    episodeDuration = currentEpisode.duration,
-                    onSeekingStarted = playerControlActions.onSeekingStarted,
-                    onSeekingFinished = playerControlActions.onSeekingFinished
-                )
-                PlayerButtons(
-                    hasNext = playerEpisode.queue.isNotEmpty(),
-                    isPlaying = playerEpisode.isPlaying,
-                    onPlayPress = playerControlActions.onPlayPress,
-                    onPausePress = playerControlActions.onPausePress,
-                    onAdvanceBy = playerControlActions.onAdvanceBy,
-                    onRewindBy = playerControlActions.onRewindBy,
-                    onNext = playerControlActions.onNext,
-                    onPrevious = playerControlActions.onPrevious,
-                    Modifier.padding(vertical = 8.dp)
-                )
+            with(sharedTransitionScope) {
+                with(animatedVisibilityScope) {
+                    PlayerImage(
+                        podcastImageUrl = currentEpisode.podcastImageUrl,
+                        modifier = Modifier
+                            .weight(10f)
+                            .animateEnterExit(
+                                enter = fadeIn(spring(stiffness = Spring.StiffnessLow)),
+                                exit = fadeOut(),
+                            ),
+                        imageModifier = Modifier.sharedElement(
+                            sharedContentState = rememberSharedContentState(
+                                key = currentEpisode.title,
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            clipInOverlayDuringTransition =
+                            OverlayClip(MaterialTheme.shapes.medium),
+                        ),
+                    )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                PodcastDescription(currentEpisode.title, currentEpisode.podcastName)
+                Spacer(modifier = Modifier.height(32.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(10f),
+                ) {
+                    PlayerSlider(
+                        timeElapsed = playerEpisode.timeElapsed,
+                        episodeDuration = currentEpisode.duration,
+                        onSeekingStarted = playerControlActions.onSeekingStarted,
+                        onSeekingFinished = playerControlActions.onSeekingFinished,
+                    )
+                    PlayerButtons(
+                        hasNext = playerEpisode.queue.isNotEmpty(),
+                        isPlaying = playerEpisode.isPlaying,
+                        onPlayPress = playerControlActions.onPlayPress,
+                        onPausePress = playerControlActions.onPausePress,
+                        onAdvanceBy = playerControlActions.onAdvanceBy,
+                        onRewindBy = playerControlActions.onRewindBy,
+                        onNext = playerControlActions.onNext,
+                        onPrevious = playerControlActions.onPrevious,
+                        Modifier.padding(vertical = 8.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
@@ -408,10 +435,7 @@ private fun PlayerContentRegular(
  * The UI for the top pane of a tabletop layout.
  */
 @Composable
-private fun PlayerContentTableTopTop(
-    uiState: PlayerUiState,
-    modifier: Modifier = Modifier
-) {
+private fun PlayerContentTableTopTop(uiState: PlayerUiState, modifier: Modifier = Modifier) {
     // Content for the top part of the screen
     val episode = uiState.episodePlayerState.currentEpisode ?: return
     Column(
@@ -420,15 +444,15 @@ private fun PlayerContentTableTopTop(
             .verticalGradientScrim(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
                 startYPercentage = 1f,
-                endYPercentage = 0f
+                endYPercentage = 0f,
             )
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(
-                    WindowInsetsSides.Horizontal + WindowInsetsSides.Top
-                )
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Top,
+                ),
             )
             .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         PlayerImage(episode.podcastImageUrl)
     }
@@ -443,7 +467,7 @@ private fun PlayerContentTableTopBottom(
     onBackPress: () -> Unit,
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val episodePlayerState = uiState.episodePlayerState
     val episode = uiState.episodePlayerState.currentEpisode ?: return
@@ -452,11 +476,11 @@ private fun PlayerContentTableTopBottom(
         modifier = modifier
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(
-                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                )
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
+                ),
             )
             .padding(horizontal = 32.dp, vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TopAppBar(
             onBackPress = onBackPress,
@@ -465,30 +489,28 @@ private fun PlayerContentTableTopBottom(
         PodcastDescription(
             title = episode.title,
             podcastName = episode.podcastName,
-            titleTextStyle = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.weight(0.5f))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(10f)
+            modifier = Modifier.weight(10f),
         ) {
             PlayerButtons(
                 hasNext = episodePlayerState.queue.isNotEmpty(),
                 isPlaying = episodePlayerState.isPlaying,
                 onPlayPress = playerControlActions.onPlayPress,
                 onPausePress = playerControlActions.onPausePress,
-                playerButtonSize = 92.dp,
                 onAdvanceBy = playerControlActions.onAdvanceBy,
                 onRewindBy = playerControlActions.onRewindBy,
                 onNext = playerControlActions.onNext,
                 onPrevious = playerControlActions.onPrevious,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp),
             )
             PlayerSlider(
                 timeElapsed = episodePlayerState.timeElapsed,
                 episodeDuration = episode.duration,
                 onSeekingStarted = playerControlActions.onSeekingStarted,
-                onSeekingFinished = playerControlActions.onSeekingFinished
+                onSeekingFinished = playerControlActions.onSeekingFinished,
             )
         }
     }
@@ -498,10 +520,7 @@ private fun PlayerContentTableTopBottom(
  * The UI for the start pane of a book layout.
  */
 @Composable
-private fun PlayerContentBookStart(
-    uiState: PlayerUiState,
-    modifier: Modifier = Modifier
-) {
+private fun PlayerContentBookStart(uiState: PlayerUiState, modifier: Modifier = Modifier) {
     val episode = uiState.episodePlayerState.currentEpisode ?: return
     Column(
         modifier = modifier
@@ -509,7 +528,7 @@ private fun PlayerContentBookStart(
             .verticalScroll(rememberScrollState())
             .padding(
                 vertical = 40.dp,
-                horizontal = 16.dp
+                horizontal = 16.dp,
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -525,11 +544,7 @@ private fun PlayerContentBookStart(
  * The UI for the end pane of a book layout.
  */
 @Composable
-private fun PlayerContentBookEnd(
-    uiState: PlayerUiState,
-    playerControlActions: PlayerControlActions,
-    modifier: Modifier = Modifier
-) {
+private fun PlayerContentBookEnd(uiState: PlayerUiState, playerControlActions: PlayerControlActions, modifier: Modifier = Modifier) {
     val episodePlayerState = uiState.episodePlayerState
     val episode = episodePlayerState.currentEpisode ?: return
     Column(
@@ -543,7 +558,7 @@ private fun PlayerContentBookEnd(
             podcastImageUrl = episode.podcastImageUrl,
             modifier = Modifier
                 .padding(vertical = 16.dp)
-                .weight(1f)
+                .weight(1f),
         )
         PlayerSlider(
             timeElapsed = episodePlayerState.timeElapsed,
@@ -560,44 +575,38 @@ private fun PlayerContentBookEnd(
             onRewindBy = playerControlActions.onRewindBy,
             onNext = playerControlActions.onNext,
             onPrevious = playerControlActions.onPrevious,
-            Modifier.padding(vertical = 8.dp)
+            Modifier.padding(vertical = 8.dp),
         )
     }
 }
 
 @Composable
-private fun TopAppBar(
-    onBackPress: () -> Unit,
-    onAddToQueue: () -> Unit,
-) {
+private fun TopAppBar(onBackPress: () -> Unit, onAddToQueue: () -> Unit) {
     Row(Modifier.fillMaxWidth()) {
         IconButton(onClick = onBackPress) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.cd_back)
+                contentDescription = stringResource(R.string.cd_back),
             )
         }
         Spacer(Modifier.weight(1f))
         IconButton(onClick = onAddToQueue) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                contentDescription = stringResource(R.string.cd_add)
+                contentDescription = stringResource(R.string.cd_add),
             )
         }
         IconButton(onClick = { /* TODO */ }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.cd_more)
+                contentDescription = stringResource(R.string.cd_more),
             )
         }
     }
 }
 
 @Composable
-private fun PlayerImage(
-    podcastImageUrl: String,
-    modifier: Modifier = Modifier
-) {
+private fun PlayerImage(podcastImageUrl: String, modifier: Modifier = Modifier, imageModifier: Modifier = Modifier) {
     PodcastImage(
         podcastImageUrl = podcastImageUrl,
         contentDescription = null,
@@ -605,29 +614,25 @@ private fun PlayerImage(
         modifier = modifier
             .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
             .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.medium),
+        imageModifier = imageModifier,
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun PodcastDescription(
-    title: String,
-    podcastName: String,
-    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall
-) {
+private fun PodcastDescription(title: String, podcastName: String) {
     Text(
         text = title,
-        style = titleTextStyle,
-        maxLines = 1,
+        style = MaterialTheme.typography.displayLarge,
+        maxLines = 2,
         color = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.basicMarquee()
+        modifier = Modifier.basicMarquee(),
     )
     Text(
         text = podcastName,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurface,
-        maxLines = 1
+        maxLines = 1,
     )
 }
 
@@ -637,7 +642,7 @@ private fun PodcastInformation(
     name: String,
     summary: String,
     modifier: Modifier = Modifier,
-    titleTextStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+    titleTextStyle: TextStyle = MaterialTheme.typography.headlineLarge,
     nameTextStyle: TextStyle = MaterialTheme.typography.displaySmall,
 ) {
     Column(
@@ -649,19 +654,19 @@ private fun PodcastInformation(
             text = name,
             style = nameTextStyle,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         Text(
             text = title,
             style = titleTextStyle,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         HtmlTextContainer(text = summary) {
             Text(
                 text = it,
                 style = MaterialTheme.typography.bodyMedium,
-                color = LocalContentColor.current
+                color = LocalContentColor.current,
             )
         }
     }
@@ -683,7 +688,7 @@ private fun PlayerSlider(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         var sliderValue by remember(timeElapsed) { mutableStateOf(timeElapsed) }
         val maxRange = (episodeDuration?.toSeconds() ?: 0).toFloat()
@@ -692,7 +697,7 @@ private fun PlayerSlider(
             Text(
                 text = "${sliderValue.formatString()} • ${episodeDuration?.formatString()}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
@@ -703,11 +708,12 @@ private fun PlayerSlider(
                 onSeekingStarted()
                 sliderValue = Duration.ofSeconds(it.toLong())
             },
-            onValueChangeFinished = { onSeekingFinished(sliderValue) }
+            onValueChangeFinished = { onSeekingFinished(sliderValue) },
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun PlayerButtons(
     hasNext: Boolean,
@@ -719,93 +725,123 @@ private fun PlayerButtons(
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     modifier: Modifier = Modifier,
-    playerButtonSize: Dp = 72.dp,
-    sideButtonSize: Dp = 48.dp,
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        val sideButtonsModifier = Modifier
-            .size(sideButtonSize)
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                shape = CircleShape
-            )
-            .semantics { role = Role.Button }
-
-        val primaryButtonModifier = Modifier
-            .size(playerButtonSize)
-            .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = CircleShape
-            )
-            .semantics { role = Role.Button }
-
-        Image(
-            imageVector = Icons.Filled.SkipPrevious,
-            contentDescription = stringResource(R.string.cd_skip_previous),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
-            modifier = sideButtonsModifier
-                .clickable(enabled = isPlaying, onClick = onPrevious)
-                .alpha(if (isPlaying) 1f else 0.25f)
-        )
-        Image(
-            imageVector = Icons.Filled.Replay10,
-            contentDescription = stringResource(R.string.cd_replay10),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = sideButtonsModifier
-                .clickable {
-                    onRewindBy(Duration.ofSeconds(10))
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        ToggleButton(
+            checked = isPlaying,
+            onCheckedChange = {
+                if (isPlaying) {
+                    onPausePress()
+                } else {
+                    onPlayPress()
                 }
-        )
-        if (isPlaying) {
-            Image(
-                imageVector = Icons.Outlined.Pause,
-                contentDescription = stringResource(R.string.cd_pause),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
-                modifier = primaryButtonModifier
-                    .padding(8.dp)
-                    .clickable {
-                        onPausePress()
-                    }
-            )
-        } else {
-            Image(
-                imageVector = Icons.Outlined.PlayArrow,
-                contentDescription = stringResource(R.string.cd_play),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
-                modifier = primaryButtonModifier
-                    .padding(8.dp)
-                    .clickable {
-                        onPlayPress()
-                    }
+            },
+            colors = ToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.primary,
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                checkedContainerColor = MaterialTheme.colorScheme.primary,
+                checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            shapes = ToggleButtonShapes(
+                shape = RoundedCornerShape(60.dp),
+                pressedShape = RoundedCornerShape(if (isPlaying) 60.dp else 30.dp),
+                checkedShape = RoundedCornerShape(30.dp),
+            ),
+            modifier = Modifier
+                .width(186.dp)
+                .height(136.dp),
+        ) {
+            Icon(
+                imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = null,
             )
         }
-        Image(
-            imageVector = Icons.Filled.Forward10,
-            contentDescription = stringResource(R.string.cd_forward10),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            modifier = sideButtonsModifier
-                .clickable {
-                    onAdvanceBy(Duration.ofSeconds(10))
-                }
-        )
-        Image(
-            imageVector = Icons.Filled.SkipNext,
-            contentDescription = stringResource(R.string.cd_skip_next),
-            contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
-            modifier = sideButtonsModifier
-                .clickable(enabled = hasNext, onClick = onNext)
-                .alpha(if (hasNext) 1f else 0.25f)
-        )
+        ButtonGroup(
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            val skipButtonsModifier = Modifier
+                .width(56.dp)
+                .height(68.dp)
+
+            val rewindFastForwardButtonsModifier = Modifier
+                .size(68.dp)
+
+            IconButton(
+                onClick = onPrevious,
+                modifier = skipButtonsModifier,
+                shape = RoundedCornerShape(50.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                enabled = isPlaying,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.SkipPrevious,
+                    contentDescription = null,
+                )
+            }
+
+            IconButton(
+                onClick = { onRewindBy(Duration.ofSeconds(10)) },
+                modifier = rewindFastForwardButtonsModifier,
+                shape = RoundedCornerShape(15.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                ),
+                enabled = isPlaying,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Replay10,
+                    contentDescription = null,
+                )
+            }
+
+            IconButton(
+                onClick = { onAdvanceBy(Duration.ofSeconds(10)) },
+                modifier = rewindFastForwardButtonsModifier,
+                shape = RoundedCornerShape(15.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                ),
+                enabled = isPlaying,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Forward10,
+                    contentDescription = null,
+                )
+            }
+
+            IconButton(
+                onClick = onNext,
+                modifier = skipButtonsModifier,
+                shape = RoundedCornerShape(50.dp),
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                enabled = hasNext,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.SkipNext,
+                    contentDescription = null,
+                )
+            }
+        }
     }
 }
 
@@ -817,7 +853,7 @@ private fun FullScreenLoading(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+            .wrapContentSize(Alignment.Center),
     ) {
         CircularProgressIndicator()
     }
@@ -869,7 +905,7 @@ fun PlayerScreenPreview() {
                             PlayerEpisode(),
                             PlayerEpisode(),
                             PlayerEpisode(),
-                        )
+                        ),
                     ),
                 ),
                 displayFeatures = emptyList(),
@@ -886,7 +922,7 @@ fun PlayerScreenPreview() {
                     onSeekingFinished = {},
                     onNext = {},
                     onPrevious = {},
-                )
+                ),
             )
         }
     }

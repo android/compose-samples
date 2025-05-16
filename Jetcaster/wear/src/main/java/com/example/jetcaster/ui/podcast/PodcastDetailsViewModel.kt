@@ -61,7 +61,7 @@ class PodcastDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     episodeStore: EpisodeStore,
     private val episodePlayer: EpisodePlayer,
-    podcastStore: PodcastStore
+    podcastStore: PodcastStore,
 ) : ViewModel() {
 
     private val podcastUri: String =
@@ -76,7 +76,7 @@ class PodcastDetailsViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        null
+        null,
     )
 
     private val episodeListFlow = podcastFlow.flatMapLatest {
@@ -92,7 +92,7 @@ class PodcastDetailsViewModel @Inject constructor(
     val uiState: StateFlow<PodcastDetailsScreenState> =
         combine(
             podcastFlow,
-            episodeListFlow
+            episodeListFlow,
         ) { podcast, episodes ->
             if (podcast != null) {
                 PodcastDetailsScreenState.Loaded(

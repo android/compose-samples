@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
             JetcasterTheme(isInDarkTheme = true) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    shape = RectangleShape
+                    shape = RectangleShape,
                 ) {
                     JetcasterApp()
                 }

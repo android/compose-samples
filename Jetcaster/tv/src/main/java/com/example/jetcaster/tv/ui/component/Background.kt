@@ -32,30 +32,28 @@ internal fun BackgroundContainer(
     playerEpisode: PlayerEpisode,
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
-    content: @Composable BoxScope.() -> Unit
-) =
-    BackgroundContainer(
-        imageUrl = playerEpisode.podcastImageUrl,
-        modifier,
-        contentAlignment,
-        content
-    )
+    content: @Composable BoxScope.() -> Unit,
+) = BackgroundContainer(
+    imageUrl = playerEpisode.podcastImageUrl,
+    modifier,
+    contentAlignment,
+    content,
+)
 
 @Composable
 internal fun BackgroundContainer(
     podcastInfo: PodcastInfo,
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
-    content: @Composable BoxScope.() -> Unit
-) =
-    BackgroundContainer(imageUrl = podcastInfo.imageUrl, modifier, contentAlignment, content)
+    content: @Composable BoxScope.() -> Unit,
+) = BackgroundContainer(imageUrl = podcastInfo.imageUrl, modifier, contentAlignment, content)
 
 @Composable
 internal fun BackgroundContainer(
     imageUrl: String,
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.Center,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(modifier = modifier, contentAlignment = contentAlignment) {
         Background(imageUrl = imageUrl, modifier = Modifier.fillMaxSize())
@@ -64,10 +62,7 @@ internal fun BackgroundContainer(
 }
 
 @Composable
-private fun Background(
-    imageUrl: String,
-    modifier: Modifier = Modifier,
-) {
+private fun Background(imageUrl: String, modifier: Modifier = Modifier) {
     ImageBackgroundRadialGradientScrim(
         url = imageUrl,
         colors = listOf(Color.Black, Color.Transparent),

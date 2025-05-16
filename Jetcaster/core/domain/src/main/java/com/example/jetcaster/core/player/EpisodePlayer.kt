@@ -53,8 +53,8 @@ interface EpisodePlayer {
     fun addToQueue(episode: PlayerEpisode)
 
     /*
-    * Flushes the queue
-    */
+     * Flushes the queue
+     */
     fun removeAllFromQueue()
 
     /**

@@ -63,7 +63,7 @@ internal fun Seekbar(
                     val end = start.copy(x = size.width)
 
                     val knobCenter = start.copy(
-                        x = timeElapsed.seconds.toFloat() / length.seconds.toFloat() * size.width
+                        x = timeElapsed.seconds.toFloat() / length.seconds.toFloat() * size.width,
                     )
                     drawLine(
                         brush, start, end,
@@ -91,6 +91,6 @@ internal fun Seekbar(
 
                     else -> false
                 }
-            }
+            },
     )
 }

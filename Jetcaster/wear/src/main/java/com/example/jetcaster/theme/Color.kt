@@ -34,5 +34,5 @@ internal val wearColorPalette: Colors = Colors(
     error = errorDark,
     onPrimary = onPrimaryDark,
     onSecondary = onSecondaryDark,
-    onError = onErrorDark
+    onError = onErrorDark,
 )

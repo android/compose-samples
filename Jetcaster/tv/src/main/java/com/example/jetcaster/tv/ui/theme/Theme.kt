@@ -21,10 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.tv.material3.MaterialTheme
 
 @Composable
-fun JetcasterTheme(
-    isInDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
+fun JetcasterTheme(isInDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colorScheme = if (isInDarkTheme) {
         colorSchemeForDarkMode
     } else {
@@ -33,6 +30,6 @@ fun JetcasterTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

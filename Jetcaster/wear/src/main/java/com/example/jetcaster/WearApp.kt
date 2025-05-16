@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2024-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ fun WearApp(navController: NavHostController) {
                                 volumeViewModel = volumeViewModel,
                                 onVolumeClick = {
                                     navController.navigateToVolume()
-                                }
+                                },
                             )
                         },
                         libraryScreen = {
@@ -118,13 +118,13 @@ fun WearApp(navController: NavHostController) {
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
                         },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = YourPodcasts.navRoute) {
                     PodcastsScreen(
                         onPodcastsItemClick = { navController.navigateToPodcastDetails(it.uri) },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = PodcastDetails.navRoute) {
@@ -133,7 +133,7 @@ fun WearApp(navController: NavHostController) {
                             navController.navigateToPlayer()
                         },
                         onEpisodeItemClick = { navController.navigateToEpisode(it.uri) },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = UpNext.navRoute) {
@@ -145,7 +145,7 @@ fun WearApp(navController: NavHostController) {
                         onDismiss = {
                             navController.popBackStack()
                             navController.navigateToYourPodcast()
-                        }
+                        },
                     )
                 }
                 composable(route = Episode.navRoute) {
@@ -156,7 +156,7 @@ fun WearApp(navController: NavHostController) {
                         onDismiss = {
                             navController.popBackStack()
                             navController.navigateToYourPodcast()
-                        }
+                        },
                     )
                 }
             }

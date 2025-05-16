@@ -27,10 +27,7 @@ import androidx.compose.ui.text.fromHtml
  * annotated string from [text], and enable text selection if [text] has any selectable element.
  */
 @Composable
-fun HtmlTextContainer(
-    text: String,
-    content: @Composable (AnnotatedString) -> Unit
-) {
+fun HtmlTextContainer(text: String, content: @Composable (AnnotatedString) -> Unit) {
     val annotatedString = remember(key1 = text) {
         AnnotatedString.fromHtml(htmlString = text)
     }

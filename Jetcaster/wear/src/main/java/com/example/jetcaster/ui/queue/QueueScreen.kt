@@ -63,7 +63,7 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    queueViewModel: QueueViewModel = hiltViewModel()
+    queueViewModel: QueueViewModel = hiltViewModel(),
 ) {
     val uiState by queueViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -74,7 +74,7 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
         modifier = modifier,
         onEpisodeItemClick = onEpisodeItemClick,
         onDeleteQueueEpisodes = queueViewModel::onDeleteQueueEpisodes,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
     )
 }
 
@@ -86,17 +86,17 @@ fun QueueScreen(
     modifier: Modifier = Modifier,
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
-        )
+            last = ScalingLazyColumnDefaults.ItemType.Chip,
+        ),
     )
     ScreenScaffold(
         scrollState = columnState,
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (uiState) {
             is QueueScreenState.Loaded -> QueueScreenLoaded(
@@ -104,7 +104,7 @@ fun QueueScreen(
                 onPlayButtonClick = onPlayButtonClick,
                 onPlayEpisodes = onPlayEpisodes,
                 onDeleteQueueEpisodes = onDeleteQueueEpisodes,
-                onEpisodeItemClick = onEpisodeItemClick
+                onEpisodeItemClick = onEpisodeItemClick,
             )
             QueueScreenState.Loading -> QueueScreenLoading()
             QueueScreenState.Empty -> QueueScreenEmpty(onDismiss)
@@ -119,13 +119,13 @@ fun QueueScreenLoaded(
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     EntityScreen(
         modifier = modifier,
         headerContent = {
             ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding()
+                contentPadding = ListHeaderDefaults.firstItemPadding(),
             ) {
                 Text(text = stringResource(R.string.queue))
             }
@@ -135,7 +135,7 @@ fun QueueScreenLoaded(
                 episodes = episodeList,
                 onPlayButtonClick = onPlayButtonClick,
                 onPlayEpisodes = onPlayEpisodes,
-                onDeleteQueueEpisodes = onDeleteQueueEpisodes
+                onDeleteQueueEpisodes = onDeleteQueueEpisodes,
             )
         },
         content = {
@@ -146,23 +146,21 @@ fun QueueScreenLoaded(
                         image = Icons.Default.MusicNote,
                         tintColor = Color.Blue,
                     ),
-                    onItemClick = onEpisodeItemClick
+                    onItemClick = onEpisodeItemClick,
                 )
             }
-        }
+        },
     )
 }
 
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
-fun QueueScreenLoading(
-    modifier: Modifier = Modifier
-) {
+fun QueueScreenLoading(modifier: Modifier = Modifier) {
     EntityScreen(
         modifier = modifier,
         headerContent = {
             DefaultEntityScreenHeader(
-                title = stringResource(R.string.queue)
+                title = stringResource(R.string.queue),
             )
         },
         buttonsContent = {
@@ -171,28 +169,25 @@ fun QueueScreenLoading(
                 onPlayButtonClick = {},
                 onPlayEpisodes = {},
                 onDeleteQueueEpisodes = { },
-                enabled = false
+                enabled = false,
             )
         },
         content = {
             items(count = 2) {
                 PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
             }
-        }
+        },
     )
 }
 
 @Composable
-fun QueueScreenEmpty(
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun QueueScreenEmpty(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     AlertDialog(
         showDialog = true,
         onDismiss = onDismiss,
         title = stringResource(R.string.display_nothing_in_queue),
         message = stringResource(R.string.no_episodes_from_queue),
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -204,7 +199,7 @@ fun ButtonsContent(
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
     enabled: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
     Row(
@@ -223,7 +218,7 @@ fun ButtonsContent(
             },
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
-            enabled = enabled
+            enabled = enabled,
         )
         Button(
             imageVector = Icons.Outlined.Delete,
@@ -232,7 +227,7 @@ fun ButtonsContent(
             onClick = onDeleteQueueEpisodes,
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
-            enabled = enabled
+            enabled = enabled,
         )
     }
 }
@@ -242,20 +237,20 @@ fun ButtonsContent(
 @Composable
 fun QueueScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
-    episode: PlayerEpisode
+    episode: PlayerEpisode,
 ) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
-        )
+            last = ScalingLazyColumnDefaults.ItemType.Chip,
+        ),
     )
     QueueScreenLoaded(
         episodeList = listOf(episode),
         onPlayButtonClick = { },
         onPlayEpisodes = { },
         onDeleteQueueEpisodes = { },
-        onEpisodeItemClick = { }
+        onEpisodeItemClick = { },
     )
 }
 
@@ -266,8 +261,8 @@ fun QueueScreenLoadingPreview() {
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
-        )
+            last = ScalingLazyColumnDefaults.ItemType.Chip,
+        ),
     )
     QueueScreenLoading()
 }

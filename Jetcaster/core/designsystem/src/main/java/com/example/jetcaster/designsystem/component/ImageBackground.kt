@@ -29,26 +29,18 @@ import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 
 @Composable
-fun ImageBackgroundColorScrim(
-    url: String?,
-    color: Color,
-    modifier: Modifier = Modifier,
-) {
+fun ImageBackgroundColorScrim(url: String?, color: Color, modifier: Modifier = Modifier) {
     ImageBackground(
         url = url,
         modifier = modifier,
         overlay = {
             drawRect(color)
-        }
+        },
     )
 }
 
 @Composable
-fun ImageBackgroundRadialGradientScrim(
-    url: String?,
-    colors: List<Color>,
-    modifier: Modifier = Modifier,
-) {
+fun ImageBackgroundRadialGradientScrim(url: String?, colors: List<Color>, modifier: Modifier = Modifier) {
     ImageBackground(
         url = url,
         modifier = modifier,
@@ -56,10 +48,10 @@ fun ImageBackgroundRadialGradientScrim(
             val brush = Brush.radialGradient(
                 colors = colors,
                 center = Offset(0f, size.height),
-                radius = size.width * 1.5f
+                radius = size.width * 1.5f,
             )
             drawRect(brush, blendMode = BlendMode.Multiply)
-        }
+        },
     )
 }
 
@@ -67,11 +59,7 @@ fun ImageBackgroundRadialGradientScrim(
  * Displays an image scaled 150% overlaid by [overlay]
  */
 @Composable
-fun ImageBackground(
-    url: String?,
-    overlay: DrawScope.() -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun ImageBackground(url: String?, overlay: DrawScope.() -> Unit, modifier: Modifier = Modifier) {
     AsyncImage(
         model = url,
         contentDescription = null,
@@ -83,6 +71,6 @@ fun ImageBackground(
                     drawContent()
                     overlay()
                 }
-            }
+            },
     )
 }
