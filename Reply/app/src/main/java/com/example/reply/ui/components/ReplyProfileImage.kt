@@ -26,11 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ReplyProfileImage(
-    drawableResource: Int,
-    description: String,
-    modifier: Modifier = Modifier
-) {
+fun ReplyProfileImage(drawableResource: Int, description: String, modifier: Modifier = Modifier) {
     Image(
         modifier = modifier
             .size(40.dp)

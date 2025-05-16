@@ -61,14 +61,14 @@ fun FilterBar(
     filters: List<Filter>,
     onShowFilters: () -> Unit,
     filterScreenVisible: Boolean,
-    sharedTransitionScope: SharedTransitionScope
+    sharedTransitionScope: SharedTransitionScope,
 ) {
     with(sharedTransitionScope) {
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
-            modifier = Modifier.heightIn(min = 56.dp)
+            modifier = Modifier.heightIn(min = 56.dp),
         ) {
             item {
                 AnimatedVisibility(visible = !filterScreenVisible) {
@@ -78,8 +78,8 @@ fun FilterBar(
                             .sharedBounds(
                                 rememberSharedContentState(FilterSharedElementKey),
                                 animatedVisibilityScope = this@AnimatedVisibility,
-                                resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
-                            )
+                                resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                            ),
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.FilterList,
@@ -87,8 +87,8 @@ fun FilterBar(
                             contentDescription = stringResource(R.string.label_filters),
                             modifier = Modifier.diagonalGradientBorder(
                                 colors = JetsnackTheme.colors.interactiveSecondary,
-                                shape = CircleShape
-                            )
+                                shape = CircleShape,
+                            ),
                         )
                     }
                 }
@@ -101,24 +101,20 @@ fun FilterBar(
 }
 
 @Composable
-fun FilterChip(
-    filter: Filter,
-    modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.small
-) {
+fun FilterChip(filter: Filter, modifier: Modifier = Modifier, shape: Shape = MaterialTheme.shapes.small) {
     val (selected, setSelected) = filter.enabled
     val backgroundColor by animateColorAsState(
         if (selected) JetsnackTheme.colors.brandSecondary else JetsnackTheme.colors.uiBackground,
-        label = "background color"
+        label = "background color",
     )
     val border = Modifier.fadeInDiagonalGradientBorder(
         showBorder = !selected,
         colors = JetsnackTheme.colors.interactiveSecondary,
-        shape = shape
+        shape = shape,
     )
     val textColor by animateColorAsState(
         if (selected) Color.Black else JetsnackTheme.colors.textSecondary,
-        label = "text color"
+        label = "text color",
     )
 
     JetsnackSurface(
@@ -126,7 +122,7 @@ fun FilterChip(
         color = backgroundColor,
         contentColor = textColor,
         shape = shape,
-        elevation = 2.dp
+        elevation = 2.dp,
     ) {
         val interactionSource = remember { MutableInteractionSource() }
 
@@ -136,7 +132,7 @@ fun FilterChip(
                 Modifier.offsetGradientBackground(
                     JetsnackTheme.colors.interactiveSecondary,
                     200f,
-                    0f
+                    0f,
                 )
             } else {
                 Modifier.background(Color.Transparent)
@@ -147,7 +143,7 @@ fun FilterChip(
                     value = selected,
                     onValueChange = setSelected,
                     interactionSource = interactionSource,
-                    indication = null
+                    indication = null,
                 )
                 .then(backgroundPressed)
                 .then(border),
@@ -158,8 +154,8 @@ fun FilterChip(
                 maxLines = 1,
                 modifier = Modifier.padding(
                     horizontal = 20.dp,
-                    vertical = 6.dp
-                )
+                    vertical = 6.dp,
+                ),
             )
         }
     }

@@ -45,7 +45,7 @@ fun HomeRoute(
     homeViewModel: HomeViewModel,
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     // UiState of the HomeScreen
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -94,7 +94,7 @@ fun HomeRoute(
     onInteractWithArticleDetails: (String) -> Unit,
     onSearchInputChanged: (String) -> Unit,
     openDrawer: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     // Construct the lazy list states for the list and the details outside of deciding which one to
     // show. This allows the associated state to survive beyond that decision, and therefore
@@ -155,8 +155,8 @@ fun HomeRoute(
                     onToggleFavorite(uiState.selectedPost.id)
                 },
                 lazyListState = articleDetailLazyListStates.getValue(
-                    uiState.selectedPost.id
-                )
+                    uiState.selectedPost.id,
+                ),
             )
 
             // If we are just showing the detail, have a back press switch to the list.
@@ -180,7 +180,7 @@ fun HomeRoute(
 private enum class HomeScreenType {
     FeedWithArticleDetails,
     Feed,
-    ArticleDetails
+    ArticleDetails,
 }
 
 /**
@@ -188,10 +188,7 @@ private enum class HomeScreenType {
  * and the [HomeUiState].
  */
 @Composable
-private fun getHomeScreenType(
-    isExpandedScreen: Boolean,
-    uiState: HomeUiState
-): HomeScreenType = when (isExpandedScreen) {
+private fun getHomeScreenType(isExpandedScreen: Boolean, uiState: HomeUiState): HomeScreenType = when (isExpandedScreen) {
     false -> {
         when (uiState) {
             is HomeUiState.HasPosts -> {

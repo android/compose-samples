@@ -34,7 +34,7 @@ object LocalAccountsDataProvider {
             email = "hikingfan@gmail.com",
             altEmail = "hkngfan@outside.com",
             avatar = R.drawable.avatar_10,
-            isCurrentAccount = true
+            isCurrentAccount = true,
         ),
         Account(
             id = 2L,
@@ -43,7 +43,7 @@ object LocalAccountsDataProvider {
             lastName = "H",
             email = "jeffersonloveshiking@gmail.com",
             altEmail = "jeffersonloveshiking@work.com",
-            avatar = R.drawable.avatar_2
+            avatar = R.drawable.avatar_2,
         ),
         Account(
             id = 3L,
@@ -52,8 +52,8 @@ object LocalAccountsDataProvider {
             lastName = "Hansen",
             email = "jeffersonc@google.com",
             altEmail = "jeffersonc@gmail.com",
-            avatar = R.drawable.avatar_9
-        )
+            avatar = R.drawable.avatar_9,
+        ),
     )
 
     private val allUserContactAccounts = listOf(
@@ -64,7 +64,7 @@ object LocalAccountsDataProvider {
             lastName = "Alvarez",
             email = "tracealvie@gmail.com",
             altEmail = "tracealvie@gravity.com",
-            avatar = R.drawable.avatar_1
+            avatar = R.drawable.avatar_1,
         ),
         Account(
             id = 5L,
@@ -73,7 +73,7 @@ object LocalAccountsDataProvider {
             lastName = "Trabucco",
             email = "atrabucco222@gmail.com",
             altEmail = "atrabucco222@work.com",
-            avatar = R.drawable.avatar_3
+            avatar = R.drawable.avatar_3,
         ),
         Account(
             id = 6L,
@@ -82,7 +82,7 @@ object LocalAccountsDataProvider {
             lastName = "Connors",
             email = "aliconnors@gmail.com",
             altEmail = "aliconnors@android.com",
-            avatar = R.drawable.avatar_5
+            avatar = R.drawable.avatar_5,
         ),
         Account(
             id = 7L,
@@ -91,7 +91,7 @@ object LocalAccountsDataProvider {
             lastName = "Williams",
             email = "albertowilliams124@gmail.com",
             altEmail = "albertowilliams124@chromeos.com",
-            avatar = R.drawable.avatar_0
+            avatar = R.drawable.avatar_0,
         ),
         Account(
             id = 8L,
@@ -100,7 +100,7 @@ object LocalAccountsDataProvider {
             lastName = "Alen",
             email = "alen13@gmail.com",
             altEmail = "alen13@mountainview.gov",
-            avatar = R.drawable.avatar_7
+            avatar = R.drawable.avatar_7,
         ),
         Account(
             id = 9L,
@@ -109,7 +109,7 @@ object LocalAccountsDataProvider {
             lastName = "Express",
             email = "express@google.com",
             altEmail = "express@gmail.com",
-            avatar = R.drawable.avatar_express
+            avatar = R.drawable.avatar_express,
         ),
         Account(
             id = 10L,
@@ -118,7 +118,7 @@ object LocalAccountsDataProvider {
             lastName = "Adams",
             email = "sandraadams@gmail.com",
             altEmail = "sandraadams@textera.com",
-            avatar = R.drawable.avatar_2
+            avatar = R.drawable.avatar_2,
         ),
         Account(
             id = 11L,
@@ -127,7 +127,7 @@ object LocalAccountsDataProvider {
             lastName = "Hansen",
             email = "trevorhandsen@gmail.com",
             altEmail = "trevorhandsen@express.com",
-            avatar = R.drawable.avatar_8
+            avatar = R.drawable.avatar_8,
         ),
         Account(
             id = 12L,
@@ -136,7 +136,7 @@ object LocalAccountsDataProvider {
             lastName = "Holt",
             email = "sholt@gmail.com",
             altEmail = "sholt@art.com",
-            avatar = R.drawable.avatar_6
+            avatar = R.drawable.avatar_6,
         ),
         Account(
             id = 13L,
@@ -145,8 +145,8 @@ object LocalAccountsDataProvider {
             lastName = "Hawkins",
             email = "fhawkank@gmail.com",
             altEmail = "fhawkank@thisisme.com",
-            avatar = R.drawable.avatar_4
-        )
+            avatar = R.drawable.avatar_4,
+        ),
     )
 
     /**

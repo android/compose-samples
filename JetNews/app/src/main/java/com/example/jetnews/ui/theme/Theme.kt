@@ -87,10 +87,7 @@ val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun JetnewsTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
+fun JetnewsTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colorScheme =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val context = LocalContext.current
@@ -103,6 +100,6 @@ fun JetnewsTheme(
         colorScheme = colorScheme,
         shapes = JetnewsShapes,
         typography = JetnewsTypography,
-        content = content
+        content = content,
     )
 }
