@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Duration
 
 class GetLatestFollowedEpisodesUseCaseTest {
 
@@ -41,18 +42,33 @@ class GetLatestFollowedEpisodesUseCaseTest {
             podcastUri = testPodcasts[0].podcast.uri,
             title = "title1",
             published = OffsetDateTime.MIN,
+            subtitle = "subtitle1",
+            summary = "summary1",
+            author = "author1",
+            duration = Duration.ofMinutes(1),
+            mediaUrls = listOf("Url1"),
         ),
         Episode(
             uri = "",
             podcastUri = testPodcasts[0].podcast.uri,
             title = "title2",
             published = OffsetDateTime.now(),
+            subtitle = "subtitle2",
+            summary = "summary2",
+            author = "author2",
+            duration = Duration.ofMinutes(1),
+            mediaUrls = listOf("Url1"),
         ),
         Episode(
             uri = "",
             podcastUri = testPodcasts[1].podcast.uri,
             title = "title3",
             published = OffsetDateTime.MAX,
+            subtitle = "subtitle3",
+            summary = "summary3",
+            author = "author3",
+            duration = Duration.ofMinutes(1),
+            mediaUrls = listOf("Url1"),
         ),
     )
 

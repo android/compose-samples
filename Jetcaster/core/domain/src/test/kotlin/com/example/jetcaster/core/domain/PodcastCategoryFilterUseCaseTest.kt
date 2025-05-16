@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Duration
 
 class PodcastCategoryFilterUseCaseTest {
 
@@ -41,6 +42,11 @@ class PodcastCategoryFilterUseCaseTest {
                 "",
                 "Episode 1",
                 published = OffsetDateTime.now(),
+                subtitle = "subtitle1",
+                summary = "summary1",
+                author = "author1",
+                duration = Duration.ofMinutes(1),
+                mediaUrls = listOf("Url1"),
             )
             _podcasts = listOf(
                 Podcast(
@@ -55,6 +61,11 @@ class PodcastCategoryFilterUseCaseTest {
                 "",
                 "Episode 2",
                 published = OffsetDateTime.now(),
+                subtitle = "subtitle2",
+                summary = "summary2",
+                author = "author2",
+                duration = Duration.ofMinutes(1),
+                mediaUrls = listOf("Url1"),
             )
             _podcasts = listOf(
                 Podcast(
@@ -69,6 +80,11 @@ class PodcastCategoryFilterUseCaseTest {
                 "",
                 "Episode 3",
                 published = OffsetDateTime.now(),
+                subtitle = "subtitle3",
+                summary = "summary3",
+                author = "author2",
+                duration = Duration.ofMinutes(1),
+                mediaUrls = listOf("Url1"),
             )
             _podcasts = listOf(
                 Podcast(
