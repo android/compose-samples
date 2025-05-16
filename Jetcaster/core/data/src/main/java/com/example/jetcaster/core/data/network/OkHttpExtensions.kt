@@ -45,7 +45,7 @@ suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation 
             override fun onFailure(call: Call, e: IOException) {
                 continuation.resumeWithException(e)
             }
-        }
+        },
     )
 
     continuation.invokeOnCancellation {

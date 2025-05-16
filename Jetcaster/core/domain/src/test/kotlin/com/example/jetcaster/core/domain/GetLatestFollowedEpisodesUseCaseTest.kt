@@ -32,7 +32,7 @@ class GetLatestFollowedEpisodesUseCaseTest {
 
     val useCase = GetLatestFollowedEpisodesUseCase(
         episodeStore = episodeStore,
-        podcastStore = podcastStore
+        podcastStore = podcastStore,
     )
 
     val testEpisodes = listOf(
@@ -40,20 +40,20 @@ class GetLatestFollowedEpisodesUseCaseTest {
             uri = "",
             podcastUri = testPodcasts[0].podcast.uri,
             title = "title1",
-            published = OffsetDateTime.MIN
+            published = OffsetDateTime.MIN,
         ),
         Episode(
             uri = "",
             podcastUri = testPodcasts[0].podcast.uri,
             title = "title2",
-            published = OffsetDateTime.now()
+            published = OffsetDateTime.now(),
         ),
         Episode(
             uri = "",
             podcastUri = testPodcasts[1].podcast.uri,
             title = "title3",
-            published = OffsetDateTime.MAX
-        )
+            published = OffsetDateTime.MAX,
+        ),
     )
 
     @Test
@@ -91,8 +91,7 @@ class GetLatestFollowedEpisodesUseCaseTest {
         }
         podcastStore.togglePodcastFollowed(testPodcasts[0].podcast.uri)
 
-        result.first().zipWithNext {
-                ep1, ep2 ->
+        result.first().zipWithNext { ep1, ep2 ->
             ep1.episode.published > ep2.episode.published
         }.all { it }
     }

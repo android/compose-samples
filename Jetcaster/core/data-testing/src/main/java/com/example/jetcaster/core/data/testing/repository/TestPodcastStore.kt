@@ -31,71 +31,62 @@ class TestPodcastStore : PodcastStore {
 
     private val podcastFlow = MutableStateFlow<List<Podcast>>(listOf())
     private val followedPodcasts = mutableSetOf<String>()
-    override fun podcastWithUri(uri: String): Flow<Podcast> =
-        podcastFlow.map { podcasts ->
-            podcasts.first { it.uri == uri }
-        }
+    override fun podcastWithUri(uri: String): Flow<Podcast> = podcastFlow.map { podcasts ->
+        podcasts.first { it.uri == uri }
+    }
 
-    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> =
-        podcastFlow.map { podcasts ->
-            val podcast = podcasts.first { it.uri == podcastUri }
+    override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> = podcastFlow.map { podcasts ->
+        val podcast = podcasts.first { it.uri == podcastUri }
+        PodcastWithExtraInfo().apply {
+            this.podcast = podcast
+        }
+    }
+
+    override fun podcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> = podcastFlow.map { podcasts ->
+        podcasts.map { p ->
             PodcastWithExtraInfo().apply {
-                this.podcast = podcast
+                podcast = p
+                isFollowed = followedPodcasts.contains(p.uri)
             }
         }
+    }
 
-    override fun podcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> =
-        podcastFlow.map { podcasts ->
-            podcasts.map { p ->
-                PodcastWithExtraInfo().apply {
-                    podcast = p
-                    isFollowed = followedPodcasts.contains(p.uri)
-                }
+    override fun followedPodcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> = podcastFlow.map { podcasts ->
+        podcasts.filter {
+            followedPodcasts.contains(it.uri)
+        }.map { p ->
+            PodcastWithExtraInfo().apply {
+                podcast = p
+                isFollowed = true
             }
         }
+    }
 
-    override fun followedPodcastsSortedByLastEpisode(limit: Int): Flow<List<PodcastWithExtraInfo>> =
-        podcastFlow.map { podcasts ->
-            podcasts.filter {
-                followedPodcasts.contains(it.uri)
-            }.map { p ->
-                PodcastWithExtraInfo().apply {
-                    podcast = p
-                    isFollowed = true
-                }
+    override fun searchPodcastByTitle(keyword: String, limit: Int): Flow<List<PodcastWithExtraInfo>> = podcastFlow.map { podcastList ->
+        podcastList.filter {
+            it.title.contains(keyword)
+        }.map { p ->
+            PodcastWithExtraInfo().apply {
+                podcast = p
+                isFollowed = true
             }
         }
-
-    override fun searchPodcastByTitle(
-        keyword: String,
-        limit: Int
-    ): Flow<List<PodcastWithExtraInfo>> =
-        podcastFlow.map { podcastList ->
-            podcastList.filter {
-                it.title.contains(keyword)
-            }.map { p ->
-                PodcastWithExtraInfo().apply {
-                    podcast = p
-                    isFollowed = true
-                }
-            }
-        }
+    }
 
     override fun searchPodcastByTitleAndCategories(
         keyword: String,
         categories: List<Category>,
-        limit: Int
-    ): Flow<List<PodcastWithExtraInfo>> =
-        podcastFlow.map { podcastList ->
-            podcastList.filter {
-                it.title.contains(keyword)
-            }.map { p ->
-                PodcastWithExtraInfo().apply {
-                    podcast = p
-                    isFollowed = true
-                }
+        limit: Int,
+    ): Flow<List<PodcastWithExtraInfo>> = podcastFlow.map { podcastList ->
+        podcastList.filter {
+            it.title.contains(keyword)
+        }.map { p ->
+            PodcastWithExtraInfo().apply {
+                podcast = p
+                isFollowed = true
             }
         }
+    }
 
     override suspend fun togglePodcastFollowed(podcastUri: String) {
         if (podcastUri in followedPodcasts) {
@@ -113,9 +104,7 @@ class TestPodcastStore : PodcastStore {
         followedPodcasts.remove(podcastUri)
     }
 
-    override suspend fun addPodcast(podcast: Podcast) =
-        podcastFlow.update { it + podcast }
+    override suspend fun addPodcast(podcast: Podcast) = podcastFlow.update { it + podcast }
 
-    override suspend fun isEmpty(): Boolean =
-        podcastFlow.first().isEmpty()
+    override suspend fun isEmpty(): Boolean = podcastFlow.first().isEmpty()
 }

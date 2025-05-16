@@ -67,12 +67,12 @@ fun WearApp(navController: NavHostController) {
                 startDestination = NavigationScreens.Player.playerDestination(),
                 navController = navController,
                 modifier = Modifier.background(Color.Transparent),
-                state = navHostState
+                state = navHostState,
             ) {
                 composable(
                     route = NavigationScreens.Player.navRoute,
                     arguments = NavigationScreens.Player.arguments,
-                    deepLinks = NavigationScreens.Player.deepLinks("")
+                    deepLinks = NavigationScreens.Player.deepLinks(""),
                 ) {
                     val volumeState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
                     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
@@ -87,24 +87,24 @@ fun WearApp(navController: NavHostController) {
                                 volumeViewModel = volumeViewModel,
                                 onVolumeClick = {
                                     navController.navigateToVolume()
-                                }
+                                },
                             )
                         },
                         libraryScreen = {
                             LibraryScreen(
                                 onLatestEpisodeClick = { navController.navigateToLatestEpisode() },
                                 onYourPodcastClick = { navController.navigateToYourPodcast() },
-                                onUpNextClick = { navController.navigateToUpNext() }
+                                onUpNextClick = { navController.navigateToUpNext() },
                             )
                         },
-                        backStack = it
+                        backStack = it,
                     )
                 }
 
                 composable(
                     route = NavigationScreens.Volume.navRoute,
                     arguments = NavigationScreens.Volume.arguments,
-                    deepLinks = NavigationScreens.Volume.deepLinks("")
+                    deepLinks = NavigationScreens.Volume.deepLinks(""),
                 ) {
                     ScreenScaffold(timeText = {}) {
                         VolumeScreen(volumeViewModel = volumeViewModel)
@@ -112,19 +112,19 @@ fun WearApp(navController: NavHostController) {
                 }
 
                 composable(
-                    route = LatestEpisodes.navRoute
+                    route = LatestEpisodes.navRoute,
                 ) {
                     LatestEpisodesScreen(
                         onPlayButtonClick = {
                             navController.navigateToPlayer()
                         },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = YourPodcasts.navRoute) {
                     PodcastsScreen(
                         onPodcastsItemClick = { navController.navigateToPodcastDetails(it.uri) },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = PodcastDetails.navRoute) {
@@ -133,7 +133,7 @@ fun WearApp(navController: NavHostController) {
                             navController.navigateToPlayer()
                         },
                         onEpisodeItemClick = { navController.navigateToEpisode(it.uri) },
-                        onDismiss = { navController.popBackStack() }
+                        onDismiss = { navController.popBackStack() },
                     )
                 }
                 composable(route = UpNext.navRoute) {
@@ -145,7 +145,7 @@ fun WearApp(navController: NavHostController) {
                         onDismiss = {
                             navController.popBackStack()
                             navController.navigateToYourPodcast()
-                        }
+                        },
                     )
                 }
                 composable(route = Episode.navRoute) {
@@ -156,7 +156,7 @@ fun WearApp(navController: NavHostController) {
                         onDismiss = {
                             navController.popBackStack()
                             navController.navigateToYourPodcast()
-                        }
+                        },
                     )
                 }
             }

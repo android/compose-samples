@@ -32,7 +32,7 @@ abstract class EpisodesDao : BaseDao<Episode> {
     @Query(
         """
         SELECT * FROM episodes WHERE uri = :uri
-        """
+        """,
     )
     abstract fun episode(uri: String): Flow<Episode>
 
@@ -42,7 +42,7 @@ abstract class EpisodesDao : BaseDao<Episode> {
         SELECT episodes.* FROM episodes
         INNER JOIN podcasts ON episodes.podcast_uri = podcasts.uri
         WHERE episodes.uri = :episodeUri
-        """
+        """,
     )
     abstract fun episodeAndPodcast(episodeUri: String): Flow<EpisodeToPodcast>
 
@@ -52,12 +52,9 @@ abstract class EpisodesDao : BaseDao<Episode> {
         SELECT * FROM episodes WHERE podcast_uri = :podcastUri
         ORDER BY datetime(published) DESC
         LIMIT :limit
-        """
+        """,
     )
-    abstract fun episodesForPodcastUri(
-        podcastUri: String,
-        limit: Int
-    ): Flow<List<EpisodeToPodcast>>
+    abstract fun episodesForPodcastUri(podcastUri: String, limit: Int): Flow<List<EpisodeToPodcast>>
 
     @Transaction
     @Query(
@@ -67,12 +64,9 @@ abstract class EpisodesDao : BaseDao<Episode> {
         WHERE category_id = :categoryId
         ORDER BY datetime(published) DESC
         LIMIT :limit
-        """
+        """,
     )
-    abstract fun episodesFromPodcastsInCategory(
-        categoryId: Long,
-        limit: Int
-    ): Flow<List<EpisodeToPodcast>>
+    abstract fun episodesFromPodcastsInCategory(categoryId: Long, limit: Int): Flow<List<EpisodeToPodcast>>
 
     @Query("SELECT COUNT(*) FROM episodes")
     abstract suspend fun count(): Int
@@ -83,10 +77,7 @@ abstract class EpisodesDao : BaseDao<Episode> {
         SELECT * FROM episodes WHERE podcast_uri IN (:podcastUris)
         ORDER BY datetime(published) DESC
         LIMIT :limit
-        """
+        """,
     )
-    abstract fun episodesForPodcasts(
-        podcastUris: List<String>,
-        limit: Int
-    ): Flow<List<EpisodeToPodcast>>
+    abstract fun episodesForPodcasts(podcastUris: List<String>, limit: Int): Flow<List<EpisodeToPodcast>>
 }

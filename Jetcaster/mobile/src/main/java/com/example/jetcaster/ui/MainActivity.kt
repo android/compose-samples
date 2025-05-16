@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
             JetcasterTheme {
                 JetcasterApp(
-                    displayFeatures
+                    displayFeatures,
                 )
             }
         }

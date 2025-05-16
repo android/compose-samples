@@ -29,9 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class PlayerScreenViewModel @Inject constructor(
-    private val episodePlayer: EpisodePlayer,
-) : ViewModel() {
+class PlayerScreenViewModel @Inject constructor(private val episodePlayer: EpisodePlayer) : ViewModel() {
 
     val uiStateFlow = episodePlayer.playerState.map {
         if (it.currentEpisode == null && it.queue.isEmpty()) {
@@ -42,7 +40,7 @@ class PlayerScreenViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        PlayerScreenUiState.Loading
+        PlayerScreenUiState.Loading,
     )
 
     private val skipAmount = Duration.ofSeconds(10L)
@@ -75,9 +73,7 @@ class PlayerScreenViewModel @Inject constructor(
 
 sealed interface PlayerScreenUiState {
     data object Loading : PlayerScreenUiState
-    data class Ready(
-        val playerState: EpisodePlayerState
-    ) : PlayerScreenUiState
+    data class Ready(val playerState: EpisodePlayerState) : PlayerScreenUiState
 
     data object NoEpisodeInQueue : PlayerScreenUiState
 }

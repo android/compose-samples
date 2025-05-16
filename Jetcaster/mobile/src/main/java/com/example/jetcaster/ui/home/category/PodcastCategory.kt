@@ -64,14 +64,13 @@ fun LazyGridScope.podcastCategory(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     onQueueEpisode: (PlayerEpisode) -> Unit,
     removeFromQueue: (EpisodeInfo) -> Unit,
-
     onTogglePodcastFollowed: (PodcastInfo) -> Unit,
 ) {
     fullWidthItem {
         CategoryPodcasts(
             topPodcasts = podcastCategoryFilterResult.topPodcasts,
             navigateToPodcastDetails = navigateToPodcastDetails,
-            onTogglePodcastFollowed = onTogglePodcastFollowed
+            onTogglePodcastFollowed = onTogglePodcastFollowed,
         )
     }
 
@@ -92,10 +91,10 @@ fun LazyGridScope.podcastCategory(
                     .animateItem(),
                 imageModifier = Modifier.sharedElement(
                     sharedContentState = rememberSharedContentState(
-                        key = item.episode.title
+                        key = item.episode.title,
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,
-                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                    clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium),
                 ),
                 removeFromQueue = removeFromQueue,
             )
@@ -113,7 +112,7 @@ private fun CategoryPodcasts(
         podcasts = topPodcasts,
         onTogglePodcastFollowed = onTogglePodcastFollowed,
         navigateToPodcastDetails = navigateToPodcastDetails,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
 }
 
@@ -129,7 +128,7 @@ private fun CategoryPodcastRow(
         state = rememberCarouselState { podcasts.count() },
         modifier = modifier.padding(start = 8.dp),
         itemWidth = 128.dp,
-        itemSpacing = 4.dp
+        itemSpacing = 4.dp,
     ) { i ->
         val podcast = podcasts[i]
         TopPodcastRowItem(
@@ -142,7 +141,7 @@ private fun CategoryPodcastRow(
                 .clickable {
                     navigateToPodcastDetails(podcast)
                 }
-                .maskClip(MaterialTheme.shapes.large)
+                .maskClip(MaterialTheme.shapes.large),
         )
     }
 }
@@ -162,7 +161,7 @@ private fun TopPodcastRowItem(
             .fillMaxWidth()
             .height(128.dp)
             .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.large)
+            .clip(MaterialTheme.shapes.large),
     ) {
         PodcastImage(
             modifier = Modifier
@@ -175,7 +174,7 @@ private fun TopPodcastRowItem(
         ToggleFollowPodcastIconButton(
             onClick = onToggleFollowClicked,
             isFollowed = isFollowed,
-            modifier = Modifier.align(Alignment.TopStart)
+            modifier = Modifier.align(Alignment.TopStart),
         )
 
         Box(modifier = Modifier.matchParentSize().background(gradient))
@@ -188,7 +187,7 @@ private fun TopPodcastRowItem(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 16.dp)
+                .padding(start = 16.dp, bottom = 16.dp),
         )
     }
 }
@@ -202,7 +201,7 @@ fun PreviewEpisodeListItem() {
             podcast = PreviewPodcasts[0],
             onClick = { },
             onQueueEpisode = { },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

@@ -49,7 +49,7 @@ fun DiscoverScreen(
     showPodcastDetails: (PodcastInfo) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel()
+    discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel(),
 ) {
     val uiState by discoverScreenViewModel.uiState.collectAsState()
 
@@ -58,7 +58,7 @@ fun DiscoverScreen(
             Loading(
                 modifier = Modifier
                     .fillMaxSize()
-                    .then(modifier)
+                    .then(modifier),
             )
         }
 
@@ -76,7 +76,7 @@ fun DiscoverScreen(
                 },
                 modifier = Modifier
                     .fillMaxSize()
-                    .then(modifier)
+                    .then(modifier),
             )
         }
     }
@@ -87,7 +87,6 @@ fun DiscoverScreen(
 private fun CatalogWithCategorySelection(
     categoryInfoList: CategoryInfoList,
     podcastList: PodcastList,
-
     selectedCategory: CategoryInfo,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastInfo) -> Unit,
@@ -124,7 +123,7 @@ private fun CatalogWithCategorySelection(
                 enter = {
                     selectedTab
                 }
-            }
+            },
         ) {
             categoryInfoList.forEachIndexed { index, category ->
                 val tabModifier = if (selectedTabIndex == index) {
@@ -142,7 +141,7 @@ private fun CatalogWithCategorySelection(
                 ) {
                     Text(
                         text = category.name,
-                        modifier = Modifier.padding(JetcasterAppDefaults.padding.tab)
+                        modifier = Modifier.padding(JetcasterAppDefaults.padding.tab),
                     )
                 }
             }

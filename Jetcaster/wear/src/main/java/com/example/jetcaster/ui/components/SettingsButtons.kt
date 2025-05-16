@@ -55,7 +55,7 @@ fun SettingsButtons(
             currentPlayerSpeed = playerUiState.episodePlayerState
                 .playbackSpeed.toMillis().toFloat() / 1000,
             onPlaybackSpeedChange = onPlaybackSpeedChange,
-            enabled = enabled
+            enabled = enabled,
         )
 
         SettingsButtonsDefaults.BrandIcon(
@@ -66,7 +66,7 @@ fun SettingsButtons(
         SetVolumeButton(
             onVolumeClick = onVolumeClick,
             volumeUiState = volumeUiState,
-            enabled = enabled
+            enabled = enabled,
         )
     }
 }
@@ -86,7 +86,9 @@ fun PlaybackSpeedButton(
         when (currentPlayerSpeed) {
             1f -> ImageVector.vectorResource(R.drawable.speed_1x)
             1.5f -> ImageVector.vectorResource(R.drawable.speed_15x)
-            else -> { ImageVector.vectorResource(R.drawable.speed_2x) }
+            else -> {
+                ImageVector.vectorResource(R.drawable.speed_2x)
+            }
         },
         iconRtlMode = IconRtlMode.Mirrored,
         contentDescription = stringResource(R.string.change_playback_speed_content_description),

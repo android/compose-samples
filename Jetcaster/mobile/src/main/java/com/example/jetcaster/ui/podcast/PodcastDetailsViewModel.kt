@@ -39,10 +39,7 @@ import kotlinx.coroutines.launch
 
 sealed interface PodcastUiState {
     data object Loading : PodcastUiState
-    data class Ready(
-        val podcast: PodcastInfo,
-        val episodes: List<EpisodeInfo>,
-    ) : PodcastUiState
+    data class Ready(val podcast: PodcastInfo, val episodes: List<EpisodeInfo>) : PodcastUiState
 }
 
 /**
@@ -61,7 +58,7 @@ class PodcastDetailsViewModel @AssistedInject constructor(
     val state: StateFlow<PodcastUiState> =
         combine(
             podcastStore.podcastWithExtraInfo(decodedPodcastUri),
-            episodeStore.episodesInPodcast(decodedPodcastUri)
+            episodeStore.episodesInPodcast(decodedPodcastUri),
         ) { podcast, episodeToPodcasts ->
             val episodes = episodeToPodcasts.map { it.episode.asExternalModel() }
             PodcastUiState.Ready(
@@ -71,7 +68,7 @@ class PodcastDetailsViewModel @AssistedInject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = PodcastUiState.Loading
+            initialValue = PodcastUiState.Loading,
         )
 
     fun toggleSusbcribe(podcast: PodcastInfo) {

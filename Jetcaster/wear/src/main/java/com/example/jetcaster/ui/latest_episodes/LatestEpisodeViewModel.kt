@@ -41,7 +41,7 @@ class LatestEpisodeViewModel @Inject constructor(
                 LatestEpisodeScreenState.Loaded(
                     episodeToPodcastList.map {
                         it.toPlayerEpisode()
-                    }
+                    },
                 )
             } else {
                 LatestEpisodeScreenState.Empty
@@ -67,9 +67,7 @@ sealed interface LatestEpisodeScreenState {
 
     data object Loading : LatestEpisodeScreenState
 
-    data class Loaded(
-        val episodeList: List<PlayerEpisode>
-    ) : LatestEpisodeScreenState
+    data class Loaded(val episodeList: List<PlayerEpisode>) : LatestEpisodeScreenState
 
     data object Empty : LatestEpisodeScreenState
 }

@@ -49,7 +49,7 @@ fun Modifier.radialGradientScrim(color: Color): Modifier {
                 center = size.center.copy(y = size.height / 4),
                 colors = listOf(color, Color.Transparent),
                 radius = largerDimension / 2,
-                colorStops = listOf(0f, 0.9f)
+                colorStops = listOf(0f, 0.9f),
             )
         }
     }
@@ -74,7 +74,7 @@ fun Modifier.verticalGradientScrim(
     @FloatRange(from = 0.0, to = 1.0) startYPercentage: Float = 0f,
     @FloatRange(from = 0.0, to = 1.0) endYPercentage: Float = 1f,
     decay: Float = 1.0f,
-    numStops: Int = 16
+    numStops: Int = 16,
 ) = this then VerticalGradientElement(color, startYPercentage, endYPercentage, decay, numStops)
 
 private data class VerticalGradientElement(
@@ -82,7 +82,7 @@ private data class VerticalGradientElement(
     var startYPercentage: Float = 0f,
     var endYPercentage: Float = 1f,
     var decay: Float = 1.0f,
-    var numStops: Int = 16
+    var numStops: Int = 16,
 ) : ModifierNodeElement<VerticalGradientModifier>() {
     fun createOnDraw(): DrawScope.() -> Unit {
         val colors = if (decay != 1f) {
@@ -113,7 +113,7 @@ private data class VerticalGradientElement(
             drawRect(
                 topLeft = topLeft,
                 size = Rect(topLeft, bottomRight).size,
-                brush = brush
+                brush = brush,
             )
         }
     }
@@ -137,9 +137,9 @@ private data class VerticalGradientElement(
     }
 }
 
-private class VerticalGradientModifier(
-    var onDraw: DrawScope.() -> Unit
-) : Modifier.Node(), DrawModifierNode {
+private class VerticalGradientModifier(var onDraw: DrawScope.() -> Unit) :
+    Modifier.Node(),
+    DrawModifierNode {
 
     override fun ContentDrawScope.draw() {
         onDraw()

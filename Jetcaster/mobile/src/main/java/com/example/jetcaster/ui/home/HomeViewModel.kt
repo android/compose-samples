@@ -102,16 +102,18 @@ class HomeViewModel @Inject constructor(
                 subscribedPodcasts.flatMapLatest { podcasts ->
                     episodeStore.episodesInPodcasts(
                         podcastUris = podcasts.map { it.podcast.uri },
-                        limit = 20
+                        limit = 20,
                     )
-                }
-            ) { homeCategories,
-                homeCategory,
-                podcasts,
-                refreshing,
-                filterableCategories,
-                podcastCategoryFilterResult,
-                libraryEpisodes ->
+                },
+            ) {
+                    homeCategories,
+                    homeCategory,
+                    podcasts,
+                    refreshing,
+                    filterableCategories,
+                    podcastCategoryFilterResult,
+                    libraryEpisodes,
+                ->
 
                 _selectedCategory.value = filterableCategories.selectedCategory
 
@@ -127,14 +129,14 @@ class HomeViewModel @Inject constructor(
                     featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
                     filterableCategoriesModel = filterableCategories,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    library = libraryEpisodes.asLibrary()
+                    library = libraryEpisodes.asLibrary(),
                 )
             }.catch { throwable ->
                 emit(
                     HomeScreenUiState(
                         isLoading = false,
-                        errorMessage = throwable.message
-                    )
+                        errorMessage = throwable.message,
+                    ),
                 )
             }.collect {
                 _state.value = it
@@ -203,13 +205,13 @@ class HomeViewModel @Inject constructor(
     }
 }
 
-private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
-    LibraryInfo(
-        episodes = this.map { it.asPodcastToEpisodeInfo() }
-    )
+private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo = LibraryInfo(
+    episodes = this.map { it.asPodcastToEpisodeInfo() },
+)
 
 enum class HomeCategory {
-    Library, Discover
+    Library,
+    Discover,
 }
 
 @Immutable

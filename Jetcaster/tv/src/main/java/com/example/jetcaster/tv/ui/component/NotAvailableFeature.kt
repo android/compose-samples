@@ -25,7 +25,7 @@ import com.example.jetcaster.tv.R
 @Composable
 internal fun NotAvailableFeature(
     modifier: Modifier = Modifier,
-    message: String = stringResource(id = R.string.message_not_available_feature)
+    message: String = stringResource(id = R.string.message_not_available_feature),
 ) {
     Text(message, modifier = modifier)
 }

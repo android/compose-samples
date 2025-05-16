@@ -35,28 +35,26 @@ data class EpisodeInfo(
     val mediaUrls: List<String> = emptyList(),
 )
 
-fun Episode.asExternalModel(): EpisodeInfo =
-    EpisodeInfo(
-        uri = uri,
-        podcastUri = podcastUri,
-        title = title,
-        subTitle = subtitle ?: "",
-        summary = summary ?: "",
-        author = author ?: "",
-        published = published,
-        duration = duration,
-        mediaUrls = mediaUrls
-    )
+fun Episode.asExternalModel(): EpisodeInfo = EpisodeInfo(
+    uri = uri,
+    podcastUri = podcastUri,
+    title = title,
+    subTitle = subtitle ?: "",
+    summary = summary ?: "",
+    author = author ?: "",
+    published = published,
+    duration = duration,
+    mediaUrls = mediaUrls,
+)
 
-fun EpisodeInfo.asDaoModel(): Episode =
-    Episode(
-        uri = uri,
-        title = title,
-        subtitle = subTitle,
-        summary = summary,
-        author = author,
-        published = published,
-        duration = duration,
-        podcastUri = podcastUri,
-        mediaUrls = mediaUrls
-    )
+fun EpisodeInfo.asDaoModel(): Episode = Episode(
+    uri = uri,
+    title = title,
+    subtitle = subTitle,
+    summary = summary,
+    author = author,
+    published = published,
+    duration = duration,
+    podcastUri = podcastUri,
+    mediaUrls = mediaUrls,
+)

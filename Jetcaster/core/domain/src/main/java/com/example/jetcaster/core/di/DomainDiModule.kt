@@ -32,7 +32,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 object DomainDiModule {
     @Provides
     @Singleton
-    fun provideEpisodePlayer(
-        @Dispatcher(JetcasterDispatchers.Main) mainDispatcher: CoroutineDispatcher
-    ): EpisodePlayer = MockEpisodePlayer(mainDispatcher)
+    fun provideEpisodePlayer(@Dispatcher(JetcasterDispatchers.Main) mainDispatcher: CoroutineDispatcher): EpisodePlayer =
+        MockEpisodePlayer(mainDispatcher)
 }

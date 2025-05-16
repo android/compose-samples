@@ -75,7 +75,7 @@ fun PodcastsScreen(
     PodcastsScreen(
         podcastsScreenState = modifiedState,
         onPodcastsItemClick = onPodcastsItemClick,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
     )
 }
 
@@ -91,12 +91,12 @@ fun PodcastsScreen(
     val columnState = rememberResponsiveColumnState()
     ScreenScaffold(
         scrollState = columnState,
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (podcastsScreenState) {
             is PodcastsScreenState.Loaded -> PodcastScreenLoaded(
                 podcastList = podcastsScreenState.podcastList,
-                onPodcastsItemClick = onPodcastsItemClick
+                onPodcastsItemClick = onPodcastsItemClick,
             )
             PodcastsScreenState.Empty ->
                 PodcastScreenEmpty(onDismiss)
@@ -107,85 +107,73 @@ fun PodcastsScreen(
 }
 
 @Composable
-fun PodcastScreenLoaded(
-    podcastList: List<PodcastInfo>,
-    onPodcastsItemClick: (PodcastInfo) -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PodcastScreenLoaded(podcastList: List<PodcastInfo>, onPodcastsItemClick: (PodcastInfo) -> Unit, modifier: Modifier = Modifier) {
     EntityScreen(
         modifier = modifier,
         headerContent = {
             ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding()
+                contentPadding = ListHeaderDefaults.firstItemPadding(),
             ) {
                 Text(text = stringResource(id = R.string.podcasts))
             }
         },
         content = {
-            items(count = podcastList.size) {
-                    index ->
+            items(count = podcastList.size) { index ->
                 MediaContent(
                     podcast = podcastList[index],
                     downloadItemArtworkPlaceholder = rememberVectorPainter(
                         image = Icons.Default.MusicNote,
                         tintColor = Color.Blue,
                     ),
-                    onPodcastsItemClick = onPodcastsItemClick
+                    onPodcastsItemClick = onPodcastsItemClick,
 
                 )
             }
-        }
+        },
     )
 }
 
 @Composable
-fun PodcastScreenEmpty(
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun PodcastScreenEmpty(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     AlertDialog(
         showDialog = true,
         message = stringResource(R.string.podcasts_no_podcasts),
         onDismiss = onDismiss,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
-fun PodcastScreenLoading(
-    modifier: Modifier = Modifier
-) {
+fun PodcastScreenLoading(modifier: Modifier = Modifier) {
     EntityScreen(
         modifier = modifier,
         headerContent = {
             DefaultEntityScreenHeader(
-                title = stringResource(R.string.podcasts)
+                title = stringResource(R.string.podcasts),
             )
         },
         content = {
             items(count = 2) {
                 PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
             }
-        }
+        },
     )
 }
 
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
-fun PodcastScreenLoadedPreview(
-    @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo
-) {
+fun PodcastScreenLoadedPreview(@PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo) {
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
-        )
+            last = ScalingLazyColumnDefaults.ItemType.Chip,
+        ),
     )
     PodcastScreenLoaded(
         podcastList = listOf(podcasts),
-        onPodcastsItemClick = {}
+        onPodcastsItemClick = {},
     )
 }
 
@@ -196,8 +184,8 @@ fun PodcastScreenLoadingPreview() {
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip
-        )
+            last = ScalingLazyColumnDefaults.ItemType.Chip,
+        ),
     )
     PodcastScreenLoading()
 }
@@ -210,11 +198,7 @@ fun PodcastScreenEmptyPreview() {
 }
 
 @Composable
-fun MediaContent(
-    podcast: PodcastInfo,
-    downloadItemArtworkPlaceholder: Painter?,
-    onPodcastsItemClick: (PodcastInfo) -> Unit
-) {
+fun MediaContent(podcast: PodcastInfo, downloadItemArtworkPlaceholder: Painter?, onPodcastsItemClick: (PodcastInfo) -> Unit) {
     val mediaTitle = podcast.title
 
     val secondaryLabel = podcast.author
