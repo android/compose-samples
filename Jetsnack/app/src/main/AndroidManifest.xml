@@ -25,6 +25,17 @@
         android:theme="@style/Theme.Jetsnack"
 
         >
+        <receiver
+            android:name=".widget.RecentOrdersWidgetReceiver"
+            android:label="@string/snack_order_widget_name"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/snack_order_widget_info" />
+        </receiver>
 
         <profileable
             android:shell="true"

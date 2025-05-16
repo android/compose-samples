@@ -12,7 +12,7 @@ androidx-compose-bom = "2025.05.00"
 androidx-constraintlayout = "1.1.1"
 androidx-core-splashscreen = "1.0.1"
 androidx-corektx = "1.16.0"
-androidx-glance = "1.1.1"
+androidx-glance = "1.2.0-alpha01"
 androidx-lifecycle = "2.8.2"
 androidx-lifecycle-compose = "2.9.0"
 androidx-lifecycle-runtime-compose = "2.9.0"
@@ -57,6 +57,7 @@ spotless = "7.0.3"
 # @keep
 targetSdk = "33"
 version-catalog-update = "1.0.0"
+glancePreview = "1.1.1"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -158,6 +159,7 @@ roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose"
 roborazzi-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
 rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome" }
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
+androidx-glance-preview = { group = "androidx.glance", name = "glance-preview", version.ref = "glancePreview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

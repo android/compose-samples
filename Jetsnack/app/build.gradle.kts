@@ -94,6 +94,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.preview)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
