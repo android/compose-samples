@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 /**
  * A fake in-memory implementation of repository that produces list of [ImageTextListItemData]
  */
-class FakeImageTextListDataRepository {
+class RecentOrdersDataRepository {
   private val data = MutableStateFlow(listOf<ImageTextListItemData>())
   private var items = demoItems.take(MAX_ITEMS)
 
@@ -111,14 +111,14 @@ class FakeImageTextListDataRepository {
           )
       )
 
-    private val repositories = mutableMapOf<GlanceId, FakeImageTextListDataRepository>()
+    private val repositories = mutableMapOf<GlanceId, RecentOrdersDataRepository>()
 
     /**
      * Returns the repository instance for the given widget represented by [glanceId].
      */
-    fun getImageTextListDataRepo(glanceId: GlanceId): FakeImageTextListDataRepository {
+    fun getImageTextListDataRepo(glanceId: GlanceId): RecentOrdersDataRepository {
       return synchronized(repositories) {
-        repositories.computeIfAbsentExt(glanceId) { FakeImageTextListDataRepository() }!!
+        repositories.computeIfAbsentExt(glanceId) { RecentOrdersDataRepository() }!!
       }
     }
 

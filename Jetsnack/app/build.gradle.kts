@@ -94,8 +94,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.glance.appwidget)
-    implementation(libs.androidx.glance.preview)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -133,4 +131,7 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.preview)
 }

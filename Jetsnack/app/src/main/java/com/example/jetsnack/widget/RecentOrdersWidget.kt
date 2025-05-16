@@ -37,8 +37,8 @@ import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.MainActivity
-import com.example.jetsnack.widget.data.FakeImageTextListDataRepository
-import com.example.jetsnack.widget.data.FakeImageTextListDataRepository.Companion.getImageTextListDataRepo
+import com.example.jetsnack.widget.data.RecentOrdersDataRepository
+import com.example.jetsnack.widget.data.RecentOrdersDataRepository.Companion.getImageTextListDataRepo
 import com.example.jetsnack.widget.layout.ImageTextListItemData
 import com.example.jetsnack.widget.layout.ImageTextListLayout
 import kotlinx.coroutines.Dispatchers
@@ -102,7 +102,7 @@ class RecentOrdersWidget : GlanceAppWidget() {
     }
 
     override suspend fun providePreview(context: Context, widgetCategory: Int) {
-        val repo = FakeImageTextListDataRepository()
+        val repo = RecentOrdersDataRepository()
         val items = repo.load()
 
         provideContent {
@@ -122,7 +122,7 @@ class RecentOrdersWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         appWidgetIds.forEach {
-            FakeImageTextListDataRepository.cleanUp(AppWidgetId(appWidgetId = it))
+            RecentOrdersDataRepository.cleanUp(AppWidgetId(appWidgetId = it))
         }
         super.onDeleted(context, appWidgetIds)
     }
