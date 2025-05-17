@@ -47,36 +47,30 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun JetLaggedSleepGraphCard(
-    sleepState: SleepGraphData,
-    modifier: Modifier = Modifier
-) {
+fun JetLaggedSleepGraphCard(sleepState: SleepGraphData, modifier: Modifier = Modifier) {
     var selectedTab by remember { mutableStateOf(SleepTab.Week) }
 
     BasicInformationalCard(
         borderColor = MaterialTheme.colorScheme.primary,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column {
             HomeScreenCardHeading(text = "Sleep")
             JetLaggedHeaderTabs(
                 onTabSelected = { selectedTab = it },
                 selectedTab = selectedTab,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 16.dp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             JetLaggedTimeGraph(
-                sleepState
+                sleepState,
             )
         }
     }
 }
 
 @Composable
-private fun JetLaggedTimeGraph(
-    sleepGraphData: SleepGraphData,
-    modifier: Modifier = Modifier
-) {
+private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData, modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
 
     val hours = (sleepGraphData.earliestStartHour..23) + (0..sleepGraphData.latestEndHour)
@@ -104,9 +98,9 @@ private fun JetLaggedTimeGraph(
                         start = data.firstSleepStart,
                         end = data.lastSleepEnd,
                         hours = hours,
-                    )
+                    ),
             )
-        }
+        },
     )
 }
 
@@ -114,13 +108,13 @@ private fun JetLaggedTimeGraph(
 private fun DayLabel(dayOfWeek: DayOfWeek) {
     Text(
         dayOfWeek.getDisplayName(
-            TextStyle.SHORT, Locale.getDefault()
+            TextStyle.SHORT, Locale.getDefault(),
         ),
         Modifier
             .height(24.dp)
             .padding(start = 8.dp, end = 24.dp),
         style = SmallHeadingStyle,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -139,7 +133,7 @@ private fun HoursHeader(hours: List<Int>) {
                     brush,
                     cornerRadius = CornerRadius(10.dp.toPx(), 10.dp.toPx()),
                 )
-            }
+            },
     ) {
         hours.forEach {
             Text(
@@ -148,7 +142,7 @@ private fun HoursHeader(hours: List<Int>) {
                 modifier = Modifier
                     .width(50.dp)
                     .padding(vertical = 4.dp),
-                style = SmallHeadingStyle
+                style = SmallHeadingStyle,
             )
         }
     }

@@ -21,6 +21,6 @@ import java.text.NumberFormat
 
 fun formatPrice(price: Long): String {
     return NumberFormat.getCurrencyInstance().format(
-        BigDecimal(price).movePointLeft(2)
+        BigDecimal(price).movePointLeft(2),
     )
 }

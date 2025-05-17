@@ -34,15 +34,12 @@ import com.example.jetnews.glance.ui.theme.JetnewsGlanceColorScheme
  * @param color color of this divider line.
  */
 @Composable
-fun Divider(
-    thickness: Dp = DividerDefaults.Thickness,
-    color: ColorProvider = DividerDefaults.color
-) {
+fun Divider(thickness: Dp = DividerDefaults.Thickness, color: ColorProvider = DividerDefaults.color) {
     Spacer(
         modifier = GlanceModifier
             .fillMaxWidth()
             .height(thickness)
-            .background(color)
+            .background(color),
     )
 }
 

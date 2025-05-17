@@ -37,7 +37,7 @@ val sleepData = SleepGraphData(
                         .minusDays(7)
                         .withHour(21)
                         .withMinute(40),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -48,7 +48,7 @@ val sleepData = SleepGraphData(
                         .minusDays(7)
                         .withHour(22)
                         .withMinute(20),
-                    type = SleepType.Light
+                    type = SleepType.Light,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -59,7 +59,7 @@ val sleepData = SleepGraphData(
                         .minusDays(7)
                         .withHour(22)
                         .withMinute(50),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -70,7 +70,7 @@ val sleepData = SleepGraphData(
                         .minusDays(7)
                         .withHour(23)
                         .withMinute(30),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -81,7 +81,7 @@ val sleepData = SleepGraphData(
                         .minusDays(6)
                         .withHour(1)
                         .withMinute(10),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -92,7 +92,7 @@ val sleepData = SleepGraphData(
                         .minusDays(6)
                         .withHour(2)
                         .withMinute(30),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -103,7 +103,7 @@ val sleepData = SleepGraphData(
                         .minusDays(6)
                         .withHour(4)
                         .withMinute(10),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -114,10 +114,10 @@ val sleepData = SleepGraphData(
                         .minusDays(6)
                         .withHour(5)
                         .withMinute(30),
-                    type = SleepType.Awake
-                )
+                    type = SleepType.Awake,
+                ),
             ),
-            sleepScore = 90
+            sleepScore = 90,
         ),
         SleepDayData(
             LocalDateTime.now().minusDays(6),
@@ -131,7 +131,7 @@ val sleepData = SleepGraphData(
                         .minusDays(6)
                         .withHour(22)
                         .withMinute(50),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -142,7 +142,7 @@ val sleepData = SleepGraphData(
                         .minusDays(6)
                         .withHour(23)
                         .withMinute(30),
-                    type = SleepType.Light
+                    type = SleepType.Light,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -153,7 +153,7 @@ val sleepData = SleepGraphData(
                         .minusDays(6)
                         .withHour(23)
                         .withMinute(55),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -164,7 +164,7 @@ val sleepData = SleepGraphData(
                         .minusDays(5)
                         .withHour(2)
                         .withMinute(40),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -175,7 +175,7 @@ val sleepData = SleepGraphData(
                         .minusDays(5)
                         .withHour(2)
                         .withMinute(50),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -186,10 +186,10 @@ val sleepData = SleepGraphData(
                         .minusDays(5)
                         .withHour(4)
                         .withMinute(12),
-                    type = SleepType.Deep
-                )
+                    type = SleepType.Deep,
+                ),
             ),
-            sleepScore = 70
+            sleepScore = 70,
         ),
         SleepDayData(
             LocalDateTime.now().minusDays(5),
@@ -203,7 +203,7 @@ val sleepData = SleepGraphData(
                         .minusDays(5)
                         .withHour(22)
                         .withMinute(40),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -214,7 +214,7 @@ val sleepData = SleepGraphData(
                         .minusDays(5)
                         .withHour(22)
                         .withMinute(50),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -225,7 +225,7 @@ val sleepData = SleepGraphData(
                         .minusDays(5)
                         .withHour(22)
                         .withMinute(55),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -236,7 +236,7 @@ val sleepData = SleepGraphData(
                         .minusDays(5)
                         .withHour(23)
                         .withMinute(30),
-                    type = SleepType.Light
+                    type = SleepType.Light,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -247,7 +247,7 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(1)
                         .withMinute(10),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -258,7 +258,7 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(2)
                         .withMinute(30),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -269,7 +269,7 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(3)
                         .withMinute(5),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -280,7 +280,7 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(4)
                         .withMinute(50),
-                    type = SleepType.Light
+                    type = SleepType.Light,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -291,10 +291,10 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(6)
                         .withMinute(30),
-                    type = SleepType.REM
-                )
+                    type = SleepType.REM,
+                ),
             ),
-            sleepScore = 60
+            sleepScore = 60,
         ),
         SleepDayData(
             LocalDateTime.now().minusDays(4),
@@ -308,7 +308,7 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(22)
                         .withMinute(40),
-                    type = SleepType.Light
+                    type = SleepType.Light,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -319,7 +319,7 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(22)
                         .withMinute(50),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -330,7 +330,7 @@ val sleepData = SleepGraphData(
                         .minusDays(4)
                         .withHour(23)
                         .withMinute(55),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -341,7 +341,7 @@ val sleepData = SleepGraphData(
                         .minusDays(3)
                         .withHour(1)
                         .withMinute(33),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -352,7 +352,7 @@ val sleepData = SleepGraphData(
                         .minusDays(3)
                         .withHour(2)
                         .withMinute(30),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -363,7 +363,7 @@ val sleepData = SleepGraphData(
                         .minusDays(3)
                         .withHour(3)
                         .withMinute(45),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -374,10 +374,10 @@ val sleepData = SleepGraphData(
                         .minusDays(3)
                         .withHour(7)
                         .withMinute(15),
-                    type = SleepType.Light
-                )
+                    type = SleepType.Light,
+                ),
             ),
-            sleepScore = 90
+            sleepScore = 90,
         ),
         SleepDayData(
             LocalDateTime.now().minusDays(3),
@@ -391,7 +391,7 @@ val sleepData = SleepGraphData(
                         .minusDays(3)
                         .withHour(23)
                         .withMinute(30),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -402,7 +402,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(0)
                         .withMinute(10),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -413,7 +413,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(1)
                         .withMinute(10),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -424,7 +424,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(2)
                         .withMinute(30),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -435,7 +435,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(4)
                         .withMinute(30),
-                    type = SleepType.Light
+                    type = SleepType.Light,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -446,7 +446,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(4)
                         .withMinute(45),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -457,10 +457,10 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(4)
                         .withMinute(45),
-                    type = SleepType.REM
-                )
+                    type = SleepType.REM,
+                ),
             ),
-            sleepScore = 40
+            sleepScore = 40,
         ),
         SleepDayData(
             LocalDateTime.now().minusDays(2),
@@ -474,7 +474,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(21)
                         .withMinute(40),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -485,7 +485,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(22)
                         .withMinute(20),
-                    type = SleepType.Light
+                    type = SleepType.Light,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -496,7 +496,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(22)
                         .withMinute(50),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -507,7 +507,7 @@ val sleepData = SleepGraphData(
                         .minusDays(2)
                         .withHour(23)
                         .withMinute(30),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -518,7 +518,7 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(1)
                         .withMinute(10),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -529,7 +529,7 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(2)
                         .withMinute(30),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -540,7 +540,7 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(4)
                         .withMinute(10),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -551,10 +551,10 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(5)
                         .withMinute(30),
-                    type = SleepType.Awake
-                )
+                    type = SleepType.Awake,
+                ),
             ),
-            sleepScore = 82
+            sleepScore = 82,
         ),
         SleepDayData(
             LocalDateTime.now().minusDays(1),
@@ -568,7 +568,7 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(22)
                         .withMinute(40),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -579,7 +579,7 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(22)
                         .withMinute(50),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -590,7 +590,7 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(22)
                         .withMinute(55),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -601,7 +601,7 @@ val sleepData = SleepGraphData(
                         .minusDays(1)
                         .withHour(23)
                         .withMinute(30),
-                    type = SleepType.REM
+                    type = SleepType.REM,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -611,7 +611,7 @@ val sleepData = SleepGraphData(
                     endTime = LocalDateTime.now()
                         .withHour(1)
                         .withMinute(10),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -620,7 +620,7 @@ val sleepData = SleepGraphData(
                     endTime = LocalDateTime.now()
                         .withHour(2)
                         .withMinute(30),
-                    type = SleepType.Awake
+                    type = SleepType.Awake,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -629,7 +629,7 @@ val sleepData = SleepGraphData(
                     endTime = LocalDateTime.now()
                         .withHour(3)
                         .withMinute(5),
-                    type = SleepType.Deep
+                    type = SleepType.Deep,
                 ),
                 SleepPeriod(
                     startTime = LocalDateTime.now()
@@ -638,10 +638,10 @@ val sleepData = SleepGraphData(
                     endTime = LocalDateTime.now()
                         .withHour(4)
                         .withMinute(50),
-                    type = SleepType.Light
-                )
+                    type = SleepType.Light,
+                ),
             ),
-            sleepScore = 70
+            sleepScore = 70,
         ),
-    )
+    ),
 )

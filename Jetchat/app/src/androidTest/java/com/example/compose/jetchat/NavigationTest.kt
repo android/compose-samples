@@ -81,7 +81,7 @@ class NavigationTest {
 
     private fun navigateToProfile(name: String) {
         composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open)
+            composeTestRule.activity.getString(R.string.navigation_drawer_open),
         ).performClick()
 
         composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
@@ -91,12 +91,12 @@ class NavigationTest {
 
     private fun isDrawer() = SemanticsMatcher.expectValue(
         SemanticsProperties.PaneTitle,
-        composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu)
+        composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu),
     )
 
     private fun navigateToHome() {
         composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open)
+            composeTestRule.activity.getString(R.string.navigation_drawer_open),
         ).performClick()
 
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()

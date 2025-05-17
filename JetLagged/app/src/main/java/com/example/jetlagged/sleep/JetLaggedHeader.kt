@@ -40,12 +40,9 @@ import com.example.jetlagged.ui.theme.TitleBarStyle
 
 @Preview
 @Composable
-fun JetLaggedHeader(
-    onDrawerClicked: () -> Unit = {},
-    modifier: Modifier = Modifier
-) {
+fun JetLaggedHeader(onDrawerClicked: () -> Unit = {}, modifier: Modifier = Modifier) {
     Box(
-        modifier.height(150.dp)
+        modifier.height(150.dp),
     ) {
         Row(modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars)) {
             IconButton(
@@ -53,7 +50,7 @@ fun JetLaggedHeader(
             ) {
                 Icon(
                     Icons.Default.Menu,
-                    contentDescription = stringResource(R.string.not_implemented)
+                    contentDescription = stringResource(R.string.not_implemented),
                 )
             }
 
@@ -63,7 +60,7 @@ fun JetLaggedHeader(
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 style = TitleBarStyle,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
         }
     }

@@ -97,14 +97,14 @@ fun SnackCollection(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
     index: Int = 0,
-    highlight: Boolean = true
+    highlight: Boolean = true,
 ) {
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .heightIn(min = 56.dp)
-                .padding(start = 24.dp)
+                .padding(start = 24.dp),
         ) {
             Text(
                 text = snackCollection.name,
@@ -114,16 +114,16 @@ fun SnackCollection(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .weight(1f)
-                    .wrapContentWidth(Alignment.Start)
+                    .wrapContentWidth(Alignment.Start),
             )
             IconButton(
                 onClick = { /* todo */ },
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically),
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                     tint = JetsnackTheme.colors.brand,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         }
@@ -141,7 +141,7 @@ private fun HighlightedSnacks(
     index: Int,
     snacks: List<Snack>,
     onSnackClick: (Long, String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val rowState = rememberLazyListState()
     val cardWidthWithPaddingPx = with(LocalDensity.current) { cardWidthWithPaddingPx }
@@ -161,7 +161,7 @@ private fun HighlightedSnacks(
         state = rowState,
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(start = 24.dp, end = 24.dp)
+        contentPadding = PaddingValues(start = 24.dp, end = 24.dp),
     ) {
         itemsIndexed(snacks) { index, snack ->
             HighlightSnackItem(
@@ -170,22 +170,17 @@ private fun HighlightedSnacks(
                 onSnackClick = onSnackClick,
                 index = index,
                 gradient = gradient,
-                scrollProvider = scrollProvider
+                scrollProvider = scrollProvider,
             )
         }
     }
 }
 
 @Composable
-private fun Snacks(
-    snackCollectionId: Long,
-    snacks: List<Snack>,
-    onSnackClick: (Long, String) -> Unit,
-    modifier: Modifier = Modifier
-) {
+private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
     LazyRow(
         modifier = modifier,
-        contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
+        contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
     ) {
         items(snacks) { snack ->
             SnackItem(snack, snackCollectionId, onSnackClick)
@@ -194,19 +189,14 @@ private fun Snacks(
 }
 
 @Composable
-fun SnackItem(
-    snack: Snack,
-    snackCollectionId: Long,
-    onSnackClick: (Long, String) -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
     JetsnackSurface(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.padding(
             start = 4.dp,
             end = 4.dp,
-            bottom = 8.dp
-        )
+            bottom = 8.dp,
+        ),
 
     ) {
         val sharedTransitionScope = LocalSharedTransitionScope.current
@@ -221,7 +211,7 @@ fun SnackItem(
                     .clickable(onClick = {
                         onSnackClick(snack.id, snackCollectionId.toString())
                     })
-                    .padding(8.dp)
+                    .padding(8.dp),
             ) {
                 SnackImage(
                     imageRes = snack.imageRes,
@@ -234,12 +224,12 @@ fun SnackItem(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
                                     origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Image
-                                )
+                                    type = SnackSharedElementType.Image,
+                                ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = snackDetailBoundsTransform
-                        )
+                            boundsTransform = snackDetailBoundsTransform,
+                        ),
                 )
                 Text(
                     text = snack.name,
@@ -253,15 +243,15 @@ fun SnackItem(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
                                     origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Title
-                                )
+                                    type = SnackSharedElementType.Title,
+                                ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
-                            boundsTransform = snackDetailBoundsTransform
-                        )
+                            boundsTransform = snackDetailBoundsTransform,
+                        ),
                 )
             }
         }
@@ -276,7 +266,7 @@ private fun HighlightSnackItem(
     index: Int,
     gradient: List<Color>,
     scrollProvider: () -> Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
@@ -301,28 +291,28 @@ private fun HighlightSnackItem(
                         key = SnackSharedElementKey(
                             snackId = snack.id,
                             origin = snackCollectionId.toString(),
-                            type = SnackSharedElementType.Bounds
-                        )
+                            type = SnackSharedElementType.Bounds,
+                        ),
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = snackDetailBoundsTransform,
                     clipInOverlayDuringTransition = OverlayClip(
                         RoundedCornerShape(
-                            roundedCornerAnimation
-                        )
+                            roundedCornerAnimation,
+                        ),
                     ),
                     enter = fadeIn(),
-                    exit = fadeOut()
+                    exit = fadeOut(),
                 )
                 .size(
                     width = HighlightCardWidth,
-                    height = 250.dp
+                    height = 250.dp,
                 )
                 .border(
                     1.dp,
                     JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
-                    RoundedCornerShape(roundedCornerAnimation)
-                )
+                    RoundedCornerShape(roundedCornerAnimation),
+                ),
 
         ) {
             Column(
@@ -330,16 +320,16 @@ private fun HighlightSnackItem(
                     .clickable(onClick = {
                         onSnackClick(
                             snack.id,
-                            snackCollectionId.toString()
+                            snackCollectionId.toString(),
                         )
                     })
-                    .fillMaxSize()
+                    .fillMaxSize(),
 
             ) {
                 Box(
                     modifier = Modifier
                         .height(160.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 ) {
                     Box(
                         modifier = Modifier
@@ -348,14 +338,14 @@ private fun HighlightSnackItem(
                                     key = SnackSharedElementKey(
                                         snackId = snack.id,
                                         origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Background
-                                    )
+                                        type = SnackSharedElementType.Background,
+                                    ),
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = snackDetailBoundsTransform,
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
-                                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
                             )
                             .height(100.dp)
                             .fillMaxWidth()
@@ -370,8 +360,8 @@ private fun HighlightSnackItem(
                                     val left = index * cardWidthWithPaddingPx
                                     val gradientOffset = left - (scrollProvider() / 3f)
                                     gradientOffset
-                                }
-                            )
+                                },
+                            ),
                     )
 
                     SnackImage(
@@ -383,16 +373,16 @@ private fun HighlightSnackItem(
                                     key = SnackSharedElementKey(
                                         snackId = snack.id,
                                         origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Image
-                                    )
+                                        type = SnackSharedElementType.Image,
+                                    ),
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
-                                boundsTransform = snackDetailBoundsTransform
+                                boundsTransform = snackDetailBoundsTransform,
                             )
                             .align(Alignment.BottomCenter)
-                            .size(120.dp)
+                            .size(120.dp),
                     )
                 }
 
@@ -410,16 +400,16 @@ private fun HighlightSnackItem(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
                                     origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Title
-                                )
+                                    type = SnackSharedElementType.Title,
+                                ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
                         )
-                        .wrapContentWidth()
+                        .wrapContentWidth(),
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -434,16 +424,16 @@ private fun HighlightSnackItem(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
                                     origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Tagline
-                                )
+                                    type = SnackSharedElementType.Tagline,
+                                ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
                         )
-                        .wrapContentWidth()
+                        .wrapContentWidth(),
                 )
             }
         }
@@ -451,12 +441,11 @@ private fun HighlightSnackItem(
 }
 
 @Composable
-fun debugPlaceholder(@DrawableRes debugPreview: Int) =
-    if (LocalInspectionMode.current) {
-        painterResource(id = debugPreview)
-    } else {
-        null
-    }
+fun debugPlaceholder(@DrawableRes debugPreview: Int) = if (LocalInspectionMode.current) {
+    painterResource(id = debugPreview)
+} else {
+    null
+}
 
 @Composable
 fun SnackImage(
@@ -464,12 +453,12 @@ fun SnackImage(
     imageRes: Int,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    elevation: Dp = 0.dp
+    elevation: Dp = 0.dp,
 ) {
     JetsnackSurface(
         elevation = elevation,
         shape = CircleShape,
-        modifier = modifier
+        modifier = modifier,
     ) {
 
         AsyncImage(
@@ -498,7 +487,7 @@ fun SnackCardPreview() {
             onSnackClick = { _, _ -> },
             index = 0,
             gradient = JetsnackTheme.colors.gradient6_1,
-            scrollProvider = { 0f }
+            scrollProvider = { 0f },
         )
     }
 }
@@ -510,7 +499,7 @@ fun JetsnackPreviewWrapper(content: @Composable () -> Unit) {
             AnimatedVisibility(visible = true) {
                 CompositionLocalProvider(
                     LocalSharedTransitionScope provides this@SharedTransitionLayout,
-                    LocalNavAnimatedVisibilityScope provides this
+                    LocalNavAnimatedVisibilityScope provides this,
                 ) {
                     content()
                 }

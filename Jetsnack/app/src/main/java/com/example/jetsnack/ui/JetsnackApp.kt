@@ -15,7 +15,7 @@
  */
 
 @file:OptIn(
-    ExperimentalSharedTransitionApi::class
+    ExperimentalSharedTransitionApi::class,
 )
 
 package com.example.jetsnack.ui
@@ -64,17 +64,17 @@ fun JetsnackApp() {
         val jetsnackNavController = rememberJetsnackNavController()
         SharedTransitionLayout {
             CompositionLocalProvider(
-                LocalSharedTransitionScope provides this
+                LocalSharedTransitionScope provides this,
             ) {
                 NavHost(
                     navController = jetsnackNavController.navController,
-                    startDestination = MainDestinations.HOME_ROUTE
+                    startDestination = MainDestinations.HOME_ROUTE,
                 ) {
                     composableWithCompositionLocal(
-                        route = MainDestinations.HOME_ROUTE
+                        route = MainDestinations.HOME_ROUTE,
                     ) { backStackEntry ->
                         MainContainer(
-                            onSnackSelected = jetsnackNavController::navigateToSnackDetail
+                            onSnackSelected = jetsnackNavController::navigateToSnackDetail,
                         )
                     }
 
@@ -85,7 +85,7 @@ fun JetsnackApp() {
                         arguments = listOf(
                             navArgument(MainDestinations.SNACK_ID_KEY) {
                                 type = NavType.LongType
-                            }
+                            },
                         ),
 
                     ) { backStackEntry ->
@@ -95,7 +95,7 @@ fun JetsnackApp() {
                         SnackDetail(
                             snackId,
                             origin = origin ?: "",
-                            upPress = jetsnackNavController::upPress
+                            upPress = jetsnackNavController::upPress,
                         )
                     }
                 }
@@ -105,10 +105,7 @@ fun JetsnackApp() {
 }
 
 @Composable
-fun MainContainer(
-    modifier: Modifier = Modifier,
-    onSnackSelected: (Long, String, NavBackStackEntry) -> Unit
-) {
+fun MainContainer(modifier: Modifier = Modifier, onSnackSelected: (Long, String, NavBackStackEntry) -> Unit) {
     val jetsnackScaffoldState = rememberJetsnackScaffoldState()
     val nestedNavController = rememberJetsnackNavController()
     val navBackStackEntry by nestedNavController.navController.currentBackStackEntryAsState()
@@ -131,16 +128,16 @@ fun MainContainer(
                             )
                             .animateEnterExit(
                                 enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(
-                                    spatialExpressiveSpring()
+                                    spatialExpressiveSpring(),
                                 ) {
                                     it
                                 },
                                 exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(
-                                    spatialExpressiveSpring()
+                                    spatialExpressiveSpring(),
                                 ) {
                                     it
-                                }
-                            )
+                                },
+                            ),
                     )
                 }
             }
@@ -150,20 +147,20 @@ fun MainContainer(
             SnackbarHost(
                 hostState = it,
                 modifier = Modifier.systemBarsPadding(),
-                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
+                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) },
             )
         },
         snackBarHostState = jetsnackScaffoldState.snackBarHostState,
     ) { padding ->
         NavHost(
             navController = nestedNavController.navController,
-            startDestination = HomeSections.FEED.route
+            startDestination = HomeSections.FEED.route,
         ) {
             addHomeGraph(
                 onSnackSelected = onSnackSelected,
                 modifier = Modifier
                     .padding(padding)
-                    .consumeWindowInsets(padding)
+                    .consumeWindowInsets(padding),
             )
         }
     }

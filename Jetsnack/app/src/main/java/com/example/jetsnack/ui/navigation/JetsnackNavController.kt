@@ -40,19 +40,16 @@ object MainDestinations {
  * Remembers and creates an instance of [JetsnackNavController]
  */
 @Composable
-fun rememberJetsnackNavController(
-    navController: NavHostController = rememberNavController()
-): JetsnackNavController = remember(navController) {
-    JetsnackNavController(navController)
-}
+fun rememberJetsnackNavController(navController: NavHostController = rememberNavController()): JetsnackNavController =
+    remember(navController) {
+        JetsnackNavController(navController)
+    }
 
 /**
  * Responsible for holding UI Navigation logic.
  */
 @Stable
-class JetsnackNavController(
-    val navController: NavHostController,
-) {
+class JetsnackNavController(val navController: NavHostController) {
 
     // ----------------------------------------------------------
     // Navigation state source of truth
@@ -89,8 +86,7 @@ class JetsnackNavController(
  *
  * This is used to de-duplicate navigation events.
  */
-private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
+private fun NavBackStackEntry.lifecycleIsResumed() = this.lifecycle.currentState == Lifecycle.State.RESUMED
 
 private val NavGraph.startDestination: NavDestination?
     get() = findNode(startDestinationId)

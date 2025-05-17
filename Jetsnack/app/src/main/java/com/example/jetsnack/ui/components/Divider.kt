@@ -33,12 +33,12 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 fun JetsnackDivider(
     modifier: Modifier = Modifier,
     color: Color = JetsnackTheme.colors.uiBorder.copy(alpha = DividerAlpha),
-    thickness: Dp = 1.dp
+    thickness: Dp = 1.dp,
 ) {
     HorizontalDivider(
         modifier = modifier,
         color = color,
-        thickness = thickness
+        thickness = thickness,
     )
 }
 

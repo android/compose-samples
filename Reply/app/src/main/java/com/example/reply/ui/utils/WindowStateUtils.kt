@@ -27,14 +27,9 @@ import kotlin.contracts.contract
 sealed interface DevicePosture {
     object NormalPosture : DevicePosture
 
-    data class BookPosture(
-        val hingePosition: Rect
-    ) : DevicePosture
+    data class BookPosture(val hingePosition: Rect) : DevicePosture
 
-    data class Separating(
-        val hingePosition: Rect,
-        var orientation: FoldingFeature.Orientation
-    ) : DevicePosture
+    data class Separating(val hingePosition: Rect, var orientation: FoldingFeature.Orientation) : DevicePosture
 }
 
 @OptIn(ExperimentalContracts::class)
@@ -54,19 +49,23 @@ fun isSeparating(foldFeature: FoldingFeature?): Boolean {
  * Different type of navigation supported by app depending on device size and state.
  */
 enum class ReplyNavigationType {
-    BOTTOM_NAVIGATION, NAVIGATION_RAIL, PERMANENT_NAVIGATION_DRAWER
+    BOTTOM_NAVIGATION,
+    NAVIGATION_RAIL,
+    PERMANENT_NAVIGATION_DRAWER,
 }
 
 /**
  * Different position of navigation content inside Navigation Rail, Navigation Drawer depending on device size and state.
  */
 enum class ReplyNavigationContentPosition {
-    TOP, CENTER
+    TOP,
+    CENTER,
 }
 
 /**
  * App Content shown depending on device size and state.
  */
 enum class ReplyContentType {
-    SINGLE_PANE, DUAL_PANE
+    SINGLE_PANE,
+    DUAL_PANE,
 }

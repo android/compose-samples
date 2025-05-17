@@ -28,7 +28,7 @@ fun ComposeContentTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsApp(
             appContainer = TestAppContainer(context),
-            widthSizeClass = WindowWidthSizeClass.Compact
+            widthSizeClass = WindowWidthSizeClass.Compact,
         )
     }
 }

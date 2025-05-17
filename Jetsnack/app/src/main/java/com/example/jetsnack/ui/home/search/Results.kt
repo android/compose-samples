@@ -57,16 +57,13 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
-fun SearchResults(
-    searchResults: List<Snack>,
-    onSnackClick: (Long, String) -> Unit
-) {
+fun SearchResults(searchResults: List<Snack>, onSnackClick: (Long, String) -> Unit) {
     Column {
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
             style = MaterialTheme.typography.titleLarge,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
         )
         LazyColumn {
             itemsIndexed(searchResults) { index, snack ->
@@ -77,17 +74,12 @@ fun SearchResults(
 }
 
 @Composable
-private fun SearchResult(
-    snack: Snack,
-    onSnackClick: (Long, String) -> Unit,
-    showDivider: Boolean,
-    modifier: Modifier = Modifier
-) {
+private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, showDivider: Boolean, modifier: Modifier = Modifier) {
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onSnackClick(snack.id, "search") }
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = 24.dp),
     ) {
         val (divider, image, name, tag, priceSpacer, price, add) = createRefs()
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
@@ -96,7 +88,7 @@ private fun SearchResult(
                 Modifier.constrainAs(divider) {
                     linkTo(start = parent.start, end = parent.end)
                     top.linkTo(parent.top)
-                }
+                },
             )
         }
         SnackImage(
@@ -109,10 +101,10 @@ private fun SearchResult(
                         top = parent.top,
                         topMargin = 16.dp,
                         bottom = parent.bottom,
-                        bottomMargin = 16.dp
+                        bottomMargin = 16.dp,
                     )
                     start.linkTo(parent.start)
-                }
+                },
         )
         Text(
             text = snack.name,
@@ -124,9 +116,9 @@ private fun SearchResult(
                     startMargin = 16.dp,
                     end = add.start,
                     endMargin = 16.dp,
-                    bias = 0f
+                    bias = 0f,
                 )
-            }
+            },
         )
         Text(
             text = snack.tagline,
@@ -138,16 +130,16 @@ private fun SearchResult(
                     startMargin = 16.dp,
                     end = add.start,
                     endMargin = 16.dp,
-                    bias = 0f
+                    bias = 0f,
                 )
-            }
+            },
         )
         Spacer(
             Modifier
                 .height(8.dp)
                 .constrainAs(priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
-                }
+                },
         )
         Text(
             text = formatPrice(snack.price),
@@ -159,9 +151,9 @@ private fun SearchResult(
                     startMargin = 16.dp,
                     end = add.start,
                     endMargin = 16.dp,
-                    bias = 0f
+                    bias = 0f,
                 )
-            }
+            },
         )
         JetsnackButton(
             onClick = { /* todo */ },
@@ -172,45 +164,42 @@ private fun SearchResult(
                 .constrainAs(add) {
                     linkTo(top = parent.top, bottom = parent.bottom)
                     end.linkTo(parent.end)
-                }
+                },
         ) {
             Icon(
                 imageVector = Icons.Outlined.Add,
-                contentDescription = stringResource(R.string.label_add)
+                contentDescription = stringResource(R.string.label_add),
             )
         }
     }
 }
 
 @Composable
-fun NoResults(
-    query: String,
-    modifier: Modifier = Modifier
-) {
+fun NoResults(query: String, modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
             .wrapContentSize()
-            .padding(24.dp)
+            .padding(24.dp),
     ) {
         Image(
             painterResource(R.drawable.empty_state_search),
-            contentDescription = null
+            contentDescription = null,
         )
         Spacer(Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.search_no_matches_retry),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -225,7 +214,7 @@ private fun SearchResultPreview() {
             SearchResult(
                 snack = snacks[0],
                 onSnackClick = { _, _ -> },
-                showDivider = false
+                showDivider = false,
             )
         }
     }

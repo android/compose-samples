@@ -24,4 +24,4 @@
 
 set -xe
 
-./scripts/gradlew_recursive.sh --init-script buildscripts/init.gradle.kts spotlessApply
+./scripts/gradlew_recursive.sh spotlessApply "$@"

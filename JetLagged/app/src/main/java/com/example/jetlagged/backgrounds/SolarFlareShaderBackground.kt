@@ -34,10 +34,7 @@ import org.intellij.lang.annotations.Language
  * Background modifier that displays a custom shader for Android T and above and a linear gradient
  * for older versions of Android
  */
-fun Modifier.solarFlareShaderBackground(
-    baseColor: Color,
-    backgroundColor: Color,
-): Modifier =
+fun Modifier.solarFlareShaderBackground(baseColor: Color, backgroundColor: Color): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         this.then(SolarFlareShaderBackgroundElement(baseColor, backgroundColor))
     } else {
@@ -45,10 +42,7 @@ fun Modifier.solarFlareShaderBackground(
     }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private data class SolarFlareShaderBackgroundElement(
-    val baseColor: Color,
-    val backgroundColor: Color,
-) :
+private data class SolarFlareShaderBackgroundElement(val baseColor: Color, val backgroundColor: Color) :
     ModifierNodeElement<SolarFlairShaderBackgroundNode>() {
     override fun create() = SolarFlairShaderBackgroundNode(baseColor, backgroundColor)
     override fun update(node: SolarFlairShaderBackgroundNode) {
@@ -57,10 +51,9 @@ private data class SolarFlareShaderBackgroundElement(
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private class SolarFlairShaderBackgroundNode(
-    baseColor: Color,
-    backgroundColor: Color,
-) : DrawModifierNode, Modifier.Node() {
+private class SolarFlairShaderBackgroundNode(baseColor: Color, backgroundColor: Color) :
+    Modifier.Node(),
+    DrawModifierNode {
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
     private val time = mutableFloatStateOf(0f)
@@ -76,8 +69,8 @@ private class SolarFlairShaderBackgroundNode(
                 baseColor.red,
                 baseColor.green,
                 baseColor.blue,
-                baseColor.alpha
-            )
+                baseColor.alpha,
+            ),
         )
         shader.setColorUniform(
             "backgroundColor",
@@ -85,8 +78,8 @@ private class SolarFlairShaderBackgroundNode(
                 backgroundColor.red,
                 backgroundColor.green,
                 backgroundColor.blue,
-                backgroundColor.alpha
-            )
+                backgroundColor.alpha,
+            ),
         )
     }
 

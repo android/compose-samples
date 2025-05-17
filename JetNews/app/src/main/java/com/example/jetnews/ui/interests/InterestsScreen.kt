@@ -83,7 +83,7 @@ import kotlinx.coroutines.runBlocking
 enum class Sections(@StringRes val titleResId: Int) {
     Topics(R.string.interests_section_topics),
     People(R.string.interests_section_people),
-    Publications(R.string.interests_section_publications)
+    Publications(R.string.interests_section_publications),
 }
 
 /**
@@ -118,7 +118,7 @@ fun InterestsScreen(
     isExpandedScreen: Boolean,
     onTabChange: (Sections) -> Unit,
     openDrawer: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     val context = LocalContext.current
     Scaffold(
@@ -129,7 +129,7 @@ fun InterestsScreen(
                     Text(
                         text = stringResource(R.string.cd_interests),
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 },
                 navigationIcon = {
@@ -138,7 +138,7 @@ fun InterestsScreen(
                             Icon(
                                 painter = painterResource(R.drawable.ic_jetnews_logo),
                                 contentDescription = stringResource(
-                                    R.string.cd_open_navigation_drawer
+                                    R.string.cd_open_navigation_drawer,
                                 ),
                             )
                         }
@@ -150,23 +150,23 @@ fun InterestsScreen(
                             Toast.makeText(
                                 context,
                                 "Search is not yet implemented in this configuration",
-                                Toast.LENGTH_LONG
+                                Toast.LENGTH_LONG,
                             ).show()
-                        }
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Search,
-                            contentDescription = stringResource(R.string.cd_search)
+                            contentDescription = stringResource(R.string.cd_search),
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         val screenModifier = Modifier.padding(innerPadding)
         InterestScreenContent(
             currentSection, isExpandedScreen,
-            onTabChange, tabContent, screenModifier
+            onTabChange, tabContent, screenModifier,
         )
     }
 }
@@ -187,7 +187,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
         TabWithSections(
             sections = uiState.topics,
             selectedTopics = selectedTopics,
-            onTopicSelect = { interestsViewModel.toggleTopicSelection(it) }
+            onTopicSelect = { interestsViewModel.toggleTopicSelection(it) },
         )
     }
 
@@ -196,7 +196,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
         TabWithTopics(
             topics = uiState.people,
             selectedTopics = selectedPeople,
-            onTopicSelect = { interestsViewModel.togglePersonSelected(it) }
+            onTopicSelect = { interestsViewModel.togglePersonSelected(it) },
         )
     }
 
@@ -206,7 +206,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
         TabWithTopics(
             topics = uiState.publications,
             selectedTopics = selectedPublications,
-            onTopicSelect = { interestsViewModel.togglePublicationSelected(it) }
+            onTopicSelect = { interestsViewModel.togglePublicationSelected(it) },
         )
     }
 
@@ -228,13 +228,13 @@ private fun InterestScreenContent(
     isExpandedScreen: Boolean,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column(modifier) {
         InterestsTabRow(selectedTabIndex, updateSection, tabContent, isExpandedScreen)
         HorizontalDivider(
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
         )
         Box(modifier = Modifier.weight(1f)) {
             // display the current tab content which is a @Composable () -> Unit
@@ -258,14 +258,10 @@ private val tabContainerModifier = Modifier
  * @param onTopicSelect (event) request a topic selection be changed
  */
 @Composable
-private fun TabWithTopics(
-    topics: List<String>,
-    selectedTopics: Set<String>,
-    onTopicSelect: (String) -> Unit
-) {
+private fun TabWithTopics(topics: List<String>, selectedTopics: Set<String>, onTopicSelect: (String) -> Unit) {
     InterestsAdaptiveContentLayout(
         topPadding = 16.dp,
-        modifier = tabContainerModifier.verticalScroll(rememberScrollState())
+        modifier = tabContainerModifier.verticalScroll(rememberScrollState()),
     ) {
         topics.forEach { topic ->
             TopicItem(
@@ -285,11 +281,7 @@ private fun TabWithTopics(
  * @param onTopicSelect (event) request a topic+section selection be changed
  */
 @Composable
-private fun TabWithSections(
-    sections: List<InterestSection>,
-    selectedTopics: Set<TopicSelection>,
-    onTopicSelect: (TopicSelection) -> Unit
-) {
+private fun TabWithSections(sections: List<InterestSection>, selectedTopics: Set<TopicSelection>, onTopicSelect: (TopicSelection) -> Unit) {
     Column(tabContainerModifier.verticalScroll(rememberScrollState())) {
         sections.forEach { (section, topics) ->
             Text(
@@ -297,7 +289,7 @@ private fun TabWithSections(
                 modifier = Modifier
                     .padding(16.dp)
                     .semantics { heading() },
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
             InterestsAdaptiveContentLayout {
                 topics.forEach { topic ->
@@ -320,19 +312,14 @@ private fun TabWithSections(
  * @param onToggle (event) toggle selection for topic
  */
 @Composable
-private fun TopicItem(
-    itemTitle: String,
-    selected: Boolean,
-    onToggle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit, modifier: Modifier = Modifier) {
     Column(Modifier.padding(horizontal = 16.dp)) {
         Row(
             modifier = modifier.toggleable(
                 value = selected,
-                onValueChange = { onToggle() }
+                onValueChange = { onToggle() },
             ),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             val image = painterResource(R.drawable.placeholder_1_1)
             Image(
@@ -340,21 +327,21 @@ private fun TopicItem(
                 contentDescription = null, // decorative
                 modifier = Modifier
                     .size(56.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(4.dp)),
             )
             Text(
                 text = itemTitle,
                 modifier = Modifier
                     .padding(16.dp)
                     .weight(1f), // Break line if the title is too long
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
             Spacer(Modifier.width(16.dp))
             SelectTopicButton(selected = selected)
         }
         HorizontalDivider(
             modifier = modifier.padding(start = 72.dp, top = 8.dp, bottom = 8.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
         )
     }
 }
@@ -367,13 +354,13 @@ private fun InterestsTabRow(
     selectedTabIndex: Int,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
-    isExpandedScreen: Boolean
+    isExpandedScreen: Boolean,
 ) {
     when (isExpandedScreen) {
         false -> {
             TabRow(
                 selectedTabIndex = selectedTabIndex,
-                contentColor = MaterialTheme.colorScheme.primary
+                contentColor = MaterialTheme.colorScheme.primary,
             ) {
                 InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
             }
@@ -382,13 +369,13 @@ private fun InterestsTabRow(
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 contentColor = MaterialTheme.colorScheme.primary,
-                edgePadding = 0.dp
+                edgePadding = 0.dp,
             ) {
                 InterestsTabRowContent(
                     selectedTabIndex = selectedTabIndex,
                     updateSection = updateSection,
                     tabContent = tabContent,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp),
                 )
             }
         }
@@ -400,7 +387,7 @@ private fun InterestsTabRowContent(
     selectedTabIndex: Int,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     tabContent.forEachIndexed { index, content ->
         val colorText = if (selectedTabIndex == index) {
@@ -411,13 +398,13 @@ private fun InterestsTabRowContent(
         Tab(
             selected = selectedTabIndex == index,
             onClick = { updateSection(content.section) },
-            modifier = Modifier.heightIn(min = 48.dp)
+            modifier = Modifier.heightIn(min = 48.dp),
         ) {
             Text(
                 text = stringResource(id = content.section.titleResId),
                 color = colorText,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = modifier.paddingFromBaseline(top = 20.dp)
+                modifier = modifier.paddingFromBaseline(top = 20.dp),
             )
         }
     }
@@ -479,7 +466,7 @@ private fun InterestsAdaptiveContentLayout(
         // Lay out given the max width and height
         layout(
             width = outerConstraints.constrainWidth(layoutWidth),
-            height = outerConstraints.constrainHeight(layoutHeight)
+            height = outerConstraints.constrainHeight(layoutHeight),
         ) {
             // Track the y co-ord we have placed children up to
             var yPosition = topPaddingPx
@@ -514,7 +501,7 @@ fun PreviewInterestsScreenDrawer() {
             isExpandedScreen = false,
             onTabChange = updateSection,
             openDrawer = { },
-            snackbarHostState = SnackbarHostState()
+            snackbarHostState = SnackbarHostState(),
         )
     }
 }
@@ -522,11 +509,11 @@ fun PreviewInterestsScreenDrawer() {
 @Preview("Interests screen navrail", "Interests", device = Devices.PIXEL_C)
 @Preview(
     "Interests screen navrail (dark)", "Interests",
-    uiMode = UI_MODE_NIGHT_YES, device = Devices.PIXEL_C
+    uiMode = UI_MODE_NIGHT_YES, device = Devices.PIXEL_C,
 )
 @Preview(
     "Interests screen navrail (big font)", "Interests",
-    fontScale = 1.5f, device = Devices.PIXEL_C
+    fontScale = 1.5f, device = Devices.PIXEL_C,
 )
 @Composable
 fun PreviewInterestsScreenNavRail() {
@@ -542,7 +529,7 @@ fun PreviewInterestsScreenNavRail() {
             isExpandedScreen = true,
             onTabChange = updateSection,
             openDrawer = { },
-            snackbarHostState = SnackbarHostState()
+            snackbarHostState = SnackbarHostState(),
         )
     }
 }
@@ -594,19 +581,19 @@ private fun getFakeTabsContent(): List<TabContent> {
     val topicsSection = TabContent(Sections.Topics) {
         TabWithSections(
             runBlocking { (interestsRepository.getTopics() as Result.Success).data },
-            emptySet()
+            emptySet(),
         ) { }
     }
     val peopleSection = TabContent(Sections.People) {
         TabWithTopics(
             runBlocking { (interestsRepository.getPeople() as Result.Success).data },
-            emptySet()
+            emptySet(),
         ) { }
     }
     val publicationSection = TabContent(Sections.Publications) {
         TabWithTopics(
             runBlocking { (interestsRepository.getPublications() as Result.Success).data },
-            emptySet()
+            emptySet(),
         ) { }
     }
 

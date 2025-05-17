@@ -1,0 +1,26 @@
+# When authoring changes in .editorconfig, run ./gradlew spotlessApply --no-daemon
+# Reference: https://github.com/diffplug/spotless/issues/1924
+[*.{kt,kts}]
+ktlint_code_style = android_studio
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+max_line_length = 140 # ktlint official
+ktlint_function_naming_ignore_when_annotated_with = Composable, Test
+ktlint_standard_filename = disabled
+ktlint_standard_package-name = disabled
+ktlint_standard_property-naming = disabled
+ktlint_standard_backing-property-naming = disabled
+ktlint_standard_argument-list-wrapping=disabled
+ktlint_standard_parameter-list-wrapping = disabled
+ktlint_standard_double-colon-spacing=disabled
+ktlint_standard_enum-entry-name-case=disabled
+ktlint_standard_multiline-if-else=disabled
+ktlint_standard_no-empty-first-line-in-method-block = disabled
+ktlint_standard_package-name = disabled
+ktlint_standard_trailing-comma = disabled
+ktlint_standard_spacing-around-angle-brackets = disabled
+ktlint_standard_spacing-between-declarations-with-annotations = disabled
+ktlint_standard_spacing-between-declarations-with-comments = disabled
+ktlint_standard_unary-op-spacing = disabled
+ktlint_standard_function-expression-body = disabled
+ktlint_standard_value-parameter-comment = disabled

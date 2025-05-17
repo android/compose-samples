@@ -40,7 +40,7 @@ fun AnimatingFabContent(
     icon: @Composable () -> Unit,
     text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    extended: Boolean = true
+    extended: Boolean = true,
 ) {
     val currentState = if (extended) ExpandableFabStates.Extended else ExpandableFabStates.Collapsed
     val transition = updateTransition(currentState, "fab_transition")
@@ -50,17 +50,17 @@ fun AnimatingFabContent(
             if (targetState == ExpandableFabStates.Collapsed) {
                 tween(
                     easing = LinearEasing,
-                    durationMillis = (transitionDuration / 12f * 5).roundToInt() // 5 / 12 frames
+                    durationMillis = (transitionDuration / 12f * 5).roundToInt(), // 5 / 12 frames
                 )
             } else {
                 tween(
                     easing = LinearEasing,
                     delayMillis = (transitionDuration / 3f).roundToInt(), // 4 / 12 frames
-                    durationMillis = (transitionDuration / 12f * 5).roundToInt() // 5 / 12 frames
+                    durationMillis = (transitionDuration / 12f * 5).roundToInt(), // 5 / 12 frames
                 )
             }
         },
-        label = "fab_text_opacity"
+        label = "fab_text_opacity",
     ) { state ->
         if (state == ExpandableFabStates.Collapsed) {
             0f
@@ -73,16 +73,16 @@ fun AnimatingFabContent(
             if (targetState == ExpandableFabStates.Collapsed) {
                 tween(
                     easing = FastOutSlowInEasing,
-                    durationMillis = transitionDuration
+                    durationMillis = transitionDuration,
                 )
             } else {
                 tween(
                     easing = FastOutSlowInEasing,
-                    durationMillis = transitionDuration
+                    durationMillis = transitionDuration,
                 )
             }
         },
-        label = "fab_width_factor"
+        label = "fab_width_factor",
     ) { state ->
         if (state == ExpandableFabStates.Collapsed) {
             0f
@@ -97,7 +97,7 @@ fun AnimatingFabContent(
         text,
         { textOpacity },
         { fabWidthFactor },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -107,7 +107,7 @@ private fun IconAndTextRow(
     text: @Composable () -> Unit,
     opacityProgress: () -> Float, // Lambdas instead of Floats, to defer read
     widthProgress: () -> Float,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Layout(
         modifier = modifier,
@@ -116,7 +116,7 @@ private fun IconAndTextRow(
             Box(modifier = Modifier.graphicsLayer { alpha = opacityProgress() }) {
                 text()
             }
-        }
+        },
     ) { measurables, constraints ->
 
         val iconPlaceable = measurables[0].measure(constraints)
@@ -139,11 +139,11 @@ private fun IconAndTextRow(
         layout(width.roundToInt(), height) {
             iconPlaceable.place(
                 iconPadding.roundToInt(),
-                constraints.maxHeight / 2 - iconPlaceable.height / 2
+                constraints.maxHeight / 2 - iconPlaceable.height / 2,
             )
             textPlaceable.place(
                 (iconPlaceable.width + iconPadding * 2).roundToInt(),
-                constraints.maxHeight / 2 - textPlaceable.height / 2
+                constraints.maxHeight / 2 - textPlaceable.height / 2,
             )
         }
     }

@@ -25,11 +25,11 @@ object JetChatGlanceTextStyles {
     val titleMedium = TextStyle(
         fontSize = 16.sp,
         color = JetchatGlanceColorScheme.colors.onSurfaceVariant,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     )
     val bodyMedium = TextStyle(
         fontSize = 16.sp,
         color = JetchatGlanceColorScheme.colors.onSurfaceVariant,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
     )
 }

@@ -45,11 +45,11 @@ fun JetchatDrawer(
                     JetchatDrawerContent(
                         onProfileClicked = onProfileClicked,
                         onChatClicked = onChatClicked,
-                        selectedMenu = selectedMenu
+                        selectedMenu = selectedMenu,
                     )
                 }
             },
-            content = content
+            content = content,
         )
     }
 }

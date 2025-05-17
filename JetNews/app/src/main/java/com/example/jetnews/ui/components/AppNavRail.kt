@@ -38,22 +38,17 @@ import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun AppNavRail(
-    currentRoute: String,
-    navigateToHome: () -> Unit,
-    navigateToInterests: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun AppNavRail(currentRoute: String, navigateToHome: () -> Unit, navigateToInterests: () -> Unit, modifier: Modifier = Modifier) {
     NavigationRail(
         header = {
             Icon(
                 painterResource(R.drawable.ic_jetnews_logo),
                 null,
                 Modifier.padding(vertical = 12.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
         },
-        modifier = modifier
+        modifier = modifier,
     ) {
         Spacer(Modifier.weight(1f))
         NavigationRailItem(
@@ -61,14 +56,14 @@ fun AppNavRail(
             onClick = navigateToHome,
             icon = { Icon(Icons.Filled.Home, stringResource(R.string.home_title)) },
             label = { Text(stringResource(R.string.home_title)) },
-            alwaysShowLabel = false
+            alwaysShowLabel = false,
         )
         NavigationRailItem(
             selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             onClick = navigateToInterests,
             icon = { Icon(Icons.Filled.ListAlt, stringResource(R.string.interests_title)) },
             label = { Text(stringResource(R.string.interests_title)) },
-            alwaysShowLabel = false
+            alwaysShowLabel = false,
         )
         Spacer(Modifier.weight(1f))
     }

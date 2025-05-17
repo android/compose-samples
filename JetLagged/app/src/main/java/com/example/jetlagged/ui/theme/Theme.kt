@@ -33,14 +33,14 @@ private val LightColorScheme = lightColorScheme(
     secondary = MintGreen,
     tertiary = Coral,
     secondaryContainer = Yellow,
-    surface = White
+    surface = White,
 )
 private val DarkColorScheme = darkColorScheme(
     primary = Red,
     secondary = DarkMintGreen,
     tertiary = DarkCoral,
     secondaryContainer = Red,
-    surface = Black
+    surface = Black,
 )
 
 data class JetLaggedExtraColors(
@@ -98,13 +98,10 @@ private val DarkExtraColors = JetLaggedExtraColors(
 private val shapes: Shapes
     @Composable
     get() = MaterialTheme.shapes.copy(
-        large = CircleShape
+        large = CircleShape,
     )
 @Composable
-fun JetLaggedTheme(
-    isDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
+fun JetLaggedTheme(isDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colorScheme: ColorScheme
     val extraColors: JetLaggedExtraColors
     if (isDarkTheme) {
@@ -120,7 +117,7 @@ fun JetLaggedTheme(
             colorScheme = colorScheme,
             typography = Typography,
             shapes = shapes,
-            content = content
+            content = content,
         )
     }
 }

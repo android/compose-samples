@@ -36,22 +36,18 @@ import com.example.compose.jetchat.R
 
 private enum class Visibility {
     VISIBLE,
-    GONE
+    GONE,
 }
 
 /**
  * Shows a button that lets the user scroll to the bottom.
  */
 @Composable
-fun JumpToBottom(
-    enabled: Boolean,
-    onClicked: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun JumpToBottom(enabled: Boolean, onClicked: () -> Unit, modifier: Modifier = Modifier) {
     // Show Jump to Bottom button
     val transition = updateTransition(
         if (enabled) Visibility.VISIBLE else Visibility.GONE,
-        label = "JumpToBottom visibility animation"
+        label = "JumpToBottom visibility animation",
     )
     val bottomOffset by transition.animateDp(label = "JumpToBottom offset animation") {
         if (it == Visibility.GONE) {
@@ -66,7 +62,7 @@ fun JumpToBottom(
                 Icon(
                     imageVector = Icons.Filled.ArrowDownward,
                     modifier = Modifier.height(18.dp),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             },
             text = {
@@ -77,7 +73,7 @@ fun JumpToBottom(
             contentColor = MaterialTheme.colorScheme.primary,
             modifier = modifier
                 .offset(x = 0.dp, y = -bottomOffset)
-                .height(36.dp)
+                .height(36.dp),
         )
     }
 }

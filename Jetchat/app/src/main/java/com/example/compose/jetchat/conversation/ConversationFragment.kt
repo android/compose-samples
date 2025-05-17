@@ -36,30 +36,27 @@ class ConversationFragment : Fragment() {
 
     private val activityViewModel: MainViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = ComposeView(inflater.context).apply {
-        layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        ComposeView(inflater.context).apply {
+            layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
-        setContent {
-            JetchatTheme {
-                ConversationContent(
-                    uiState = exampleUiState,
-                    navigateToProfile = { user ->
-                        // Click callback
-                        val bundle = bundleOf("userId" to user)
-                        findNavController().navigate(
-                            R.id.nav_profile,
-                            bundle
-                        )
-                    },
-                    onNavIconPressed = {
-                        activityViewModel.openDrawer()
-                    }
-                )
+            setContent {
+                JetchatTheme {
+                    ConversationContent(
+                        uiState = exampleUiState,
+                        navigateToProfile = { user ->
+                            // Click callback
+                            val bundle = bundleOf("userId" to user)
+                            findNavController().navigate(
+                                R.id.nav_profile,
+                                bundle,
+                            )
+                        },
+                        onNavIconPressed = {
+                            activityViewModel.openDrawer()
+                        },
+                    )
+                }
             }
         }
-    }
 }

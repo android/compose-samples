@@ -37,7 +37,7 @@ fun JetsnackSnackbar(
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color = JetsnackTheme.colors.uiBackground,
     contentColor: Color = JetsnackTheme.colors.textSecondary,
-    actionColor: Color = JetsnackTheme.colors.brand
+    actionColor: Color = JetsnackTheme.colors.brand,
 ) {
     Snackbar(
         snackbarData = snackbarData,
@@ -46,6 +46,6 @@ fun JetsnackSnackbar(
         shape = shape,
         containerColor = backgroundColor,
         contentColor = contentColor,
-        actionColor = actionColor
+        actionColor = actionColor,
     )
 }

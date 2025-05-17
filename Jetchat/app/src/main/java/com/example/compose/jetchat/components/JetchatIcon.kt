@@ -29,10 +29,7 @@ import androidx.compose.ui.semantics.semantics
 import com.example.compose.jetchat.R
 
 @Composable
-fun JetchatIcon(
-    contentDescription: String?,
-    modifier: Modifier = Modifier
-) {
+fun JetchatIcon(contentDescription: String?, modifier: Modifier = Modifier) {
     val semantics = if (contentDescription != null) {
         Modifier.semantics {
             this.contentDescription = contentDescription
@@ -45,12 +42,12 @@ fun JetchatIcon(
         Icon(
             painter = painterResource(id = R.drawable.ic_jetchat_back),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primaryContainer
+            tint = MaterialTheme.colorScheme.primaryContainer,
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_jetchat_front),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary,
         )
     }
 }
