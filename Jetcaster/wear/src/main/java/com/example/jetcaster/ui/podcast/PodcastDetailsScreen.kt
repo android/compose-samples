@@ -49,7 +49,6 @@ import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ColumnItemType
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
-import com.google.android.horologist.images.base.util.rememberVectorPainter
 
 @Composable fun PodcastDetailsScreen(
     onPlayButtonClick: () -> Unit,
@@ -82,7 +81,7 @@ fun PodcastDetailsScreen(
 
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     val columnState = rememberTransformingLazyColumnState()
@@ -90,7 +89,7 @@ fun PodcastDetailsScreen(
     ScreenScaffold(
         scrollState = columnState,
         contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (uiState) {
             is PodcastDetailsScreenState.Loaded -> {
@@ -102,7 +101,7 @@ fun PodcastDetailsScreen(
                     onEpisodeItemClick,
                     columnState,
                     contentPadding,
-                    modifier
+                    modifier,
                 )
             }
 
@@ -111,6 +110,7 @@ fun PodcastDetailsScreen(
                     visible = true,
                     onDismissRequest = onDismiss,
                     title = { stringResource(R.string.podcasts_no_episode_podcasts) },
+                    modifier = modifier,
                 )
             }
             PodcastDetailsScreenState.Loading -> {
@@ -129,18 +129,18 @@ fun PodcastDetailScreenLoaded(
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
     columnState: TransformingLazyColumnState,
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
                 Text(
                     text = title, maxLines = 1,
-                    overflow = TextOverflow.Ellipsis, modifier = modifier
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -148,29 +148,25 @@ fun PodcastDetailScreenLoaded(
             ButtonsContent(
                 episodes = episodeList,
                 onPlayButtonClick = onPlayButtonClick,
-                onPlayEpisode = onPlayEpisode
+                onPlayEpisode = onPlayEpisode,
             )
         }
         items(episodeList) { episode ->
             MediaContent(
                 episode = episode,
                 episodeArtworkPlaceholder = painterResource(id = R.drawable.music),
-                onEpisodeItemClick
+                onItemClick = onEpisodeItemClick,
             )
         }
     }
 }
 
 @Composable
-fun PodcastDetailScreenLoading(
-    columnState: TransformingLazyColumnState,
-    contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
-) {
+fun PodcastDetailScreenLoading(columnState: TransformingLazyColumnState, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
@@ -182,7 +178,7 @@ fun PodcastDetailScreenLoading(
                 episodes = emptyList(),
                 onPlayButtonClick = {},
                 onPlayEpisode = {},
-                enabled = false
+                enabled = false,
             )
         }
         items(count = 2) {
@@ -196,7 +192,7 @@ fun ButtonsContent(
     onPlayButtonClick: () -> Unit,
     onPlayEpisode: (List<PlayerEpisode>) -> Unit,
     enabled: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
     Button(
@@ -208,7 +204,7 @@ fun ButtonsContent(
         icon = {
             Icon(
                 painter = painterResource(id = R.drawable.play),
-                contentDescription = stringResource(id = R.string.button_play_content_description)
+                contentDescription = stringResource(id = R.string.button_play_content_description),
             )
         },
         modifier = modifier.fillMaxWidth(),

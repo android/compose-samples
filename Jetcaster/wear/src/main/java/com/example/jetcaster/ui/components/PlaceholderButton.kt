@@ -37,7 +37,6 @@ import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.FilledTonalButton
-import androidx.wear.compose.material3.PlaceholderDefaults
 import androidx.wear.compose.material3.PlaceholderState
 import androidx.wear.compose.material3.placeholder
 import androidx.wear.compose.material3.placeholderShimmer
@@ -55,12 +54,12 @@ fun PlaceholderButton(
     onClick: () -> Unit = {},
     placeholderState: PlaceholderState = rememberPlaceholderState(false),
     secondaryLabel: Boolean = true,
-    icon: Boolean = true
+    icon: Boolean = true,
 ) {
     var labelText by remember { mutableStateOf("") }
     var imageVector: ImageVector? by remember { mutableStateOf(null) }
-    val buttonPlaceholderState = rememberPlaceholderState (
-        labelText.isNotEmpty() && imageVector != null
+    val buttonPlaceholderState = rememberPlaceholderState(
+        labelText.isNotEmpty() && imageVector != null,
     )
     FilledTonalButton(
         onClick = { onClick },
@@ -68,7 +67,7 @@ fun PlaceholderButton(
         label = {
             Column {
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(end = 10.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .fillMaxWidth()
@@ -81,7 +80,7 @@ fun PlaceholderButton(
         secondaryLabel = if (secondaryLabel) {
             {
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 30.dp)
                         .clip(RoundedCornerShape(12.dp))
@@ -96,13 +95,13 @@ fun PlaceholderButton(
             {
                 Box(
                     modifier =
-                    modifier.size(ButtonDefaults.IconSize).placeholder(buttonPlaceholderState)
+                    Modifier.size(ButtonDefaults.IconSize).placeholder(buttonPlaceholderState),
                 )
             }
         } else {
             null
         },
         modifier = modifier.fillMaxWidth()
-            .placeholderShimmer(buttonPlaceholderState)
+            .placeholderShimmer(buttonPlaceholderState),
     )
 }

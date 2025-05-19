@@ -20,7 +20,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.compose)
-    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -75,7 +74,6 @@ android {
 
 dependencies {
 
-    implementation libs.androidx.media3.common.ktx
     def composeBom = platform(libs.androidx.compose.bom)
 
     // General compose dependencies
@@ -92,7 +90,7 @@ dependencies {
     implementation libs.androidx.wear.compose.material
 
     // For using the phone Typography
-    implementation libs.androidx.material3.android
+    implementation libs.androidx.compose.material3
 
     implementation(libs.kotlinx.collections.immutable)
 
@@ -104,6 +102,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui.compose)
     implementation(libs.androidx.media3.session)
+    implementation libs.androidx.media3.common.ktx
 
     // Horologist for correct Compose layout
     implementation libs.horologist.compose.layout

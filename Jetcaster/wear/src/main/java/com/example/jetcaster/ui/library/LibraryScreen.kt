@@ -77,55 +77,51 @@ fun LibraryScreen(
 
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     val columnState = rememberTransformingLazyColumnState()
     ScreenScaffold(
         scrollState = columnState,
         contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier,
     ) { contentPadding ->
         when (val s = uiState) {
             is LibraryScreenUiState.Loading ->
                 LoadingScreen(
                     scrollState = columnState,
                     contentPadding = contentPadding,
-                    modifier = modifier
+                    modifier = Modifier,
                 )
 
             is LibraryScreenUiState.NoSubscribedPodcast ->
                 NoSubscribedPodcastScreen(
                     columnState = columnState,
                     contentPadding = contentPadding,
-                    modifier = modifier,
+                    modifier = Modifier,
                     topPodcasts = s.topPodcasts,
-                    onTogglePodcastFollowed = libraryScreenViewModel::onTogglePodcastFollowed
+                    onTogglePodcastFollowed = libraryScreenViewModel::onTogglePodcastFollowed,
                 )
 
             is LibraryScreenUiState.Ready ->
                 LibraryScreen(
                     columnState = columnState,
                     contentPadding = contentPadding,
-                    modifier = modifier,
+                    modifier = Modifier,
                     onLatestEpisodeClick = onLatestEpisodeClick,
                     onYourPodcastClick = onYourPodcastClick,
                     onUpNextClick = onUpNextClick,
-                    queue = s.queue
+                    queue = s.queue,
                 )
         }
     }
 }
 
 @Composable
-fun LoadingScreen(
-    modifier: Modifier,
-    scrollState: TransformingLazyColumnState,
-    contentPadding: PaddingValues,
-) {
+fun LoadingScreen(scrollState: TransformingLazyColumnState, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
     TransformingLazyColumn(
         state = scrollState, contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier,
     ) {
         item {
             ListHeader {
@@ -141,19 +137,19 @@ fun LoadingScreen(
 @Composable
 fun NoSubscribedPodcastScreen(
     columnState: TransformingLazyColumnState,
-    modifier: Modifier,
     topPodcasts: List<PodcastInfo>,
     onTogglePodcastFollowed: (uri: String) -> Unit,
-
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
 ) {
     TransformingLazyColumn(
-        state = columnState, contentPadding = contentPadding,
-        modifier = modifier
+        state = columnState,
+        contentPadding = contentPadding,
+        modifier = modifier,
     ) {
         item {
             ListHeader(
-                contentColor = MaterialTheme.colorScheme.onSurface
+                contentColor = MaterialTheme.colorScheme.onSurface,
             ) {
                 Text(stringResource(R.string.entity_no_featured_podcasts))
             }
@@ -177,12 +173,7 @@ fun NoSubscribedPodcastScreen(
 }
 
 @Composable
-private fun PodcastContent(
-    podcast: PodcastInfo,
-    onClick: () -> Unit,
-    podcastArtworkPlaceholder: Painter?,
-    modifier: Modifier = Modifier,
-) {
+private fun PodcastContent(podcast: PodcastInfo, onClick: () -> Unit, podcastArtworkPlaceholder: Painter?, modifier: Modifier = Modifier) {
     val mediaTitle = podcast.title
 
     FilledTonalButton(
@@ -203,30 +194,30 @@ private fun PodcastContent(
                 placeholder = podcastArtworkPlaceholder,
                 modifier = Modifier
                     .size(
-                        ButtonDefaults.LargeIconSize
+                        ButtonDefaults.LargeIconSize,
                     )
-                    .clip(CircleShape)
+                    .clip(CircleShape),
 
             )
         },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     )
 }
 
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
-fun PodcastContentPreview(@PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo) {
+fun PodcastContentPreview(@PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo, modifier: Modifier = Modifier) {
     AppScaffold {
         val contentPadding = rememberResponsiveColumnPadding(
-            first = ColumnItemType.Button
+            first = ColumnItemType.Button,
         )
 
         ScreenScaffold(contentPadding = contentPadding) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(contentPadding)
+                    .padding(contentPadding),
             ) {
                 PodcastContent(
                     podcast = podcasts,
@@ -243,22 +234,24 @@ fun PodcastContentPreview(@PreviewParameter(WearPreviewPodcasts::class) podcasts
 fun LibraryScreen(
     columnState: TransformingLazyColumnState,
     contentPadding: PaddingValues,
-    modifier: Modifier,
     onLatestEpisodeClick: () -> Unit,
     onYourPodcastClick: () -> Unit,
     onUpNextClick: () -> Unit,
     queue: List<PlayerEpisode>,
+    modifier: Modifier = Modifier,
 ) {
     ScreenScaffold(
         scrollState = columnState,
         contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier,
     ) { contentPadding ->
         val transformationSpec = rememberTransformationSpec()
         TransformingLazyColumn(state = columnState, contentPadding = contentPadding) {
             item {
-                ListHeader (modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
-                    transformation = SurfaceTransformation(transformationSpec)) {
+                ListHeader(
+                    modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                ) {
                     Text(stringResource(R.string.home_library))
                 }
             }
@@ -269,14 +262,14 @@ fun LibraryScreen(
                     icon = {
                         IconWithBackground(
                             R.drawable.new_releases,
-                            stringResource(R.string.latest_episodes)
+                            stringResource(R.string.latest_episodes),
                         )
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     ),
-                    modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
-                    transformation = SurfaceTransformation(transformationSpec)
+                    modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
                 )
             }
             item {
@@ -286,13 +279,15 @@ fun LibraryScreen(
                     icon = {
                         IconWithBackground(R.drawable.podcast, stringResource(R.string.podcasts))
                     },
-                    modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
-                    transformation = SurfaceTransformation(transformationSpec)
+                    modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
                 )
             }
             item {
-                ListHeader(modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
-                    transformation = SurfaceTransformation(transformationSpec)) {
+                ListHeader(
+                    modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                ) {
                     Text(stringResource(R.string.queue))
                 }
             }
@@ -306,8 +301,8 @@ fun LibraryScreen(
                         icon = {
                             IconWithBackground(R.drawable.up_next, stringResource(R.string.up_next))
                         },
-                        modifier = modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
-                        transformation = SurfaceTransformation(transformationSpec)
+                        modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                        transformation = SurfaceTransformation(transformationSpec),
                     )
                 }
             }
@@ -316,33 +311,32 @@ fun LibraryScreen(
 }
 
 @Composable
-private fun IconWithBackground(resource: Int, contentDescription: String) {
+private fun IconWithBackground(resource: Int, contentDescription: String, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(ButtonDefaults.LargeIconSize)
             .background(
                 MaterialTheme.colorScheme.primaryContainer,
-                shape = CircleShape
+                shape = CircleShape,
             ),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             painter = painterResource(id = resource),
             contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.size(ButtonDefaults.SmallIconSize)
+            modifier = Modifier.size(ButtonDefaults.SmallIconSize),
         )
     }
 }
 
 @Composable
-private fun QueueEmpty() {
+private fun QueueEmpty(modifier: Modifier = Modifier) {
     Text(
         text = stringResource(id = R.string.add_episode_to_queue),
-        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+        modifier = modifier.padding(top = 8.dp, bottom = 8.dp),
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.bodySmall,
-
     )
 }
 
@@ -351,7 +345,7 @@ private fun QueueEmpty() {
 @Composable
 fun LibraryScreenPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
-    episode: PlayerEpisode
+    episode: PlayerEpisode,
 ) {
     LibraryScreen(
         columnState = rememberTransformingLazyColumnState(),
@@ -361,7 +355,7 @@ fun LibraryScreenPreview(
         onYourPodcastClick = {},
         onUpNextClick = {},
         queue = listOf(
-            episode
-        )
+            episode,
+        ),
     )
 }

@@ -70,8 +70,8 @@ import com.google.android.horologist.images.base.paintable.DrawableResPaintable
 import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.components.controls.SeekButtonIncrement
 import com.google.android.horologist.media.ui.material3.components.PodcastControlButtons
-import com.google.android.horologist.media.ui.material3.components.background.ArtworkImageBackground
 import com.google.android.horologist.media.ui.material3.components.animated.MarqueeTextMediaDisplay
+import com.google.android.horologist.media.ui.material3.components.background.ArtworkImageBackground
 import com.google.android.horologist.media.ui.material3.components.display.LoadingMediaDisplay
 import com.google.android.horologist.media.ui.material3.components.display.TextMediaDisplay
 import com.google.android.horologist.media.ui.material3.screens.player.PlayerScreen
@@ -91,7 +91,7 @@ fun PlayerScreen(
         volumeUiState = volumeUiState,
         onVolumeClick = onVolumeClick,
         onUpdateVolume = { newVolume -> volumeViewModel.setVolume(newVolume) },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -117,7 +117,7 @@ private fun PlayerScreen(
                     TextMediaDisplay(
                         title = stringResource(R.string.nothing_playing),
                         subtitle = "",
-                        titleIcon = DrawableResPaintable(R.drawable.ic_logo)
+                        titleIcon = DrawableResPaintable(R.drawable.ic_logo),
                     )
                 },
                 controlButtons = {
@@ -129,7 +129,7 @@ private fun PlayerScreen(
                         onSeekBackButtonClick = playerScreenViewModel::onRewindBy,
                         seekBackButtonEnabled = false,
                         onSeekForwardButtonClick = playerScreenViewModel::onAdvanceBy,
-                        seekForwardButtonEnabled = false
+                        seekForwardButtonEnabled = false,
                     )
                 },
                 buttons = {
@@ -141,6 +141,7 @@ private fun PlayerScreen(
                         enabled = false,
                     )
                 },
+                modifier = modifier,
             )
         }
 
@@ -162,13 +163,13 @@ private fun PlayerScreen(
                     exoPlayer.release()
                 }
             }
-            Box {
+            Box(modifier = modifier) {
                 PlayerSurface(
                     player = exoPlayer,
                     modifier = Modifier.resizeWithContentScale(
                         contentScale = ContentScale.Fit,
-                        sourceSizeDp = null
-                    )
+                        sourceSizeDp = null,
+                    ),
                 )
                 PlayerScreen(
                     mediaDisplay = {
@@ -176,42 +177,50 @@ private fun PlayerScreen(
                             MarqueeTextMediaDisplay(
                                 title = episode.title,
                                 artist = episode.podcastName,
-                                titleIcon = DrawableResPaintable(R.drawable.ic_logo)
+                                titleIcon = DrawableResPaintable(R.drawable.ic_logo),
                             )
                         } else {
                             TextMediaDisplay(
                                 title = stringResource(R.string.nothing_playing),
                                 subtitle = "",
-                                titleIcon = DrawableResPaintable(R.drawable.ic_logo)
+                                titleIcon = DrawableResPaintable(R.drawable.ic_logo),
                             )
                         }
                     },
 
                     controlButtons = {
                         PodcastControlButtons(
-                            onPlayButtonClick = ({
-                                playerScreenViewModel.onPlay()
-                                exoPlayer.play()
-                            }),
-                            onPauseButtonClick = ({
-                                playerScreenViewModel.onPause()
-                                exoPlayer.pause()
-                            }),
+                            onPlayButtonClick = (
+                                {
+                                    playerScreenViewModel.onPlay()
+                                    exoPlayer.play()
+                                }
+                                ),
+                            onPauseButtonClick = (
+                                {
+                                    playerScreenViewModel.onPause()
+                                    exoPlayer.pause()
+                                }
+                                ),
                             playPauseButtonEnabled = true,
                             playing = state.playerState.episodePlayerState.isPlaying,
-                            onSeekBackButtonClick = ({
-                                playerScreenViewModel.onRewindBy()
-                                exoPlayer.seekBack()
-                            }),
+                            onSeekBackButtonClick = (
+                                {
+                                    playerScreenViewModel.onRewindBy()
+                                    exoPlayer.seekBack()
+                                }
+                                ),
                             seekBackButtonEnabled = true,
-                            onSeekForwardButtonClick = ({
-                                playerScreenViewModel.onAdvanceBy()
-                                exoPlayer.seekForward()
-                            }),
+                            onSeekForwardButtonClick = (
+                                {
+                                    playerScreenViewModel.onAdvanceBy()
+                                    exoPlayer.seekForward()
+                                }
+                                ),
                             seekForwardButtonEnabled = true,
                             seekBackButtonIncrement = SeekButtonIncrement.Ten,
                             seekForwardButtonIncrement = SeekButtonIncrement.Ten,
-                            trackPositionUiModel = state.playerState.trackPositionUiModel
+                            trackPositionUiModel = state.playerState.trackPositionUiModel,
                         )
                     },
                     buttons = {
@@ -219,35 +228,37 @@ private fun PlayerScreen(
                             volumeUiState = volumeUiState,
                             onVolumeClick = onVolumeClick,
                             playerUiState = state.playerState,
-                            onPlaybackSpeedChange = ({
-                                playerScreenViewModel.onPlaybackSpeedChange()
-                                if (state.playerState.episodePlayerState.playbackSpeed == Duration.ofSeconds(
-                                        1
+                            onPlaybackSpeedChange = (
+                                {
+                                    playerScreenViewModel.onPlaybackSpeedChange()
+                                    if (state.playerState.episodePlayerState.playbackSpeed == Duration.ofSeconds(
+                                            1,
+                                        )
                                     )
-                                )
-                                    exoPlayer.setPlaybackSpeed(1.5F)
-                                else if (state.playerState.episodePlayerState.playbackSpeed == Duration.ofMillis(
-                                        1500
+                                        exoPlayer.setPlaybackSpeed(1.5F)
+                                    else if (state.playerState.episodePlayerState.playbackSpeed == Duration.ofMillis(
+                                            1500,
+                                        )
                                     )
-                                )
-                                    exoPlayer.setPlaybackSpeed(2.0F)
-                                else if (state.playerState.episodePlayerState.playbackSpeed == Duration.ofSeconds(
-                                        2
+                                        exoPlayer.setPlaybackSpeed(2.0F)
+                                    else if (state.playerState.episodePlayerState.playbackSpeed == Duration.ofSeconds(
+                                            2,
+                                        )
                                     )
-                                )
-                                    exoPlayer.setPlaybackSpeed(1.0F)
-                            }),
+                                        exoPlayer.setPlaybackSpeed(1.0F)
+                                }
+                                ),
                             enabled = true,
                         )
                     },
-                    modifier = modifier
+                    modifier = Modifier
                         .requestFocusOnHierarchyActive()
                         .rotaryScrollable(
                             volumeRotaryBehavior(
                                 volumeUiStateProvider = { volumeUiState },
-                                onRotaryVolumeInput = { onUpdateVolume }
+                                onRotaryVolumeInput = { onUpdateVolume },
                             ),
-                            focusRequester = focusRequester
+                            focusRequester = focusRequester,
                         ),
                     background = {
                         ArtworkImageBackground(
@@ -255,25 +266,21 @@ private fun PlayerScreen(
                             colorScheme = MaterialTheme.colorScheme,
                             modifier = Modifier.fillMaxSize(),
                         )
-                    }
+                    },
                 )
             }
         }
     }
 }
 
-
-    @androidx.annotation.OptIn(UnstableApi::class)
-    @Composable
-    internal fun rememberPlayer(
-        context: Context,
-    ) = remember {
-        ExoPlayer.Builder(context).setSeekForwardIncrementMs(10000).setSeekBackIncrementMs(10000)
-            .setMediaSourceFactory(
-                ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context))
-            ).setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING).build().apply {
-                playWhenReady = true
-                repeatMode = Player.REPEAT_MODE_ALL
-            }
-    }
-
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+internal fun rememberPlayer(context: Context) = remember {
+    ExoPlayer.Builder(context).setSeekForwardIncrementMs(10000).setSeekBackIncrementMs(10000)
+        .setMediaSourceFactory(
+            ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)),
+        ).setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING).build().apply {
+            playWhenReady = true
+            repeatMode = Player.REPEAT_MODE_ALL
+        }
+}

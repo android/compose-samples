@@ -59,9 +59,9 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
+import com.example.jetcaster.theme.PlayIconShape
 import com.example.jetcaster.ui.components.MediumDateFormatter
 import com.example.jetcaster.ui.components.PlaceholderButton
-import com.example.jetcaster.ui.components.PlayIconShape
 import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.compose.layout.ColumnItemType
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.listTextPadding
@@ -97,14 +97,14 @@ fun EpisodeScreen(
 ) {
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     val columnState = rememberTransformingLazyColumnState()
     ScreenScaffold(
         scrollState = columnState,
         contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier,
     ) { contentPadding ->
         when (uiState) {
             is EpisodeScreenState.Loaded -> {
@@ -117,7 +117,7 @@ fun EpisodeScreen(
                     onPlayEpisode = onPlayEpisode,
                     onAddToQueue = onAddToQueue,
                     columnState = columnState,
-                    contentPadding = contentPadding
+                    contentPadding = contentPadding,
                 )
             }
 
@@ -125,12 +125,12 @@ fun EpisodeScreen(
                 AlertDialog(
                     visible = true,
                     onDismissRequest = { onDismiss },
-                    title = { stringResource(R.string.episode_info_not_available) }
+                    title = { stringResource(R.string.episode_info_not_available) },
                 )
             }
 
             EpisodeScreenState.Loading -> {
-                EpisodeScreenLoading(columnState, contentPadding, modifier)
+                EpisodeScreenLoading(columnState, contentPadding, Modifier)
             }
         }
     }
@@ -145,12 +145,12 @@ fun EpisodeScreenLoaded(
     onAddToQueue: (PlayerEpisode) -> Unit,
     columnState: TransformingLazyColumnState,
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
@@ -158,7 +158,7 @@ fun EpisodeScreenLoaded(
                     text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }
@@ -167,7 +167,7 @@ fun EpisodeScreenLoaded(
                 episode = episode,
                 onPlayButtonClick = onPlayButtonClick,
                 onPlayEpisode = onPlayEpisode,
-                onAddToQueue = onAddToQueue
+                onAddToQueue = onAddToQueue,
             )
         }
         episodeInfoContent(episode = episode)
@@ -181,7 +181,7 @@ fun LoadedButtonsContent(
     onPlayEpisode: (PlayerEpisode) -> Unit,
     onAddToQueue: (PlayerEpisode) -> Unit,
     enabled: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val playInteractionSource = remember { MutableInteractionSource() }
     val addToQueueInteractionSource = remember { MutableInteractionSource() }
@@ -190,7 +190,7 @@ fun LoadedButtonsContent(
         modifier = modifier
             .padding(bottom = 16.dp)
             .height(52.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         ButtonGroup(Modifier.fillMaxWidth()) {
 
@@ -204,11 +204,11 @@ fun LoadedButtonsContent(
                     .animateWidth(playInteractionSource),
                 enabled = enabled,
                 interactionSource = playInteractionSource,
-                shapes = PlayIconShape()
+                shapes = PlayIconShape(),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
-                    contentDescription = stringResource(id = R.string.button_play_content_description)
+                    contentDescription = stringResource(id = R.string.button_play_content_description),
                 )
             }
 
@@ -218,11 +218,11 @@ fun LoadedButtonsContent(
                     .weight(weight = 0.3F)
                     .animateWidth(addToQueueInteractionSource),
                 interactionSource = addToQueueInteractionSource,
-                enabled = enabled
+                enabled = enabled,
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                    contentDescription = stringResource(id = R.string.add_to_queue_content_description)
+                    contentDescription = stringResource(id = R.string.add_to_queue_content_description),
                 )
             }
         }
@@ -230,15 +230,11 @@ fun LoadedButtonsContent(
 }
 
 @Composable
-fun EpisodeScreenLoading(
-    columnState: TransformingLazyColumnState,
-    contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
-) {
+fun EpisodeScreenLoading(columnState: TransformingLazyColumnState, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
@@ -255,9 +251,9 @@ fun EpisodeScreenLoading(
 }
 
 @Composable
-fun LoadingButtonsContent() {
+fun LoadingButtonsContent(modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 16.dp)
             .height(52.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -270,11 +266,11 @@ fun LoadingButtonsContent() {
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
             enabled = false,
-            shapes = PlayIconShape()
+            shapes = PlayIconShape(),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.play),
-                contentDescription = stringResource(id = R.string.button_play_content_description)
+                contentDescription = stringResource(id = R.string.button_play_content_description),
             )
         }
 
@@ -282,11 +278,11 @@ fun LoadingButtonsContent() {
             onClick = { },
             modifier = Modifier
                 .weight(weight = 0.3F, fill = false),
-            enabled = false
+            enabled = false,
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                contentDescription = stringResource(id = R.string.add_to_queue_content_description)
+                contentDescription = stringResource(id = R.string.add_to_queue_content_description),
             )
         }
     }
@@ -304,7 +300,7 @@ private fun TransformingLazyColumnScope.episodeInfoContent(episode: PlayerEpisod
                 text = author,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
@@ -356,7 +352,7 @@ fun EpisodeScreenEmptyPreview() {
         onPlayButtonClick = { },
         onPlayEpisode = { _ -> },
         onAddToQueue = { _ -> },
-        onDismiss = {}
+        onDismiss = {},
     )
 }
 
@@ -365,11 +361,11 @@ fun EpisodeScreenEmptyPreview() {
 @Composable
 fun EpisodeScreenLoadingPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
-    episode: PlayerEpisode
+    episode: PlayerEpisode,
 ) {
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     val columnState = rememberTransformingLazyColumnState()
@@ -381,12 +377,12 @@ fun EpisodeScreenLoadingPreview(
 @Composable
 fun EpisodeScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
-    episode: PlayerEpisode
+    episode: PlayerEpisode,
 ) {
     val columnState = rememberTransformingLazyColumnState()
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     EpisodeScreenLoaded(
@@ -396,6 +392,6 @@ fun EpisodeScreenLoadedPreview(
         onPlayEpisode = { },
         onAddToQueue = { },
         columnState = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     )
 }

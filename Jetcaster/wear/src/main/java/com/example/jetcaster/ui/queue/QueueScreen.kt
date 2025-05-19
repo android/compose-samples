@@ -49,9 +49,9 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
 import com.example.jetcaster.core.player.model.PlayerEpisode
+import com.example.jetcaster.theme.PlayIconShape
 import com.example.jetcaster.ui.components.MediaContent
 import com.example.jetcaster.ui.components.PlaceholderButton
-import com.example.jetcaster.ui.components.PlayIconShape
 import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.compose.layout.ColumnItemType
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
@@ -81,21 +81,21 @@ fun QueueScreen(
     uiState: QueueScreenState,
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
-    modifier: Modifier = Modifier,
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     val columnState = rememberTransformingLazyColumnState()
     ScreenScaffold(
         scrollState = columnState,
         contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier,
     ) { contentPadding ->
         when (uiState) {
             is QueueScreenState.Loaded -> QueueScreenLoaded(
@@ -105,7 +105,7 @@ fun QueueScreen(
                 onDeleteQueueEpisodes = onDeleteQueueEpisodes,
                 onEpisodeItemClick = onEpisodeItemClick,
                 columnState = columnState,
-                contentPadding = contentPadding
+                contentPadding = contentPadding,
             )
             QueueScreenState.Loading -> QueueScreenLoading(columnState, contentPadding)
             QueueScreenState.Empty -> QueueScreenEmpty(onDismiss)
@@ -122,12 +122,12 @@ fun QueueScreenLoaded(
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
     columnState: TransformingLazyColumnState,
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
@@ -146,22 +146,18 @@ fun QueueScreenLoaded(
             MediaContent(
                 episode = episode,
                 episodeArtworkPlaceholder = painterResource(id = R.drawable.music),
-                onItemClick = onEpisodeItemClick
+                onItemClick = onEpisodeItemClick,
             )
         }
     }
 }
 
 @Composable
-fun QueueScreenLoading(
-    columnState: TransformingLazyColumnState,
-    contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
-) {
+fun QueueScreenLoading(columnState: TransformingLazyColumnState, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
@@ -193,7 +189,7 @@ fun QueueScreenEmpty(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
         onDismissRequest = { onDismiss() },
         title = { Text(stringResource(R.string.display_nothing_in_queue)) },
         text = { Text(stringResource(R.string.no_episodes_from_queue)) },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -209,40 +205,42 @@ fun ButtonsContent(
     val interactionSource1 = remember { MutableInteractionSource() }
     val interactionSource2 = remember { MutableInteractionSource() }
 
-    Box(modifier = modifier
-        .padding(bottom = 16.dp)
-        .height(52.dp),
-        contentAlignment = Alignment.Center) {
+    Box(
+        modifier = modifier
+            .padding(bottom = 16.dp)
+            .height(52.dp),
+        contentAlignment = Alignment.Center,
+    ) {
         ButtonGroup(Modifier.fillMaxWidth()) {
             FilledIconButton(
                 onClick = {
                     onPlayButtonClick()
                     onPlayEpisodes(episodes)
                 },
-                modifier = modifier
+                modifier = Modifier
                     .weight(weight = 0.7F)
                     .animateWidth(interactionSource1),
                 enabled = enabled,
                 interactionSource = interactionSource1,
-                shapes = PlayIconShape()
+                shapes = PlayIconShape(),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
-                    contentDescription = stringResource(id = R.string.button_play_content_description)
+                    contentDescription = stringResource(id = R.string.button_play_content_description),
                 )
             }
             FilledIconButton(
                 onClick = onDeleteQueueEpisodes,
-                modifier = modifier
+                modifier = Modifier
                     .weight(weight = 0.3F)
                     .animateWidth(interactionSource2),
                 interactionSource = interactionSource2,
-                enabled = enabled
+                enabled = enabled,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.delete),
                     contentDescription =
-                        stringResource(id = R.string.button_delete_queue_content_description),
+                    stringResource(id = R.string.button_delete_queue_content_description),
                 )
             }
         }
@@ -259,7 +257,7 @@ fun QueueScreenLoadedPreview(
     val columnState = rememberTransformingLazyColumnState()
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
     QueueScreenLoaded(
         episodeList = listOf(episode),
@@ -268,7 +266,7 @@ fun QueueScreenLoadedPreview(
         onDeleteQueueEpisodes = { },
         onEpisodeItemClick = { },
         columnState = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     )
 }
 
@@ -278,7 +276,7 @@ fun QueueScreenLoadedPreview(
 fun QueueScreenLoadingPreview() {
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
     QueueScreenLoading(rememberTransformingLazyColumnState(), contentPadding)
 }
