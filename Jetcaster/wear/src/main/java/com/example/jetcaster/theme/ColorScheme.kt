@@ -44,7 +44,7 @@ import com.example.jetcaster.designsystem.theme.tertiaryDark
 
 internal val wearColorPalette: ColorScheme = ColorScheme(
     primary = primaryDark,
-    primaryDim= primaryDark,
+    primaryDim = primaryDark,
     onPrimary = Color(0xFF542104),
     primaryContainer = primaryContainerDark,
     onPrimaryContainer = onPrimaryContainerDark,

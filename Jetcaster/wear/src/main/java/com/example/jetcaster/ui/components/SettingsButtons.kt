@@ -35,7 +35,6 @@ import com.google.android.horologist.audio.ui.material3.components.actions.Setti
 import com.google.android.horologist.audio.ui.material3.components.actions.VolumeButtonWithBadge
 import com.google.android.horologist.audio.ui.material3.components.toAudioOutputUi
 
-
 /**
  * Settings buttons for the Jetcaster media app.
  * Add to queue and Set Volume.
@@ -59,7 +58,7 @@ fun SettingsButtons(
                 onOutputClick = onVolumeClick,
                 audioOutputUi = AudioOutput.BluetoothHeadset(id = "id", name = "name")
                     .toAudioOutputUi(),
-                volumeUiState = volumeUiState
+                volumeUiState = volumeUiState,
             )
         }
 
@@ -68,10 +67,9 @@ fun SettingsButtons(
                 currentPlayerSpeed = playerUiState.episodePlayerState
                     .playbackSpeed.toMillis().toFloat() / 1000,
                 onPlaybackSpeedChange = onPlaybackSpeedChange,
-                enabled = enabled
+                enabled = enabled,
             )
         }
-
     }
 }
 

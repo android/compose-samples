@@ -17,19 +17,14 @@
 package com.example.jetcaster.ui.episode
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,15 +39,21 @@ import androidx.wear.compose.foundation.lazy.TransformingLazyColumnScope
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material3.AlertDialog
 import androidx.wear.compose.material3.ButtonGroup
 import androidx.wear.compose.material3.FilledIconButton
 import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.IconButtonShapes
 import androidx.wear.compose.material3.ListHeader
 import androidx.wear.compose.material3.LocalContentColor
 import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.PlaceholderState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material3.placeholder
+import androidx.wear.compose.material3.placeholderShimmer
+import androidx.wear.compose.material3.rememberPlaceholderState
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
@@ -60,13 +61,12 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.ui.components.MediumDateFormatter
-import com.example.jetcaster.ui.components.PlaceholderButton
-import com.example.jetcaster.ui.components.PlayIconShape
 import com.example.jetcaster.ui.preview.WearPreviewEpisodes
 import com.google.android.horologist.compose.layout.ColumnItemType
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.listTextPadding
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
 
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun EpisodeScreen(
     onPlayButtonClick: () -> Unit,
@@ -75,10 +75,12 @@ fun EpisodeScreen(
     episodeViewModel: EpisodeViewModel = hiltViewModel(),
 ) {
     val uiState by episodeViewModel.uiState.collectAsStateWithLifecycle()
+    val placeholderState = rememberPlaceholderState(isVisible = uiState is EpisodeScreenState.Loading)
 
     EpisodeScreen(
         uiState = uiState,
         onPlayButtonClick = onPlayButtonClick,
+        placeholderState = placeholderState,
         onPlayEpisode = episodeViewModel::onPlayEpisode,
         onAddToQueue = episodeViewModel::addToQueue,
         onDismiss = onDismiss,
@@ -89,6 +91,7 @@ fun EpisodeScreen(
 @Composable
 fun EpisodeScreen(
     uiState: EpisodeScreenState,
+    placeholderState: PlaceholderState,
     onPlayButtonClick: () -> Unit,
     onPlayEpisode: (PlayerEpisode) -> Unit,
     onAddToQueue: (PlayerEpisode) -> Unit,
@@ -97,14 +100,14 @@ fun EpisodeScreen(
 ) {
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     val columnState = rememberTransformingLazyColumnState()
     ScreenScaffold(
         scrollState = columnState,
         contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier.placeholderShimmer(placeholderState),
     ) { contentPadding ->
         when (uiState) {
             is EpisodeScreenState.Loaded -> {
@@ -117,20 +120,30 @@ fun EpisodeScreen(
                     onPlayEpisode = onPlayEpisode,
                     onAddToQueue = onAddToQueue,
                     columnState = columnState,
-                    contentPadding = contentPadding
+                    contentPadding = contentPadding,
+                    placeholderState = placeholderState,
                 )
             }
 
             EpisodeScreenState.Empty -> {
                 AlertDialog(
                     visible = true,
-                    onDismissRequest = { onDismiss },
-                    title = { stringResource(R.string.episode_info_not_available) }
+                    onDismissRequest = { onDismiss() },
+                    title = { stringResource(R.string.episode_info_not_available) },
                 )
             }
 
             EpisodeScreenState.Loading -> {
-                EpisodeScreenLoading(columnState, contentPadding, modifier)
+                EpisodeScreenLoaded(
+                    title = stringResource(R.string.loading),
+                    episode = PlayerEpisode(),
+                    onPlayButtonClick = { },
+                    onPlayEpisode = { },
+                    onAddToQueue = { },
+                    columnState = columnState,
+                    contentPadding = contentPadding,
+                    placeholderState = placeholderState,
+                )
             }
         }
     }
@@ -145,12 +158,13 @@ fun EpisodeScreenLoaded(
     onAddToQueue: (PlayerEpisode) -> Unit,
     columnState: TransformingLazyColumnState,
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    placeholderState: PlaceholderState,
+    modifier: Modifier = Modifier,
 ) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
@@ -158,7 +172,8 @@ fun EpisodeScreenLoaded(
                     text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.placeholder(placeholderState),
                 )
             }
         }
@@ -167,10 +182,15 @@ fun EpisodeScreenLoaded(
                 episode = episode,
                 onPlayButtonClick = onPlayButtonClick,
                 onPlayEpisode = onPlayEpisode,
-                onAddToQueue = onAddToQueue
+                onAddToQueue = onAddToQueue,
+                placeholderState = placeholderState,
             )
         }
-        episodeInfoContent(episode = episode)
+        if (!placeholderState.isVisible) {
+            episodeInfoContent(
+                episode = episode,
+            )
+        }
     }
 }
 
@@ -180,113 +200,46 @@ fun LoadedButtonsContent(
     onPlayButtonClick: () -> Unit,
     onPlayEpisode: (PlayerEpisode) -> Unit,
     onAddToQueue: (PlayerEpisode) -> Unit,
+    placeholderState: PlaceholderState,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    modifier: Modifier = Modifier
 ) {
     val playInteractionSource = remember { MutableInteractionSource() }
     val addToQueueInteractionSource = remember { MutableInteractionSource() }
 
-    Box(
-        modifier = modifier
-            .padding(bottom = 16.dp)
-            .height(52.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        ButtonGroup(Modifier.fillMaxWidth()) {
-
-            FilledIconButton(
-                onClick = {
-                    onPlayButtonClick()
-                    onPlayEpisode(episode)
-                },
-                modifier = Modifier
-                    .weight(weight = 0.7F)
-                    .animateWidth(playInteractionSource),
-                enabled = enabled,
-                interactionSource = playInteractionSource,
-                shapes = PlayIconShape()
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.play),
-                    contentDescription = stringResource(id = R.string.button_play_content_description)
-                )
-            }
-
-            FilledIconButton(
-                onClick = { onAddToQueue(episode) },
-                modifier = Modifier
-                    .weight(weight = 0.3F)
-                    .animateWidth(addToQueueInteractionSource),
-                interactionSource = addToQueueInteractionSource,
-                enabled = enabled
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                    contentDescription = stringResource(id = R.string.add_to_queue_content_description)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun EpisodeScreenLoading(
-    columnState: TransformingLazyColumnState,
-    contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
-) {
-    TransformingLazyColumn(
-        modifier = modifier,
-        state = columnState,
-        contentPadding = contentPadding
-    ) {
-        item {
-            ListHeader {
-                Text(text = stringResource(R.string.loading))
-            }
-        }
-        item {
-            LoadingButtonsContent()
-        }
-        items(count = 2) {
-            PlaceholderButton()
-        }
-    }
-}
-
-@Composable
-fun LoadingButtonsContent() {
-    Row(
-        modifier = Modifier
-            .padding(bottom = 16.dp)
-            .height(52.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
-    ) {
+    ButtonGroup(modifier.fillMaxWidth().padding(bottom = 16.dp)) {
 
         FilledIconButton(
             onClick = {
+                onPlayButtonClick()
+                onPlayEpisode(episode)
             },
             modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-            enabled = false,
-            shapes = PlayIconShape()
+                .weight(weight = 0.7F)
+                .animateWidth(playInteractionSource)
+                .placeholder(placeholderState = placeholderState),
+            enabled = enabled,
+            interactionSource = playInteractionSource,
+            shapes = IconButtonShapes(MaterialTheme.shapes.medium),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.play),
-                contentDescription = stringResource(id = R.string.button_play_content_description)
+                contentDescription = stringResource(id = R.string.button_play_content_description),
             )
         }
 
         FilledIconButton(
-            onClick = { },
+            onClick = { onAddToQueue(episode) },
             modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-            enabled = false
+                .weight(weight = 0.3F)
+                .animateWidth(addToQueueInteractionSource)
+                .placeholder(placeholderState),
+            interactionSource = addToQueueInteractionSource,
+            enabled = enabled,
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                contentDescription = stringResource(id = R.string.add_to_queue_content_description)
+                contentDescription = stringResource(id = R.string.add_to_queue_content_description),
             )
         }
     }
@@ -304,7 +257,7 @@ private fun TransformingLazyColumnScope.episodeInfoContent(episode: PlayerEpisod
                 text = author,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
@@ -356,7 +309,8 @@ fun EpisodeScreenEmptyPreview() {
         onPlayButtonClick = { },
         onPlayEpisode = { _ -> },
         onAddToQueue = { _ -> },
-        onDismiss = {}
+        onDismiss = {},
+        placeholderState = rememberPlaceholderState(isVisible = true),
     )
 }
 
@@ -365,15 +319,24 @@ fun EpisodeScreenEmptyPreview() {
 @Composable
 fun EpisodeScreenLoadingPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
-    episode: PlayerEpisode
+    episode: PlayerEpisode,
 ) {
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     val columnState = rememberTransformingLazyColumnState()
-    EpisodeScreenLoading(columnState, contentPadding)
+    EpisodeScreenLoaded(
+        title = episode.title,
+        episode = episode,
+        onPlayButtonClick = { },
+        onPlayEpisode = { },
+        onAddToQueue = { },
+        columnState = columnState,
+        contentPadding = contentPadding,
+        placeholderState = rememberPlaceholderState(isVisible = true),
+    )
 }
 
 @WearPreviewDevices
@@ -381,12 +344,12 @@ fun EpisodeScreenLoadingPreview(
 @Composable
 fun EpisodeScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
-    episode: PlayerEpisode
+    episode: PlayerEpisode,
 ) {
     val columnState = rememberTransformingLazyColumnState()
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
 
     EpisodeScreenLoaded(
@@ -396,6 +359,7 @@ fun EpisodeScreenLoadedPreview(
         onPlayEpisode = { },
         onAddToQueue = { },
         columnState = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
+        placeholderState = rememberPlaceholderState(isVisible = false),
     )
 }

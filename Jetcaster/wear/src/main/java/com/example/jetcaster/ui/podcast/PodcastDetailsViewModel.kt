@@ -36,14 +36,15 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.ui.PodcastDetails
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -114,4 +115,14 @@ class PodcastDetailsViewModel @Inject constructor(
         episodePlayer.currentEpisode = episodes[0]
         episodePlayer.play(episodes)
     }
+}
+
+@ExperimentalHorologistApi
+sealed class PodcastDetailsScreenState {
+
+    data object Loading : PodcastDetailsScreenState()
+
+    data class Loaded(val episodeList: List<PlayerEpisode>, val podcast: PodcastInfo) : PodcastDetailsScreenState()
+
+    data object Empty : PodcastDetailsScreenState()
 }

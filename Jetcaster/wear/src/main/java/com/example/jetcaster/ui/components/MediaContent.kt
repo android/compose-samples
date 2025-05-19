@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -50,9 +49,9 @@ import java.time.format.FormatStyle
 @Composable
 fun MediaContent(
     episode: PlayerEpisode,
-    episodeArtworkPlaceholder: Painter = painterResource(id = R.drawable.music),
     onItemClick: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
+    episodeArtworkPlaceholder: Painter = painterResource(id = R.drawable.music),
 ) {
     val mediaTitle = episode.title
     val duration = episode.duration
@@ -76,7 +75,7 @@ fun MediaContent(
             Text(
                 mediaTitle,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         onClick = { onItemClick(episode) },
@@ -84,7 +83,7 @@ fun MediaContent(
             Text(
                 secondaryLabel,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         icon = {
@@ -96,13 +95,13 @@ fun MediaContent(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(
-                        ButtonDefaults.LargeIconSize
+                        ButtonDefaults.LargeIconSize,
                     )
-                    .clip(CircleShape)
+                    .clip(CircleShape),
 
             )
         },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     )
 }
 
@@ -111,21 +110,22 @@ fun MediaContent(
 @Composable
 fun MediaContentPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
-    episode: PlayerEpisode
+    episode: PlayerEpisode,
+    modifier: Modifier = Modifier,
 ) {
-    AppScaffold {
+    AppScaffold(modifier = modifier) {
         val contentPadding = rememberResponsiveColumnPadding(
-            first = ColumnItemType.Button
+            first = ColumnItemType.Button,
         )
 
         ScreenScaffold(contentPadding = contentPadding) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(contentPadding)
+                    .padding(contentPadding),
             ) {
                 MediaContent(
-                    episode, onItemClick = { null }
+                    episode, onItemClick = { null },
                 )
             }
         }

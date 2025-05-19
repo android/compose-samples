@@ -38,7 +38,6 @@ gradle-versions = "0.52.0"
 hilt = "2.56.2"
 hiltExt = "1.2.0"
 horologist = "0.7.14-beta"
-# @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "2.1.5"
 junit = "4.13.2"
 kotlin = "2.1.20"
@@ -60,8 +59,6 @@ spotless = "7.0.3"
 # @keep
 targetSdk = "33"
 version-catalog-update = "1.0.0"
-material3Android = "1.3.1"
-media3CommonKtx = "1.7.1"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -170,8 +167,7 @@ rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 androidx-media3-session = {module = "androidx.media3:media3-session",version.ref = "media3"}
 androidx-media3-exoplayer = {module = "androidx.media3:media3-exoplayer", version.ref = "media3"}
-androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
-androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
+androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

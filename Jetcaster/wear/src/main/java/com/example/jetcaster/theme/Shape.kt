@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Android Open Source Project
+ * Copyright 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.jetcaster.ui.components
+package com.example.jetcaster.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material3.IconButtonShapes
+import androidx.wear.compose.material3.Shapes
 
-@Composable
-fun PlayIconShape(): IconButtonShapes {
-    return IconButtonShapes(RoundedCornerShape(16.dp))
-}
+val Shapes = Shapes(
+    medium = RoundedCornerShape(16.dp),
+)

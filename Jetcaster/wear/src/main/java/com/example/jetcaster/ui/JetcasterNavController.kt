@@ -21,10 +21,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.google.android.horologist.media.ui.material3.navigation.MediaNavController.navigateToPlayer
-import com.google.android.horologist.media.ui.material3.navigation.MediaNavController.navigateToVolume
 import com.google.android.horologist.media.ui.material3.navigation.NavigationScreens
-import com.google.android.horologist.media.ui.material3.screens.playerlibrarypager.PlayerLibraryPagerScreen
 
 /**
  * NavController extensions that links to the screens of the Jetcaster app.

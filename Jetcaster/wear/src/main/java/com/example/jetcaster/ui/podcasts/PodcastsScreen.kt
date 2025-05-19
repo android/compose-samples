@@ -24,10 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -42,27 +40,30 @@ import androidx.wear.compose.material3.AlertDialog
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.FilledTonalButton
 import androidx.wear.compose.material3.ListHeader
-import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.PlaceholderState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material3.placeholder
+import androidx.wear.compose.material3.placeholderShimmer
+import androidx.wear.compose.material3.rememberPlaceholderState
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import coil.compose.AsyncImage
 import com.example.jetcaster.R
 import com.example.jetcaster.core.model.PodcastInfo
-import com.example.jetcaster.ui.components.PlaceholderButton
 import com.example.jetcaster.ui.preview.WearPreviewPodcasts
 import com.google.android.horologist.compose.layout.ColumnItemType
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
-import com.google.android.horologist.images.base.util.rememberVectorPainter
 
 @Composable
 fun PodcastsScreen(
     podcastsViewModel: PodcastsViewModel = hiltViewModel(),
     onPodcastsItemClick: (PodcastInfo) -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val uiState by podcastsViewModel.uiState.collectAsStateWithLifecycle()
+    val placeholderState = rememberPlaceholderState(isVisible = uiState is PodcastsScreenState.Loading)
 
     val modifiedState = when (uiState) {
         is PodcastsScreenState.Loaded -> {
@@ -83,12 +84,15 @@ fun PodcastsScreen(
         podcastsScreenState = modifiedState,
         onPodcastsItemClick = onPodcastsItemClick,
         onDismiss = onDismiss,
+        placeholderState = placeholderState,
+        modifier = modifier,
     )
 }
 
 @Composable
 fun PodcastsScreen(
     podcastsScreenState: PodcastsScreenState,
+    placeholderState: PlaceholderState,
     onPodcastsItemClick: (PodcastInfo) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -97,12 +101,12 @@ fun PodcastsScreen(
     val columnState = rememberTransformingLazyColumnState()
     val contentPadding = rememberResponsiveColumnPadding(
         first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
+        last = ColumnItemType.Button,
     )
     ScreenScaffold(
         scrollState = columnState,
         contentPadding = contentPadding,
-        modifier = modifier
+        modifier = modifier.placeholderShimmer(placeholderState),
     ) {
         when (podcastsScreenState) {
             is PodcastsScreenState.Loaded -> PodcastScreenLoaded(
@@ -110,15 +114,17 @@ fun PodcastsScreen(
                 onPodcastsItemClick = onPodcastsItemClick,
                 columnState = columnState,
                 contentPadding = contentPadding,
-                modifier = modifier
+                placeholderState = placeholderState,
             )
             PodcastsScreenState.Empty ->
                 PodcastScreenEmpty(onDismiss)
             PodcastsScreenState.Loading ->
-                PodcastScreenLoading(
+                PodcastScreenLoaded(
+                    podcastList = emptyList(),
+                    onPodcastsItemClick = { },
                     columnState = columnState,
                     contentPadding = contentPadding,
-                    modifier = modifier
+                    placeholderState = placeholderState,
                 )
         }
     }
@@ -128,25 +134,28 @@ fun PodcastsScreen(
 fun PodcastScreenLoaded(
     podcastList: List<PodcastInfo>,
     onPodcastsItemClick: (PodcastInfo) -> Unit,
-    modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    columnState: TransformingLazyColumnState
+    columnState: TransformingLazyColumnState,
+    placeholderState: PlaceholderState,
+    modifier: Modifier = Modifier,
 ) {
     TransformingLazyColumn(
         modifier = modifier,
         state = columnState,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
     ) {
         item {
             ListHeader {
-                Text(text = stringResource(id = R.string.podcasts))
+                Text(
+                    text = stringResource(id = R.string.podcasts),
+                    modifier = Modifier.placeholder(placeholderState),
+                )
             }
         }
-        items(count = podcastList.size) {
-                index ->
+        items(count = podcastList.size) { index ->
             MediaContent(
                 podcast = podcastList[index],
-                onPodcastsItemClick = onPodcastsItemClick
+                onPodcastsItemClick = onPodcastsItemClick,
 
             )
         }
@@ -159,84 +168,16 @@ fun PodcastScreenEmpty(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
         visible = true,
         title = { Text(stringResource(R.string.podcasts_no_podcasts)) },
         onDismissRequest = { onDismiss },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun PodcastScreenLoading(
-    modifier: Modifier = Modifier,
-    columnState: TransformingLazyColumnState,
-    contentPadding: PaddingValues
-) {
-
-    TransformingLazyColumn(
         modifier = modifier,
-        state = columnState,
-        contentPadding = contentPadding
-    ) {
-        item {
-            ListHeader(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(R.string.podcasts),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 3,
-                )
-            }
-        }
-
-        items(count = 2) {
-            PlaceholderButton()
-        }
-    }
-}
-
-@WearPreviewDevices
-@WearPreviewFontScales
-@Composable
-fun PodcastScreenLoadedPreview(
-    @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo
-) {
-    val columnState = rememberTransformingLazyColumnState()
-    val contentPadding = rememberResponsiveColumnPadding(
-        first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
     )
-    PodcastScreenLoaded(
-        podcastList = listOf(podcasts),
-        onPodcastsItemClick = {},
-        contentPadding = contentPadding,
-        columnState = columnState
-    )
-}
-
-@WearPreviewDevices
-@WearPreviewFontScales
-@Composable
-fun PodcastScreenLoadingPreview() {
-    val columnState = rememberTransformingLazyColumnState()
-    val contentPadding = rememberResponsiveColumnPadding(
-        first = ColumnItemType.ListHeader,
-        last = ColumnItemType.Button
-    )
-    PodcastScreenLoading(columnState = columnState, contentPadding = contentPadding)
-}
-
-@WearPreviewDevices
-@WearPreviewFontScales
-@Composable
-fun PodcastScreenEmptyPreview() {
-    PodcastScreenEmpty(onDismiss = {})
 }
 
 @Composable
 fun MediaContent(
     podcast: PodcastInfo,
-    episodeArtworkPlaceholder: Painter = painterResource(id = R.drawable.music),
     onPodcastsItemClick: (PodcastInfo) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    episodeArtworkPlaceholder: Painter = painterResource(id = R.drawable.music),
 ) {
     val mediaTitle = podcast.title
     val secondaryLabel = podcast.author
@@ -246,7 +187,7 @@ fun MediaContent(
             Text(
                 mediaTitle, maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
         },
         onClick = { onPodcastsItemClick(podcast) },
@@ -258,15 +199,40 @@ fun MediaContent(
                 error = episodeArtworkPlaceholder,
                 placeholder = episodeArtworkPlaceholder,
                 contentScale = ContentScale.Crop,
-                modifier = modifier
+                modifier = Modifier
                     .size(
-                        ButtonDefaults.LargeIconSize
+                        ButtonDefaults.LargeIconSize,
                     )
-                    .clip(CircleShape)
+                    .clip(CircleShape),
 
             )
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
 
     )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun PodcastScreenLoadedPreview(@PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo) {
+    val columnState = rememberTransformingLazyColumnState()
+    val contentPadding = rememberResponsiveColumnPadding(
+        first = ColumnItemType.ListHeader,
+        last = ColumnItemType.Button,
+    )
+    PodcastScreenLoaded(
+        podcastList = listOf(podcasts),
+        onPodcastsItemClick = {},
+        contentPadding = contentPadding,
+        columnState = columnState,
+        placeholderState = rememberPlaceholderState(isVisible = false),
+    )
+}
+
+@WearPreviewDevices
+@WearPreviewFontScales
+@Composable
+fun PodcastScreenEmptyPreview() {
+    PodcastScreenEmpty(onDismiss = {})
 }
