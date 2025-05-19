@@ -21,8 +21,10 @@ import androidx.compose.animation.core.EaseOutExpo
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -289,63 +291,88 @@ fun PodcastDetailsDescription(podcast: PodcastInfo, modifier: Modifier) {
 @Composable
 fun PodcastDetailsHeaderItemButtons(isSubscribed: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     var isNotificationOn by remember { mutableStateOf(false) }
-    ButtonGroup(modifier = modifier) {
-        ToggleButton(
-            checked = isSubscribed,
-            onCheckedChange = { onClick() },
-            colors = ToggleButtonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary,
-                disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
-                checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                checkedContentColor = MaterialTheme.colorScheme.secondary,
-            ),
-            shapes = ToggleButtonShapes(
-                shape = RoundedCornerShape(15.dp),
-                pressedShape = RoundedCornerShape(if (isSubscribed) 15.dp else 60.dp),
-                checkedShape = RoundedCornerShape(60.dp),
-            ),
-            modifier = Modifier
-                .width(76.dp)
-                .height(56.dp)
-                .semantics(mergeDescendants = true) { },
-        ) {
-            Icon(
-                imageVector = if (isSubscribed)
-                    Icons.Default.Check
-                else
-                    Icons.Default.Add,
-                contentDescription = null,
-            )
-        }
-        ToggleButton(
-            checked = isNotificationOn,
-            onCheckedChange = { isNotificationOn = !isNotificationOn },
-            colors = ToggleButtonColors(
-                containerColor = MaterialTheme.colorScheme.inverseSurface,
-                contentColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
-                checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                checkedContentColor = MaterialTheme.colorScheme.secondary,
-            ),
-            shapes = ToggleButtonShapes(
-                shape = RoundedCornerShape(100.dp),
-                pressedShape = RoundedCornerShape(if (isNotificationOn) 100.dp else 20.dp),
-                checkedShape = RoundedCornerShape(20.dp),
-            ),
-            modifier = Modifier.size(56.dp),
-        ) {
-            Icon(
-                imageVector = if (isNotificationOn) {
-                    Icons.Default.NotificationsActive
-                } else {
-                    Icons.Default.NotificationsNone
-                },
-                contentDescription = stringResource(R.string.cd_more),
-            )
-        }
+    val interactionSource1 = remember { MutableInteractionSource() }
+    val interactionSource2 = remember { MutableInteractionSource() }
+    ButtonGroup(
+        overflowIndicator = {},
+        modifier = modifier,
+    ) {
+        customItem(
+            buttonGroupContent = {
+                ToggleButton(
+                    checked = isSubscribed,
+                    onCheckedChange = { onClick() },
+                    colors = ToggleButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                        disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                        disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
+                        checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        checkedContentColor = MaterialTheme.colorScheme.secondary,
+                    ),
+                    shapes = ToggleButtonShapes(
+                        shape = RoundedCornerShape(15.dp),
+                        pressedShape = RoundedCornerShape(if (isSubscribed) 15.dp else 60.dp),
+                        checkedShape = RoundedCornerShape(60.dp),
+                    ),
+                    modifier = Modifier
+                        .width(76.dp)
+                        .height(56.dp)
+                        .animateWidth(interactionSource = interactionSource1)
+                        .semantics(mergeDescendants = true) { },
+                    interactionSource = interactionSource1,
+                ) {
+                    Icon(
+                        imageVector = if (isSubscribed)
+                            Icons.Default.Check
+                        else
+                            Icons.Default.Add,
+                        contentDescription = null,
+                    )
+                }
+            },
+            menuContent = { },
+        )
+
+        customItem(
+            buttonGroupContent = {
+                ToggleButton(
+                    checked = isNotificationOn,
+                    onCheckedChange = { isNotificationOn = !isNotificationOn },
+                    colors = ToggleButtonColors(
+                        containerColor = MaterialTheme.colorScheme.inverseSurface,
+                        contentColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                        disabledContentColor = MaterialTheme.colorScheme.surfaceVariant,
+                        checkedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        checkedContentColor = MaterialTheme.colorScheme.secondary,
+                    ),
+                    shapes = ToggleButtonShapes(
+                        shape = RoundedCornerShape(100.dp),
+                        pressedShape = RoundedCornerShape(if (isNotificationOn) 100.dp else 20.dp),
+                        checkedShape = RoundedCornerShape(20.dp),
+                    ),
+                    interactionSource = interactionSource2,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .animateWidth(interactionSource = interactionSource2),
+                ) {
+                    Icon(
+                        imageVector = if (isNotificationOn) {
+                            Icons.Default.NotificationsActive
+                        } else {
+                            Icons.Default.NotificationsNone
+                        },
+                        contentDescription = stringResource(R.string.cd_more),
+                    )
+                }
+            },
+            menuContent = {},
+        )
+        customItem(
+            buttonGroupContent = { Spacer(modifier.weight(1f)) },
+            menuContent = { },
+        )
     }
 }
 

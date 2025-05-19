@@ -24,6 +24,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -52,13 +53,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
-import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Replay10
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.material.icons.outlined.Pause
-import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.rounded.Forward10
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Replay10
+import androidx.compose.material.icons.rounded.SkipNext
+import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -741,8 +742,8 @@ private fun PlayerButtons(
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 disabledContainerColor = MaterialTheme.colorScheme.primary,
                 disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                checkedContainerColor = MaterialTheme.colorScheme.primary,
-                checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+                checkedContainerColor = MaterialTheme.colorScheme.tertiary,
+                checkedContentColor = MaterialTheme.colorScheme.onTertiary,
             ),
             shapes = ToggleButtonShapes(
                 shape = RoundedCornerShape(60.dp),
@@ -754,12 +755,13 @@ private fun PlayerButtons(
                 .height(136.dp),
         ) {
             Icon(
-                imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
+                imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = null,
             )
         }
         ButtonGroup(
+            overflowIndicator = {},
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -769,78 +771,102 @@ private fun PlayerButtons(
 
             val rewindFastForwardButtonsModifier = Modifier
                 .size(68.dp)
+            val interactionSources = List(4) { MutableInteractionSource() }
+            customItem(
+                buttonGroupContent = {
+                    IconButton(
+                        onClick = onPrevious,
+                        modifier = skipButtonsModifier.animateWidth(interactionSource = interactionSources[0]),
+                        shape = RoundedCornerShape(50.dp),
+                        colors = IconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        interactionSource = interactionSources[0],
+                        enabled = isPlaying,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.SkipPrevious,
+                            contentDescription = null,
+                        )
+                    }
+                },
+                menuContent = { },
+            )
 
-            IconButton(
-                onClick = onPrevious,
-                modifier = skipButtonsModifier,
-                shape = RoundedCornerShape(50.dp),
-                colors = IconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-                enabled = isPlaying,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.SkipPrevious,
-                    contentDescription = null,
-                )
-            }
+            customItem(
+                buttonGroupContent = {
+                    IconButton(
+                        onClick = { onRewindBy(Duration.ofSeconds(10)) },
+                        modifier = rewindFastForwardButtonsModifier.animateWidth(interactionSource = interactionSources[1]),
+                        shape = RoundedCornerShape(15.dp),
+                        colors = IconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                            disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                        ),
+                        interactionSource = interactionSources[1],
+                        enabled = isPlaying,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Replay10,
+                            contentDescription = null,
+                        )
+                    }
+                },
+                menuContent = { },
+            )
 
-            IconButton(
-                onClick = { onRewindBy(Duration.ofSeconds(10)) },
-                modifier = rewindFastForwardButtonsModifier,
-                shape = RoundedCornerShape(15.dp),
-                colors = IconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
-                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                    disabledContentColor = MaterialTheme.colorScheme.onSecondary,
-                ),
-                enabled = isPlaying,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Replay10,
-                    contentDescription = null,
-                )
-            }
+            customItem(
+                buttonGroupContent = {
+                    IconButton(
+                        onClick = { onAdvanceBy(Duration.ofSeconds(10)) },
+                        modifier = rewindFastForwardButtonsModifier.animateWidth(interactionSource = interactionSources[2]),
+                        shape = RoundedCornerShape(15.dp),
+                        colors = IconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                            disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                        ),
+                        interactionSource = interactionSources[2],
+                        enabled = isPlaying,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Forward10,
+                            contentDescription = null,
+                        )
+                    }
+                },
+                menuContent = { },
+            )
 
-            IconButton(
-                onClick = { onAdvanceBy(Duration.ofSeconds(10)) },
-                modifier = rewindFastForwardButtonsModifier,
-                shape = RoundedCornerShape(15.dp),
-                colors = IconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
-                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                    disabledContentColor = MaterialTheme.colorScheme.onSecondary,
-                ),
-                enabled = isPlaying,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Forward10,
-                    contentDescription = null,
-                )
-            }
-
-            IconButton(
-                onClick = onNext,
-                modifier = skipButtonsModifier,
-                shape = RoundedCornerShape(50.dp),
-                colors = IconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    disabledContentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-                enabled = hasNext,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.SkipNext,
-                    contentDescription = null,
-                )
-            }
+            customItem(
+                buttonGroupContent = {
+                    IconButton(
+                        onClick = onNext,
+                        modifier = skipButtonsModifier.animateWidth(interactionSource = interactionSources[3]),
+                        shape = RoundedCornerShape(50.dp),
+                        colors = IconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                            disabledContentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        interactionSource = interactionSources[3],
+                        enabled = hasNext,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.SkipNext,
+                            contentDescription = null,
+                        )
+                    }
+                },
+                menuContent = { },
+            )
         }
     }
 }
