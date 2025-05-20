@@ -111,6 +111,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.compose.ui.googlefonts)
 
+    implementation(libs.coil.kt.compose)
+    implementation(libs.coil.kt.gif)
+
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     androidTestImplementation(libs.junit)

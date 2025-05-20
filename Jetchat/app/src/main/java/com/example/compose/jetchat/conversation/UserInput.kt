@@ -38,6 +38,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,10 +56,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.AlternateEmail
 import androidx.compose.material.icons.outlined.Duo
 import androidx.compose.material.icons.outlined.InsertPhoto
@@ -94,7 +100,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -104,17 +112,19 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastForEachIndexed
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
@@ -133,15 +143,21 @@ enum class EmojiStickerSelector {
 @Preview
 @Composable
 fun UserInputPreview() {
-    UserInput(onMessageSent = {})
+    UserInput(
+        textFieldState = rememberTextFieldState(),
+        onMessageSent = {}
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(
+    textFieldState: TextFieldState,
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier,
     resetScroll: () -> Unit = {},
+    images: List<Any> = emptyList(),
+    onClearImage: (Int) -> Unit = {}
 ) {
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
@@ -151,18 +167,20 @@ fun UserInput(
         BackHandler(onBack = dismissKeyboard)
     }
 
-    var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
-
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
     Surface(tonalElevation = 2.dp, contentColor = MaterialTheme.colorScheme.secondary) {
         Column(modifier = modifier) {
+            val sendMessageEnabled = textFieldState.text.isNotBlank() || images.isNotEmpty()
+            AnimatedVisibility(images.isNotEmpty()) {
+                SelectedImages(
+                    images = images,
+                    onClearImage = onClearImage
+                )
+            }
             UserInputText(
-                textFieldValue = textState,
-                onTextChanged = { textState = it },
+                textFieldState = textFieldState,
                 // Only show the keyboard if there's no input selector and text field has focus
                 keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
                 // Close extended selector if text field receives focus
@@ -174,21 +192,23 @@ fun UserInput(
                     textFieldFocusState = focused
                 },
                 onMessageSent = {
-                    onMessageSent(textState.text)
-                    // Reset text field and close keyboard
-                    textState = TextFieldValue()
-                    // Move scroll to bottom
-                    resetScroll()
+                    if (sendMessageEnabled) {
+                        onMessageSent(textFieldState.text.toString())
+                        // Reset text field and close keyboard
+                        textFieldState.clearText()
+                        // Move scroll to bottom
+                        resetScroll()
+                    }
                 },
                 focusState = textFieldFocusState
             )
             UserInputSelector(
                 onSelectorChange = { currentInputSelector = it },
-                sendMessageEnabled = textState.text.isNotBlank(),
+                sendMessageEnabled = sendMessageEnabled,
                 onMessageSent = {
-                    onMessageSent(textState.text)
+                    onMessageSent(textFieldState.text.toString())
                     // Reset text field and close keyboard
-                    textState = TextFieldValue()
+                    textFieldState.clearText()
                     // Move scroll to bottom
                     resetScroll()
                     dismissKeyboard()
@@ -197,25 +217,55 @@ fun UserInput(
             )
             SelectorExpanded(
                 onCloseRequested = dismissKeyboard,
-                onTextAdded = { textState = textState.addText(it) },
+                onTextAdded = { textFieldState.addText(it) },
                 currentSelector = currentInputSelector
             )
         }
     }
 }
 
-private fun TextFieldValue.addText(newString: String): TextFieldValue {
-    val newText = this.text.replaceRange(
-        this.selection.start,
-        this.selection.end,
-        newString
-    )
-    val newSelection = TextRange(
-        start = newText.length,
-        end = newText.length
-    )
+internal fun TextFieldState.addText(newString: String) {
+    edit {
+        replace(selection.min, selection.max, newString)
+        selection = TextRange(length)
+    }
+}
 
-    return this.copy(text = newText, selection = newSelection)
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SelectedImages(
+    images: List<Any>,
+    onClearImage: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FlowRow(
+        modifier = modifier.padding(start = 32.dp, end = 32.dp, top = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        images.fastForEachIndexed { index, image ->
+            Box(modifier = Modifier.size(72.dp)) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(image)
+                        .build(),
+                    contentDescription = stringResource(id = R.string.attached_image),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .align(Alignment.BottomStart)
+                )
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = stringResource(R.string.remove_image),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.background)
+                        .clickable { onClearImage(index) }
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -405,9 +455,8 @@ var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
+    textFieldState: TextFieldState,
     keyboardType: KeyboardType = KeyboardType.Text,
-    onTextChanged: (TextFieldValue) -> Unit,
-    textFieldValue: TextFieldValue,
     keyboardShown: Boolean,
     onTextFieldFocused: (Boolean) -> Unit,
     onMessageSent: (String) -> Unit,
@@ -434,16 +483,17 @@ private fun UserInputText(
                     RecordingIndicator { swipeOffset.value }
                 } else {
                     UserInputTextField(
-                        textFieldValue,
-                        onTextChanged,
+                        textFieldState,
                         onTextFieldFocused,
                         keyboardType,
                         focusState,
                         onMessageSent,
-                        Modifier.fillMaxWidth().semantics {
-                            contentDescription = a11ylabel
-                            keyboardShownProperty = keyboardShown
-                        }
+                        Modifier
+                            .fillMaxWidth()
+                            .semantics {
+                                contentDescription = a11ylabel
+                                keyboardShownProperty = keyboardShown
+                            }
                     )
                 }
             }
@@ -471,8 +521,7 @@ private fun UserInputText(
 
 @Composable
 private fun BoxScope.UserInputTextField(
-    textFieldValue: TextFieldValue,
-    onTextChanged: (TextFieldValue) -> Unit,
+    textFieldState: TextFieldState,
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
@@ -481,8 +530,7 @@ private fun BoxScope.UserInputTextField(
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
     BasicTextField(
-        value = textFieldValue,
-        onValueChange = { onTextChanged(it) },
+        state = textFieldState,
         modifier = modifier
             .padding(start = 32.dp)
             .align(Alignment.CenterStart)
@@ -496,17 +544,17 @@ private fun BoxScope.UserInputTextField(
             keyboardType = keyboardType,
             imeAction = ImeAction.Send
         ),
-        keyboardActions = KeyboardActions {
-            if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
+        onKeyboardAction = {
+            onMessageSent(textFieldState.text.toString())
         },
-        maxLines = 1,
+        lineLimits = TextFieldLineLimits.SingleLine,
         cursorBrush = SolidColor(LocalContentColor.current),
         textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
     )
 
     val disableContentColor =
         MaterialTheme.colorScheme.onSurfaceVariant
-    if (textFieldValue.text.isEmpty() && !focusState) {
+    if (textFieldState.text.isEmpty() && !focusState) {
         Text(
             modifier = Modifier
                 .align(Alignment.CenterStart)
