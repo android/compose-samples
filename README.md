@@ -76,8 +76,8 @@ Looking for a sample that has the following features?
 ## Formatting
 
 To automatically format all samples: Run `./scripts/format.sh`
-To check one sample for errors: Navigate to the sample folder and run `./gradlew --init-script buildscripts/init.gradle.kts spotlessCheck`
-To format one sample: Navigate to the sample folder and run `./gradlew --init-script buildscripts/init.gradle.kts spotlessApply`
+To check one sample for errors: Navigate to the sample folder and run `./gradlew spotlessCheck`
+To format one sample: Navigate to the sample folder and run `./gradlew spotlessApply`
 
 ## Updates
 
