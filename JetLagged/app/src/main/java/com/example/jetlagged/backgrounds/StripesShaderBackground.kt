@@ -32,22 +32,18 @@ import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private data class MovingStripesBackgroundElement(
-    val stripeColor: Color,
-    val backgroundColor: Color
-) : ModifierNodeElement<MovingStripesBackgroundNode>() {
-    override fun create(): MovingStripesBackgroundNode =
-        MovingStripesBackgroundNode(stripeColor, backgroundColor)
+private data class MovingStripesBackgroundElement(val stripeColor: Color, val backgroundColor: Color) :
+    ModifierNodeElement<MovingStripesBackgroundNode>() {
+    override fun create(): MovingStripesBackgroundNode = MovingStripesBackgroundNode(stripeColor, backgroundColor)
     override fun update(node: MovingStripesBackgroundNode) {
         node.updateColors(stripeColor, backgroundColor)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private class MovingStripesBackgroundNode(
-    stripeColor: Color,
-    backgroundColor: Color,
-) : DrawModifierNode, Modifier.Node() {
+private class MovingStripesBackgroundNode(stripeColor: Color, backgroundColor: Color) :
+    Modifier.Node(),
+    DrawModifierNode {
 
     private val shader = RuntimeShader(SHADER)
     private val shaderBrush = ShaderBrush(shader)
@@ -64,8 +60,8 @@ private class MovingStripesBackgroundNode(
                 stripeColor.red,
                 stripeColor.green,
                 stripeColor.blue,
-                stripeColor.alpha
-            )
+                stripeColor.alpha,
+            ),
         )
         shader.setFloatUniform("backgroundLuminance", backgroundColor.luminance())
         shader.setColorUniform(
@@ -74,8 +70,8 @@ private class MovingStripesBackgroundNode(
                 backgroundColor.red,
                 backgroundColor.green,
                 backgroundColor.blue,
-                backgroundColor.alpha
-            )
+                backgroundColor.alpha,
+            ),
         )
     }
 
@@ -99,10 +95,7 @@ private class MovingStripesBackgroundNode(
     }
 }
 
-fun Modifier.movingStripesBackground(
-    stripeColor: Color,
-    backgroundColor: Color,
-): Modifier =
+fun Modifier.movingStripesBackground(stripeColor: Color, backgroundColor: Color): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         this.then(MovingStripesBackgroundElement(stripeColor, backgroundColor))
     } else {

@@ -62,11 +62,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.widget.WidgetReceiver
 
 @Composable
-fun JetchatDrawerContent(
-    onProfileClicked: (String) -> Unit,
-    onChatClicked: (String) -> Unit,
-    selectedMenu: String = "composers"
-) {
+fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit, selectedMenu: String = "composers") {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
     Column {
@@ -84,13 +80,13 @@ fun JetchatDrawerContent(
         DrawerItemHeader("Recent Profiles")
         ProfileItem(
             "Ali Conors (you)", meProfile.photo,
-            selectedMenu == meProfile.userId
+            selectedMenu == meProfile.userId,
         ) {
             onProfileClicked(meProfile.userId)
         }
         ProfileItem(
             "Taylor Brooks", colleagueProfile.photo,
-            selectedMenu == colleagueProfile.userId
+            selectedMenu == colleagueProfile.userId,
         ) {
             onProfileClicked(colleagueProfile.userId)
         }
@@ -107,12 +103,12 @@ private fun DrawerHeader() {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
         JetchatIcon(
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp),
         )
         Image(
             painter = painterResource(id = R.drawable.jetchat_logo),
             contentDescription = null,
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 8.dp),
         )
     }
 }
@@ -123,12 +119,12 @@ private fun DrawerItemHeader(text: String) {
         modifier = Modifier
             .heightIn(min = 52.dp)
             .padding(horizontal = 28.dp),
-        contentAlignment = CenterStart
+        contentAlignment = CenterStart,
     ) {
         Text(
             text,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -148,7 +144,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             .clip(CircleShape)
             .then(background)
             .clickable(onClick = onChatClicked),
-        verticalAlignment = CenterVertically
+        verticalAlignment = CenterVertically,
     ) {
         val iconTint = if (selected) {
             MaterialTheme.colorScheme.primary
@@ -159,7 +155,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             painter = painterResource(id = R.drawable.ic_jetchat),
             tint = iconTint,
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
-            contentDescription = null
+            contentDescription = null,
         )
         Text(
             text,
@@ -169,18 +165,13 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             } else {
                 MaterialTheme.colorScheme.onSurface
             },
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.padding(start = 12.dp),
         )
     }
 }
 
 @Composable
-private fun ProfileItem(
-    text: String,
-    @DrawableRes profilePic: Int?,
-    selected: Boolean = false,
-    onProfileClicked: () -> Unit
-) {
+private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, selected: Boolean = false, onProfileClicked: () -> Unit) {
     val background = if (selected) {
         Modifier.background(MaterialTheme.colorScheme.primaryContainer)
     } else {
@@ -194,7 +185,7 @@ private fun ProfileItem(
             .clip(CircleShape)
             .then(background)
             .clickable(onClick = onProfileClicked),
-        verticalAlignment = CenterVertically
+        verticalAlignment = CenterVertically,
     ) {
         val paddingSizeModifier = Modifier
             .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
@@ -204,7 +195,7 @@ private fun ProfileItem(
                 painter = painterResource(id = profilePic),
                 modifier = paddingSizeModifier.then(Modifier.clip(CircleShape)),
                 contentScale = ContentScale.Crop,
-                contentDescription = null
+                contentDescription = null,
             )
         } else {
             Spacer(modifier = paddingSizeModifier)
@@ -213,7 +204,7 @@ private fun ProfileItem(
             text,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.padding(start = 12.dp),
         )
     }
 }
@@ -222,7 +213,7 @@ private fun ProfileItem(
 fun DividerItem(modifier: Modifier = Modifier) {
     HorizontalDivider(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
     )
 }
 
@@ -263,13 +254,13 @@ private fun WidgetDiscoverability() {
             .clickable(onClick = {
                 addWidgetToHomeScreen(context)
             }),
-        verticalAlignment = CenterVertically
+        verticalAlignment = CenterVertically,
     ) {
         Text(
             stringResource(id = R.string.add_widget_to_home_page),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.padding(start = 12.dp),
         )
     }
 }

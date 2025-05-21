@@ -50,7 +50,7 @@ fun JetsnackScaffold(
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     backgroundColor: Color = JetsnackTheme.colors.uiBackground,
     contentColor: Color = JetsnackTheme.colors.textSecondary,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -63,7 +63,7 @@ fun JetsnackScaffold(
         floatingActionButtonPosition = floatingActionButtonPosition,
         containerColor = backgroundColor,
         contentColor = contentColor,
-        content = content
+        content = content,
     )
 }
 
@@ -75,7 +75,7 @@ fun rememberJetsnackScaffoldState(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): JetsnackScaffoldState = remember(snackBarHostState, snackbarManager, resources, coroutineScope) {
     JetsnackScaffoldState(snackBarHostState, snackbarManager, resources, coroutineScope)
 }
@@ -88,7 +88,7 @@ class JetsnackScaffoldState(
     val snackBarHostState: SnackbarHostState,
     private val snackbarManager: SnackbarManager,
     private val resources: Resources,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) {
     // Process snackbars coming from SnackbarManager
     init {

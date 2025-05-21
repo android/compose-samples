@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     },
                     toggleSelectedEmail = { emailId ->
                         viewModel.toggleSelectedEmail(emailId)
-                    }
+                    },
                 )
             }
         }

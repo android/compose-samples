@@ -36,24 +36,13 @@ object SearchRepo {
 }
 
 @Immutable
-data class SearchCategoryCollection(
-    val id: Long,
-    val name: String,
-    val categories: List<SearchCategory>
-)
+data class SearchCategoryCollection(val id: Long, val name: String, val categories: List<SearchCategory>)
 
 @Immutable
-data class SearchCategory(
-    val name: String,
-    val imageRes: Int
-)
+data class SearchCategory(val name: String, val imageRes: Int)
 
 @Immutable
-data class SearchSuggestionGroup(
-    val id: Long,
-    val name: String,
-    val suggestions: List<String>
-)
+data class SearchSuggestionGroup(val id: Long, val name: String, val suggestions: List<String>)
 
 /**
  * Static data
@@ -66,7 +55,7 @@ private val searchCategoryCollections = listOf(
         categories = listOf(
             SearchCategory(
                 name = "Chips & crackers",
-                imageRes = R.drawable.chips
+                imageRes = R.drawable.chips,
             ),
             SearchCategory(
                 name = "Fruit snacks",
@@ -74,13 +63,13 @@ private val searchCategoryCollections = listOf(
             ),
             SearchCategory(
                 name = "Desserts",
-                imageRes = R.drawable.desserts
+                imageRes = R.drawable.desserts,
             ),
             SearchCategory(
                 name = "Nuts",
                 imageRes = R.drawable.nuts,
-            )
-        )
+            ),
+        ),
     ),
     SearchCategoryCollection(
         id = 1L,
@@ -88,11 +77,11 @@ private val searchCategoryCollections = listOf(
         categories = listOf(
             SearchCategory(
                 name = "Organic",
-                imageRes = R.drawable.organic
+                imageRes = R.drawable.organic,
             ),
             SearchCategory(
                 name = "Gluten Free",
-                imageRes = R.drawable.gluten_free
+                imageRes = R.drawable.gluten_free,
             ),
             SearchCategory(
                 name = "Paleo",
@@ -108,10 +97,10 @@ private val searchCategoryCollections = listOf(
             ),
             SearchCategory(
                 name = "Whole30",
-                imageRes = R.drawable.paleo
-            )
-        )
-    )
+                imageRes = R.drawable.paleo,
+            ),
+        ),
+    ),
 )
 
 private val searchSuggestions = listOf(
@@ -120,8 +109,8 @@ private val searchSuggestions = listOf(
         name = "Recent searches",
         suggestions = listOf(
             "Cheese",
-            "Apple Sauce"
-        )
+            "Apple Sauce",
+        ),
     ),
     SearchSuggestionGroup(
         id = 1L,
@@ -132,7 +121,7 @@ private val searchSuggestions = listOf(
             "Paleo",
             "Vegan",
             "Vegitarian",
-            "Whole30"
-        )
-    )
+            "Whole30",
+        ),
+    ),
 )

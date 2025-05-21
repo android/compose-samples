@@ -33,10 +33,10 @@ val fontName = GoogleFont("Lato")
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
+    certificates = R.array.com_google_android_gms_fonts_certs,
 )
 val fontFamily = FontFamily(
-    Font(googleFont = fontName, fontProvider = provider)
+    Font(googleFont = fontName, fontProvider = provider),
 )
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -45,41 +45,41 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
+        letterSpacing = 0.5.sp,
+    ),
 )
 
 val TitleBarStyle = TextStyle(
     fontSize = 22.sp,
     fontWeight = FontWeight(700),
     letterSpacing = 0.5.sp,
-    fontFamily = fontFamily
+    fontFamily = fontFamily,
 )
 
 val HeadingStyle = TextStyle(
     fontSize = 24.sp,
     fontWeight = FontWeight(600),
     letterSpacing = 0.5.sp,
-    fontFamily = fontFamily
+    fontFamily = fontFamily,
 )
 
 val SmallHeadingStyle = TextStyle(
     fontSize = 16.sp,
     fontWeight = FontWeight(600),
     letterSpacing = 0.5.sp,
-    fontFamily = fontFamily
+    fontFamily = fontFamily,
 )
 
 val LegendHeadingStyle = TextStyle(
     fontSize = 10.sp,
     fontWeight = FontWeight(600),
     letterSpacing = 0.5.sp,
-    fontFamily = fontFamily
+    fontFamily = fontFamily,
 )
 
 val TitleStyle = TextStyle(
     fontSize = 36.sp,
     fontWeight = FontWeight(500),
     letterSpacing = 0.5.sp,
-    fontFamily = fontFamily
+    fontFamily = fontFamily,
 )

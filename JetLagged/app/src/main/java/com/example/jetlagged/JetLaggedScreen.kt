@@ -55,30 +55,30 @@ fun JetLaggedScreen(
     modifier: Modifier = Modifier,
     windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
     viewModel: JetLaggedHomeScreenViewModel = viewModel(),
-    onDrawerClicked: () -> Unit = {}
+    onDrawerClicked: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
     ) {
         Column(
             modifier = Modifier.movingStripesBackground(
                 stripeColor = JetLaggedTheme.extraColors.header,
                 backgroundColor = MaterialTheme.colorScheme.background,
-            )
+            ),
         ) {
             JetLaggedHeader(
                 modifier = Modifier.fillMaxWidth(),
-                onDrawerClicked = onDrawerClicked
+                onDrawerClicked = onDrawerClicked,
             )
         }
 
         val uiState =
             viewModel.uiState.collectAsStateWithLifecycle()
         val insets = WindowInsets.safeDrawing.only(
-            WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
+            WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal,
         )
         FlowRow(
             modifier = Modifier
@@ -86,7 +86,7 @@ fun JetLaggedScreen(
                 .windowInsetsPadding(insets),
             horizontalArrangement = Arrangement.Center,
             verticalArrangement = Arrangement.Center,
-            maxItemsInEachRow = 3
+            maxItemsInEachRow = 3,
         ) {
             JetLaggedSleepGraphCard(uiState.value.sleepGraphData, Modifier.widthIn(max = 600.dp))
             if (windowSizeClass == WindowWidthSizeClass.Compact) {
@@ -103,11 +103,11 @@ fun JetLaggedScreen(
                     wellnessData = uiState.value.wellnessData,
                     modifier = Modifier
                         .widthIn(max = 400.dp)
-                        .heightIn(min = 200.dp)
+                        .heightIn(min = 200.dp),
                 )
                 HeartRateCard(
                     modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                    uiState.value.heartRateData
+                    uiState.value.heartRateData,
                 )
             } else {
                 FlowColumn {
@@ -115,11 +115,11 @@ fun JetLaggedScreen(
                         wellnessData = uiState.value.wellnessData,
                         modifier = Modifier
                             .widthIn(max = 400.dp)
-                            .heightIn(min = 200.dp)
+                            .heightIn(min = 200.dp),
                     )
                     HeartRateCard(
                         modifier = Modifier.widthIn(max = 400.dp, min = 200.dp),
-                        uiState.value.heartRateData
+                        uiState.value.heartRateData,
                     )
                 }
             }

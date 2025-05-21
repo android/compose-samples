@@ -27,8 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = EmailsRepositoryImpl()) :
-    ViewModel() {
+class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = EmailsRepositoryImpl()) : ViewModel() {
 
     // UI state exposed to the UI
     private val _uiState = MutableStateFlow(ReplyHomeUIState(loading = true))
@@ -50,7 +49,7 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
                      */
                     _uiState.value = ReplyHomeUIState(
                         emails = emails,
-                        openedEmail = emails.first()
+                        openedEmail = emails.first(),
                     )
                 }
         }
@@ -63,7 +62,7 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         val email = uiState.value.emails.find { it.id == emailId }
         _uiState.value = _uiState.value.copy(
             openedEmail = email,
-            isDetailOnlyOpen = contentType == ReplyContentType.SINGLE_PANE
+            isDetailOnlyOpen = contentType == ReplyContentType.SINGLE_PANE,
         )
     }
 
@@ -71,7 +70,7 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         val currentSelection = uiState.value.selectedEmails
         _uiState.value = _uiState.value.copy(
             selectedEmails = if (currentSelection.contains(emailId))
-                currentSelection.minus(emailId) else currentSelection.plus(emailId)
+                currentSelection.minus(emailId) else currentSelection.plus(emailId),
         )
     }
 
@@ -79,7 +78,7 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         _uiState.value = _uiState
             .value.copy(
                 isDetailOnlyOpen = false,
-                openedEmail = _uiState.value.emails.first()
+                openedEmail = _uiState.value.emails.first(),
             )
     }
 }
@@ -90,5 +89,5 @@ data class ReplyHomeUIState(
     val openedEmail: Email? = null,
     val isDetailOnlyOpen: Boolean = false,
     val loading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
 )

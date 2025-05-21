@@ -93,12 +93,12 @@ class NavActivity : AppCompatActivity() {
                                 drawerState.close()
                             }
                             selectedMenu = it
-                        }
+                        },
                     ) {
                         AndroidViewBinding(ContentMainBinding::inflate)
                     }
                 }
-            }
+            },
         )
     }
 

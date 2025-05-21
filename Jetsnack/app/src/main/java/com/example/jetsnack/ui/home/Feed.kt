@@ -52,17 +52,14 @@ import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun Feed(
-    onSnackClick: (Long, String) -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun Feed(onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
     val snackCollections = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
     Feed(
         snackCollections,
         filters,
         onSnackClick,
-        modifier
+        modifier,
     )
 }
 
@@ -71,7 +68,7 @@ private fun Feed(
     snackCollections: List<SnackCollection>,
     filters: List<Filter>,
     onSnackClick: (Long, String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         var filtersVisible by remember {
@@ -87,13 +84,13 @@ private fun Feed(
                         filtersVisible = true
                     },
                     sharedTransitionScope = this@SharedTransitionLayout,
-                    onSnackClick = onSnackClick
+                    onSnackClick = onSnackClick,
                 )
                 DestinationBar()
                 AnimatedVisibility(filtersVisible, enter = fadeIn(), exit = fadeOut()) {
                     FilterScreen(
                         animatedVisibilityScope = this@AnimatedVisibility,
-                        sharedTransitionScope = this@SharedTransitionLayout
+                        sharedTransitionScope = this@SharedTransitionLayout,
                     ) { filtersVisible = false }
                 }
             }
@@ -109,20 +106,20 @@ private fun SnackCollectionList(
     onFiltersSelected: () -> Unit,
     onSnackClick: (Long, String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
         item {
             Spacer(
                 Modifier.windowInsetsTopHeight(
-                    WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
-                )
+                    WindowInsets.statusBars.add(WindowInsets(top = 56.dp)),
+                ),
             )
             FilterBar(
                 filters,
                 sharedTransitionScope = sharedTransitionScope,
                 filterScreenVisible = filtersVisible,
-                onShowFilters = onFiltersSelected
+                onShowFilters = onFiltersSelected,
             )
         }
         itemsIndexed(snackCollections) { index, snackCollection ->
@@ -133,7 +130,7 @@ private fun SnackCollectionList(
             SnackCollection(
                 snackCollection = snackCollection,
                 onSnackClick = onSnackClick,
-                index = index
+                index = index,
             )
         }
     }

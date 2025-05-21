@@ -47,7 +47,7 @@ private val LightColorPalette = JetsnackColors(
     gradient2_2 = listOf(Ocean3, Shadow3),
     gradient2_3 = listOf(Lavender3, Rose2),
     tornado1 = listOf(Shadow4, Ocean3),
-    isDark = false
+    isDark = false,
 )
 
 private val DarkColorPalette = JetsnackColors(
@@ -74,14 +74,11 @@ private val DarkColorPalette = JetsnackColors(
     gradient2_2 = listOf(Ocean4, Shadow2),
     gradient2_3 = listOf(Lavender3, Rose3),
     tornado1 = listOf(Shadow4, Ocean3),
-    isDark = true
+    isDark = true,
 )
 
 @Composable
-fun JetsnackTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
+fun JetsnackTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
 
     ProvideJetsnackColors(colors) {
@@ -89,7 +86,7 @@ fun JetsnackTheme(
             colorScheme = debugColors(darkTheme),
             typography = Typography,
             shapes = Shapes,
-            content = content
+            content = content,
         )
     }
 }
@@ -132,14 +129,11 @@ data class JetsnackColors(
     val iconInteractiveInactive: Color,
     val error: Color,
     val notificationBadge: Color = error,
-    val isDark: Boolean
+    val isDark: Boolean,
 )
 
 @Composable
-fun ProvideJetsnackColors(
-    colors: JetsnackColors,
-    content: @Composable () -> Unit
-) {
+fun ProvideJetsnackColors(colors: JetsnackColors, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalJetsnackColors provides colors, content = content)
 }
 
@@ -151,10 +145,7 @@ private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
  * A Material [Colors] implementation which sets all colors to [debugColor] to discourage usage of
  * [MaterialTheme.colorScheme] in preference to [JetsnackTheme.colors].
  */
-fun debugColors(
-    darkTheme: Boolean,
-    debugColor: Color = Color.Magenta
-) = ColorScheme(
+fun debugColors(darkTheme: Boolean, debugColor: Color = Color.Magenta) = ColorScheme(
     primary = debugColor,
     onPrimary = debugColor,
     primaryContainer = debugColor,
