@@ -43,8 +43,6 @@ sealed class Screen(val route: String) {
     }
 
     object PodcastDetails : Screen("podcast/{$ARG_PODCAST_URI}") {
-
-        val PODCAST_URI = "podcastUri"
         fun createRoute(podcastUri: String) = "podcast/$podcastUri"
     }
 
