@@ -16,29 +16,21 @@
 
 package com.example.jetcaster.theme
 
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Typography
-import com.example.jetcaster.designsystem.theme.Montserrat
+import androidx.wear.compose.material3.Typography
+import com.example.jetcaster.designsystem.theme.JetcasterTypography
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    body1 = TextStyle(
-        fontFamily = Montserrat,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-    ),
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
-    ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
-    )
-     */
+    displayLarge = JetcasterTypography.displayLarge,
+    displayMedium = JetcasterTypography.displayMedium,
+    displaySmall = JetcasterTypography.displaySmall,
+    titleLarge = JetcasterTypography.titleLarge,
+    titleMedium = JetcasterTypography.titleMedium,
+    titleSmall = JetcasterTypography.titleSmall,
+    labelLarge = JetcasterTypography.labelLarge,
+    labelMedium = JetcasterTypography.labelMedium,
+    labelSmall = JetcasterTypography.labelSmall,
+    bodyLarge = JetcasterTypography.bodyLarge,
+    bodyMedium = JetcasterTypography.bodyMedium,
+    bodySmall = JetcasterTypography.bodySmall,
 )
