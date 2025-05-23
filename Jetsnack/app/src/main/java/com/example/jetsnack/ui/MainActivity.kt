@@ -16,15 +16,39 @@
 
 package com.example.jetsnack.ui
 
+import android.appwidget.AppWidgetManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.lifecycle.lifecycleScope
+import com.example.jetsnack.widget.RecentOrdersWidgetReceiver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            lifecycleScope.launch(Dispatchers.Default) {
+                setWidgetPreviews()
+            }
+        }
         setContent { JetsnackApp() }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    suspend fun setWidgetPreviews() {
+        val receiver = RecentOrdersWidgetReceiver::class
+        val installedProviders = getSystemService(AppWidgetManager::class.java).installedProviders
+        val providerInfo = installedProviders.firstOrNull { it.provider.className == receiver.qualifiedName }
+        providerInfo?.generatedPreviewCategories.takeIf { it == 0 }?.let {
+            // Set previews if this provider if unset
+            GlanceAppWidgetManager(this).setWidgetPreviews(receiver)
+        }
     }
 }

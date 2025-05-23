@@ -76,6 +76,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -140,7 +141,12 @@ fun NavGraphBuilder.addHomeGraph(onSnackSelected: (Long, String, NavBackStackEnt
             modifier,
         )
     }
-    composable(HomeSections.CART.route) { from ->
+    composable(
+        HomeSections.CART.route,
+        deepLinks = listOf(
+            navDeepLink { uriPattern = "https://jetsnack.example.com/home/cart"}
+        )
+    ) { from ->
         Cart(
             onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
             modifier,
