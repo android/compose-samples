@@ -17,10 +17,8 @@
 package com.example.compose.jetchat
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
@@ -30,22 +28,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.NavHostController
 import com.example.compose.jetchat.components.JetchatDrawer
-import com.example.compose.jetchat.databinding.ContentMainBinding
 import kotlinx.coroutines.launch
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import com.example.compose.jetchat.navigation.DEST_ROUTE_CONVERSATION
+import com.example.compose.jetchat.navigation.DEST_ROUTE_PROFILE
+import com.example.compose.jetchat.navigation.mobileNavigationNavHostCont
 
 /**
  * Main activity for the app.
  */
-class NavActivity : AppCompatActivity() {
+class NavActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
+    private var navHostCont: NavHostController? = null
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,65 +53,49 @@ class NavActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets -> insets }
 
-        setContentView(
-            ComposeView(this).apply {
-                consumeWindowInsets = false
-                setContent {
-                    val drawerState = rememberDrawerState(initialValue = Closed)
-                    val drawerOpen by viewModel.drawerShouldBeOpened
-                        .collectAsStateWithLifecycle()
+        setContent {
 
-                    var selectedMenu by remember { mutableStateOf("composers") }
-                    if (drawerOpen) {
-                        // Open drawer and reset state in VM.
-                        LaunchedEffect(Unit) {
-                            // wrap in try-finally to handle interruption whiles opening drawer
-                            try {
-                                drawerState.open()
-                            } finally {
-                                viewModel.resetOpenDrawerAction()
-                            }
-                        }
-                    }
+            val drawerState = rememberDrawerState(initialValue = Closed)
+            val drawerOpen by viewModel.drawerShouldBeOpened
+                .collectAsStateWithLifecycle()
 
-                    val scope = rememberCoroutineScope()
-
-                    JetchatDrawer(
-                        drawerState = drawerState,
-                        selectedMenu = selectedMenu,
-                        onChatClicked = {
-                            findNavController().popBackStack(R.id.nav_home, false)
-                            scope.launch {
-                                drawerState.close()
-                            }
-                            selectedMenu = it
-                        },
-                        onProfileClicked = {
-                            val bundle = bundleOf("userId" to it)
-                            findNavController().navigate(R.id.nav_profile, bundle)
-                            scope.launch {
-                                drawerState.close()
-                            }
-                            selectedMenu = it
-                        },
-                    ) {
-                        AndroidViewBinding(ContentMainBinding::inflate)
+            var selectedMenu by remember { mutableStateOf("composers") }
+            if (drawerOpen) {
+                // Open drawer and reset state in VM.
+                LaunchedEffect(Unit) {
+                    // wrap in try-finally to handle interruption whiles opening drawer
+                    try {
+                        drawerState.open()
+                    } finally {
+                        viewModel.resetOpenDrawerAction()
                     }
                 }
-            },
-        )
-    }
+            }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return findNavController().navigateUp() || super.onSupportNavigateUp()
-    }
+            val scope = rememberCoroutineScope()
 
-    /**
-     * See https://issuetracker.google.com/142847973
-     */
-    private fun findNavController(): NavController {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        return navHostFragment.navController
+            JetchatDrawer(
+                drawerState = drawerState,
+                selectedMenu = selectedMenu,
+                onChatClicked = {
+                    navHostCont?.popBackStack(DEST_ROUTE_CONVERSATION, false)
+
+                    scope.launch {
+                        drawerState.close()
+                    }
+                    selectedMenu = it
+                },
+                onProfileClicked = { user ->
+                    navHostCont?.navigate("$DEST_ROUTE_PROFILE/$user")
+
+                    scope.launch {
+                        drawerState.close()
+                    }
+                    selectedMenu = user
+                },
+            ) {
+                navHostCont = mobileNavigationNavHostCont(viewModel)
+            }
+        }
     }
 }

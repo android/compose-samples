@@ -20,28 +20,48 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
+import kotlinx.coroutines.launch
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+
+    private var _userData: MutableLiveData<ProfileScreenState> = MutableLiveData<ProfileScreenState>()
+    val userData: LiveData<ProfileScreenState> = _userData
 
     private var userId: String = ""
 
-    fun setUserId(newUserId: String?) {
-        if (newUserId != userId) {
-            userId = newUserId ?: meProfile.userId
-        }
-        // Workaround for simplicity
-        _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
-            meProfile
-        } else {
-            colleagueProfile
+    init {
+        viewModelScope.launch {
+            val newUserId = savedStateHandle.get<String>("userId")
+
+            if (newUserId != userId) {
+                userId = newUserId ?: meProfile.userId
+            }
+
+            // Workaround for simplicity
+            _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
+                meProfile
+            } else {
+                colleagueProfile
+            }
         }
     }
 
-    private val _userData = MutableLiveData<ProfileScreenState>()
-    val userData: LiveData<ProfileScreenState> = _userData
+//    fun setUserId(newUserId: String?) {
+//        if (newUserId != userId) {
+//            userId = newUserId ?: meProfile.userId
+//        }
+//        // Workaround for simplicity
+//        _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
+//            meProfile
+//        } else {
+//            colleagueProfile
+//        }
+//    }
 }
 
 @Immutable

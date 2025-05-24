@@ -20,6 +20,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -76,7 +77,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun ProfileScreen(
     userData: ProfileScreenState,
-    nestedScrollInteropConnection: NestedScrollConnection = rememberNestedScrollInteropConnection(),
+    paddingValues: PaddingValues? = null
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -88,8 +89,7 @@ fun ProfileScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollInteropConnection)
-            .systemBarsPadding(),
+            .padding(paddingValues ?: PaddingValues())
     ) {
         Surface {
             Column(
