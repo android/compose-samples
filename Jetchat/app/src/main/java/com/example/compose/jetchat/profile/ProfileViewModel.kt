@@ -50,18 +50,6 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             }
         }
     }
-
-//    fun setUserId(newUserId: String?) {
-//        if (newUserId != userId) {
-//            userId = newUserId ?: meProfile.userId
-//        }
-//        // Workaround for simplicity
-//        _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
-//            meProfile
-//        } else {
-//            colleagueProfile
-//        }
-//    }
 }
 
 @Immutable
