@@ -38,7 +38,6 @@ import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.TitleStyle
 
-@Preview
 @Composable
 fun HeartRateCard(modifier: Modifier = Modifier, heartRateData: HeartRateOverallData = HeartRateOverallData()) {
     BasicInformationalCard(
@@ -72,5 +71,13 @@ fun HeartRateCard(modifier: Modifier = Modifier, heartRateData: HeartRateOverall
             }
             HeartRateGraph(heartRateData.listData)
         }
+    }
+}
+
+@Preview
+@Composable
+private fun HeartRateCardPreview() {
+    JetLaggedTheme {
+        HeartRateCard()
     }
 }
