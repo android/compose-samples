@@ -20,7 +20,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.compose.material3.DrawerValue.Closed
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,7 +43,9 @@ import com.example.compose.jetchat.navigation.mobileNavigationNavHostCont
  */
 class NavActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
-    private var navHostCont: NavHostController? = null
+
+    private var _navHostCont: NavHostController? = null
+    val navHostCont: NavHostController get() = _navHostCont!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -76,7 +77,7 @@ class NavActivity : ComponentActivity() {
                 drawerState = drawerState,
                 selectedMenu = selectedMenu,
                 onChatClicked = {
-                    navHostCont?.popBackStack(DEST_ROUTE_CONVERSATION, false)
+                    _navHostCont?.popBackStack(DEST_ROUTE_CONVERSATION, false)
 
                     scope.launch {
                         drawerState.close()
@@ -84,7 +85,7 @@ class NavActivity : ComponentActivity() {
                     selectedMenu = it
                 },
                 onProfileClicked = { user ->
-                    navHostCont?.navigate("$DEST_ROUTE_PROFILE/$user")
+                    _navHostCont?.navigate("$DEST_ROUTE_PROFILE/$user")
 
                     scope.launch {
                         drawerState.close()
@@ -92,7 +93,7 @@ class NavActivity : ComponentActivity() {
                     selectedMenu = user
                 },
             ) {
-                navHostCont = mobileNavigationNavHostCont(viewModel)
+                _navHostCont = mobileNavigationNavHostCont(viewModel)
             }
         }
     }

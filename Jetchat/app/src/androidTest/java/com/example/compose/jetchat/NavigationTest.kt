@@ -25,10 +25,12 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.NavHostController
 import androidx.test.espresso.Espresso
+import com.example.compose.jetchat.navigation.DEST_ROUTE_CONVERSATION
+import com.example.compose.jetchat.navigation.DEST_ROUTE_PROFILE
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -40,19 +42,39 @@ class NavigationTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<NavActivity>()
 
+    lateinit var navHostController: NavHostController
+
+    @Before
+    fun setUpNavHost() {
+        // wait for the NavHostController to be initialized in activity
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            navHostController = composeTestRule.activity.navHostCont
+            true
+        }
+    }
+
     @Test
     fun app_launches() {
-        // Check app launches at the correct destination
-        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
+        // Assert conversation screen is visible
+        assertEquals(
+            composeTestRule.activity.navHostCont.currentBackStackEntry?.destination?.route,
+            DEST_ROUTE_CONVERSATION
+        )
     }
 
     @Test
     fun profileScreen_back_conversationScreen() {
-        val navController = getNavController()
-        // Navigate to profile        \
-        navigateToProfile("Taylor Brooks")
+        // Navigate to profile
+        navigateToProfile("Ali Conors (you)")
         // Check profile is displayed
-        assertEquals(navController.currentDestination?.id, R.id.nav_profile)
+        assertEquals(
+            navHostController.currentBackStackEntry?.destination?.route,
+            "$DEST_ROUTE_PROFILE/{userId}"
+        )
+        assertEquals(
+            navHostController.currentBackStackEntry?.arguments?.getString("userId"),
+            "me"
+        )
         // Extra UI check
         composeTestRule
             .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
@@ -62,7 +84,10 @@ class NavigationTest {
         Espresso.pressBack()
 
         // Check that we're home
-        assertEquals(navController.currentDestination?.id, R.id.nav_home)
+        assertEquals(
+            navHostController.currentBackStackEntry?.destination?.route,
+            DEST_ROUTE_CONVERSATION
+        )
     }
 
     /**
@@ -76,7 +101,10 @@ class NavigationTest {
         navigateToHome()
 
         // Chewie, we're home
-        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
+        assertEquals(
+            navHostController.currentBackStackEntry?.destination?.route,
+            DEST_ROUTE_CONVERSATION
+        )
     }
 
     private fun navigateToProfile(name: String) {
@@ -100,9 +128,5 @@ class NavigationTest {
         ).performClick()
 
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
-    }
-
-    private fun getNavController(): NavController {
-        return composeTestRule.activity.findNavController(R.id.nav_host_fragment)
     }
 }
