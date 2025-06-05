@@ -92,28 +92,28 @@ fun NavGraphBuilder.composableWithCompositionLocal(
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
     enterTransition: (
-        @JvmSuppressWildcards
-        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
+        -> EnterTransition?
     )? = {
         fadeIn(nonSpatialExpressiveSpring())
     },
     exitTransition: (
-        @JvmSuppressWildcards
-        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
+        -> ExitTransition?
     )? = {
         fadeOut(nonSpatialExpressiveSpring())
     },
     popEnterTransition: (
-        @JvmSuppressWildcards
-        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
+        -> EnterTransition?
     )? =
         enterTransition,
     popExitTransition: (
-        @JvmSuppressWildcards
-        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
+        -> ExitTransition?
     )? =
         exitTransition,
-    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) {
     composable(
         route,
@@ -134,7 +134,7 @@ fun NavGraphBuilder.composableWithCompositionLocal(
 
 fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, String, NavBackStackEntry) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     composable(HomeSections.FEED.route) { from ->
         Feed(
@@ -151,7 +151,7 @@ fun NavGraphBuilder.addHomeGraph(
     composable(
         HomeSections.CART.route,
         deepLinks = listOf(
-            navDeepLink { uriPattern = "https://jetsnack.example.com/home/cart"}
+            navDeepLink { uriPattern = "https://jetsnack.example.com/home/cart" }
         )
     ) { from ->
         Cart(
@@ -164,15 +164,11 @@ fun NavGraphBuilder.addHomeGraph(
     }
 }
 
-enum class HomeSections(
-    @StringRes val title: Int,
-    val icon: ImageVector,
-    val route: String
-) {
+enum class HomeSections(@StringRes val title: Int, val icon: ImageVector, val route: String) {
     FEED(R.string.home_feed, Icons.Outlined.Home, "home/feed"),
     SEARCH(R.string.home_search, Icons.Outlined.Search, "home/search"),
     CART(R.string.home_cart, Icons.Outlined.ShoppingCart, "home/cart"),
-    PROFILE(R.string.home_profile, Icons.Outlined.AccountCircle, "home/profile")
+    PROFILE(R.string.home_profile, Icons.Outlined.AccountCircle, "home/profile"),
 }
 
 @Composable
@@ -182,7 +178,7 @@ fun JetsnackBottomBar(
     navigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
     color: Color = JetsnackTheme.colors.iconPrimary,
-    contentColor: Color = JetsnackTheme.colors.iconInteractive
+    contentColor: Color = JetsnackTheme.colors.iconInteractive,
 ) {
     val routes = remember { tabs.map { it.route } }
     val currentSection = tabs.first { it.route == currentRoute }
@@ -251,7 +247,7 @@ private fun JetsnackBottomNavLayout(
     animSpec: AnimationSpec<Float>,
     indicator: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     // Track how "selected" each item is [0, 1]
     val selectionFractions = remember(itemCount) {
@@ -328,11 +324,12 @@ fun JetsnackBottomNavigationItem(
     selected: Boolean,
     onSelected: () -> Unit,
     animSpec: AnimationSpec<Float>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // Animate the icon/text positions within the item based on selection
     val animationProgress by animateFloatAsState(
-        if (selected) 1f else 0f, animSpec,
+        if (selected) 1f else 0f,
+        animSpec,
         label = "animation progress"
     )
     JetsnackBottomNavItemLayout(
@@ -350,7 +347,7 @@ private fun JetsnackBottomNavItemLayout(
     icon: @Composable BoxScope.() -> Unit,
     text: @Composable BoxScope.() -> Unit,
     @FloatRange(from = 0.0, to = 1.0) animationProgress: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Layout(
         modifier = modifier,
@@ -394,7 +391,7 @@ private fun MeasureScope.placeTextAndIcon(
     iconPlaceable: Placeable,
     width: Int,
     height: Int,
-    @FloatRange(from = 0.0, to = 1.0) animationProgress: Float
+    @FloatRange(from = 0.0, to = 1.0) animationProgress: Float,
 ): MeasureResult {
     val iconY = (height - iconPlaceable.height) / 2
     val textY = (height - textPlaceable.height) / 2
@@ -415,7 +412,7 @@ private fun MeasureScope.placeTextAndIcon(
 private fun JetsnackBottomNavIndicator(
     strokeWidth: Dp = 2.dp,
     color: Color = JetsnackTheme.colors.iconInteractive,
-    shape: Shape = BottomNavIndicatorShape
+    shape: Shape = BottomNavIndicatorShape,
 ) {
     Spacer(
         modifier = Modifier
