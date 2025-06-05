@@ -16,47 +16,48 @@
 
 package com.example.jetcaster.ui.queue
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.items
-import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.Text
+import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.material3.AlertDialog
+import androidx.wear.compose.material3.ButtonGroup
+import androidx.wear.compose.material3.FilledIconButton
+import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.IconButtonShapes
+import androidx.wear.compose.material3.ListHeader
+import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.PlaceholderState
+import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material3.placeholder
+import androidx.wear.compose.material3.placeholderShimmer
+import androidx.wear.compose.material3.rememberPlaceholderState
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.ui.components.MediaContent
 import com.example.jetcaster.ui.preview.WearPreviewEpisodes
-import com.google.android.horologist.annotations.ExperimentalHorologistApi
-import com.google.android.horologist.composables.PlaceholderChip
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
-import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
-import com.google.android.horologist.compose.material.AlertDialog
-import com.google.android.horologist.compose.material.Button
-import com.google.android.horologist.compose.material.ListHeaderDefaults
-import com.google.android.horologist.compose.material.ResponsiveListHeader
-import com.google.android.horologist.images.base.util.rememberVectorPainter
-import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
-import com.google.android.horologist.media.ui.screens.entity.EntityScreen
+import com.google.android.horologist.compose.layout.ColumnItemType
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
 
 @Composable fun QueueScreen(
     onPlayButtonClick: () -> Unit,
@@ -66,10 +67,12 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     queueViewModel: QueueViewModel = hiltViewModel(),
 ) {
     val uiState by queueViewModel.uiState.collectAsStateWithLifecycle()
+    val placeholderState = rememberPlaceholderState(isVisible = uiState is QueueScreenState.Loading)
 
     QueueScreen(
         uiState = uiState,
         onPlayButtonClick = onPlayButtonClick,
+        placeholderState = placeholderState,
         onPlayEpisodes = queueViewModel::onPlayEpisodes,
         modifier = modifier,
         onEpisodeItemClick = onEpisodeItemClick,
@@ -81,23 +84,25 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 @Composable
 fun QueueScreen(
     uiState: QueueScreenState,
+    placeholderState: PlaceholderState,
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
-    modifier: Modifier = Modifier,
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
+    val contentPadding = rememberResponsiveColumnPadding(
+        first = ColumnItemType.ListHeader,
+        last = ColumnItemType.Button,
     )
+
+    val columnState = rememberTransformingLazyColumnState()
     ScreenScaffold(
         scrollState = columnState,
-        modifier = modifier,
-    ) {
+        contentPadding = contentPadding,
+        modifier = modifier.placeholderShimmer(placeholderState),
+    ) { contentPadding ->
         when (uiState) {
             is QueueScreenState.Loaded -> QueueScreenLoaded(
                 episodeList = uiState.episodeList,
@@ -105,8 +110,20 @@ fun QueueScreen(
                 onPlayEpisodes = onPlayEpisodes,
                 onDeleteQueueEpisodes = onDeleteQueueEpisodes,
                 onEpisodeItemClick = onEpisodeItemClick,
+                columnState = columnState,
+                contentPadding = contentPadding,
+                placeholderState = placeholderState,
             )
-            QueueScreenState.Loading -> QueueScreenLoading()
+            QueueScreenState.Loading -> QueueScreenLoaded(
+                episodeList = emptyList(),
+                onPlayButtonClick = { },
+                onPlayEpisodes = { },
+                onDeleteQueueEpisodes = { },
+                onEpisodeItemClick = { },
+                columnState = columnState,
+                contentPadding = contentPadding,
+                placeholderState = placeholderState,
+            )
             QueueScreenState.Empty -> QueueScreenEmpty(onDismiss)
         }
     }
@@ -119,116 +136,108 @@ fun QueueScreenLoaded(
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
+    columnState: TransformingLazyColumnState,
+    contentPadding: PaddingValues,
+    placeholderState: PlaceholderState,
     modifier: Modifier = Modifier,
 ) {
-    EntityScreen(
+    TransformingLazyColumn(
         modifier = modifier,
-        headerContent = {
-            ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding(),
-            ) {
-                Text(text = stringResource(R.string.queue))
+        state = columnState,
+        contentPadding = contentPadding,
+    ) {
+        item {
+            ListHeader {
+                Text(
+                    text = stringResource(R.string.queue),
+                    modifier = Modifier.placeholder(placeholderState),
+                )
             }
-        },
-        buttonsContent = {
+        }
+        item {
             ButtonsContent(
                 episodes = episodeList,
                 onPlayButtonClick = onPlayButtonClick,
                 onPlayEpisodes = onPlayEpisodes,
                 onDeleteQueueEpisodes = onDeleteQueueEpisodes,
+                placeholderState = placeholderState,
             )
-        },
-        content = {
-            items(episodeList) { episode ->
-                MediaContent(
-                    episode = episode,
-                    episodeArtworkPlaceholder = rememberVectorPainter(
-                        image = Icons.Default.MusicNote,
-                        tintColor = Color.Blue,
-                    ),
-                    onItemClick = onEpisodeItemClick,
-                )
-            }
-        },
-    )
-}
-
-@OptIn(ExperimentalWearMaterialApi::class)
-@Composable
-fun QueueScreenLoading(modifier: Modifier = Modifier) {
-    EntityScreen(
-        modifier = modifier,
-        headerContent = {
-            DefaultEntityScreenHeader(
-                title = stringResource(R.string.queue),
+        }
+        items(episodeList) { episode ->
+            MediaContent(
+                episode = episode,
+                episodeArtworkPlaceholder = painterResource(id = R.drawable.music),
+                onItemClick = onEpisodeItemClick,
             )
-        },
-        buttonsContent = {
-            ButtonsContent(
-                episodes = emptyList(),
-                onPlayButtonClick = {},
-                onPlayEpisodes = {},
-                onDeleteQueueEpisodes = { },
-                enabled = false,
-            )
-        },
-        content = {
-            items(count = 2) {
-                PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
-            }
-        },
-    )
+        }
+    }
 }
 
 @Composable
 fun QueueScreenEmpty(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
     AlertDialog(
-        showDialog = true,
-        onDismiss = onDismiss,
-        title = stringResource(R.string.display_nothing_in_queue),
-        message = stringResource(R.string.no_episodes_from_queue),
+        visible = true,
+        onDismissRequest = { onDismiss() },
+        title = { Text(stringResource(R.string.display_nothing_in_queue)) },
+        text = { Text(stringResource(R.string.no_episodes_from_queue)) },
         modifier = modifier,
     )
 }
 
-@OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
     episodes: List<PlayerEpisode>,
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
-    enabled: Boolean = true,
+    placeholderState: PlaceholderState,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
+    val interactionSource1 = remember { MutableInteractionSource() }
+    val interactionSource2 = remember { MutableInteractionSource() }
 
-    Row(
+    Box(
         modifier = modifier
             .padding(bottom = 16.dp)
             .height(52.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+        contentAlignment = Alignment.Center,
     ) {
-        Button(
-            imageVector = Icons.Outlined.PlayArrow,
-            contentDescription = stringResource(id = R.string.button_play_content_description),
-            onClick = {
-                onPlayButtonClick()
-                onPlayEpisodes(episodes)
-            },
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-            enabled = enabled,
-        )
-        Button(
-            imageVector = Icons.Outlined.Delete,
-            contentDescription =
-            stringResource(id = R.string.button_delete_queue_content_description),
-            onClick = onDeleteQueueEpisodes,
-            modifier = Modifier
-                .weight(weight = 0.3F, fill = false),
-            enabled = enabled,
-        )
+        ButtonGroup(Modifier.fillMaxWidth()) {
+            FilledIconButton(
+                onClick = {
+                    onPlayButtonClick()
+                    onPlayEpisodes(episodes)
+                },
+                modifier = Modifier
+                    .weight(weight = 0.7F)
+                    .animateWidth(interactionSource1)
+                    .placeholder(placeholderState = placeholderState),
+                enabled = enabled,
+                interactionSource = interactionSource1,
+                shapes = IconButtonShapes(MaterialTheme.shapes.medium),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.play),
+                    contentDescription = stringResource(id = R.string.button_play_content_description),
+                )
+            }
+            FilledIconButton(
+                onClick = onDeleteQueueEpisodes,
+                modifier = Modifier
+                    .weight(weight = 0.3F)
+                    .animateWidth(interactionSource2)
+                    .placeholder(placeholderState = placeholderState),
+                interactionSource = interactionSource2,
+                enabled = enabled,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.delete),
+                    contentDescription =
+                    stringResource(id = R.string.button_delete_queue_content_description),
+                )
+            }
+        }
     }
 }
 
@@ -239,11 +248,10 @@ fun QueueScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
     episode: PlayerEpisode,
 ) {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
+    val columnState = rememberTransformingLazyColumnState()
+    val contentPadding = rememberResponsiveColumnPadding(
+        first = ColumnItemType.ListHeader,
+        last = ColumnItemType.Button,
     )
     QueueScreenLoaded(
         episodeList = listOf(episode),
@@ -251,20 +259,10 @@ fun QueueScreenLoadedPreview(
         onPlayEpisodes = { },
         onDeleteQueueEpisodes = { },
         onEpisodeItemClick = { },
+        columnState = columnState,
+        contentPadding = contentPadding,
+        placeholderState = rememberPlaceholderState(isVisible = false),
     )
-}
-
-@WearPreviewDevices
-@WearPreviewFontScales
-@Composable
-fun QueueScreenLoadingPreview() {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
-    )
-    QueueScreenLoading()
 }
 
 @WearPreviewDevices

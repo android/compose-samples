@@ -16,41 +16,39 @@
 
 package com.example.jetcaster.ui.latest_episodes
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.Text
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
+import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
+import androidx.wear.compose.material3.AlertDialog
+import androidx.wear.compose.material3.Button
+import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.ListHeader
+import androidx.wear.compose.material3.PlaceholderState
+import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material3.placeholder
+import androidx.wear.compose.material3.placeholderShimmer
+import androidx.wear.compose.material3.rememberPlaceholderState
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.example.jetcaster.R
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.ui.components.MediaContent
 import com.example.jetcaster.ui.preview.WearPreviewEpisodes
-import com.google.android.horologist.annotations.ExperimentalHorologistApi
-import com.google.android.horologist.composables.PlaceholderChip
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
-import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
-import com.google.android.horologist.compose.material.AlertDialog
-import com.google.android.horologist.compose.material.Chip
-import com.google.android.horologist.compose.material.ListHeaderDefaults
-import com.google.android.horologist.compose.material.ResponsiveListHeader
-import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
-import com.google.android.horologist.images.base.util.rememberVectorPainter
-import com.google.android.horologist.media.ui.screens.entity.EntityScreen
+import com.google.android.horologist.compose.layout.ColumnItemType
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
 
 @Composable fun LatestEpisodesScreen(
     onPlayButtonClick: () -> Unit,
@@ -59,11 +57,14 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     latestEpisodeViewModel: LatestEpisodeViewModel = hiltViewModel(),
 ) {
     val uiState by latestEpisodeViewModel.uiState.collectAsStateWithLifecycle()
+    val placeholderState = rememberPlaceholderState(isVisible = uiState is LatestEpisodeScreenState.Loading)
+
     LatestEpisodeScreen(
         modifier = modifier,
         uiState = uiState,
         onPlayButtonClick = onPlayButtonClick,
         onDismiss = onDismiss,
+        placeholderState = placeholderState,
         onPlayEpisodes = latestEpisodeViewModel::onPlayEpisodes,
         onPlayEpisode = latestEpisodeViewModel::onPlayEpisode,
     )
@@ -72,22 +73,24 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 @Composable
 fun LatestEpisodeScreen(
     uiState: LatestEpisodeScreenState,
+    placeholderState: PlaceholderState,
     onPlayButtonClick: () -> Unit,
     onDismiss: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onPlayEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
+    val contentPadding = rememberResponsiveColumnPadding(
+        first = ColumnItemType.ListHeader,
+        last = ColumnItemType.Button,
     )
+
+    val columnState = rememberTransformingLazyColumnState()
     ScreenScaffold(
         scrollState = columnState,
-        modifier = modifier,
-    ) {
+        contentPadding = contentPadding,
+        modifier = modifier.placeholderShimmer(placeholderState),
+    ) { contentPadding ->
         when (uiState) {
             is LatestEpisodeScreenState.Loaded -> {
                 LatestEpisodesScreen(
@@ -95,44 +98,60 @@ fun LatestEpisodeScreen(
                     onPlayButtonClick = onPlayButtonClick,
                     onPlayEpisode = onPlayEpisode,
                     onPlayEpisodes = onPlayEpisodes,
-                    modifier = modifier,
+                    contentPadding = contentPadding,
+                    scrollState = columnState,
+                    placeholderState = placeholderState,
                 )
             }
 
             is LatestEpisodeScreenState.Empty -> {
                 AlertDialog(
-                    showDialog = true,
-                    onDismiss = onDismiss,
-                    message = stringResource(R.string.podcasts_no_episode_podcasts),
+                    visible = true,
+                    onDismissRequest = onDismiss,
+                    title = { stringResource(R.string.podcasts_no_episode_podcasts) },
                 )
             }
 
             is LatestEpisodeScreenState.Loading -> {
-                LatestEpisodesScreenLoading(
-                    modifier = modifier,
+                LatestEpisodesScreen(
+                    episodeList = emptyList(),
+                    onPlayButtonClick = { },
+                    onPlayEpisode = { },
+                    onPlayEpisodes = {},
+                    contentPadding = contentPadding,
+                    scrollState = columnState,
+                    placeholderState = placeholderState,
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
     episodes: List<PlayerEpisode>,
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
+    placeholderState: PlaceholderState,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
-    Chip(
-        label = stringResource(id = R.string.button_play_content_description),
+    Button(
         onClick = {
             onPlayButtonClick()
             onPlayEpisodes(episodes)
         },
-        modifier = modifier.padding(bottom = 16.dp),
-        icon = Icons.Outlined.PlayArrow.asPaintable(),
-    )
+        enabled = enabled,
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.play),
+                contentDescription = stringResource(id = R.string.button_play_content_description),
+            )
+        },
+        modifier = modifier.fillMaxWidth().placeholder(placeholderState = placeholderState),
+    ) {
+        Text(stringResource(id = R.string.button_play_content_description))
+    }
 }
 
 @Composable
@@ -141,67 +160,49 @@ fun LatestEpisodesScreen(
     onPlayButtonClick: () -> Unit,
     onPlayEpisode: (PlayerEpisode) -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
+    contentPadding: PaddingValues,
+    scrollState: TransformingLazyColumnState,
+    placeholderState: PlaceholderState,
     modifier: Modifier = Modifier,
 ) {
-    EntityScreen(
+    TransformingLazyColumn(
         modifier = modifier,
-        headerContent = {
-            ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding(),
-            ) {
-                Text(text = stringResource(id = R.string.latest_episodes))
-            }
-        },
-        content = {
-            items(count = episodeList.size) { index ->
-                MediaContent(
-                    episode = episodeList[index],
-                    episodeArtworkPlaceholder = rememberVectorPainter(
-                        image = Icons.Default.MusicNote,
-                        tintColor = Color.Blue,
-                    ),
-                    onItemClick = {
-                        onPlayButtonClick()
-                        onPlayEpisode(episodeList[index])
-                    },
-                )
-            }
-        },
-        buttonsContent = {
+        state = scrollState,
+        contentPadding = contentPadding,
+    ) {
+        item {
+            LatestEpisodesListHeader(placeholderState)
+        }
+        item {
             ButtonsContent(
                 episodes = episodeList,
                 onPlayButtonClick = onPlayButtonClick,
                 onPlayEpisodes = onPlayEpisodes,
+                placeholderState = placeholderState,
             )
-        },
-    )
+        }
+        items(episodeList) { episode ->
+            MediaContent(
+                episode = episode,
+                episodeArtworkPlaceholder = painterResource(id = R.drawable.music),
+                onItemClick = {
+                    onPlayButtonClick()
+                    onPlayEpisode(episode)
+                },
+            )
+        }
+    }
 }
 
-@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
-fun LatestEpisodesScreenLoading(modifier: Modifier = Modifier) {
-    EntityScreen(
-        modifier = modifier,
-        headerContent = {
-            ResponsiveListHeader(
-                contentPadding = ListHeaderDefaults.firstItemPadding(),
-            ) {
-                Text(text = stringResource(id = R.string.latest_episodes))
-            }
-        },
-        content = {
-            items(count = 2) {
-                PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
-            }
-        },
-        buttonsContent = {
-            ButtonsContent(
-                episodes = emptyList(),
-                onPlayButtonClick = { },
-                onPlayEpisodes = { },
-            )
-        },
-    )
+fun LatestEpisodesListHeader(placeholderState: PlaceholderState, modifier: Modifier = Modifier) {
+    ListHeader(modifier = modifier.placeholder(placeholderState)) {
+        Text(
+            text = stringResource(id = R.string.latest_episodes),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
 }
 
 @WearPreviewDevices
@@ -211,29 +212,19 @@ fun LatestEpisodeScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
     episode: PlayerEpisode,
 ) {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
+    val contentPadding = rememberResponsiveColumnPadding(
+        first = ColumnItemType.ListHeader,
+        last = ColumnItemType.Button,
     )
+
+    val columnState = rememberTransformingLazyColumnState()
     LatestEpisodesScreen(
         episodeList = listOf(episode),
         onPlayButtonClick = { },
         onPlayEpisode = { },
         onPlayEpisodes = { },
+        contentPadding = contentPadding,
+        scrollState = columnState,
+        placeholderState = rememberPlaceholderState(isVisible = false),
     )
-}
-
-@WearPreviewDevices
-@WearPreviewFontScales
-@Composable
-fun LatestEpisodeScreenLoadingPreview() {
-    val columnState = rememberResponsiveColumnState(
-        contentPadding = padding(
-            first = ScalingLazyColumnDefaults.ItemType.Text,
-            last = ScalingLazyColumnDefaults.ItemType.Chip,
-        ),
-    )
-    LatestEpisodesScreenLoading()
 }

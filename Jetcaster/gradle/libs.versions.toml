@@ -24,7 +24,8 @@ androidx-test-ext-junit = "1.2.1"
 androidx-test-ext-truth = "1.6.0"
 androidx-tv-foundation = "1.0.0-alpha12"
 androidx-tv-material = "1.0.0"
-androidx-wear-compose = "1.4.1"
+androidx-wear-compose-material3 = "1.5.0-beta01"
+androidx-wear-compose = "1.5.0-beta01"
 androidx-window = "1.3.0"
 androidxHiltNavigationCompose = "1.2.0"
 androix-test-uiautomator = "2.3.0"
@@ -36,7 +37,7 @@ google-maps = "19.2.0"
 gradle-versions = "0.52.0"
 hilt = "2.56.2"
 hiltExt = "1.2.0"
-horologist = "0.6.23"
+horologist = "0.7.14-beta"
 jdkDesugar = "2.1.5"
 junit = "4.13.2"
 kotlin = "2.1.20"
@@ -122,7 +123,7 @@ androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", 
 androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv-foundation" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv-material" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-wear-compose" }
-androidx-wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidx-wear-compose" }
+androidx-wear-compose-material = { module = "androidx.wear.compose:compose-material3", version.ref = "androidx-wear-compose-material3" }
 androidx-wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "androidx-wear-compose" }
 androidx-wear-compose-ui-tooling = { module = "androidx.wear.compose:compose-ui-tooling", version.ref = "androidx-wear-compose" }
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
@@ -137,6 +138,8 @@ hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", vers
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltExt" }
 horologist-audio-ui = { module = "com.google.android.horologist:horologist-audio-ui", version.ref = "horologist" }
+horologist-audio-uimaterial3 = { module = "com.google.android.horologist:horologist-audio-ui-material3", version.ref = "horologist" }
+horologist-audio-ui-model = { module = "com.google.android.horologist:horologist-audio-ui-model", version.ref = "horologist" }
 horologist-composables = { module = "com.google.android.horologist:horologist-composables", version.ref = "horologist" }
 horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologist" }
 horologist-compose-material = { module = "com.google.android.horologist:horologist-compose-material", version.ref = "horologist" }
@@ -144,6 +147,8 @@ horologist-compose-tools = { module = "com.google.android.horologist:horologist-
 horologist-images-coil = { module = "com.google.android.horologist:horologist-images-coil", version.ref = "horologist" }
 horologist-media-data = { module = "com.google.android.horologist:horologist-media-data", version.ref = "horologist" }
 horologist-media-ui = { module = "com.google.android.horologist:horologist-media-ui", version.ref = "horologist" }
+horologist-media-uimaterial3 = { module = "com.google.android.horologist:horologist-media-ui-material3", version.ref = "horologist" }
+horologist-media-ui-model = { module = "com.google.android.horologist:horologist-media-ui-model", version.ref = "horologist" }
 horologist-roboscreenshots = { module = "com.google.android.horologist:horologist-roboscreenshots", version.ref = "horologist" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
@@ -162,6 +167,7 @@ rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 androidx-media3-session = {module = "androidx.media3:media3-session",version.ref = "media3"}
 androidx-media3-exoplayer = {module = "androidx.media3:media3-exoplayer", version.ref = "media3"}
+androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

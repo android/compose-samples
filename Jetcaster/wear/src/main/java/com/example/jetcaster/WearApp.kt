@@ -18,7 +18,6 @@ package com.example.jetcaster
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,6 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.wear.compose.foundation.pager.rememberPagerState
+import androidx.wear.compose.material3.AppScaffold
+import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavHostState
@@ -47,14 +49,12 @@ import com.example.jetcaster.ui.player.PlayerScreen
 import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
 import com.example.jetcaster.ui.podcasts.PodcastsScreen
 import com.example.jetcaster.ui.queue.QueueScreen
-import com.google.android.horologist.audio.ui.VolumeScreen
 import com.google.android.horologist.audio.ui.VolumeViewModel
-import com.google.android.horologist.compose.layout.AppScaffold
-import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToPlayer
-import com.google.android.horologist.media.ui.navigation.MediaNavController.navigateToVolume
-import com.google.android.horologist.media.ui.navigation.NavigationScreens
-import com.google.android.horologist.media.ui.screens.playerlibrarypager.PlayerLibraryPagerScreen
+import com.google.android.horologist.audio.ui.material3.VolumeScreen
+import com.google.android.horologist.media.ui.material3.navigation.MediaNavController.navigateToPlayer
+import com.google.android.horologist.media.ui.material3.navigation.MediaNavController.navigateToVolume
+import com.google.android.horologist.media.ui.material3.navigation.NavigationScreens
+import com.google.android.horologist.media.ui.material3.screens.playerlibrarypager.PlayerLibraryPagerScreen
 
 @Composable
 fun WearApp(navController: NavHostController) {
@@ -64,7 +64,7 @@ fun WearApp(navController: NavHostController) {
     WearAppTheme {
         AppScaffold {
             SwipeDismissableNavHost(
-                startDestination = NavigationScreens.Player.playerDestination(),
+                startDestination = NavigationScreens.Player.navRoute,
                 navController = navController,
                 modifier = Modifier.background(Color.Transparent),
                 state = navHostState,
