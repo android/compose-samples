@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2020-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,10 @@ class MainActivity : ComponentActivity() {
     suspend fun setWidgetPreviews() {
         val receiver = RecentOrdersWidgetReceiver::class
         val installedProviders = getSystemService(AppWidgetManager::class.java).installedProviders
-        val providerInfo = installedProviders.firstOrNull { it.provider.className == receiver.qualifiedName }
+        val providerInfo = installedProviders.firstOrNull {
+            it.provider.className ==
+                receiver.qualifiedName
+        }
         providerInfo?.generatedPreviewCategories.takeIf { it == 0 }?.let {
             // Set previews if this provider if unset
             GlanceAppWidgetManager(this).setWidgetPreviews(receiver)

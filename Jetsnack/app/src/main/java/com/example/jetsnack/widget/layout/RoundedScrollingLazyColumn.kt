@@ -45,20 +45,20 @@ import androidx.glance.layout.height
  */
 @Composable
 fun RoundedScrollingLazyColumn(
-  modifier: GlanceModifier = GlanceModifier,
-  horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-  content: LazyListScope.() -> Unit,
+    modifier: GlanceModifier = GlanceModifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    content: LazyListScope.() -> Unit,
 ) {
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .cornerRadius(16.dp) // to present a rounded scrolling experience
-  ) {
-    LazyColumn(
-      horizontalAlignment = horizontalAlignment,
-      content = content
-    )
-  }
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .cornerRadius(16.dp) // to present a rounded scrolling experience
+    ) {
+        LazyColumn(
+            horizontalAlignment = horizontalAlignment,
+            content = content
+        )
+    }
 }
 
 /**
@@ -74,22 +74,22 @@ fun RoundedScrollingLazyColumn(
  */
 @Composable
 fun <T> RoundedScrollingLazyColumn(
-  items: List<T>,
-  itemContentProvider: @Composable (item: T) -> Unit,
-  modifier: GlanceModifier = GlanceModifier,
-  horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-  verticalItemsSpacing: Dp = 4.dp
+    items: List<T>,
+    itemContentProvider: @Composable (item: T) -> Unit,
+    modifier: GlanceModifier = GlanceModifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    verticalItemsSpacing: Dp = 4.dp,
 ) {
-  val lastIndex = items.size - 1
+    val lastIndex = items.size - 1
 
-  RoundedScrollingLazyColumn(modifier, horizontalAlignment) {
-    itemsIndexed(items) { index, item ->
-      Column(modifier = GlanceModifier.fillMaxWidth()) {
-        itemContentProvider(item)
-        if (index != lastIndex) {
-          Spacer(modifier = GlanceModifier.height(verticalItemsSpacing))
+    RoundedScrollingLazyColumn(modifier, horizontalAlignment) {
+        itemsIndexed(items) { index, item ->
+            Column(modifier = GlanceModifier.fillMaxWidth()) {
+                itemContentProvider(item)
+                if (index != lastIndex) {
+                    Spacer(modifier = GlanceModifier.height(verticalItemsSpacing))
+                }
+            }
         }
-      }
     }
-  }
 }

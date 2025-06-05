@@ -27,13 +27,13 @@ import com.example.jetsnack.widget.utils.ActionUtils
  */
 @Composable
 internal fun EmptyListContent() {
-  val context = LocalContext.current
+    val context = LocalContext.current
 
-  NoDataContent(
-    noDataText = context.getString(R.string.sample_no_data_text),
-    noDataIconRes = R.drawable.cupcake,
-    actionButtonText = context.getString(R.string.sample_add_button_text),
-    actionButtonIcon = R.drawable.cupcake,
-    actionButtonOnClick = ActionUtils.actionStartDemoActivity("on-click of add item button")
-  )
+    NoDataContent(
+        noDataText = context.getString(R.string.sample_no_data_text),
+        noDataIconRes = R.drawable.cupcake,
+        actionButtonText = context.getString(R.string.sample_add_button_text),
+        actionButtonIcon = R.drawable.cupcake,
+        actionButtonOnClick = ActionUtils.actionStartDemoActivity("on-click of add item button")
+    )
 }

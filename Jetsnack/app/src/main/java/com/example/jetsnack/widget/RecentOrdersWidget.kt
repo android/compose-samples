@@ -53,7 +53,7 @@ class RecentOrdersWidget : GlanceAppWidget() {
     override val previewSizeMode = SizeMode.Responsive(
         setOf(
             DpSize(256.dp, 115.dp), // 4x2 cell min size
-            DpSize(260.dp, 180.dp), // Medium width layout, height with header
+            DpSize(260.dp, 180.dp) // Medium width layout, height with header
         )
     )
 
@@ -71,9 +71,14 @@ class RecentOrdersWidget : GlanceAppWidget() {
                 key(LocalSize.current) {
                     WidgetContent(
                         items = items,
-                        shoppingCartActionIntent = Intent(context.applicationContext, MainActivity::class.java)
+                        shoppingCartActionIntent = Intent(
+                            context.applicationContext,
+                            MainActivity::class.java
+                        )
                             .setAction(Intent.ACTION_VIEW)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .setFlags(
+                                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                            )
                             .setData("https://jetsnack.example.com/home/cart".toUri())
                     )
                 }
@@ -82,10 +87,7 @@ class RecentOrdersWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun WidgetContent(
-        items: List<ImageTextListItemData>,
-        shoppingCartActionIntent: Intent
-    ) {
+    fun WidgetContent(items: List<ImageTextListItemData>, shoppingCartActionIntent: Intent) {
         val context = LocalContext.current
 
         ImageTextListLayout(
@@ -114,7 +116,6 @@ class RecentOrdersWidget : GlanceAppWidget() {
             }
         }
     }
-
 }
 
 class RecentOrdersWidgetReceiver : GlanceAppWidgetReceiver() {

@@ -52,50 +52,48 @@ import androidx.glance.semantics.semantics
  */
 @Composable
 fun ListItem(
-  headlineContent: @Composable (() -> Unit),
-  modifier: GlanceModifier = GlanceModifier,
-  contentSpacing: Dp = 16.dp,
-  supportingContent: @Composable (() -> Unit)? = null,
-  leadingContent: @Composable (() -> Unit)? = null,
-  trailingContent: @Composable (() -> Unit)? = null,
-  onClick: Action? = null,
-  itemContentDescription: String? = null,
+    headlineContent: @Composable (() -> Unit),
+    modifier: GlanceModifier = GlanceModifier,
+    contentSpacing: Dp = 16.dp,
+    supportingContent: @Composable (() -> Unit)? = null,
+    leadingContent: @Composable (() -> Unit)? = null,
+    trailingContent: @Composable (() -> Unit)? = null,
+    onClick: Action? = null,
+    itemContentDescription: String? = null,
 ) {
-  val listItemModifier = if (itemContentDescription != null) {
-    modifier.semantics { contentDescription = itemContentDescription }
-  } else {
-    modifier
-  }
+    val listItemModifier = if (itemContentDescription != null) {
+        modifier.semantics { contentDescription = itemContentDescription }
+    } else {
+        modifier
+    }
 
-  Row(
-    modifier = listItemModifier.maybeClickable(onClick),
-    verticalAlignment = Alignment.CenterVertically,
-  ) {
-    // Leading
-    leadingContent?.let {
-      it()
-      Spacer(modifier = GlanceModifier.width(contentSpacing))
-    }
-    // Center
-    Column(
-      modifier = GlanceModifier.defaultWeight(),
-      verticalAlignment = Alignment.CenterVertically
+    Row(
+        modifier = listItemModifier.maybeClickable(onClick),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-      headlineContent()
-      supportingContent?.let { it() }
+        // Leading
+        leadingContent?.let {
+            it()
+            Spacer(modifier = GlanceModifier.width(contentSpacing))
+        }
+        // Center
+        Column(
+            modifier = GlanceModifier.defaultWeight(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            headlineContent()
+            supportingContent?.let { it() }
+        }
+        // Trailing
+        trailingContent?.let {
+            Spacer(modifier = GlanceModifier.width(contentSpacing))
+            it()
+        }
     }
-    // Trailing
-    trailingContent?.let {
-      Spacer(modifier = GlanceModifier.width(contentSpacing))
-      it()
-    }
-  }
 }
 
-private fun GlanceModifier.maybeClickable(action: Action?): GlanceModifier {
-  return if (action != null) {
+private fun GlanceModifier.maybeClickable(action: Action?): GlanceModifier = if (action != null) {
     this.clickable(action)
-  } else {
+} else {
     this
-  }
 }

@@ -53,41 +53,41 @@ import androidx.glance.text.TextStyle
  */
 @Composable
 fun NoDataContent(
-  noDataIconRes: Int,
-  noDataText: String,
-  actionButtonText: String,
-  actionButtonIcon: Int,
-  actionButtonOnClick: Action,
+    noDataIconRes: Int,
+    noDataText: String,
+    actionButtonText: String,
+    actionButtonIcon: Int,
+    actionButtonOnClick: Action,
 ) {
-  @Composable
-  fun showIcon() = LocalSize.current.height >= 180.dp
+    @Composable
+    fun showIcon() = LocalSize.current.height >= 180.dp
 
-  Column(
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = GlanceModifier.fillMaxSize()
-  ) {
-    if (showIcon()) {
-      Image(
-        provider = ImageProvider(noDataIconRes),
-        colorFilter = ColorFilter.tint(GlanceTheme.colors.secondary),
-        contentDescription = null, // only decorative
-      )
-      Spacer(modifier = GlanceModifier.height(8.dp))
+    Column(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = GlanceModifier.fillMaxSize()
+    ) {
+        if (showIcon()) {
+            Image(
+                provider = ImageProvider(noDataIconRes),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.secondary),
+                contentDescription = null // only decorative
+            )
+            Spacer(modifier = GlanceModifier.height(8.dp))
+        }
+        Text(
+            text = noDataText,
+            style = TextStyle(
+                fontWeight = FontWeight.Medium,
+                color = GlanceTheme.colors.onSurface,
+                fontSize = 16.sp // M3 - title/medium
+            )
+        )
+        Spacer(modifier = GlanceModifier.height(8.dp))
+        FilledButton(
+            text = actionButtonText,
+            icon = ImageProvider(actionButtonIcon),
+            onClick = actionButtonOnClick
+        )
     }
-    Text(
-      text = noDataText,
-      style = TextStyle(
-        fontWeight = FontWeight.Medium,
-        color = GlanceTheme.colors.onSurface,
-        fontSize = 16.sp // M3 - title/medium
-      )
-    )
-    Spacer(modifier = GlanceModifier.height(8.dp))
-    FilledButton(
-      text = actionButtonText,
-      icon = ImageProvider(actionButtonIcon),
-      onClick = actionButtonOnClick
-    )
-  }
 }
