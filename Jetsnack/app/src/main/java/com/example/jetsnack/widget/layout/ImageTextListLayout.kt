@@ -121,9 +121,9 @@ fun ImageTextListLayout(
                     contentDescription = titleBarActionIconContentDescription,
                     contentColor = GlanceTheme.colors.secondary,
                     backgroundColor = null, // transparent
-                    onClick = titleBarAction
+                    onClick = titleBarAction,
                 )
-            }
+            },
         )
     }
 
@@ -137,13 +137,13 @@ fun ImageTextListLayout(
         backgroundColor = GlanceTheme.colors.widgetBackground,
         modifier = GlanceModifier.padding(
             top = scaffoldTopPadding,
-            bottom = widgetPadding
+            bottom = widgetPadding,
         ),
         titleBar = if (showTitleBar()) {
             titleBar()
         } else {
             null
-        }
+        },
     ) {
         Content(items, shoppingCartActionIntent)
     }
@@ -162,7 +162,7 @@ private fun Content(items: List<ImageTextListItemData>, shoppingCartActionIntent
                     items = items,
                     displayImage = false,
                     displayTrailingIconIfPresent = displayTrailingIconIfPresent,
-                    shoppingCartActionIntent = shoppingCartActionIntent
+                    shoppingCartActionIntent = shoppingCartActionIntent,
                 )
             }
 
@@ -171,7 +171,7 @@ private fun Content(items: List<ImageTextListItemData>, shoppingCartActionIntent
                     items = items,
                     displayImage = true,
                     displayTrailingIconIfPresent = displayTrailingIconIfPresent,
-                    shoppingCartActionIntent = shoppingCartActionIntent
+                    shoppingCartActionIntent = shoppingCartActionIntent,
                 )
             }
 
@@ -180,7 +180,7 @@ private fun Content(items: List<ImageTextListItemData>, shoppingCartActionIntent
                     items = items,
                     displayImage = true,
                     displayTrailingIconIfPresent = displayTrailingIconIfPresent,
-                    shoppingCartActionIntent = shoppingCartActionIntent
+                    shoppingCartActionIntent = shoppingCartActionIntent,
                 )
             }
         }
@@ -208,9 +208,9 @@ private fun ListView(
                 displayImage = displayImage,
                 displayTrailingIcon = displayTrailingIconIfPresent,
                 modifier = GlanceModifier.fillMaxSize(),
-                shoppingCartActionIntent = shoppingCartActionIntent
+                shoppingCartActionIntent = shoppingCartActionIntent,
             )
-        }
+        },
     )
 }
 
@@ -236,10 +236,10 @@ private fun GridView(
                 displayImage = displayImage,
                 displayTrailingIcon = displayTrailingIconIfPresent,
                 modifier = GlanceModifier.fillMaxSize(),
-                shoppingCartActionIntent = shoppingCartActionIntent
+                shoppingCartActionIntent = shoppingCartActionIntent,
             )
         },
-        modifier = GlanceModifier.fillMaxSize()
+        modifier = GlanceModifier.fillMaxSize(),
     )
 }
 
@@ -260,7 +260,7 @@ private fun FilledHorizontalListItem(
         Text(
             text = item.title,
             maxLines = 2,
-            style = TextStyles.titleText
+            style = TextStyles.titleText,
         )
     }
 
@@ -269,7 +269,7 @@ private fun FilledHorizontalListItem(
         Text(
             text = item.supportingText,
             maxLines = 2,
-            style = TextStyles.supportingText
+            style = TextStyles.supportingText,
         )
     }
 
@@ -284,7 +284,7 @@ private fun FilledHorizontalListItem(
                 // Depending on your image content, you may want to select an appropriate ContentScale.
                 contentScale = ContentScale.Crop,
                 // Fixed size per UX spec
-                modifier = modifier.cornerRadius(imageCornerRadius).size(Dimensions.imageSize)
+                modifier = modifier.cornerRadius(imageCornerRadius).size(Dimensions.imageSize),
             )
         }
     }
@@ -300,9 +300,9 @@ private fun FilledHorizontalListItem(
                 onClick = actionStartActivity(
                     intent,
                     actionParametersOf(
-                        CART_ITEMS_KEY to item.snackKeys.joinToString(separator = " ")
-                    )
-                )
+                        CART_ITEMS_KEY to item.snackKeys.joinToString(separator = " "),
+                    ),
+                ),
             )
         }
     }
@@ -323,7 +323,7 @@ private fun FilledHorizontalListItem(
             { IconButton() }
         } else {
             null
-        }
+        },
     )
 }
 
@@ -414,7 +414,7 @@ private object TextStyles {
             } else {
                 16.sp // M3 Title Medium
             },
-            color = GlanceTheme.colors.onSurface
+            color = GlanceTheme.colors.onSurface,
         )
 
     /**
@@ -425,7 +425,7 @@ private object TextStyles {
             TextStyle(
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp, // M3 Label Medium
-                color = GlanceTheme.colors.secondary
+                color = GlanceTheme.colors.secondary,
             )
 }
 
@@ -484,7 +484,7 @@ private fun ImageTextListLayoutPreview() {
         titleIconRes = R.drawable.widget_logo,
         titleBarActionIconRes = R.drawable.add_shopping_cart,
         titleBarActionIconContentDescription = context.getString(
-            R.string.shopping_cart_button_label
+            R.string.shopping_cart_button_label,
         ),
         titleBarAction = actionStartDemoActivity("Title bar action click"),
         items = listOf(
@@ -492,33 +492,33 @@ private fun ImageTextListLayoutPreview() {
                 key = "1",
                 snackKeys = listOf(0, 20),
                 supportingText = "Some text",
-                title = "Some title"
+                title = "Some title",
             ),
             ImageTextListItemData(
                 key = "1",
                 snackKeys = listOf(1, 21),
                 supportingText = "Some text",
-                title = "Some title"
+                title = "Some title",
             ),
             ImageTextListItemData(
                 key = "1",
                 snackKeys = listOf(2, 22),
                 supportingText = "Some text",
-                title = "Some title"
+                title = "Some title",
             ),
             ImageTextListItemData(
                 key = "1",
                 snackKeys = listOf(3, 23),
                 supportingText = "Some text",
-                title = "Some title"
+                title = "Some title",
             ),
             ImageTextListItemData(
                 key = "1",
                 snackKeys = listOf(4, 24),
                 supportingText = "Some text",
-                title = "Some title"
-            )
+                title = "Some title",
+            ),
         ),
-        shoppingCartActionIntent = Intent()
+        shoppingCartActionIntent = Intent(),
     )
 }

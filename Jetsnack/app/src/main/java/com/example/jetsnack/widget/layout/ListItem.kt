@@ -69,7 +69,7 @@ fun ListItem(
 
     Row(
         modifier = listItemModifier.maybeClickable(onClick),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         // Leading
         leadingContent?.let {
@@ -79,7 +79,7 @@ fun ListItem(
         // Center
         Column(
             modifier = GlanceModifier.defaultWeight(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             headlineContent()
             supportingContent?.let { it() }

@@ -34,6 +34,6 @@ internal fun EmptyListContent() {
         noDataIconRes = R.drawable.cupcake,
         actionButtonText = context.getString(R.string.sample_add_button_text),
         actionButtonIcon = R.drawable.cupcake,
-        actionButtonOnClick = ActionUtils.actionStartDemoActivity("on-click of add item button")
+        actionButtonOnClick = ActionUtils.actionStartDemoActivity("on-click of add item button"),
     )
 }

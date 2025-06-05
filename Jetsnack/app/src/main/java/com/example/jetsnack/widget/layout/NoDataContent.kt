@@ -52,26 +52,20 @@ import androidx.glance.text.TextStyle
  * @param actionButtonOnClick action to be performed on click of the action button.
  */
 @Composable
-fun NoDataContent(
-    noDataIconRes: Int,
-    noDataText: String,
-    actionButtonText: String,
-    actionButtonIcon: Int,
-    actionButtonOnClick: Action,
-) {
+fun NoDataContent(noDataIconRes: Int, noDataText: String, actionButtonText: String, actionButtonIcon: Int, actionButtonOnClick: Action) {
     @Composable
     fun showIcon() = LocalSize.current.height >= 180.dp
 
     Column(
         verticalAlignment = Alignment.CenterVertically,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = GlanceModifier.fillMaxSize()
+        modifier = GlanceModifier.fillMaxSize(),
     ) {
         if (showIcon()) {
             Image(
                 provider = ImageProvider(noDataIconRes),
                 colorFilter = ColorFilter.tint(GlanceTheme.colors.secondary),
-                contentDescription = null // only decorative
+                contentDescription = null, // only decorative
             )
             Spacer(modifier = GlanceModifier.height(8.dp))
         }
@@ -80,14 +74,14 @@ fun NoDataContent(
             style = TextStyle(
                 fontWeight = FontWeight.Medium,
                 color = GlanceTheme.colors.onSurface,
-                fontSize = 16.sp // M3 - title/medium
-            )
+                fontSize = 16.sp, // M3 - title/medium
+            ),
         )
         Spacer(modifier = GlanceModifier.height(8.dp))
         FilledButton(
             text = actionButtonText,
             icon = ImageProvider(actionButtonIcon),
-            onClick = actionButtonOnClick
+            onClick = actionButtonOnClick,
         )
     }
 }

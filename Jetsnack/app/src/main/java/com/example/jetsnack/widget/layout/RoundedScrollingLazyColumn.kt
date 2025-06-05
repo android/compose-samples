@@ -52,11 +52,11 @@ fun RoundedScrollingLazyColumn(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .cornerRadius(16.dp) // to present a rounded scrolling experience
+            .cornerRadius(16.dp), // to present a rounded scrolling experience
     ) {
         LazyColumn(
             horizontalAlignment = horizontalAlignment,
-            content = content
+            content = content,
         )
     }
 }

@@ -38,7 +38,7 @@ class ActionDemonstrationActivity : ComponentActivity() {
         setContent {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 val source = intent.getStringExtra(ActionSourceMessageKey.name) ?: "Unknown"
                 Text("Launched from $source")

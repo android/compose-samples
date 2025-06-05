@@ -33,7 +33,7 @@ object ActionUtils {
     @Composable
     fun actionStartDemoActivity(message: String) = actionStartActivity<ActionDemonstrationActivity>(
         actionParametersOf(
-            ActionSourceMessageKey to message
-        )
+            ActionSourceMessageKey to message,
+        ),
     )
 }

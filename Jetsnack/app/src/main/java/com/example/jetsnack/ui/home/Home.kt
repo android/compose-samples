@@ -128,7 +128,6 @@ fun NavGraphBuilder.composableWithCompositionLocal(
     }
 }
 
-
 fun NavGraphBuilder.addHomeGraph(onSnackSelected: (Long, String, NavBackStackEntry) -> Unit, modifier: Modifier = Modifier) {
     composable(HomeSections.FEED.route) { from ->
         Feed(
@@ -145,8 +144,8 @@ fun NavGraphBuilder.addHomeGraph(onSnackSelected: (Long, String, NavBackStackEnt
     composable(
         HomeSections.CART.route,
         deepLinks = listOf(
-            navDeepLink { uriPattern = "https://jetsnack.example.com/home/cart" }
-        )
+            navDeepLink { uriPattern = "https://jetsnack.example.com/home/cart" },
+        ),
     ) { from ->
         Cart(
             onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },

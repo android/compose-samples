@@ -52,10 +52,7 @@ class RecentOrdersDataRepository {
         return data.value
     }
 
-    private fun processImagesAndBuildData(
-        items: List<DemoDataItem>,
-        context: Context,
-    ): List<ImageTextListItemData> {
+    private fun processImagesAndBuildData(items: List<DemoDataItem>, context: Context): List<ImageTextListItemData> {
         val mappedItems =
             items.map { item ->
                 return@map ImageTextListItemData(
@@ -66,7 +63,7 @@ class RecentOrdersDataRepository {
                     trailingIconButton = R.drawable.add_shopping_cart,
                     trailingIconButtonContentDescription =
                     getString(context, R.string.add_to_cart_content_description),
-                    snackKeys = item.snackKeys
+                    snackKeys = item.snackKeys,
                 )
             }
 
@@ -93,24 +90,24 @@ class RecentOrdersDataRepository {
         private val demoItems = listOf(
             DemoDataItem(
                 key = "1",
-                snackKeys = listOf(0, 20)
+                snackKeys = listOf(0, 20),
             ),
             DemoDataItem(
                 key = "2",
-                snackKeys = listOf(1, 21)
+                snackKeys = listOf(1, 21),
             ),
             DemoDataItem(
                 key = "3",
-                snackKeys = listOf(2, 22)
+                snackKeys = listOf(2, 22),
             ),
             DemoDataItem(
                 key = "4",
-                snackKeys = listOf(3, 23)
+                snackKeys = listOf(3, 23),
             ),
             DemoDataItem(
                 key = "5",
-                snackKeys = listOf(4, 24)
-            )
+                snackKeys = listOf(4, 24),
+            ),
         )
 
         private val repositories = mutableMapOf<GlanceId, RecentOrdersDataRepository>()
@@ -118,10 +115,9 @@ class RecentOrdersDataRepository {
         /**
          * Returns the repository instance for the given widget represented by [glanceId].
          */
-        fun getImageTextListDataRepo(glanceId: GlanceId): RecentOrdersDataRepository =
-            synchronized(repositories) {
-                repositories.getOrPut(glanceId) { RecentOrdersDataRepository() }
-            }
+        fun getImageTextListDataRepo(glanceId: GlanceId): RecentOrdersDataRepository = synchronized(repositories) {
+            repositories.getOrPut(glanceId) { RecentOrdersDataRepository() }
+        }
 
         /**
          * Cleans up local data associated with the provided [glanceId].

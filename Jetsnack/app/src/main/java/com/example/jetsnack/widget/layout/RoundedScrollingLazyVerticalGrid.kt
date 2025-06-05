@@ -54,12 +54,12 @@ fun RoundedScrollingLazyVerticalGrid(
     Box(
         modifier = GlanceModifier
             .cornerRadius(16.dp) // to present a rounded scrolling experience
-            .then(modifier)
+            .then(modifier),
     ) {
         LazyVerticalGrid(
             gridCells = gridCells,
             horizontalAlignment = horizontalAlignment,
-            content = content
+            content = content,
         )
     }
 }
@@ -95,7 +95,7 @@ fun <T> RoundedScrollingLazyVerticalGrid(
     RoundedScrollingLazyVerticalGrid(
         gridCells = GridCells.Fixed(gridCells),
         horizontalAlignment = horizontalAlignment,
-        modifier = modifier
+        modifier = modifier,
     ) {
         itemsIndexed(items) { index, item ->
             val row = index / gridCells
@@ -132,8 +132,8 @@ fun <T> RoundedScrollingLazyVerticalGrid(
                         start = cellStartPadding,
                         end = cellEndPadding,
                         top = cellTopPadding,
-                        bottom = cellBottomPadding
-                    )
+                        bottom = cellBottomPadding,
+                    ),
             ) {
                 itemContentProvider(item)
             }
