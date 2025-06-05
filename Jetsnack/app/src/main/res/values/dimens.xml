@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+    <dimen name="widget_margin">0dp</dimen>
+    <dimen name="widget_element_min_length">48dp</dimen>
+    <!-- Common dimens -->
+
+    <!-- Following are sizes for handheld devices such as phones and foldables.
+     See the dimens override for large screen devices -->
+
+    <!-- Reference:
+    https://developer.android.com/design/ui/mobile/guides/widgets/sizing#handheld
+    -->
+
+    <!-- list of image & texts (sizes to have approximately 4x2 default drop size,
+    2x2 as minimum resize size and 4x4 as maximum resize size). For image heavy
+    widgets like this, a 4x2 drop size allows the default view that user will see
+    to include the images. And if user wishes to use it as a utility compact
+    widget, a 2x2 resize would be possible where only list text is displayed.
+    -->
+    <integer name="sample_text_with_image_list_target_cell_width">4</integer>
+    <integer name="sample_text_with_image_list_target_cell_height">2</integer>
+    <dimen name="sample_text_with_image_list_widget_min_width">256dp</dimen>
+    <dimen name="sample_text_with_image_list_widget_min_height">115dp</dimen>
+    <dimen name="sample_text_with_image_widget_list_min_resize_width">120dp</dimen>
+    <dimen name="sample_text_with_image_list_widget_min_resize_height">115dp</dimen>
+    <dimen name="sample_text_with_image_list_widget_max_resize_width">624dp</dimen>
+    <dimen name="sample_text_with_image_list_widget_max_resize_height">422dp</dimen>
+</resources>
