@@ -72,7 +72,7 @@ class EpisodeViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        null
+        null,
     )
 
     val uiState: StateFlow<EpisodeScreenState> =
@@ -102,9 +102,7 @@ sealed interface EpisodeScreenState {
 
     data object Loading : EpisodeScreenState
 
-    data class Loaded(
-        val episode: EpisodeToPodcast
-    ) : EpisodeScreenState
+    data class Loaded(val episode: EpisodeToPodcast) : EpisodeScreenState
 
     data object Empty : EpisodeScreenState
 }

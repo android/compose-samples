@@ -32,35 +32,24 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-fun Modifier.diagonalGradientTint(
-    colors: List<Color>,
-    blendMode: BlendMode
-) = drawWithContent {
+fun Modifier.diagonalGradientTint(colors: List<Color>, blendMode: BlendMode) = drawWithContent {
     drawContent()
     drawRect(
         brush = Brush.linearGradient(colors),
-        blendMode = blendMode
+        blendMode = blendMode,
     )
 }
 
-fun Modifier.offsetGradientBackground(
-    colors: List<Color>,
-    width: Float,
-    offset: Float = 0f
-) = background(
+fun Modifier.offsetGradientBackground(colors: List<Color>, width: Float, offset: Float = 0f) = background(
     Brush.horizontalGradient(
         colors = colors,
         startX = -offset,
         endX = width - offset,
-        tileMode = TileMode.Mirror
-    )
+        tileMode = TileMode.Mirror,
+    ),
 )
 
-fun Modifier.offsetGradientBackground(
-    colors: List<Color>,
-    width: Density.() -> Float,
-    offset: Density.() -> Float = { 0f }
-) = drawBehind {
+fun Modifier.offsetGradientBackground(colors: List<Color>, width: Density.() -> Float, offset: Density.() -> Float = { 0f }) = drawBehind {
     val actualOffset = offset()
 
     drawRect(
@@ -68,36 +57,27 @@ fun Modifier.offsetGradientBackground(
             colors = colors,
             startX = -actualOffset,
             endX = width() - actualOffset,
-            tileMode = TileMode.Mirror
-        )
+            tileMode = TileMode.Mirror,
+        ),
     )
 }
 
-fun Modifier.diagonalGradientBorder(
-    colors: List<Color>,
-    borderSize: Dp = 2.dp,
-    shape: Shape
-) = border(
+fun Modifier.diagonalGradientBorder(colors: List<Color>, borderSize: Dp = 2.dp, shape: Shape) = border(
     width = borderSize,
     brush = Brush.linearGradient(colors),
-    shape = shape
+    shape = shape,
 )
 
-fun Modifier.fadeInDiagonalGradientBorder(
-    showBorder: Boolean,
-    colors: List<Color>,
-    borderSize: Dp = 2.dp,
-    shape: Shape
-) = composed {
+fun Modifier.fadeInDiagonalGradientBorder(showBorder: Boolean, colors: List<Color>, borderSize: Dp = 2.dp, shape: Shape) = composed {
     val animatedColors = List(colors.size) { i ->
         animateColorAsState(
             if (showBorder) colors[i] else colors[i].copy(alpha = 0f),
-            label = "animated color"
+            label = "animated color",
         ).value
     }
     diagonalGradientBorder(
         colors = animatedColors,
         borderSize = borderSize,
-        shape = shape
+        shape = shape,
     )
 }

@@ -26,10 +26,12 @@ import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.example.jetcaster.core.domain.FilterableCategoriesUseCase
 import com.example.jetcaster.core.domain.PodcastCategoryFilterUseCase
 import com.example.jetcaster.core.model.CategoryInfo
+import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.asDaoModel
 import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
 import com.example.jetcaster.core.player.EpisodePlayer
@@ -100,16 +102,18 @@ class HomeViewModel @Inject constructor(
                 subscribedPodcasts.flatMapLatest { podcasts ->
                     episodeStore.episodesInPodcasts(
                         podcastUris = podcasts.map { it.podcast.uri },
-                        limit = 20
+                        limit = 20,
                     )
-                }
-            ) { homeCategories,
-                homeCategory,
-                podcasts,
-                refreshing,
-                filterableCategories,
-                podcastCategoryFilterResult,
-                libraryEpisodes ->
+                },
+            ) {
+                    homeCategories,
+                    homeCategory,
+                    podcasts,
+                    refreshing,
+                    filterableCategories,
+                    podcastCategoryFilterResult,
+                    libraryEpisodes,
+                ->
 
                 _selectedCategory.value = filterableCategories.selectedCategory
 
@@ -125,14 +129,14 @@ class HomeViewModel @Inject constructor(
                     featuredPodcasts = podcasts.map { it.asExternalModel() }.toPersistentList(),
                     filterableCategoriesModel = filterableCategories,
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
-                    library = libraryEpisodes.asLibrary()
+                    library = libraryEpisodes.asLibrary(),
                 )
             }.catch { throwable ->
                 emit(
                     HomeScreenUiState(
                         isLoading = false,
-                        errorMessage = throwable.message
-                    )
+                        errorMessage = throwable.message,
+                    ),
                 )
             }.collect {
                 _state.value = it
@@ -161,6 +165,7 @@ class HomeViewModel @Inject constructor(
             is HomeAction.LibraryPodcastSelected -> onLibraryPodcastSelected(action.podcast)
             is HomeAction.PodcastUnfollowed -> onPodcastUnfollowed(action.podcast)
             is HomeAction.QueueEpisode -> onQueueEpisode(action.episode)
+            is HomeAction.RemoveEpisode -> deleteEpisode(action.episodeInfo)
             is HomeAction.TogglePodcastFollowed -> onTogglePodcastFollowed(action.podcast)
         }
     }
@@ -192,15 +197,21 @@ class HomeViewModel @Inject constructor(
     private fun onQueueEpisode(episode: PlayerEpisode) {
         episodePlayer.addToQueue(episode)
     }
+
+    fun deleteEpisode(episode: EpisodeInfo) {
+        viewModelScope.launch {
+            episodeStore.deleteEpisode(episode.asDaoModel())
+        }
+    }
 }
 
-private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo =
-    LibraryInfo(
-        episodes = this.map { it.asPodcastToEpisodeInfo() }
-    )
+private fun List<EpisodeToPodcast>.asLibrary(): LibraryInfo = LibraryInfo(
+    episodes = this.map { it.asPodcastToEpisodeInfo() },
+)
 
 enum class HomeCategory {
-    Library, Discover
+    Library,
+    Discover,
 }
 
 @Immutable
@@ -211,6 +222,7 @@ sealed interface HomeAction {
     data class TogglePodcastFollowed(val podcast: PodcastInfo) : HomeAction
     data class LibraryPodcastSelected(val podcast: PodcastInfo?) : HomeAction
     data class QueueEpisode(val episode: PlayerEpisode) : HomeAction
+    data class RemoveEpisode(val episodeInfo: EpisodeInfo) : HomeAction
 }
 
 @Immutable

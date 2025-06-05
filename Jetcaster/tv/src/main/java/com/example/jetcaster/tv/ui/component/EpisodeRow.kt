@@ -45,7 +45,7 @@ internal fun EpisodeRow(
         Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
     contentPadding: PaddingValues = JetcasterAppDefaults.padding.episodeRowContentPadding,
     focusRequester: FocusRequester = remember { FocusRequester() },
-    lazyListState: LazyListState = remember(playerEpisodeList) { LazyListState() }
+    lazyListState: LazyListState = remember(playerEpisodeList) { LazyListState() },
 ) {
     val firstItem = remember { FocusRequester() }
     var previousEpisodeListHash by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
@@ -82,7 +82,7 @@ internal fun EpisodeRow(
             EpisodeCard(
                 playerEpisode = item,
                 onClick = { onSelected(item) },
-                modifier = cardModifier
+                modifier = cardModifier,
             )
         }
     }

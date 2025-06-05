@@ -52,7 +52,7 @@ fun HeartRateGraph(listData: List<HeartRateData>) {
     Box(Modifier.size(width = 400.dp, height = 100.dp)) {
         Graph(
             listData = listData,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 }
@@ -77,26 +77,22 @@ private fun Graph(
                     drawPath(
                         paths.second,
                         pathBackground,
-                        style = Fill
+                        style = Fill,
                     )
                     drawPath(
                         paths.first,
                         lineBrush,
-                        style = Stroke(2.dp.toPx())
+                        style = Stroke(2.dp.toPx()),
                     )
                 }
-            }
+            },
     )
 }
 
 sealed class DataPoint {
     object NoMeasurement : DataPoint()
-    data class Measurement(
-        val averageMeasurementTime: Int,
-        val minHeartRate: Int,
-        val maxHeartRate: Int,
-        val averageHeartRate: Int,
-    ) : DataPoint()
+    data class Measurement(val averageMeasurementTime: Int, val minHeartRate: Int, val maxHeartRate: Int, val averageHeartRate: Int) :
+        DataPoint()
 }
 
 fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> {
@@ -128,7 +124,7 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
                     .roundToInt(),
                 minHeartRate = heartRates.minBy { it.amount }.amount,
                 maxHeartRate = heartRates.maxBy { it.amount }.amount,
-                averageHeartRate = heartRates.map { it.amount }.average().roundToInt()
+                averageHeartRate = heartRates.map { it.amount }.average().roundToInt(),
             )
     }
     groupedMeasurements.forEachIndexed { i, dataPoint ->
@@ -136,12 +132,12 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
             path.moveTo(
                 0f,
                 size.height - (dataPoint.averageHeartRate - graphBottom).toFloat() *
-                    heightPxPerAmount
+                    heightPxPerAmount,
             )
             variancePath.moveTo(
                 0f,
                 size.height - (dataPoint.maxHeartRate - graphBottom).toFloat() *
-                    heightPxPerAmount
+                    heightPxPerAmount,
             )
         }
 
@@ -155,7 +151,7 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
             val controlPoint2 = PointF((x + previousX) / 2f, y)
             path.cubicTo(
                 controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y,
-                x, y
+                x, y,
             )
             previousX = x
             previousY = y
@@ -167,7 +163,7 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
             val maxControlPoint2 = PointF((maxX + previousMaxX) / 2f, maxY)
             variancePath.cubicTo(
                 maxControlPoint1.x, maxControlPoint1.y, maxControlPoint2.x, maxControlPoint2.y,
-                maxX, maxY
+                maxX, maxY,
             )
 
             previousMaxX = maxX
@@ -183,7 +179,7 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
             variancePath.moveTo(
                 size.width,
                 size.height - (dataPoint.minHeartRate - graphBottom).toFloat() *
-                    heightPxPerAmount
+                    heightPxPerAmount,
             )
         }
 
@@ -195,7 +191,7 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
             val minControlPoint2 = PointF((minX + previousMinX) / 2f, minY)
             variancePath.cubicTo(
                 minControlPoint1.x, minControlPoint1.y, minControlPoint2.x, minControlPoint2.y,
-                minX, minY
+                minX, minY,
             )
 
             previousMinX = minX
@@ -205,12 +201,7 @@ fun generateSmoothPath(data: List<HeartRateData>, size: Size): Pair<Path, Path> 
     return path to variancePath
 }
 
-fun DrawScope.drawHighlight(
-    highlightedWeek: Int,
-    graphData: List<HeartRateData>,
-    textMeasurer: TextMeasurer,
-    labelTextStyle: TextStyle
-) {
+fun DrawScope.drawHighlight(highlightedWeek: Int, graphData: List<HeartRateData>, textMeasurer: TextMeasurer, labelTextStyle: TextStyle) {
     val amount = graphData[highlightedWeek].amount
     val minAmount = graphData.minBy { it.amount }.amount
     val range = graphData.maxBy { it.amount }.amount - minAmount
@@ -223,14 +214,14 @@ fun DrawScope.drawHighlight(
         start = Offset(x, 0f),
         end = Offset(x, size.height),
         strokeWidth = 2.dp.toPx(),
-        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f)),
     )
 
     // draw hit circle on graph
     drawCircle(
         Color.Green,
         radius = 4.dp.toPx(),
-        center = Offset(x, pointY)
+        center = Offset(x, pointY),
     )
 
     // draw info box
@@ -242,12 +233,12 @@ fun DrawScope.drawHighlight(
         Color.White,
         topLeft = Offset(boxTopLeft, 0f),
         size = highlightContainerSize.toSize(),
-        cornerRadius = CornerRadius(8.dp.toPx())
+        cornerRadius = CornerRadius(8.dp.toPx()),
     )
     drawText(
         textLayoutResult,
         color = Color.Black,
-        topLeft = Offset(boxTopLeft + 4.dp.toPx(), 4.dp.toPx())
+        topLeft = Offset(boxTopLeft + 4.dp.toPx(), 4.dp.toPx()),
     )
 }
 

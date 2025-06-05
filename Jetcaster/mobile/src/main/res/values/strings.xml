@@ -27,6 +27,11 @@
     <string name="home_library">Your library</string>
     <string name="home_discover">Discover</string>
 
+    <string name="discover_toolbar">Discover</string>
+    <string name="library_toolbar">Library</string>
+    <string name="discover_toolbar_content_description">Discover Tab Icon</string>
+    <string name="library_toolbar_content_description">Library Tab Icon</string>
+
     <string name="updated_longer">Updated a while ago</string>
     <plurals name="updated_weeks_ago">
         <item quantity="one">Updated %d week ago</item>

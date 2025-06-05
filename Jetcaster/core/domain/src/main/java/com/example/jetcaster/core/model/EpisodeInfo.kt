@@ -25,21 +25,36 @@ import java.time.OffsetDateTime
  */
 data class EpisodeInfo(
     val uri: String = "",
+    val podcastUri: String = "",
     val title: String = "",
     val subTitle: String = "",
     val summary: String = "",
     val author: String = "",
     val published: OffsetDateTime = OffsetDateTime.MIN,
     val duration: Duration? = null,
+    val mediaUrls: List<String> = emptyList(),
 )
 
-fun Episode.asExternalModel(): EpisodeInfo =
-    EpisodeInfo(
-        uri = uri,
-        title = title,
-        subTitle = subtitle ?: "",
-        summary = summary ?: "",
-        author = author ?: "",
-        published = published,
-        duration = duration,
-    )
+fun Episode.asExternalModel(): EpisodeInfo = EpisodeInfo(
+    uri = uri,
+    podcastUri = podcastUri,
+    title = title,
+    subTitle = subtitle ?: "",
+    summary = summary ?: "",
+    author = author ?: "",
+    published = published,
+    duration = duration,
+    mediaUrls = mediaUrls,
+)
+
+fun EpisodeInfo.asDaoModel(): Episode = Episode(
+    uri = uri,
+    title = title,
+    subtitle = subTitle,
+    summary = summary,
+    author = author,
+    published = published,
+    duration = duration,
+    podcastUri = podcastUri,
+    mediaUrls = mediaUrls,
+)

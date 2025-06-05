@@ -32,10 +32,7 @@ import kotlinx.coroutines.flow.stateIn
  * ViewModel that handles the business logic and screen state of the Queue screen.
  */
 @HiltViewModel
-class QueueViewModel @Inject constructor(
-    private val episodePlayer: EpisodePlayer,
-
-) : ViewModel() {
+class QueueViewModel @Inject constructor(private val episodePlayer: EpisodePlayer) : ViewModel() {
 
     val uiState: StateFlow<QueueScreenState> = episodePlayer.playerState.map {
         if (it.queue.isNotEmpty()) {
@@ -69,9 +66,7 @@ sealed interface QueueScreenState {
 
     data object Loading : QueueScreenState
 
-    data class Loaded(
-        val episodeList: List<PlayerEpisode>
-    ) : QueueScreenState
+    data class Loaded(val episodeList: List<PlayerEpisode>) : QueueScreenState
 
     data object Empty : QueueScreenState
 }

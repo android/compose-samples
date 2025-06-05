@@ -92,25 +92,21 @@ fun NavGraphBuilder.composableWithCompositionLocal(
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
     enterTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
-        -> EnterTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
     )? = {
         fadeIn(nonSpatialExpressiveSpring())
     },
     exitTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
-        -> ExitTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
     )? = {
         fadeOut(nonSpatialExpressiveSpring())
     },
     popEnterTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
-        -> EnterTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
     )? =
         enterTransition,
     popExitTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.()
-        -> ExitTransition?
+        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
     )? =
         exitTransition,
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
@@ -122,30 +118,28 @@ fun NavGraphBuilder.composableWithCompositionLocal(
         enterTransition,
         exitTransition,
         popEnterTransition,
-        popExitTransition
+        popExitTransition,
     ) {
         CompositionLocalProvider(
-            LocalNavAnimatedVisibilityScope provides this@composable
+            LocalNavAnimatedVisibilityScope provides this@composable,
         ) {
             content(it)
         }
     }
 }
 
-fun NavGraphBuilder.addHomeGraph(
-    onSnackSelected: (Long, String, NavBackStackEntry) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+
+fun NavGraphBuilder.addHomeGraph(onSnackSelected: (Long, String, NavBackStackEntry) -> Unit, modifier: Modifier = Modifier) {
     composable(HomeSections.FEED.route) { from ->
         Feed(
             onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
-            modifier
+            modifier,
         )
     }
     composable(HomeSections.SEARCH.route) { from ->
         Search(
             onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
-            modifier
+            modifier,
         )
     }
     composable(
@@ -156,7 +150,7 @@ fun NavGraphBuilder.addHomeGraph(
     ) { from ->
         Cart(
             onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
-            modifier
+            modifier,
         )
     }
     composable(HomeSections.PROFILE.route) {
@@ -186,7 +180,7 @@ fun JetsnackBottomBar(
     JetsnackSurface(
         modifier = modifier,
         color = color,
-        contentColor = contentColor
+        contentColor = contentColor,
     ) {
         val springSpec = spatialExpressiveSpring<Float>()
         JetsnackBottomNavLayout(
@@ -194,7 +188,7 @@ fun JetsnackBottomBar(
             itemCount = routes.size,
             indicator = { JetsnackBottomNavIndicator() },
             animSpec = springSpec,
-            modifier = Modifier.navigationBarsPadding()
+            modifier = Modifier.navigationBarsPadding(),
         ) {
             val configuration = LocalConfiguration.current
             val currentLocale: Locale =
@@ -208,7 +202,7 @@ fun JetsnackBottomBar(
                     } else {
                         JetsnackTheme.colors.iconInteractiveInactive
                     },
-                    label = "tint"
+                    label = "tint",
                 )
 
                 val text = stringResource(section.title).uppercase(currentLocale)
@@ -218,7 +212,7 @@ fun JetsnackBottomBar(
                         Icon(
                             imageVector = section.icon,
                             tint = tint,
-                            contentDescription = text
+                            contentDescription = text,
                         )
                     },
                     text = {
@@ -226,14 +220,14 @@ fun JetsnackBottomBar(
                             text = text,
                             color = tint,
                             style = MaterialTheme.typography.labelLarge,
-                            maxLines = 1
+                            maxLines = 1,
                         )
                     },
                     selected = selected,
                     onSelected = { navigateToRoute(section.route) },
                     animSpec = springSpec,
                     modifier = BottomNavigationItemPadding
-                        .clip(BottomNavIndicatorShape)
+                        .clip(BottomNavIndicatorShape),
                 )
             }
         }
@@ -274,7 +268,7 @@ private fun JetsnackBottomNavLayout(
         content = {
             content()
             Box(Modifier.layoutId("indicator"), content = indicator)
-        }
+        },
     ) { measurables, constraints ->
         check(itemCount == (measurables.size - 1)) // account for indicator
 
@@ -291,20 +285,20 @@ private fun JetsnackBottomNavLayout(
                 measurable.measure(
                     constraints.copy(
                         minWidth = width,
-                        maxWidth = width
-                    )
+                        maxWidth = width,
+                    ),
                 )
             }
         val indicatorPlaceable = indicatorMeasurable.measure(
             constraints.copy(
                 minWidth = selectedWidth,
-                maxWidth = selectedWidth
-            )
+                maxWidth = selectedWidth,
+            ),
         )
 
         layout(
             width = constraints.maxWidth,
-            height = itemPlaceables.maxByOrNull { it.height }?.height ?: 0
+            height = itemPlaceables.maxByOrNull { it.height }?.height ?: 0,
         ) {
             val indicatorLeft = indicatorIndex.value * unselectedWidth
             indicatorPlaceable.placeRelative(x = indicatorLeft.toInt(), y = 0)
@@ -328,9 +322,8 @@ fun JetsnackBottomNavigationItem(
 ) {
     // Animate the icon/text positions within the item based on selection
     val animationProgress by animateFloatAsState(
-        if (selected) 1f else 0f,
-        animSpec,
-        label = "animation progress"
+        if (selected) 1f else 0f, animSpec,
+        label = "animation progress",
     )
     JetsnackBottomNavItemLayout(
         icon = icon,
@@ -338,7 +331,7 @@ fun JetsnackBottomNavigationItem(
         animationProgress = animationProgress,
         modifier = modifier
             .selectable(selected = selected, onClick = onSelected)
-            .wrapContentSize()
+            .wrapContentSize(),
     )
 }
 
@@ -356,7 +349,7 @@ private fun JetsnackBottomNavItemLayout(
                 modifier = Modifier
                     .layoutId("icon")
                     .padding(horizontal = TextIconSpacing),
-                content = icon
+                content = icon,
             )
             val scale = lerp(0.6f, 1f, animationProgress)
             Box(
@@ -369,9 +362,9 @@ private fun JetsnackBottomNavItemLayout(
                         scaleY = scale
                         transformOrigin = BottomNavLabelTransformOrigin
                     },
-                content = text
+                content = text,
             )
-        }
+        },
     ) { measurables, constraints ->
         val iconPlaceable = measurables.first { it.layoutId == "icon" }.measure(constraints)
         val textPlaceable = measurables.first { it.layoutId == "text" }.measure(constraints)
@@ -381,7 +374,7 @@ private fun JetsnackBottomNavItemLayout(
             iconPlaceable,
             constraints.maxWidth,
             constraints.maxHeight,
-            animationProgress
+            animationProgress,
         )
     }
 }
@@ -418,7 +411,7 @@ private fun JetsnackBottomNavIndicator(
         modifier = Modifier
             .fillMaxSize()
             .then(BottomNavigationItemPadding)
-            .border(strokeWidth, color, shape)
+            .border(strokeWidth, color, shape),
     )
 }
 
@@ -435,7 +428,7 @@ private fun JetsnackBottomNavPreview() {
         JetsnackBottomBar(
             tabs = HomeSections.entries.toTypedArray(),
             currentRoute = "home/feed",
-            navigateToRoute = { }
+            navigateToRoute = { },
         )
     }
 }

@@ -28,11 +28,11 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 /**
  * Holds the Swipe to dismiss composable, its animation and the current state
  */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
     enter: EnterTransition = expandVertically(),
@@ -49,14 +49,14 @@ fun SwipeDismissItem(
         modifier = modifier,
         visible = !isDismissed,
         enter = enter,
-        exit = exit
+        exit = exit,
     ) {
         SwipeToDismissBox(
             modifier = modifier,
             state = dismissState,
             enableDismissFromStartToEnd = false,
             backgroundContent = { background(dismissState.progress) },
-            content = { content(isDismissed) }
+            content = { content(isDismissed) },
         )
     }
 }

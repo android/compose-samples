@@ -19,6 +19,7 @@ package com.example.jetcaster.core.domain
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.testing.repository.TestEpisodeStore
 import com.example.jetcaster.core.data.testing.repository.TestPodcastStore
+import java.time.Duration
 import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -32,7 +33,7 @@ class GetLatestFollowedEpisodesUseCaseTest {
 
     val useCase = GetLatestFollowedEpisodesUseCase(
         episodeStore = episodeStore,
-        podcastStore = podcastStore
+        podcastStore = podcastStore,
     )
 
     val testEpisodes = listOf(
@@ -40,20 +41,35 @@ class GetLatestFollowedEpisodesUseCaseTest {
             uri = "",
             podcastUri = testPodcasts[0].podcast.uri,
             title = "title1",
-            published = OffsetDateTime.MIN
+            published = OffsetDateTime.MIN,
+            subtitle = "subtitle1",
+            summary = "summary1",
+            author = "author1",
+            duration = Duration.ofMinutes(1),
+            mediaUrls = listOf("Url1"),
         ),
         Episode(
             uri = "",
             podcastUri = testPodcasts[0].podcast.uri,
             title = "title2",
-            published = OffsetDateTime.now()
+            published = OffsetDateTime.now(),
+            subtitle = "subtitle2",
+            summary = "summary2",
+            author = "author2",
+            duration = Duration.ofMinutes(1),
+            mediaUrls = listOf("Url1"),
         ),
         Episode(
             uri = "",
             podcastUri = testPodcasts[1].podcast.uri,
             title = "title3",
-            published = OffsetDateTime.MAX
-        )
+            published = OffsetDateTime.MAX,
+            subtitle = "subtitle3",
+            summary = "summary3",
+            author = "author3",
+            duration = Duration.ofMinutes(1),
+            mediaUrls = listOf("Url1"),
+        ),
     )
 
     @Test
@@ -91,8 +107,7 @@ class GetLatestFollowedEpisodesUseCaseTest {
         }
         podcastStore.togglePodcastFollowed(testPodcasts[0].podcast.uri)
 
-        result.first().zipWithNext {
-                ep1, ep2 ->
+        result.first().zipWithNext { ep1, ep2 ->
             ep1.episode.published > ep2.episode.published
         }.all { it }
     }

@@ -65,7 +65,7 @@ fun MessageItem(message: Message) {
     Column(modifier = GlanceModifier.clickable(actionStartActivity<NavActivity>()).fillMaxWidth()) {
         Text(
             text = message.author,
-            style = JetChatGlanceTextStyles.titleMedium
+            style = JetChatGlanceTextStyles.titleMedium,
         )
         Text(
             text = message.content,

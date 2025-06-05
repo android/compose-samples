@@ -49,28 +49,34 @@ fun AppDrawer(
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ModalDrawerSheet(
         drawerState = drawerState,
         modifier = modifier,
     ) {
         JetNewsLogo(
-            modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp)
+            modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp),
         )
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.home_title)) },
             icon = { Icon(Icons.Filled.Home, null) },
             selected = currentRoute == JetnewsDestinations.HOME_ROUTE,
-            onClick = { navigateToHome(); closeDrawer() },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            onClick = {
+                navigateToHome()
+                closeDrawer()
+            },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
         )
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.interests_title)) },
             icon = { Icon(Icons.Filled.ListAlt, null) },
             selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
-            onClick = { navigateToInterests(); closeDrawer() },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            onClick = {
+                navigateToInterests()
+                closeDrawer()
+            },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
         )
     }
 }
@@ -81,13 +87,13 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
         Icon(
             painterResource(R.drawable.ic_jetnews_logo),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary,
         )
         Spacer(Modifier.width(8.dp))
         Icon(
             painter = painterResource(R.drawable.ic_jetnews_wordmark),
             contentDescription = stringResource(R.string.app_name),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -102,7 +108,7 @@ fun PreviewAppDrawer() {
             currentRoute = JetnewsDestinations.HOME_ROUTE,
             navigateToHome = {},
             navigateToInterests = {},
-            closeDrawer = { }
+            closeDrawer = { },
         )
     }
 }

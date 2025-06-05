@@ -33,20 +33,20 @@ internal fun EpisodeDetails(
     modifier: Modifier = Modifier,
     controls: (@Composable () -> Unit)? = null,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     TwoColumn(
         modifier = modifier,
         first = {
             Thumbnail(
                 playerEpisode,
-                size = JetcasterAppDefaults.thumbnailSize.episodeDetails
+                size = JetcasterAppDefaults.thumbnailSize.episodeDetails,
             )
         },
         second = {
             Column(
                 modifier = modifier,
-                verticalArrangement = verticalArrangement
+                verticalArrangement = verticalArrangement,
             ) {
                 EpisodeAuthor(playerEpisode = playerEpisode)
                 EpisodeTitle(playerEpisode = playerEpisode)
@@ -55,7 +55,7 @@ internal fun EpisodeDetails(
                     controls()
                 }
             }
-        }
+        },
     )
 }
 
@@ -63,7 +63,7 @@ internal fun EpisodeDetails(
 internal fun EpisodeAuthor(
     playerEpisode: PlayerEpisode,
     modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodySmall
+    style: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
     Text(text = playerEpisode.author, modifier = modifier, style = style)
 }
@@ -72,7 +72,7 @@ internal fun EpisodeAuthor(
 internal fun EpisodeTitle(
     playerEpisode: PlayerEpisode,
     modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.headlineLarge
+    style: TextStyle = MaterialTheme.typography.headlineLarge,
 ) {
     Text(text = playerEpisode.title, modifier = modifier, style = style)
 }

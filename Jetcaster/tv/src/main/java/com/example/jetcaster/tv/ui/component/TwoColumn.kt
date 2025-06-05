@@ -29,11 +29,11 @@ internal fun TwoColumn(
     second: (@Composable RowScope.() -> Unit),
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn)
+        Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
 ) {
     Row(
         horizontalArrangement = horizontalArrangement,
-        modifier = modifier
+        modifier = modifier,
     ) {
         first()
         second()

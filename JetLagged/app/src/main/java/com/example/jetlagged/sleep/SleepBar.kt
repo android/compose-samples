@@ -80,10 +80,7 @@ import com.example.jetlagged.ui.theme.JetLaggedTheme
 import com.example.jetlagged.ui.theme.LegendHeadingStyle
 
 @Composable
-fun SleepBar(
-    sleepData: SleepDayData,
-    modifier: Modifier = Modifier,
-) {
+fun SleepBar(sleepData: SleepDayData, modifier: Modifier = Modifier) {
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
     }
@@ -94,43 +91,40 @@ fun SleepBar(
         modifier = modifier
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }
+                interactionSource = remember { MutableInteractionSource() },
             ) {
                 isExpanded = !isExpanded
-            }
+            },
     ) {
         SleepRoundedBar(
             sleepData,
-            transition
+            transition,
         )
 
         transition.AnimatedVisibility(
             enter = fadeIn(animationSpec = tween(animationDuration)) + expandVertically(
-                animationSpec = tween(animationDuration)
+                animationSpec = tween(animationDuration),
             ),
             exit = fadeOut(animationSpec = tween(animationDuration)) + shrinkVertically(
-                animationSpec = tween(animationDuration)
+                animationSpec = tween(animationDuration),
             ),
             content = {
                 DetailLegend()
             },
-            visible = { it }
+            visible = { it },
         )
     }
 }
 
 @Composable
-private fun SleepRoundedBar(
-    sleepData: SleepDayData,
-    transition: Transition<Boolean>,
-) {
+private fun SleepRoundedBar(sleepData: SleepDayData, transition: Transition<Boolean>) {
     val textMeasurer = rememberTextMeasurer()
 
     val height by transition.animateDp(label = "height", transitionSpec = {
         spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness =
-            Spring.StiffnessLow
+            Spring.StiffnessLow,
         )
     }) { targetExpanded ->
         if (targetExpanded) 100.dp else 24.dp
@@ -139,7 +133,7 @@ private fun SleepRoundedBar(
         spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness =
-            Spring.StiffnessLow
+            Spring.StiffnessLow,
         )
     }) { target ->
         if (target) 1f else 0f
@@ -153,7 +147,7 @@ private fun SleepRoundedBar(
                 val cornerRadiusStartPx = 2.dp.toPx()
                 val collapsedCornerRadiusPx = 10.dp.toPx()
                 val animatedCornerRadius = CornerRadius(
-                    lerp(cornerRadiusStartPx, collapsedCornerRadiusPx, (1 - animationProgress))
+                    lerp(cornerRadiusStartPx, collapsedCornerRadiusPx, (1 - animationProgress)),
                 )
 
                 val lineThicknessPx = lineThickness.toPx()
@@ -164,32 +158,32 @@ private fun SleepRoundedBar(
                             Offset(x = 0f, y = -lineThicknessPx / 2f),
                             Size(
                                 this.size.width + lineThicknessPx * 2,
-                                this.size.height + lineThicknessPx
-                            )
+                                this.size.height + lineThicknessPx,
+                            ),
                         ),
-                        cornerRadius = animatedCornerRadius
-                    )
+                        cornerRadius = animatedCornerRadius,
+                    ),
                 )
                 val roundedCornerStroke = Stroke(
                     lineThicknessPx,
                     cap = StrokeCap.Round,
                     join = StrokeJoin.Round,
                     pathEffect = PathEffect.cornerPathEffect(
-                        cornerRadiusStartPx * animationProgress
-                    )
+                        cornerRadiusStartPx * animationProgress,
+                    ),
                 )
                 val barHeightPx = barHeight.toPx()
 
                 val sleepGraphPath = generateSleepPath(
                     this.size,
                     sleepData, width, barHeightPx, animationProgress,
-                    lineThickness.toPx() / 2f
+                    lineThickness.toPx() / 2f,
                 )
                 val gradientBrush =
                     Brush.verticalGradient(
                         colorStops = sleepGradientBarColorStops.toTypedArray(),
                         startY = 0f,
-                        endY = SleepType.entries.size * barHeightPx
+                        endY = SleepType.entries.size * barHeightPx,
                     )
                 val textResult = textMeasurer.measure(AnnotatedString(sleepData.sleepScoreEmoji))
 
@@ -201,12 +195,12 @@ private fun SleepRoundedBar(
                         roundedCornerStroke,
                         animationProgress,
                         textResult,
-                        cornerRadiusStartPx
+                        cornerRadiusStartPx,
                     )
                 }
             }
             .height(height)
-            .fillMaxWidth()
+            .fillMaxWidth(),
     )
 }
 
@@ -224,14 +218,14 @@ private fun DrawScope.drawSleepBar(
         drawPath(
             sleepGraphPath,
             style = roundedCornerStroke,
-            brush = gradientBrush
+            brush = gradientBrush,
         )
     }
 
     translate(left = -animationProgress * (textResult.size.width + textPadding.toPx())) {
         drawText(
             textResult,
-            topLeft = Offset(textPadding.toPx(), cornerRadiusStartPx)
+            topLeft = Offset(textPadding.toPx(), cornerRadiusStartPx),
         )
     }
 }
@@ -268,13 +262,13 @@ private fun generateSleepPath(
 
         val offsetY = lerp(
             0f,
-            period.type.heightSleepType() * canvasSize.height, heightAnimation
+            period.type.heightSleepType() * canvasSize.height, heightAnimation,
         )
         // step 1 - draw a line from previous sleep period to current
         if (previousPeriod != null) {
             path.lineTo(
                 x = startOffsetPercentage * width + lineThicknessPx,
-                y = offsetY + offset
+                y = offsetY + offset,
             )
         }
 
@@ -282,13 +276,13 @@ private fun generateSleepPath(
         path.addRect(
             rect = Rect(
                 offset = Offset(x = startOffsetPercentage * width + lineThicknessPx, y = offsetY),
-                size = canvasSize.copy(width = periodWidth, height = barHeightPx)
-            )
+                size = canvasSize.copy(width = periodWidth, height = barHeightPx),
+            ),
         )
         // step 3 - move to the middle of the current sleep period
         path.moveTo(
             x = startOffsetPercentage * width + periodWidth + lineThicknessPx,
-            y = offsetY + halfBarHeight
+            y = offsetY + halfBarHeight,
         )
 
         previousPeriod = period
@@ -301,7 +295,7 @@ private fun generateSleepPath(
 private fun DetailLegend() {
     Row(
         modifier = Modifier.padding(top = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         SleepType.entries.forEach {
             LegendItem(it)
@@ -316,12 +310,12 @@ private fun LegendItem(sleepType: SleepType) {
             modifier = Modifier
                 .size(10.dp)
                 .clip(CircleShape)
-                .background(colorForSleepType(sleepType))
+                .background(colorForSleepType(sleepType)),
         )
         Text(
             stringResource(id = sleepType.title),
             style = LegendHeadingStyle,
-            modifier = Modifier.padding(start = 4.dp)
+            modifier = Modifier.padding(start = 4.dp),
         )
     }
 }
@@ -338,18 +332,17 @@ private const val animationDuration = 500
 private val textPadding = 4.dp
 
 @Composable
-fun sleepGradientBarColorStops(): List<Pair<Float, Color>> =
-    SleepType.entries.map {
-        Pair(
-            when (it) {
-                SleepType.Awake -> 0f
-                SleepType.REM -> 0.33f
-                SleepType.Light -> 0.66f
-                SleepType.Deep -> 1f
-            },
-            colorForSleepType(it)
-        )
-    }
+fun sleepGradientBarColorStops(): List<Pair<Float, Color>> = SleepType.entries.map {
+    Pair(
+        when (it) {
+            SleepType.Awake -> 0f
+            SleepType.REM -> 0.33f
+            SleepType.Light -> 0.66f
+            SleepType.Deep -> 1f
+        },
+        colorForSleepType(it),
+    )
+}
 
 private fun SleepType.heightSleepType(): Float {
     return when (this) {
@@ -361,10 +354,9 @@ private fun SleepType.heightSleepType(): Float {
 }
 
 @Composable
-fun colorForSleepType(sleepType: SleepType): Color =
-    when (sleepType) {
-        SleepType.Awake -> JetLaggedTheme.extraColors.sleepAwake
-        SleepType.REM -> JetLaggedTheme.extraColors.sleepRem
-        SleepType.Light -> JetLaggedTheme.extraColors.sleepLight
-        SleepType.Deep -> JetLaggedTheme.extraColors.sleepDeep
-    }
+fun colorForSleepType(sleepType: SleepType): Color = when (sleepType) {
+    SleepType.Awake -> JetLaggedTheme.extraColors.sleepAwake
+    SleepType.REM -> JetLaggedTheme.extraColors.sleepRem
+    SleepType.Light -> JetLaggedTheme.extraColors.sleepLight
+    SleepType.Deep -> JetLaggedTheme.extraColors.sleepDeep
+}
