@@ -279,6 +279,7 @@ private fun FilledHorizontalListItem(
 
   @Composable
   fun SupportingImage() {
+    item.supportingImage?.let {
       Image(
         provider = ImageProvider(item.supportingImage.toString().toInt()),
         // contentDescription is null because in this sample, it serves merely as a visual; but if
@@ -289,6 +290,7 @@ private fun FilledHorizontalListItem(
         // Fixed size per UX spec
         modifier = modifier.cornerRadius(imageCornerRadius).size(Dimensions.imageSize)
       )
+    }
   }
 
   @Composable

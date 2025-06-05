@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.glance.action.Action
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
-import com.example.platform.ui.appwidgets.glance.layout.ActionDemonstrationActivity
-import com.example.platform.ui.appwidgets.glance.layout.ActionSourceMessageKey
+import com.example.jetsnack.widget.ActionDemonstrationActivity
+import com.example.jetsnack.widget.ActionSourceMessageKey
 
 /**
  * Utility functions for creating [Action]s.

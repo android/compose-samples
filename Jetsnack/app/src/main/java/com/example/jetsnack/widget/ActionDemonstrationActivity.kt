@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.platform.ui.appwidgets.glance.layout
+package com.example.jetsnack.widget
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

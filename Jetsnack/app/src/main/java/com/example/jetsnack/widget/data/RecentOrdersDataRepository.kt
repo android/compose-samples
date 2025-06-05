@@ -16,13 +16,14 @@
 
 package com.example.jetsnack.widget.data
 
+import android.content.Context
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat.getString
 import androidx.glance.GlanceId
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.snacks
 import com.example.jetsnack.widget.layout.ImageTextListItemData
-import com.example.jetsnack.widget.computeIfAbsent as computeIfAbsentExt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -41,9 +42,9 @@ class RecentOrdersDataRepository {
   /**
    * Loads the list of [ImageTextListItemData]s.
    */
-  fun load(): List<ImageTextListItemData> {
+  fun load(context: Context): List<ImageTextListItemData> {
     data.value = if (items.isNotEmpty()) {
-      processImagesAndBuildData(items)
+      processImagesAndBuildData(items, context)
     } else {
       listOf()
     }
@@ -53,6 +54,7 @@ class RecentOrdersDataRepository {
 
   private fun processImagesAndBuildData(
     items: List<DemoDataItem>,
+    context: Context
   ): List<ImageTextListItemData> {
 
     val mappedItems =
@@ -63,7 +65,8 @@ class RecentOrdersDataRepository {
               supportingText = item.supportingText,
               supportingImage = item.supportingImage,
               trailingIconButton = R.drawable.add_shopping_cart,
-              trailingIconButtonContentDescription = "Add to Shopping Cart",
+              trailingIconButtonContentDescription =
+                  getString(context, R.string.add_to_cart_content_description),
               snackKeys = item.snackKeys
           )
       }
@@ -118,7 +121,7 @@ class RecentOrdersDataRepository {
      */
     fun getImageTextListDataRepo(glanceId: GlanceId): RecentOrdersDataRepository {
       return synchronized(repositories) {
-        repositories.computeIfAbsentExt(glanceId) { RecentOrdersDataRepository() }!!
+        repositories.getOrPut(glanceId) { RecentOrdersDataRepository() }
       }
     }
 

@@ -61,7 +61,7 @@ class RecentOrdersWidget : GlanceAppWidget() {
         val repo = getImageTextListDataRepo(id)
 
         val initialItems = withContext(Dispatchers.Default) {
-            repo.load()
+            repo.load(context)
         }
 
         provideContent {
@@ -103,7 +103,7 @@ class RecentOrdersWidget : GlanceAppWidget() {
 
     override suspend fun providePreview(context: Context, widgetCategory: Int) {
         val repo = RecentOrdersDataRepository()
-        val items = repo.load()
+        val items = repo.load(context)
 
         provideContent {
             GlanceTheme {

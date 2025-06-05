@@ -83,5 +83,6 @@
     <string name="shopping_cart_button_label">View shopping cart</string>
     <string name="sample_no_data_text">No data</string>
     <string name="sample_add_button_text">Add</string>
+    <string name="add_to_cart_content_description">Add to Shopping Cart</string>
 
 </resources>
