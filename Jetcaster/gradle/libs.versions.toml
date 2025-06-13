@@ -4,18 +4,18 @@
 #####
 [versions]
 accompanist = "0.37.3"
-android-material3 = "1.13.0-alpha13"
-androidGradlePlugin = "8.10.0"
+android-material3 = "1.14.0-alpha01"
+androidGradlePlugin = "8.10.1"
 androidx-activity-compose = "1.10.1"
-androidx-appcompat = "1.7.0"
-androidx-compose-bom = "2025.05.00"
+androidx-appcompat = "1.7.1"
+androidx-compose-bom = "2025.06.00"
 androidx-constraintlayout = "1.1.1"
 androidx-core-splashscreen = "1.0.1"
 androidx-corektx = "1.16.0"
 androidx-glance = "1.1.1"
 androidx-lifecycle = "2.8.2"
-androidx-lifecycle-compose = "2.9.0"
-androidx-lifecycle-runtime-compose = "2.9.0"
+androidx-lifecycle-compose = "2.9.1"
+androidx-lifecycle-runtime-compose = "2.9.1"
 androidx-navigation = "2.9.0"
 androidx-palette = "1.0.0"
 androidx-test = "1.6.1"
@@ -24,9 +24,9 @@ androidx-test-ext-junit = "1.2.1"
 androidx-test-ext-truth = "1.6.0"
 androidx-tv-foundation = "1.0.0-alpha12"
 androidx-tv-material = "1.0.0"
-androidx-wear-compose-material3 = "1.5.0-beta01"
-androidx-wear-compose = "1.5.0-beta01"
-androidx-window = "1.3.0"
+androidx-wear-compose = "1.5.0-beta03"
+androidx-wear-compose-material3 = "1.5.0-beta03"
+androidx-window = "1.4.0"
 androidxHiltNavigationCompose = "1.2.0"
 androix-test-uiautomator = "2.3.0"
 coil = "2.7.0"
@@ -40,22 +40,22 @@ hiltExt = "1.2.0"
 horologist = "0.7.14-beta"
 jdkDesugar = "2.1.5"
 junit = "4.13.2"
-kotlin = "2.1.20"
+kotlin = "2.1.21"
 kotlinx-serialization-json = "1.8.1"
-kotlinx_immutable = "0.3.8"
-ksp = "2.1.20-2.0.1"
+kotlinx_immutable = "0.4.0"
+ksp = "2.1.21-2.0.2"
 maps-compose = "6.6.0"
-media3 = "1.6.1"
+media3 = "1.7.1"
 # @keep
 minSdk = "21"
 okhttp = "4.12.0"
 play-services-wearable = "19.0.0"
 robolectric = "4.14.1"
-roborazzi = "1.43.1"
+roborazzi = "1.44.0"
 rome = "2.1.0"
 room = "2.7.1"
 secrets = "2.0.1"
-spotless = "7.0.3"
+spotless = "7.0.4"
 # @keep
 targetSdk = "33"
 version-catalog-update = "1.0.0"
@@ -105,6 +105,9 @@ androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-v
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle-compose" }
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
+androidx-media3-common-ktx = { module = "androidx.media3:media3-common-ktx", version.ref = "media3" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }
 androidx-media3-ui-compose = { module = "androidx.media3:media3-ui-compose", version.ref = "media3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
@@ -138,8 +141,8 @@ hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", vers
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltExt" }
 horologist-audio-ui = { module = "com.google.android.horologist:horologist-audio-ui", version.ref = "horologist" }
-horologist-audio-uimaterial3 = { module = "com.google.android.horologist:horologist-audio-ui-material3", version.ref = "horologist" }
 horologist-audio-ui-model = { module = "com.google.android.horologist:horologist-audio-ui-model", version.ref = "horologist" }
+horologist-audio-uimaterial3 = { module = "com.google.android.horologist:horologist-audio-ui-material3", version.ref = "horologist" }
 horologist-composables = { module = "com.google.android.horologist:horologist-composables", version.ref = "horologist" }
 horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologist" }
 horologist-compose-material = { module = "com.google.android.horologist:horologist-compose-material", version.ref = "horologist" }
@@ -147,8 +150,8 @@ horologist-compose-tools = { module = "com.google.android.horologist:horologist-
 horologist-images-coil = { module = "com.google.android.horologist:horologist-images-coil", version.ref = "horologist" }
 horologist-media-data = { module = "com.google.android.horologist:horologist-media-data", version.ref = "horologist" }
 horologist-media-ui = { module = "com.google.android.horologist:horologist-media-ui", version.ref = "horologist" }
-horologist-media-uimaterial3 = { module = "com.google.android.horologist:horologist-media-ui-material3", version.ref = "horologist" }
 horologist-media-ui-model = { module = "com.google.android.horologist:horologist-media-ui-model", version.ref = "horologist" }
+horologist-media-uimaterial3 = { module = "com.google.android.horologist:horologist-media-ui-material3", version.ref = "horologist" }
 horologist-roboscreenshots = { module = "com.google.android.horologist:horologist-roboscreenshots", version.ref = "horologist" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
@@ -165,9 +168,6 @@ roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose"
 roborazzi-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
 rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome" }
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
-androidx-media3-session = {module = "androidx.media3:media3-session",version.ref = "media3"}
-androidx-media3-exoplayer = {module = "androidx.media3:media3-exoplayer", version.ref = "media3"}
-androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
