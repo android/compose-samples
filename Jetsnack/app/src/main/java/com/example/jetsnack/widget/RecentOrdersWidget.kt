@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
@@ -121,9 +122,10 @@ class RecentOrdersWidget : GlanceAppWidget() {
 class RecentOrdersWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget = RecentOrdersWidget()
 
+    @SuppressLint("RestrictedApi")
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         appWidgetIds.forEach {
-            RecentOrdersDataRepository.cleanUp(AppWidgetId(appWidgetId = it))
+            RecentOrdersDataRepository.cleanUp(AppWidgetId(it))
         }
         super.onDeleted(context, appWidgetIds)
     }
