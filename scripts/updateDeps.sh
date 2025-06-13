@@ -16,8 +16,9 @@
 
 ########################################################################
 #
-# Updates dependencies using Reply as the source of truth (then copies Reply's 
-# output into each sample)
+# Updates dependencies for all Compose samples
+# Note: Jetcaster is temporarily excluded as it is using alpha libraries
+# which we don't want to upgrade in parallel with stable releases.
 #
 # Example: To run build over all projects run:
 #     ./scripts/updateDeps.sh
