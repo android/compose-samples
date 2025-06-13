@@ -26,7 +26,8 @@
 
 set -xe
 
-./Jetcaster/gradlew -p ./Jetcaster versionCatalogUpdate 
-
-cp Jetcaster/gradle/libs.versions.toml scripts/libs.versions.toml
-./scripts/duplicate_version_config.sh
+cd Jetchat; ./gradlew versionCatalogUpdate; cd ..
+cd JetLagged; ./gradlew versionCatalogUpdate; cd ..
+cd JetNews; ./gradlew versionCatalogUpdate; cd ..
+cd Jetsnack; ./gradlew versionCatalogUpdate; cd ..
+cd Reply; ./gradlew versionCatalogUpdate; cd ..
