@@ -38,7 +38,7 @@ fun JetsnackCard(
     contentColor: Color = JetsnackTheme.colors.textPrimary,
     border: BorderStroke? = null,
     elevation: Dp = 4.dp,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     JetsnackSurface(
         modifier = modifier,
@@ -47,7 +47,7 @@ fun JetsnackCard(
         contentColor = contentColor,
         elevation = elevation,
         border = border,
-        content = content
+        content = content,
     )
 }
 

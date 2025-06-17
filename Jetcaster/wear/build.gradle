@@ -74,7 +74,6 @@ android {
 
 dependencies {
 
-
     def composeBom = platform(libs.androidx.compose.bom)
 
     // General compose dependencies
@@ -90,6 +89,9 @@ dependencies {
     // https://issuetracker.google.com/issues/new?component=1077552&template=1598429&pli=1
     implementation libs.androidx.wear.compose.material
 
+    // For using the phone Typography
+    implementation libs.androidx.compose.material3
+
     implementation(libs.kotlinx.collections.immutable)
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
@@ -97,14 +99,21 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.compose.material.iconsExtended)
 
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui.compose)
+    implementation(libs.androidx.media3.session)
+    implementation libs.androidx.media3.common.ktx
+
     // Horologist for correct Compose layout
-    implementation libs.horologist.composables
     implementation libs.horologist.compose.layout
-    implementation libs.horologist.compose.material
 
     //Horologist Media toolkit
     implementation libs.horologist.media.ui
+    implementation libs.horologist.media.uimaterial3
+    implementation libs.horologist.media.ui.model
     implementation libs.horologist.audio.ui
+    implementation libs.horologist.audio.uimaterial3
+    implementation libs.horologist.audio.ui.model
     implementation libs.horologist.media.data
     implementation libs.horologist.images.coil
 
@@ -140,9 +149,7 @@ dependencies {
     testImplementation libs.roborazzi
     testImplementation libs.roborazzi.compose
     testImplementation libs.roborazzi.rule
-    testImplementation(libs.horologist.roboscreenshots) {
-      exclude(group: "com.github.QuickBirdEng.kotlin-snapshot-testing")
-    }
+    testImplementation(libs.horologist.roboscreenshots)
 
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.androidx.test.espresso.core

@@ -87,7 +87,7 @@ To update dependencies to their new stable versions, run:
 ./scripts/updateDeps.sh
 ```
 
-To make any other manual updates to dependencies (ie add a new dependency or set an alpha version), update the `/scripts/libs.versions.toml` file with changes, and then run `duplicate_version_config.sh` to propogate the changes to all other samples. You can also update the  `toml-updater-config.gradle` file with changes that need to propogate to each sample. 
+Any other version updates need to be made individually.
 
 ## Obsolete Sample Projects
 

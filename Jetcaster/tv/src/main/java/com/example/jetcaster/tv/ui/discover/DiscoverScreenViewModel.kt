@@ -55,14 +55,14 @@ class DiscoverScreenViewModel @Inject constructor(
             categoryList.map { category ->
                 CategoryInfo(
                     id = category.id,
-                    name = category.name.filter { !it.isWhitespace() }
+                    name = category.name.filter { !it.isWhitespace() },
                 )
             }
         }
 
     private val selectedCategoryFlow = combine(
         categoryListFlow,
-        _selectedCategory
+        _selectedCategory,
     ) { categoryList, category ->
         category ?: categoryList.firstOrNull()
     }
@@ -100,7 +100,7 @@ class DiscoverScreenViewModel @Inject constructor(
                 CategoryInfoList(categoryList),
                 category,
                 podcastList,
-                latestEpisodes
+                latestEpisodes,
             )
         } else {
             DiscoverScreenUiState.Loading
@@ -108,7 +108,7 @@ class DiscoverScreenViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        DiscoverScreenUiState.Loading
+        DiscoverScreenUiState.Loading,
     )
 
     init {

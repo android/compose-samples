@@ -16,6 +16,8 @@
 
 package com.example.jetcaster.tv.ui.player
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +35,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +52,8 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -56,6 +61,16 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player.REPEAT_MODE_ALL
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.session.MediaSession
+import androidx.media3.ui.compose.PlayerSurface
+import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.tv.material3.Button
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
@@ -85,7 +100,7 @@ fun PlayerScreen(
     backToHome: () -> Unit,
     showDetails: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    playScreenViewModel: PlayerScreenViewModel = hiltViewModel()
+    playScreenViewModel: PlayerScreenViewModel = hiltViewModel(),
 ) {
     val uiState by playScreenViewModel.uiStateFlow.collectAsStateWithLifecycle()
 
@@ -112,6 +127,7 @@ fun PlayerScreen(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 private fun Player(
     episodePlayerState: EpisodePlayerState,
@@ -125,7 +141,7 @@ private fun Player(
     showDetails: (PlayerEpisode) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
-    autoStart: Boolean = true
+    autoStart: Boolean = true,
 ) {
     LaunchedEffect(key1 = autoStart) {
         if (autoStart && !episodePlayerState.isPlaying) {
@@ -136,22 +152,67 @@ private fun Player(
     val currentEpisode = episodePlayerState.currentEpisode
 
     if (currentEpisode != null) {
-        EpisodePlayerWithBackground(
-            playerEpisode = currentEpisode,
-            queue = EpisodeList(episodePlayerState.queue),
-            isPlaying = episodePlayerState.isPlaying,
-            timeElapsed = episodePlayerState.timeElapsed,
-            play = play,
-            pause = pause,
-            previous = previous,
-            next = next,
-            skip = skip,
-            rewind = rewind,
-            enqueue = enqueue,
-            showDetails = showDetails,
-            playEpisode = playEpisode,
-            modifier = modifier,
-        )
+        val context = LocalContext.current
+
+        val exoPlayer = rememberPlayer(context)
+
+        DisposableEffect(exoPlayer, playEpisode) {
+            exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentEpisode.mediaUrls[0])))
+            val mediaSession = MediaSession.Builder(context, exoPlayer).build()
+            exoPlayer.prepare()
+            exoPlayer.play()
+            onDispose {
+                mediaSession.release()
+                exoPlayer.release()
+            }
+        }
+        // Adding PlayerSurface at the bottom of the stack
+        // as it is just the audio player
+        Box {
+            PlayerSurface(
+                player = exoPlayer,
+                modifier = Modifier.resizeWithContentScale(
+                    contentScale = ContentScale.Fit,
+                    sourceSizeDp = null,
+                ),
+            )
+            EpisodePlayerWithBackground(
+                playerEpisode = currentEpisode,
+                queue = EpisodeList(episodePlayerState.queue),
+                isPlaying = episodePlayerState.isPlaying,
+                timeElapsed = episodePlayerState.timeElapsed,
+                play = (
+                    {
+                        play()
+                        exoPlayer.play()
+                    }
+                    ),
+                pause = (
+                    {
+                        pause()
+                        exoPlayer.pause()
+                    }
+                    ),
+                previous = previous,
+                next = next,
+                skip = (
+                    {
+                        skip()
+                        exoPlayer.seekForward()
+                    }
+                    ),
+                rewind = (
+                    {
+                        rewind()
+                        exoPlayer.seekBack()
+                    }
+                    ),
+                enqueue = enqueue,
+                showDetails = showDetails,
+                playEpisode = playEpisode,
+                modifier = modifier,
+            )
+        }
     }
 }
 
@@ -171,7 +232,7 @@ private fun EpisodePlayerWithBackground(
     enqueue: (PlayerEpisode) -> Unit,
     showDetails: (PlayerEpisode) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val episodePlayer = remember { FocusRequester() }
 
@@ -182,7 +243,7 @@ private fun EpisodePlayerWithBackground(
     BackgroundContainer(
         playerEpisode = playerEpisode,
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
 
         EpisodePlayer(
@@ -199,7 +260,7 @@ private fun EpisodePlayerWithBackground(
             showDetails = showDetails,
             focusRequester = episodePlayer,
             modifier = Modifier
-                .padding(JetcasterAppDefaults.overScanMargin.player.intoPaddingValues())
+                .padding(JetcasterAppDefaults.overScanMargin.player.intoPaddingValues()),
         )
 
         PlayerQueueOverlay(
@@ -230,7 +291,7 @@ private fun EpisodePlayer(
     modifier: Modifier = Modifier,
     bringIntoViewRequester: BringIntoViewRequester = remember { BringIntoViewRequester() },
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
@@ -243,7 +304,7 @@ private fun EpisodePlayer(
                     }
                 }
             }
-            .then(modifier)
+            .then(modifier),
     ) {
         EpisodeDetails(
             playerEpisode = playerEpisode,
@@ -251,7 +312,7 @@ private fun EpisodePlayer(
             controls = {
                 EpisodeControl(
                     showDetails = { showDetails(playerEpisode) },
-                    enqueue = { enqueue(playerEpisode) }
+                    enqueue = { enqueue(playerEpisode) },
                 )
             },
         )
@@ -265,28 +326,24 @@ private fun EpisodePlayer(
             next = next,
             skip = skip,
             rewind = rewind,
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
         )
     }
 }
 
 @Composable
-private fun EpisodeControl(
-    showDetails: () -> Unit,
-    enqueue: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun EpisodeControl(showDetails: () -> Unit, enqueue: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item)
+        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
     ) {
         EnqueueButton(
             onClick = enqueue,
-            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize())
+            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize()),
         )
         InfoButton(
             onClick = showDetails,
-            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize())
+            modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.default.intoDpSize()),
         )
     }
 }
@@ -303,7 +360,7 @@ private fun PlayerControl(
     skip: () -> Unit,
     rewind: () -> Unit,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     val playPauseButton = remember { FocusRequester() }
 
@@ -314,7 +371,7 @@ private fun PlayerControl(
         Row(
             horizontalArrangement = Arrangement.spacedBy(
                 JetcasterAppDefaults.gap.default,
-                Alignment.CenterHorizontally
+                Alignment.CenterHorizontally,
             ),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -329,11 +386,11 @@ private fun PlayerControl(
         ) {
             PreviousButton(
                 onClick = previous,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
             RewindButton(
                 onClick = rewind,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
             PlayPauseButton(
                 isPlaying = isPlaying,
@@ -346,15 +403,15 @@ private fun PlayerControl(
                 },
                 modifier = Modifier
                     .size(JetcasterAppDefaults.iconButtonSize.large.intoDpSize())
-                    .focusRequester(playPauseButton)
+                    .focusRequester(playPauseButton),
             )
             SkipButton(
                 onClick = skip,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
             NextButton(
                 onClick = next,
-                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize())
+                modifier = Modifier.size(JetcasterAppDefaults.iconButtonSize.medium.intoDpSize()),
             )
         }
         if (length != null) {
@@ -370,11 +427,11 @@ private fun ElapsedTimeIndicator(
     skip: () -> Unit,
     rewind: () -> Unit,
     modifier: Modifier = Modifier,
-    knobSize: Dp = 8.dp
+    knobSize: Dp = 8.dp,
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.tiny)
+        verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.tiny),
     ) {
         ElapsedTime(timeElapsed = timeElapsed, length = length)
         Seekbar(
@@ -383,7 +440,7 @@ private fun ElapsedTimeIndicator(
             knobSize = knobSize,
             onMoveLeft = rewind,
             onMoveRight = skip,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -393,20 +450,20 @@ private fun ElapsedTime(
     timeElapsed: Duration,
     length: Duration,
     modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodySmall
+    style: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
     val elapsed =
         stringResource(
             R.string.minutes_seconds,
             timeElapsed.toMinutes(),
-            timeElapsed.toSeconds() % 60
+            timeElapsed.toSeconds() % 60,
         )
     val l =
         stringResource(R.string.minutes_seconds, length.toMinutes(), length.toSeconds() % 60)
     Text(
         text = stringResource(R.string.elapsed_time, elapsed, l),
         style = style,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -414,7 +471,7 @@ private fun ElapsedTime(
 private fun NoEpisodeInQueue(
     backToHome: () -> Unit,
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester = remember { FocusRequester() }
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -423,7 +480,7 @@ private fun NoEpisodeInQueue(
         Column {
             Text(
                 text = stringResource(R.string.display_nothing_in_queue),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
             Text(text = stringResource(R.string.message_nothing_in_queue))
@@ -474,7 +531,22 @@ private fun PlayerQueueOverlay(
             contentPadding = contentPadding,
             modifier = Modifier
                 .offset(actualOffset.x, actualOffset.y)
-                .onFocusChanged { hasFocus = it.hasFocus }
+                .onFocusChanged { hasFocus = it.hasFocus },
         )
     }
+}
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+internal fun rememberPlayer(context: Context) = remember {
+    ExoPlayer.Builder(context)
+        .setSeekForwardIncrementMs(10 * 1000)
+        .setSeekBackIncrementMs(10 * 1000)
+        .setMediaSourceFactory(ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)))
+        .setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+        .build()
+        .apply {
+            playWhenReady = true
+            repeatMode = REPEAT_MODE_ALL
+        }
 }

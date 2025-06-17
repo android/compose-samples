@@ -30,23 +30,23 @@ val initialMessages = listOf(
     Message(
         "me",
         "Check it out!",
-        "8:07 PM"
+        "8:07 PM",
     ),
     Message(
         "me",
         "Thank you!$EMOJI_PINK_HEART",
         "8:06 PM",
-        R.drawable.sticker
+        R.drawable.sticker,
     ),
     Message(
         "Taylor Brooks",
         "You can use all the same stuff",
-        "8:05 PM"
+        "8:05 PM",
     ),
     Message(
         "Taylor Brooks",
         "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
-        "8:05 PM"
+        "8:05 PM",
     ),
     Message(
         "John Glenn",
@@ -54,29 +54,29 @@ val initialMessages = listOf(
             "Most blog posts end up out of date pretty fast but this sample is always up to " +
             "date and deals with async data loading (it's faked but the same idea " +
             "applies) $EMOJI_POINTS https://goo.gle/jetnews",
-        "8:04 PM"
+        "8:04 PM",
     ),
     Message(
         "me",
         "Compose newbie: I’ve scourged the internet for tutorials about async data " +
             "loading but haven’t found any good ones $EMOJI_MELTING $EMOJI_CLOUDS. " +
             "What’s the recommended way to load async data and emit composable widgets?",
-        "8:03 PM"
+        "8:03 PM",
     ),
     Message(
         "Shangeeth Sivan",
         "Does anyone know about Glance Widgets its the new way to build widgets in Android!",
-        "8:08 PM"
+        "8:08 PM",
     ),
     Message(
         "Taylor Brooks",
         "Wow! I never knew about Glance Widgets when was this added to the android ecosystem",
-        "8:10 PM"
+        "8:10 PM",
     ),
     Message(
         "John Glenn",
         "Yeah its seems to be pretty new!",
-        "8:12 PM"
+        "8:12 PM",
     ),
 )
 
@@ -85,7 +85,7 @@ val unreadMessages = initialMessages.filter { it.author != "me" }
 val exampleUiState = ConversationUiState(
     initialMessages = initialMessages,
     channelName = "#composers",
-    channelMembers = 42
+    channelMembers = 42,
 )
 
 /**
@@ -100,7 +100,7 @@ val colleagueProfile = ProfileScreenState(
     position = "Senior Android Dev at Openlane",
     twitter = "twitter.com/taylorbrookscodes",
     timeZone = "12:25 AM local time (Eastern Daylight Time)",
-    commonChannels = "2"
+    commonChannels = "2",
 )
 
 /**
@@ -115,7 +115,7 @@ val meProfile = ProfileScreenState(
     position = "Senior Android Dev at Yearin\nGoogle Developer Expert",
     twitter = "twitter.com/aliconors",
     timeZone = "In your timezone",
-    commonChannels = null
+    commonChannels = null,
 )
 
 object EMOJIS {

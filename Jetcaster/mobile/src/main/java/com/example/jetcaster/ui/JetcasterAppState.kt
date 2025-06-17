@@ -43,8 +43,6 @@ sealed class Screen(val route: String) {
     }
 
     object PodcastDetails : Screen("podcast/{$ARG_PODCAST_URI}") {
-
-        val PODCAST_URI = "podcastUri"
         fun createRoute(podcastUri: String) = "podcast/$podcastUri"
     }
 
@@ -55,17 +53,12 @@ sealed class Screen(val route: String) {
 }
 
 @Composable
-fun rememberJetcasterAppState(
-    navController: NavHostController = rememberNavController(),
-    context: Context = LocalContext.current
-) = remember(navController, context) {
-    JetcasterAppState(navController, context)
-}
+fun rememberJetcasterAppState(navController: NavHostController = rememberNavController(), context: Context = LocalContext.current) =
+    remember(navController, context) {
+        JetcasterAppState(navController, context)
+    }
 
-class JetcasterAppState(
-    val navController: NavHostController,
-    private val context: Context
-) {
+class JetcasterAppState(val navController: NavHostController, private val context: Context) {
     var isOnline by mutableStateOf(checkIfOnline())
         private set
 
@@ -111,5 +104,4 @@ class JetcasterAppState(
  *
  * This is used to de-duplicate navigation events.
  */
-private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
+private fun NavBackStackEntry.lifecycleIsResumed() = this.lifecycle.currentState == Lifecycle.State.RESUMED

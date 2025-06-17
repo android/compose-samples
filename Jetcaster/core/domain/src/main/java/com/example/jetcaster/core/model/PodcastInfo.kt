@@ -33,17 +33,15 @@ data class PodcastInfo(
     val lastEpisodeDate: OffsetDateTime? = null,
 )
 
-fun Podcast.asExternalModel(): PodcastInfo =
-    PodcastInfo(
-        uri = this.uri,
-        title = this.title,
-        author = this.author ?: "",
-        imageUrl = this.imageUrl ?: "",
-        description = this.description ?: "",
-    )
+fun Podcast.asExternalModel(): PodcastInfo = PodcastInfo(
+    uri = this.uri,
+    title = this.title,
+    author = this.author ?: "",
+    imageUrl = this.imageUrl ?: "",
+    description = this.description ?: "",
+)
 
-fun PodcastWithExtraInfo.asExternalModel(): PodcastInfo =
-    this.podcast.asExternalModel().copy(
-        isSubscribed = isFollowed,
-        lastEpisodeDate = lastEpisodeDate,
-    )
+fun PodcastWithExtraInfo.asExternalModel(): PodcastInfo = this.podcast.asExternalModel().copy(
+    isSubscribed = isFollowed,
+    lastEpisodeDate = lastEpisodeDate,
+)

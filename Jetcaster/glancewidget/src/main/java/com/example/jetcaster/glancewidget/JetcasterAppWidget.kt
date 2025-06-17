@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2024-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,12 +78,7 @@ class JetcasterAppWidgetReceiver : GlanceAppWidgetReceiver() {
         get() = JetcasterAppWidget()
 }
 
-data class JetcasterAppWidgetViewState(
-    val episodeTitle: String,
-    val podcastTitle: String,
-    val isPlaying: Boolean,
-    val albumArtUri: String,
-)
+data class JetcasterAppWidgetViewState(val episodeTitle: String, val podcastTitle: String, val isPlaying: Boolean, val albumArtUri: String)
 
 private object Sizes {
     val short = 72.dp
@@ -117,14 +112,13 @@ class JetcasterAppWidget : GlanceAppWidget() {
         get() = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-
         val testState = JetcasterAppWidgetViewState(
             episodeTitle =
             "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
             podcastTitle = "Now in Android",
             isPlaying = false,
             albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
-                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png"
+                "9ff3cb5dc6cfb3e2e5bbc093207a2619/NIA000_PodcastThumbnail.png",
         )
 
         provideContent {
@@ -138,7 +132,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
                     SizeBucket.Narrow -> Widget(
                         iconSize = Sizes.medium,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
 
                     SizeBucket.Normal -> WidgetUiNormal(
@@ -146,13 +140,13 @@ class JetcasterAppWidget : GlanceAppWidget() {
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
 
                     SizeBucket.NarrowShort -> Widget(
                         iconSize = Sizes.condensed,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
 
                     SizeBucket.NormalShort -> WidgetUiNormal(
@@ -160,7 +154,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
                         title = testState.episodeTitle,
                         subtitle = testState.podcastTitle,
                         imageUri = artUri,
-                        playPauseIcon = playPauseIcon
+                        playPauseIcon = playPauseIcon,
                     )
                 }
             }
@@ -169,17 +163,11 @@ class JetcasterAppWidget : GlanceAppWidget() {
 }
 
 @Composable
-private fun WidgetUiNormal(
-    title: String,
-    subtitle: String,
-    imageUri: Uri,
-    playPauseIcon: PlayPauseIcon,
-    iconSize: Dp,
-) {
-
+private fun WidgetUiNormal(title: String, subtitle: String, imageUri: Uri, playPauseIcon: PlayPauseIcon, iconSize: Dp) {
     Scaffold {
         Row(
-            GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Vertical.CenterVertically
+            GlanceModifier.fillMaxSize(),
+            verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
             AlbumArt(imageUri, GlanceModifier.size(iconSize))
             PodcastText(title, subtitle, modifier = GlanceModifier.padding(16.dp).defaultWeight())
@@ -189,15 +177,12 @@ private fun WidgetUiNormal(
 }
 
 @Composable
-private fun Widget(
-    iconSize: Dp,
-    imageUri: Uri,
-    playPauseIcon: PlayPauseIcon,
-) {
-    Scaffold(titleBar = {} /* title bar will be optional in scaffold in glance 1.1.0-beta3*/) {
+private fun Widget(iconSize: Dp, imageUri: Uri, playPauseIcon: PlayPauseIcon) {
+    /* title bar will be optional in scaffold in glance 1.1.0-beta3*/
+    Scaffold(titleBar = {}) {
         Row(
             modifier = GlanceModifier.fillMaxSize(),
-            verticalAlignment = Alignment.Vertical.CenterVertically
+            verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
             AlbumArt(imageUri, GlanceModifier.size(iconSize))
             Spacer(GlanceModifier.defaultWeight())
@@ -214,10 +199,7 @@ private fun WidgetUiInvalidSize() {
 }
 
 @Composable
-private fun AlbumArt(
-    imageUri: Uri,
-    modifier: GlanceModifier = GlanceModifier
-) {
+private fun AlbumArt(imageUri: Uri, modifier: GlanceModifier = GlanceModifier) {
     WidgetAsyncImage(uri = imageUri, contentDescription = null, modifier = modifier)
 }
 
@@ -232,7 +214,7 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
-                    color = fgColor
+                    color = fgColor,
                 ),
                 maxLines = 2,
             )
@@ -248,7 +230,7 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
                 style = TextStyle(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
-                    color = fgColor
+                    color = fgColor,
                 ),
                 maxLines = 1,
             )
@@ -257,11 +239,7 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
 }
 
 @Composable
-private fun PlayPauseButton(
-    modifier: GlanceModifier = GlanceModifier.size(Sizes.normal),
-    state: PlayPauseIcon,
-    onClick: () -> Unit
-) {
+private fun PlayPauseButton(modifier: GlanceModifier = GlanceModifier.size(Sizes.normal), state: PlayPauseIcon, onClick: () -> Unit) {
     val (iconRes: Int, description: Int) = when (state) {
         PlayPauseIcon.Play -> R.drawable.outline_play_arrow_24 to R.string.content_description_play
         PlayPauseIcon.Pause -> R.drawable.outline_pause_24 to R.string.content_description_pause
@@ -274,7 +252,7 @@ private fun PlayPauseButton(
         modifier = modifier,
         imageProvider = provider,
         contentDescription = contentDescription,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -284,11 +262,7 @@ enum class PlayPauseIcon { Play, Pause }
  * Uses Coil to load images.
  */
 @Composable
-private fun WidgetAsyncImage(
-    uri: Uri,
-    contentDescription: String?,
-    modifier: GlanceModifier = GlanceModifier
-) {
+private fun WidgetAsyncImage(uri: Uri, contentDescription: String?, modifier: GlanceModifier = GlanceModifier) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -316,7 +290,7 @@ private fun WidgetAsyncImage(
             provider = ImageProvider(bitmap),
             contentDescription = contentDescription,
             contentScale = ContentScale.FillBounds,
-            modifier = modifier.cornerRadius(12.dp) // TODO: confirm radius with design
+            modifier = modifier.cornerRadius(12.dp), // TODO: confirm radius with design
         )
     }
 }

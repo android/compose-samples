@@ -55,7 +55,7 @@ class ConversationTest {
                 ConversationContent(
                     uiState = conversationTestUiState,
                     navigateToProfile = { },
-                    onNavIconPressed = { }
+                    onNavIconPressed = { },
                 )
             }
         }
@@ -75,7 +75,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
+                durationMillis = 200,
             )
         }
         // Check that the jump to bottom button is shown
@@ -89,7 +89,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
+                durationMillis = 200,
             )
         }
         // Snap scroll to the bottom
@@ -104,12 +104,12 @@ class ConversationTest {
         // First swipe
         composeTestRule.onNodeWithTag(
             testTag = ConversationTestTag,
-            useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
+            useUnmergedTree = true, // https://issuetracker.google.com/issues/184825850
         ).performTouchInput {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
+                durationMillis = 200,
             )
         }
         // Second, snap to bottom
@@ -129,7 +129,7 @@ class ConversationTest {
             this.swipe(
                 start = this.center,
                 end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200
+                durationMillis = 200,
             )
         }
 
@@ -143,19 +143,17 @@ class ConversationTest {
         findJumpToBottom().assertIsDisplayed()
     }
 
-    private fun findJumpToBottom() =
-        composeTestRule.onNodeWithText(
-            composeTestRule.activity.getString(R.string.jumpBottom),
-            useUnmergedTree = true
-        )
+    private fun findJumpToBottom() = composeTestRule.onNodeWithText(
+        composeTestRule.activity.getString(R.string.jumpBottom),
+        useUnmergedTree = true,
+    )
 
-    private fun openEmojiSelector() =
-        composeTestRule
-            .onNodeWithContentDescription(
-                label = composeTestRule.activity.getString(R.string.emoji_selector_bt_desc),
-                useUnmergedTree = true // https://issuetracker.google.com/issues/184825850
-            )
-            .performClick()
+    private fun openEmojiSelector() = composeTestRule
+        .onNodeWithContentDescription(
+            label = composeTestRule.activity.getString(R.string.emoji_selector_bt_desc),
+            useUnmergedTree = true, // https://issuetracker.google.com/issues/184825850
+        )
+        .performClick()
 }
 
 /**
@@ -164,5 +162,5 @@ class ConversationTest {
 private val conversationTestUiState = ConversationUiState(
     initialMessages = (exampleUiState.messages.plus(exampleUiState.messages)),
     channelName = "#composers",
-    channelMembers = 42
+    channelMembers = 42,
 )

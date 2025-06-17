@@ -24,6 +24,7 @@ import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.testing.repository.TestCategoryStore
 import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
+import java.time.Duration
 import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -40,13 +41,18 @@ class PodcastCategoryFilterUseCaseTest {
                 "",
                 "",
                 "Episode 1",
-                published = OffsetDateTime.now()
+                published = OffsetDateTime.now(),
+                subtitle = "subtitle1",
+                summary = "summary1",
+                author = "author1",
+                duration = Duration.ofMinutes(1),
+                mediaUrls = listOf("Url1"),
             )
             _podcasts = listOf(
                 Podcast(
                     uri = "",
-                    title = "Podcast 1"
-                )
+                    title = "Podcast 1",
+                ),
             )
         },
         EpisodeToPodcast().apply {
@@ -54,13 +60,18 @@ class PodcastCategoryFilterUseCaseTest {
                 "",
                 "",
                 "Episode 2",
-                published = OffsetDateTime.now()
+                published = OffsetDateTime.now(),
+                subtitle = "subtitle2",
+                summary = "summary2",
+                author = "author2",
+                duration = Duration.ofMinutes(1),
+                mediaUrls = listOf("Url1"),
             )
             _podcasts = listOf(
                 Podcast(
                     uri = "",
-                    title = "Podcast 2"
-                )
+                    title = "Podcast 2",
+                ),
             )
         },
         EpisodeToPodcast().apply {
@@ -68,20 +79,25 @@ class PodcastCategoryFilterUseCaseTest {
                 "",
                 "",
                 "Episode 3",
-                published = OffsetDateTime.now()
+                published = OffsetDateTime.now(),
+                subtitle = "subtitle3",
+                summary = "summary3",
+                author = "author2",
+                duration = Duration.ofMinutes(1),
+                mediaUrls = listOf("Url1"),
             )
             _podcasts = listOf(
                 Podcast(
                     uri = "",
-                    title = "Podcast 3"
-                )
+                    title = "Podcast 3",
+                ),
             )
-        }
+        },
     )
     private val testCategory = Category(1, "Technology")
 
     val useCase = PodcastCategoryFilterUseCase(
-        categoryStore = categoriesStore
+        categoryStore = categoriesStore,
     )
 
     @Test
@@ -106,11 +122,11 @@ class PodcastCategoryFilterUseCaseTest {
         val result = resultFlow.first()
         assertEquals(
             testPodcasts.map { it.asExternalModel() },
-            result.topPodcasts
+            result.topPodcasts,
         )
         assertEquals(
             testEpisodeToPodcast.map { it.asPodcastToEpisodeInfo() },
-            result.episodes
+            result.episodes,
         )
     }
 
@@ -120,11 +136,11 @@ class PodcastCategoryFilterUseCaseTest {
 
         categoriesStore.setEpisodesFromPodcast(
             testCategory.id,
-            List(8) { testEpisodeToPodcast }.flatten()
+            List(8) { testEpisodeToPodcast }.flatten(),
         )
         categoriesStore.setPodcastsInCategory(
             testCategory.id,
-            List(4) { testPodcasts }.flatten()
+            List(4) { testPodcasts }.flatten(),
         )
 
         val result = resultFlow.first()

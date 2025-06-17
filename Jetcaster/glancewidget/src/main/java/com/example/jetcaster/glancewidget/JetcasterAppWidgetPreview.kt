@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Android Open Source Project
+ * Copyright 2024-2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,6 @@ private object SizesPreview {
  * In a real application, this would be called whenever the widget's state changes.
  */
 fun updateWidgetPreview(context: Context) {
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -67,7 +66,7 @@ fun updateWidgetPreview(context: Context) {
                     AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN,
                     JetcasterAppWidgetPreview().compose(
                         context,
-                        size = DpSize(160.dp, 64.dp)
+                        size = DpSize(160.dp, 64.dp),
                     ),
                 )
             } catch (e: Exception) {
@@ -82,7 +81,6 @@ class JetcasterAppWidgetPreview : GlanceAppWidget() {
         get() = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-
         provideContent {
             GlanceTheme {
                 Widget()
@@ -93,23 +91,22 @@ class JetcasterAppWidgetPreview : GlanceAppWidget() {
 
 @Composable
 private fun Widget() {
-
     Scaffold {
         Row(
             modifier = GlanceModifier.fillMaxSize(),
-            verticalAlignment = Alignment.Vertical.CenterVertically
+            verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
             Image(
                 modifier = GlanceModifier.wrapContentSize().size(SizesPreview.medium),
                 provider = ImageProvider(R.drawable.widget_preview_thumbnail),
-                contentDescription = ""
+                contentDescription = "",
             )
             Spacer(GlanceModifier.defaultWeight())
             SquareIconButton(
                 modifier = GlanceModifier.size(SizesPreview.medium),
                 imageProvider = ImageProvider(R.drawable.outline_play_arrow_24),
                 contentDescription = "",
-                onClick = { }
+                onClick = { },
             )
         }
     }

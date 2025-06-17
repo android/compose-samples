@@ -36,7 +36,7 @@ class FilterableCategoriesUseCaseTest {
     )
 
     val useCase = FilterableCategoriesUseCase(
-        categoryStore = categoriesStore
+        categoryStore = categoriesStore,
     )
 
     @Before
@@ -49,7 +49,7 @@ class FilterableCategoriesUseCaseTest {
         val filterableCategories = useCase(null).first()
         assertEquals(
             filterableCategories.categories[0],
-            filterableCategories.selectedCategory
+            filterableCategories.selectedCategory,
         )
     }
 
@@ -59,7 +59,7 @@ class FilterableCategoriesUseCaseTest {
         val filterableCategories = useCase(selectedCategory.asExternalModel()).first()
         assertEquals(
             selectedCategory.asExternalModel(),
-            filterableCategories.selectedCategory
+            filterableCategories.selectedCategory,
         )
     }
 }
