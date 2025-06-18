@@ -45,7 +45,7 @@ minSdk = "21"
 okhttp = "4.12.0"
 play-services-wearable = "19.0.0"
 robolectric = "4.14.1"
-roborazzi = "1.44.0"
+roborazzi = "1.45.0"
 rome = "2.1.0"
 room = "2.7.1"
 secrets = "2.0.1"
@@ -167,7 +167,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-roborazzi = "io.github.takahirom.roborazzi:1.45.0"
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
