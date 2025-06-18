@@ -4,7 +4,7 @@
 #####
 [versions]
 accompanist = "0.37.3"
-android-material3 = "1.14.0-alpha01"
+android-material3 = "1.14.0-alpha02"
 androidGradlePlugin = "8.10.1"
 androidx-activity-compose = "1.10.1"
 androidx-appcompat = "1.7.1"
@@ -171,7 +171,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+roborazzi = "io.github.takahirom.roborazzi:1.45.0"
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
