@@ -4,11 +4,11 @@
 #####
 [versions]
 accompanist = "0.37.3"
-android-material3 = "1.14.0-alpha01"
+android-material3 = "1.14.0-alpha02"
 androidGradlePlugin = "8.10.1"
 androidx-activity-compose = "1.10.1"
 androidx-appcompat = "1.7.1"
-androidx-compose-bom = "2025.06.00"
+androidx-compose-bom = "2025.06.01"
 androidx-constraintlayout = "1.1.1"
 androidx-core-splashscreen = "1.0.1"
 androidx-corektx = "1.16.0"
@@ -32,6 +32,7 @@ coil = "2.7.0"
 # @keep
 compileSdk = "35"
 coroutines = "1.10.2"
+glancePreview = "1.1.1"
 google-maps = "19.2.0"
 gradle-versions = "0.52.0"
 hilt = "2.56.2"
@@ -49,7 +50,7 @@ minSdk = "21"
 okhttp = "4.12.0"
 play-services-wearable = "19.0.0"
 robolectric = "4.14.1"
-roborazzi = "1.44.0"
+roborazzi = "1.45.1"
 rome = "2.1.0"
 room = "2.7.1"
 secrets = "2.0.1"
@@ -57,7 +58,6 @@ spotless = "7.0.4"
 # @keep
 targetSdk = "33"
 version-catalog-update = "1.0.0"
-glancePreview = "1.1.1"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -96,6 +96,7 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 androidx-glance = { module = "androidx.glance:glance", version.ref = "androidx-glance" }
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "androidx-glance" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "androidx-glance" }
+androidx-glance-preview = { module = "androidx.glance:glance-preview", version.ref = "glancePreview" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-compose" }
@@ -159,7 +160,6 @@ roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose"
 roborazzi-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
 rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome" }
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
-androidx-glance-preview = { group = "androidx.glance", name = "glance-preview", version.ref = "glancePreview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
