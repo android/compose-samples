@@ -20,8 +20,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
@@ -61,7 +61,7 @@ fun AppNavRail(currentRoute: String, navigateToHome: () -> Unit, navigateToInter
         NavigationRailItem(
             selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             onClick = navigateToInterests,
-            icon = { Icon(Icons.Filled.ListAlt, stringResource(R.string.interests_title)) },
+            icon = { Icon(Icons.AutoMirrored.Filled.ListAlt, stringResource(R.string.interests_title)) },
             label = { Text(stringResource(R.string.interests_title)) },
             alwaysShowLabel = false,
         )
