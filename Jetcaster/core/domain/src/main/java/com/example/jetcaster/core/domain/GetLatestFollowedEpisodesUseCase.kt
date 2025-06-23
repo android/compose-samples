@@ -32,12 +32,11 @@ class GetLatestFollowedEpisodesUseCase @Inject constructor(
     private val podcastStore: PodcastStore,
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(): Flow<List<EpisodeToPodcast>> =
-        podcastStore.followedPodcastsSortedByLastEpisode()
-            .flatMapLatest { followedPodcasts ->
-                episodeStore.episodesInPodcasts(
-                    followedPodcasts.map { it.podcast.uri },
-                    followedPodcasts.size * 5
-                )
-            }
+    operator fun invoke(): Flow<List<EpisodeToPodcast>> = podcastStore.followedPodcastsSortedByLastEpisode()
+        .flatMapLatest { followedPodcasts ->
+            episodeStore.episodesInPodcasts(
+                followedPodcasts.map { it.podcast.uri },
+                followedPodcasts.size * 5,
+            )
+        }
 }

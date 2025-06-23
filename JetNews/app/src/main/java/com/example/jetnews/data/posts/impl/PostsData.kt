@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-@file:Suppress("ktlint:max-line-length") // String constants read better
+@file:Suppress("ktlint:standard:max-line-length") // String constants read better
+
 package com.example.jetnews.data.posts.impl
 
 import com.example.jetnews.R
@@ -36,7 +37,7 @@ val pietro = PostAuthor("Pietro Maggi", "https://medium.com/@pmaggi")
 val manuel = PostAuthor("Manuel Vivo", "https://medium.com/@manuelvicnt")
 val florina = PostAuthor(
     "Florina Muntenescu",
-    "https://medium.com/@florina.muntenescu"
+    "https://medium.com/@florina.muntenescu",
 )
 val jose =
     PostAuthor("Jose Alcérreca", "https://medium.com/@JoseAlcerreca")
@@ -46,20 +47,20 @@ val androidstudioteam =
 
 val publication = Publication(
     "Android Developers",
-    "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png"
+    "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png",
 )
 val paragraphsPost1 = listOf(
     Paragraph(
         ParagraphType.Text,
-        "Working to make our Android application more modular, I ended up with a sample that included a set of on-demand features grouped inside a folder:"
+        "Working to make our Android application more modular, I ended up with a sample that included a set of on-demand features grouped inside a folder:",
     ),
     Paragraph(
         ParagraphType.Text,
-        "Pretty standard setup, all the on-demand modules, inside a “features” folder; clean."
+        "Pretty standard setup, all the on-demand modules, inside a “features” folder; clean.",
     ),
     Paragraph(
         ParagraphType.Text,
-        "These modules are included in the settings.gradle file as:"
+        "These modules are included in the settings.gradle file as:",
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -67,19 +68,19 @@ val paragraphsPost1 = listOf(
             "include ':features:module1'\n" +
             "include ':features:module2'\n" +
             "include ':features:module3'\n" +
-            "include ':features:module4'"
+            "include ':features:module4'",
     ),
     Paragraph(
         ParagraphType.Text,
-        "These setup works nicely with a single “minor” issue: an empty module named features in the Android view in Android Studio:"
+        "These setup works nicely with a single “minor” issue: an empty module named features in the Android view in Android Studio:",
     ),
     Paragraph(
         ParagraphType.Text,
-        "I can live with that, but I would much prefer to remove that empty module from my project!"
+        "I can live with that, but I would much prefer to remove that empty module from my project!",
     ),
     Paragraph(
         ParagraphType.Header,
-        "If you cannot remove it, just rename it!"
+        "If you cannot remove it, just rename it!",
     ),
 
     Paragraph(
@@ -89,15 +90,15 @@ val paragraphsPost1 = listOf(
             Markup(
                 MarkupType.Italic,
                 41,
-                72
-            )
-        )
+                72,
+            ),
+        ),
     ),
 
     Paragraph(
         ParagraphType.Text,
         "In this particular case our settings.gradle becomes:",
-        listOf(Markup(MarkupType.Code, 28, 43))
+        listOf(Markup(MarkupType.Code, 28, 43)),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -107,7 +108,7 @@ val paragraphsPost1 = listOf(
         include ':module1'
         include ':module1'
         include ':module1'
-        """.trimIndent()
+        """.trimIndent(),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -118,19 +119,19 @@ val paragraphsPost1 = listOf(
         project(":module2").projectDir=new File(rootDir, "features/module2")
         project(":module3").projectDir=new File(rootDir, "features/module3")
         project(":module4").projectDir=new File(rootDir, "features/module4")
-        """.trimIndent()
+        """.trimIndent(),
     ),
     Paragraph(
         ParagraphType.Text,
-        "And the layout in Android Studio is now:"
+        "And the layout in Android Studio is now:",
     ),
     Paragraph(
         ParagraphType.Header,
-        "Conclusion"
+        "Conclusion",
     ),
     Paragraph(
         ParagraphType.Text,
-        "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy."
+        "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy.",
     ),
     Paragraph(
         ParagraphType.Quote,
@@ -140,13 +141,13 @@ val paragraphsPost1 = listOf(
                 MarkupType.Link,
                 54,
                 79,
-                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
-            )
-        )
+                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Header,
-        "Resources"
+        "Resources",
     ),
     Paragraph(
         ParagraphType.Bullet,
@@ -156,9 +157,9 @@ val paragraphsPost1 = listOf(
                 MarkupType.Link,
                 0,
                 47,
-                "https://www.youtube.com/watch?v=ihF-PwDfRZ4&list=PLWz5rJ2EKKc9FfSQIRXEWyWpHD6TtwxMM&index=32&t=0s"
-            )
-        )
+                "https://www.youtube.com/watch?v=ihF-PwDfRZ4&list=PLWz5rJ2EKKc9FfSQIRXEWyWpHD6TtwxMM&index=32&t=0s",
+            ),
+        ),
     ),
 
     Paragraph(
@@ -169,9 +170,9 @@ val paragraphsPost1 = listOf(
                 MarkupType.Link,
                 0,
                 24,
-                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
-            )
-        )
+                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
@@ -181,10 +182,10 @@ val paragraphsPost1 = listOf(
                 MarkupType.Link,
                 0,
                 40,
-                "https://medium.com/androiddevelopers/a-patchwork-plaid-monolith-to-modularized-app-60235d9f212e"
-            )
-        )
-    )
+                "https://medium.com/androiddevelopers/a-patchwork-plaid-monolith-to-modularized-app-60235d9f212e",
+            ),
+        ),
+    ),
 )
 
 val paragraphsPost2 = listOf(
@@ -196,9 +197,9 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 0,
                 6,
-                "https://dagger.dev/"
-            )
-        )
+                "https://dagger.dev/",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -208,16 +209,16 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 14,
                 26,
-                "https://dagger.dev/tutorial/"
+                "https://dagger.dev/tutorial/",
             ),
             Markup(MarkupType.Bold, 114, 132),
             Markup(MarkupType.Bold, 144, 159),
-            Markup(MarkupType.Bold, 191, 198)
-        )
+            Markup(MarkupType.Bold, 191, 198),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "Dagger is implemented using Java’s annotations model and annotations in Kotlin are not always directly parallel with how equivalent Java code would be written. This post will highlight areas where they differ and how you can use Dagger with Kotlin without having a headache."
+        "Dagger is implemented using Java’s annotations model and annotations in Kotlin are not always directly parallel with how equivalent Java code would be written. This post will highlight areas where they differ and how you can use Dagger with Kotlin without having a headache.",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -227,13 +228,13 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 58,
                 70,
-                "https://github.com/google/dagger/issues/900"
-            )
-        )
+                "https://github.com/google/dagger/issues/900",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Header,
-        "kapt build improvements"
+        "kapt build improvements",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -243,16 +244,16 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 99,
                 104,
-                "https://github.com/google/dagger/releases/tag/dagger-2.18"
+                "https://github.com/google/dagger/releases/tag/dagger-2.18",
             ),
             Markup(
                 MarkupType.Link,
                 143,
                 148,
-                "https://github.com/google/dagger/releases/tag/dagger-2.24"
+                "https://github.com/google/dagger/releases/tag/dagger-2.24",
             ),
-            Markup(MarkupType.Bold, 53, 95)
-        )
+            Markup(MarkupType.Bold, 53, 95),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -262,34 +263,34 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 92,
                 97,
-                "https://github.com/google/dagger/releases/tag/dagger-2.18"
+                "https://github.com/google/dagger/releases/tag/dagger-2.18",
             ),
             Markup(
                 MarkupType.Link,
                 165,
                 170,
-                "https://github.com/google/dagger/releases/tag/dagger-2.23"
-            )
-        )
+                "https://github.com/google/dagger/releases/tag/dagger-2.23",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
         "Include these compiler arguments in your build.gradle file to make Dagger more performant at build time:",
-        listOf(Markup(MarkupType.Code, 41, 53))
+        listOf(Markup(MarkupType.Code, 41, 53)),
     ),
     Paragraph(
         ParagraphType.Text,
         "Alternatively, if you use Kotlin DSL script files, include them like this in the build.gradle.kts file of the modules that use Dagger:",
-        listOf(Markup(MarkupType.Code, 81, 97))
+        listOf(Markup(MarkupType.Code, 81, 97)),
     ),
     Paragraph(
         ParagraphType.Text,
-        "Qualifiers for field attributes"
+        "Qualifiers for field attributes",
     ),
     Paragraph(
         ParagraphType.Text,
         "",
-        listOf(Markup(MarkupType.Link, 0, 0))
+        listOf(Markup(MarkupType.Link, 0, 0)),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -300,24 +301,24 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 268,
                 285,
-                "http://frogermcs.github.io/dependency-injection-with-dagger-2-custom-scopes/"
+                "http://frogermcs.github.io/dependency-injection-with-dagger-2-custom-scopes/",
             ),
             Markup(MarkupType.Italic, 114, 119),
-            Markup(MarkupType.Italic, 143, 149)
-        )
+            Markup(MarkupType.Italic, 143, 149),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "✅ The way to apply qualifiers on an injected field is:"
+        "✅ The way to apply qualifiers on an injected field is:",
     ),
     Paragraph(
         ParagraphType.CodeBlock,
         "@Inject @field:MinimumBalance lateinit var minimumBalance: BigDecimal",
-        listOf(Markup(MarkupType.Bold, 8, 29))
+        listOf(Markup(MarkupType.Bold, 8, 29)),
     ),
     Paragraph(
         ParagraphType.Text,
-        "❌ As opposed to:"
+        "❌ As opposed to:",
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -325,16 +326,16 @@ val paragraphsPost2 = listOf(
         @Inject @MinimumBalance lateinit var minimumBalance: BigDecimal 
         // @MinimumBalance is ignored!
         """.trimIndent(),
-        listOf(Markup(MarkupType.Bold, 65, 95))
+        listOf(Markup(MarkupType.Bold, 65, 95)),
     ),
     Paragraph(
         ParagraphType.Text,
         "Forgetting to add field: could lead to injecting the wrong object if there’s an unqualified instance of that type available in the Dagger graph.",
-        listOf(Markup(MarkupType.Code, 18, 24))
+        listOf(Markup(MarkupType.Code, 18, 24)),
     ),
     Paragraph(
         ParagraphType.Header,
-        "Static @Provides functions optimization"
+        "Static @Provides functions optimization",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -346,24 +347,24 @@ val paragraphsPost2 = listOf(
             Markup(MarkupType.Code, 141, 146),
             Markup(MarkupType.Code, 178, 188),
             Markup(MarkupType.Bold, 200, 213),
-            Markup(MarkupType.Italic, 200, 213)
-        )
+            Markup(MarkupType.Italic, 200, 213),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
         "In case you need an abstract method, you’ll need to add the @JvmStatic method to a companion object and annotate it with @Module too.",
         listOf(
             Markup(MarkupType.Code, 60, 70),
-            Markup(MarkupType.Code, 121, 128)
-        )
+            Markup(MarkupType.Code, 121, 128),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "Alternatively, you can extract the object module out and include it in the abstract one:"
+        "Alternatively, you can extract the object module out and include it in the abstract one:",
     ),
     Paragraph(
         ParagraphType.Header,
-        "Injecting Generics"
+        "Injecting Generics",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -375,9 +376,9 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 132,
                 146,
-                "https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics"
-            )
-        )
+                "https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -388,15 +389,15 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 66,
                 75,
-                "https://en.wikipedia.org/wiki/Class_invariant"
+                "https://en.wikipedia.org/wiki/Class_invariant",
             ),
             Markup(
                 MarkupType.Link,
                 96,
                 116,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-suppress-wildcards/index.html"
-            )
-        )
+                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-suppress-wildcards/index.html",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -406,9 +407,9 @@ val paragraphsPost2 = listOf(
                 MarkupType.Link,
                 57,
                 86,
-                "https://dagger.dev/multibindings.html"
-            )
-        )
+                "https://dagger.dev/multibindings.html",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -419,36 +420,36 @@ val paragraphsPost2 = listOf(
             ... 
         }
         """.trimIndent(),
-        listOf(Markup(MarkupType.Bold, 72, 93))
+        listOf(Markup(MarkupType.Bold, 72, 93)),
     ),
     Paragraph(
         ParagraphType.Header,
-        "Inline method bodies"
+        "Inline method bodies",
     ),
     Paragraph(
         ParagraphType.Text,
         "Dagger determines the types that are configured by @Provides methods by inspecting the return type. Specifying the return type in Kotlin functions is optional and even the IDE sometimes encourages you to refactor your code to have inline method bodies that hide the return type declaration.",
-        listOf(Markup(MarkupType.Code, 51, 60))
+        listOf(Markup(MarkupType.Code, 51, 60)),
     ),
     Paragraph(
         ParagraphType.Text,
-        "This can lead to bugs if the inferred type is different from the one you meant. Let’s see some examples:"
+        "This can lead to bugs if the inferred type is different from the one you meant. Let’s see some examples:",
     ),
     Paragraph(
         ParagraphType.Text,
-        "If you want to add a specific type to the graph, inlining works as expected. See the different ways to do the same in Kotlin:"
+        "If you want to add a specific type to the graph, inlining works as expected. See the different ways to do the same in Kotlin:",
     ),
     Paragraph(
         ParagraphType.Text,
-        "If you want to provide an implementation of an interface, then you must explicitly specify the return type. Not doing it can lead to problems and bugs:"
+        "If you want to provide an implementation of an interface, then you must explicitly specify the return type. Not doing it can lead to problems and bugs:",
     ),
     Paragraph(
         ParagraphType.Text,
         "Dagger mostly works with Kotlin out of the box. However, you have to watch out for a few things just to make sure you’re doing what you really mean to do: @field: for qualifiers on field attributes, inline method bodies, and @JvmSuppressWildcards when injecting collections.",
         listOf(
             Markup(MarkupType.Code, 155, 162),
-            Markup(MarkupType.Code, 225, 246)
-        )
+            Markup(MarkupType.Code, 225, 246),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -457,10 +458,10 @@ val paragraphsPost2 = listOf(
             Markup(
                 MarkupType.Code,
                 185,
-                194
-            )
-        )
-    )
+                194,
+            ),
+        ),
+    ),
 )
 
 val paragraphsPost3 = listOf(
@@ -472,21 +473,21 @@ val paragraphsPost3 = listOf(
                 MarkupType.Link,
                 151,
                 172,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
+                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0",
             ),
             Markup(
                 MarkupType.Link,
                 209,
                 216,
-                "https://clmirror.storage.googleapis.com/codelabs/java-to-kotlin-zh/index.html#0"
+                "https://clmirror.storage.googleapis.com/codelabs/java-to-kotlin-zh/index.html#0",
             ),
             Markup(
                 MarkupType.Link,
                 226,
                 246,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0"
-            )
-        )
+                "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -496,17 +497,17 @@ val paragraphsPost3 = listOf(
                 MarkupType.Link,
                 105,
                 124,
-                "https://www.jetbrains.com/help/idea/converting-a-java-file-to-kotlin-file.html"
-            )
-        )
+                "https://www.jetbrains.com/help/idea/converting-a-java-file-to-kotlin-file.html",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
         "We’ll take two classes (a User and a Repository) in Java Programming Language and convert them to Kotlin, check out what the automatic converter did and why. Then we go to the next level — make it idiomatic, teaching best practices and useful tips along the way.",
         listOf(
             Markup(MarkupType.Code, 26, 30),
-            Markup(MarkupType.Code, 37, 47)
-        )
+            Markup(MarkupType.Code, 37, 47),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -518,9 +519,9 @@ val paragraphsPost3 = listOf(
                 MarkupType.Link,
                 4,
                 25,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
-            )
-        )
+                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -530,9 +531,9 @@ val paragraphsPost3 = listOf(
                 MarkupType.Link,
                 21,
                 42,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
-            )
-        )
+                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -542,16 +543,16 @@ val paragraphsPost3 = listOf(
                 MarkupType.Link,
                 76,
                 96,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0"
-            )
-        )
-    )
+                "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0",
+            ),
+        ),
+    ),
 )
 
 val paragraphsPost4 = listOf(
     Paragraph(
         ParagraphType.Text,
-        "TL;DR: Expose resource IDs from ViewModels to avoid showing obsolete data."
+        "TL;DR: Expose resource IDs from ViewModels to avoid showing obsolete data.",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -560,9 +561,9 @@ val paragraphsPost4 = listOf(
             Markup(
                 MarkupType.Bold,
                 183,
-                197
-            )
-        )
+                197,
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -570,8 +571,8 @@ val paragraphsPost4 = listOf(
         listOf(
             Markup(MarkupType.Code, 0, 16),
             Markup(MarkupType.Code, 34, 43),
-            Markup(MarkupType.Bold, 209, 303)
-        )
+            Markup(MarkupType.Bold, 209, 303),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -581,15 +582,15 @@ val paragraphsPost4 = listOf(
                 MarkupType.Link,
                 61,
                 103,
-                "https://issuetracker.google.com/issues/111961971"
+                "https://issuetracker.google.com/issues/111961971",
             ),
-            Markup(MarkupType.Italic, 61, 104)
-        )
+            Markup(MarkupType.Italic, 61, 104),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
         "The problem is that the string is resolved in the constructor only once. If there’s a locale change, the ViewModel won’t be recreated. This will result in our app showing obsolete data and therefore being only partially localized.",
-        listOf(Markup(MarkupType.Bold, 73, 133))
+        listOf(Markup(MarkupType.Bold, 73, 133)),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -599,20 +600,20 @@ val paragraphsPost4 = listOf(
                 MarkupType.Link,
                 3,
                 9,
-                "https://twitter.com/ZelenetS"
+                "https://twitter.com/ZelenetS",
             ),
             Markup(
                 MarkupType.Link,
                 28,
                 36,
-                "https://issuetracker.google.com/issues/111961971#comment2"
+                "https://issuetracker.google.com/issues/111961971#comment2",
             ),
-            Markup(MarkupType.Bold, 82, 150)
-        )
+            Markup(MarkupType.Bold, 82, 150),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "Even if you don’t plan to localize your app, it makes testing much easier and cleans up your ViewModel objects so there’s no reason not to future-proof."
+        "Even if you don’t plan to localize your app, it makes testing much easier and cleans up your ViewModel objects so there’s no reason not to future-proof.",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -622,22 +623,22 @@ val paragraphsPost4 = listOf(
                 MarkupType.Link,
                 66,
                 70,
-                "https://github.com/googlesamples/android-architecture/pull/631"
+                "https://github.com/googlesamples/android-architecture/pull/631",
             ),
             Markup(
                 MarkupType.Link,
                 75,
                 81,
-                "https://github.com/googlesamples/android-architecture/pull/635"
+                "https://github.com/googlesamples/android-architecture/pull/635",
             ),
             Markup(
                 MarkupType.Link,
                 128,
                 151,
-                "https://github.com/googlesamples/android-architecture/pull/635/files#diff-7eb5d85ec3ea4e05ecddb7dc8ae20aa1R62"
-            )
-        )
-    )
+                "https://github.com/googlesamples/android-architecture/pull/635/files#diff-7eb5d85ec3ea4e05ecddb7dc8ae20aa1R62",
+            ),
+        ),
+    ),
 )
 
 val paragraphsPost5 = listOf(
@@ -651,23 +652,23 @@ val paragraphsPost5 = listOf(
                 MarkupType.Link,
                 210,
                 221,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/index.html"
+                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/index.html",
             ),
             Markup(
                 MarkupType.Link,
                 241,
                 250,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.sequences/index.html"
+                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.sequences/index.html",
             ),
             Markup(MarkupType.Bold, 130, 134),
             Markup(MarkupType.Bold, 195, 202),
             Markup(MarkupType.Bold, 227, 233),
-            Markup(MarkupType.Italic, 130, 134)
-        )
+            Markup(MarkupType.Italic, 130, 134),
+        ),
     ),
     Paragraph(
         ParagraphType.Header,
-        "Collections vs sequences"
+        "Collections vs sequences",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -676,9 +677,9 @@ val paragraphsPost5 = listOf(
             Markup(
                 MarkupType.Italic,
                 57,
-                61
-            )
-        )
+                61,
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -691,17 +692,17 @@ val paragraphsPost5 = listOf(
                 MarkupType.Link,
                 183,
                 199,
-                "https://kotlinlang.org/docs/reference/inline-functions.html"
+                "https://kotlinlang.org/docs/reference/inline-functions.html",
             ),
             Markup(
                 MarkupType.Link,
                 229,
                 232,
-                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Collections.kt#L1312"
+                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Collections.kt#L1312",
             ),
             Markup(MarkupType.Bold, 0, 12),
-            Markup(MarkupType.Italic, 16, 23)
-        )
+            Markup(MarkupType.Italic, 16, 23),
+        ),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -710,8 +711,8 @@ val paragraphsPost5 = listOf(
             "}",
         listOf(
             Markup(MarkupType.Bold, 7, 13),
-            Markup(MarkupType.Bold, 88, 97)
-        )
+            Markup(MarkupType.Bold, 88, 97),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -727,12 +728,12 @@ val paragraphsPost5 = listOf(
             Markup(MarkupType.Bold, 67, 79),
             Markup(MarkupType.Bold, 84, 92),
             Markup(MarkupType.Bold, 254, 269),
-            Markup(MarkupType.Italic, 14, 20)
-        )
+            Markup(MarkupType.Italic, 14, 20),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "Sequences don’t hold a reference to the items of the collection. They’re created based on the iterator of the original collection and keep a reference to all the intermediate operations that need to be performed."
+        "Sequences don’t hold a reference to the items of the collection. They’re created based on the iterator of the original collection and keep a reference to all the intermediate operations that need to be performed.",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -744,16 +745,16 @@ val paragraphsPost5 = listOf(
                 MarkupType.Link,
                 222,
                 225,
-                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L860"
-            )
-        )
+                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L860",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
         "public fun <T, R> Sequence<T>.map(transform: (T) -> R): Sequence<R>{      \n" +
             "   return TransformingSequence(this, transform)\n" +
             "}",
-        listOf(Markup(MarkupType.Bold, 85, 105))
+        listOf(Markup(MarkupType.Bold, 85, 105)),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -764,24 +765,24 @@ val paragraphsPost5 = listOf(
                 MarkupType.Link,
                 27,
                 32,
-                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L117"
-            )
-        )
+                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L117",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
         "public inline fun <T> Sequence<T>.first(predicate: (T) -> Boolean): T {\n" +
             "   for (element in this) if (predicate(element)) return element\n" +
             "   throw NoSuchElementException(“Sequence contains no element matching the predicate.”)\n" +
-            "}"
+            "}",
     ),
     Paragraph(
         ParagraphType.Text,
         "If we look at how a sequence like TransformingSequence (used in the map above) is implemented, we’ll see that when next is called on the sequence iterator, the transformation stored is also applied.",
         listOf(
             Markup(MarkupType.Code, 34, 54),
-            Markup(MarkupType.Code, 68, 71)
-        )
+            Markup(MarkupType.Code, 68, 71),
+        ),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -791,9 +792,9 @@ val paragraphsPost5 = listOf(
             Markup(
                 MarkupType.Bold,
                 109,
-                120
-            )
-        )
+                120,
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -806,8 +807,8 @@ val paragraphsPost5 = listOf(
             "}",
         listOf(
             Markup(MarkupType.Bold, 83, 89),
-            Markup(MarkupType.Bold, 107, 118)
-        )
+            Markup(MarkupType.Bold, 107, 118),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -820,70 +821,70 @@ val paragraphsPost5 = listOf(
                 MarkupType.Link,
                 193,
                 207,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/#functions"
-            )
-        )
+                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/#functions",
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Header,
-        "Collections and sequences"
+        "Collections and sequences",
     ),
     Paragraph(
         ParagraphType.Text,
-        "Let’s say that we have a list of objects of different shapes. We want to make the shapes yellow and then take the first square shape."
+        "Let’s say that we have a list of objects of different shapes. We want to make the shapes yellow and then take the first square shape.",
     ),
     Paragraph(
         ParagraphType.Text,
-        "Let’s see how and when each operation is applied for collections and when for sequences"
+        "Let’s see how and when each operation is applied for collections and when for sequences",
     ),
     Paragraph(
         ParagraphType.Subhead,
-        "Collections"
+        "Collections",
     ),
     Paragraph(
         ParagraphType.Text,
         "map is called — a new ArrayList is created. We iterate through all items of the initial collection, transform it by copying the original object and changing the color, then add it to the new list.",
-        listOf(Markup(MarkupType.Code, 0, 3))
+        listOf(Markup(MarkupType.Code, 0, 3)),
     ),
     Paragraph(
         ParagraphType.Text,
         "first is called — we iterate through each item until the first square is found",
-        listOf(Markup(MarkupType.Code, 0, 5))
+        listOf(Markup(MarkupType.Code, 0, 5)),
     ),
     Paragraph(
         ParagraphType.Subhead,
-        "Sequences"
+        "Sequences",
     ),
     Paragraph(
         ParagraphType.Bullet,
         "asSequence — a sequence is created based on the Iterator of the original collection",
-        listOf(Markup(MarkupType.Code, 0, 10))
+        listOf(Markup(MarkupType.Code, 0, 10)),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "map is called — the transformation is added to the list of operations needed to be performed by the sequence but the operation is NOT performed",
         listOf(
             Markup(MarkupType.Code, 0, 3),
-            Markup(MarkupType.Bold, 130, 133)
-        )
+            Markup(MarkupType.Bold, 130, 133),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "first is called — this is a terminal operation, so, all the intermediate operations are triggered, on each element of the collection. We iterate through the initial collection applying map and then first on each of them. Since the condition from first is satisfied by the 2nd element, then we no longer apply the map on the rest of the collection.",
-        listOf(Markup(MarkupType.Code, 0, 5))
+        listOf(Markup(MarkupType.Code, 0, 5)),
     ),
 
     Paragraph(
         ParagraphType.Text,
-        "When working with sequences no intermediate collection is created and since items are evaluated one by one, map is only performed on some of the inputs."
+        "When working with sequences no intermediate collection is created and since items are evaluated one by one, map is only performed on some of the inputs.",
     ),
     Paragraph(
         ParagraphType.Header,
-        "Performance"
+        "Performance",
     ),
     Paragraph(
         ParagraphType.Subhead,
-        "Order of transformations"
+        "Order of transformations",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -891,16 +892,16 @@ val paragraphsPost5 = listOf(
         listOf(
             Markup(MarkupType.Code, 122, 127),
             Markup(MarkupType.Code, 157, 160),
-            Markup(MarkupType.Code, 197, 200)
-        )
+            Markup(MarkupType.Code, 197, 200),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "Because terminal operations can finish processing early, and intermediate operations are evaluated lazily, sequences can, in some cases, help you avoid doing unnecessary work compared to collections. Make sure you always check the order of the transformations and the dependencies between them!"
+        "Because terminal operations can finish processing early, and intermediate operations are evaluated lazily, sequences can, in some cases, help you avoid doing unnecessary work compared to collections. Make sure you always check the order of the transformations and the dependencies between them!",
     ),
     Paragraph(
         ParagraphType.Subhead,
-        "Inlining and large data sets consequences"
+        "Inlining and large data sets consequences",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -909,13 +910,13 @@ val paragraphsPost5 = listOf(
             Markup(
                 MarkupType.Code,
                 202,
-                210
-            )
-        )
+                210,
+            ),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "On the other hand, collections create a new list for every transformation while sequences just keep a reference to the transformation function."
+        "On the other hand, collections create a new list for every transformation while sequences just keep a reference to the transformation function.",
     ),
     Paragraph(
         ParagraphType.Text,
@@ -924,151 +925,151 @@ val paragraphsPost5 = listOf(
             Markup(MarkupType.Bold, 18, 35),
             Markup(MarkupType.Bold, 119, 130),
             Markup(MarkupType.Bold, 168, 179),
-            Markup(MarkupType.Bold, 258, 267)
-        )
+            Markup(MarkupType.Bold, 258, 267),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
-        "Unfortunately, I’m not aware of any benchmarking study done that would help us get a better understanding on how the performance of collections vs sequences is affected with different sizes of collections or operation chains."
+        "Unfortunately, I’m not aware of any benchmarking study done that would help us get a better understanding on how the performance of collections vs sequences is affected with different sizes of collections or operation chains.",
     ),
     Paragraph(
         ParagraphType.Text,
-        "Collections eagerly evaluate your data while sequences do so lazily. Depending on the size of your data, pick the one that fits best: collections — for small lists or sequences — for larger ones, and pay attention to the order of the transformations."
-    )
+        "Collections eagerly evaluate your data while sequences do so lazily. Depending on the size of your data, pick the one that fits best: collections — for small lists or sequences — for larger ones, and pay attention to the order of the transformations.",
+    ),
 )
 
 val paragraphsPost6 = listOf(
     Paragraph(
         ParagraphType.Text,
-        "The Android Studio logo redesign caught the attention of the developer community since its sneak peek at the Android Developer Summit. We are thrilled to release the new Android Studio logo with the stable release of Flamingo. Now that the new logo is available to most Android Studio users, we can examine the design changes in greater detail and decode their meaning."
+        "The Android Studio logo redesign caught the attention of the developer community since its sneak peek at the Android Developer Summit. We are thrilled to release the new Android Studio logo with the stable release of Flamingo. Now that the new logo is available to most Android Studio users, we can examine the design changes in greater detail and decode their meaning.",
     ),
     Paragraph(
         ParagraphType.Text,
-        "This case study offers a comprehensive overview of the design journey, from identifying the initial problem to the final outcome. It explores the critical brand elements that the team needed to consider and the tools used throughout the redesign process. This case study also delves into the various stages of design exploration, highlighting the efforts to create a modern logo while honoring the Android Studio brand's legacy."
+        "This case study offers a comprehensive overview of the design journey, from identifying the initial problem to the final outcome. It explores the critical brand elements that the team needed to consider and the tools used throughout the redesign process. This case study also delves into the various stages of design exploration, highlighting the efforts to create a modern logo while honoring the Android Studio brand's legacy.",
     ),
     Paragraph(
         ParagraphType.Header,
-        "Identifying the problem"
+        "Identifying the problem",
     ),
     Paragraph(
         ParagraphType.Text,
-        "You told us the Android Studio logo looked a little weird and complicated. It doesn't shrink down well and it's way too similar to the emulator. We heard you!"
+        "You told us the Android Studio logo looked a little weird and complicated. It doesn't shrink down well and it's way too similar to the emulator. We heard you!",
     ),
     Paragraph(
         ParagraphType.Text,
-        "The Android Studio logo used between 2020 and 2022 was well-suited for print, but it posed challenges when used as an application icon. Its readability suffered when reduced to smaller sizes, and its similarity to the emulator caused confusion."
+        "The Android Studio logo used between 2020 and 2022 was well-suited for print, but it posed challenges when used as an application icon. Its readability suffered when reduced to smaller sizes, and its similarity to the emulator caused confusion.",
     ),
     Paragraph(
         ParagraphType.Text,
-        "Additionally, the use of color alone to differentiate between Canary and Stable versions made it difficult for users with color vision deficiencies."
+        "Additionally, the use of color alone to differentiate between Canary and Stable versions made it difficult for users with color vision deficiencies.",
     ),
     Paragraph(
         ParagraphType.Text,
-        "The redesign aimed to resolve these concerns by creating a logo that was easy to read, visually distinctive, and followed the OS guidelines when necessary, ensuring accessibility. The new design also maintained a connection with the Android logo family while honoring its legacy."
+        "The redesign aimed to resolve these concerns by creating a logo that was easy to read, visually distinctive, and followed the OS guidelines when necessary, ensuring accessibility. The new design also maintained a connection with the Android logo family while honoring its legacy.",
     ),
     Paragraph(
         ParagraphType.Text,
-        "In this case study, we will delve into the version history and evolution of the Android Studio logo and how it has changed over the years."
+        "In this case study, we will delve into the version history and evolution of the Android Studio logo and how it has changed over the years.",
     ),
     Paragraph(
         ParagraphType.Header,
-        "A brief history of the Android Studio logo"
+        "A brief history of the Android Studio logo",
     ),
     Paragraph(
         ParagraphType.Bullet,
         "2013: The original Android Studio logo was a 3D robot that highlighted the gears and interworking of the bugdroid. At this time, the Android Emulator was the bugdroid.",
         listOf(
-            Markup(MarkupType.Bold, 0, 5)
-        )
+            Markup(MarkupType.Bold, 0, 5),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "2014: The Android Emulator merged to a flat mark but remained otherwise unchanged.",
         listOf(
-            Markup(MarkupType.Bold, 0, 5)
-        )
+            Markup(MarkupType.Bold, 0, 5),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "2014-2019: An updated Android Studio logo was introduced featuring an \"A\" compass in front of a green circle.",
         listOf(
-            Markup(MarkupType.Bold, 0, 10)
-        )
+            Markup(MarkupType.Bold, 0, 10),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "2019: In Canary 3.6, the color palette was updated to match Android 10.",
         listOf(
-            Markup(MarkupType.Bold, 0, 5)
-        )
+            Markup(MarkupType.Bold, 0, 5),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "2020-2022: With the release of Android Studio 4.1 Canary, the \"A\" compass was reduced to an abstract form placed in front of a blueprint. The Android head was also added, peeking over the top.",
         listOf(
-            Markup(MarkupType.Bold, 0, 10)
-        )
+            Markup(MarkupType.Bold, 0, 10),
+        ),
     ),
     Paragraph(
         ParagraphType.Header,
-        "Understanding the Android brand elements"
+        "Understanding the Android brand elements",
     ),
     Paragraph(
         ParagraphType.Text,
-        "When redesigning a logo, it's important to consider brand elements that unify products within an ecosystem. For the Android Developer ecosystem, the \"robot head\" is a key brand element, alongside the primaryAndroid green color. The secondary colors blue and navy, and tertiary colors like orange, can also be utilized for support."
+        "When redesigning a logo, it's important to consider brand elements that unify products within an ecosystem. For the Android Developer ecosystem, the \"robot head\" is a key brand element, alongside the primaryAndroid green color. The secondary colors blue and navy, and tertiary colors like orange, can also be utilized for support.",
     ),
     Paragraph(
         ParagraphType.Header,
-        "Key objectives"
+        "Key objectives",
     ),
     Paragraph(
         ParagraphType.Bullet,
         "Iconography: use recognizable and appropriate symbols, such as compass \"A\" for Android Studio or a device for Android Emulator, to convey the purpose and functionality clearly and quickly.",
         listOf(
-            Markup(MarkupType.Bold, 0, 12)
-        )
+            Markup(MarkupType.Bold, 0, 12),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "Enhance recognition and scalability: the Android Studio and Android Emulator should prioritize legibility and scalability, ensuring that they can be easily recognized and understood even at smaller sizes.",
         listOf(
-            Markup(MarkupType.Bold, 0, 36)
-        )
+            Markup(MarkupType.Bold, 0, 36),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "Establish distinction: the Android Studio and Android Emulator need to be easily distinguishable, to avoid confusion.",
         listOf(
-            Markup(MarkupType.Bold, 0, 22)
-        )
+            Markup(MarkupType.Bold, 0, 22),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "Maintain brand consistency: the Android Studio and Android Emulator designs should be consistent with the overall branding and visual identity of the Android family, while still being distinctive.",
         listOf(
-            Markup(MarkupType.Bold, 0, 27)
-        )
+            Markup(MarkupType.Bold, 0, 27),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "Ensure accessibility: the logo should be accessible to all users, including those with visual impairments. This means using clear shapes, colors, and contrast.",
         listOf(
-            Markup(MarkupType.Bold, 0, 21)
-        )
+            Markup(MarkupType.Bold, 0, 21),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "Follow OS guidelines: the updated application icon must align with the Android visual language and conform to the guidelines of macOS, Windows, and Linux operating systems, ensuring consistency and coherence across all platforms.",
         listOf(
-            Markup(MarkupType.Bold, 0, 21)
-        )
+            Markup(MarkupType.Bold, 0, 21),
+        ),
     ),
     Paragraph(
         ParagraphType.Bullet,
         "Ensure versatility: the Android Studio logo should be versatile enough to work in a variety of sizes and contexts, such as on different devices and platforms.",
         listOf(
-            Markup(MarkupType.Bold, 0, 20)
-        )
+            Markup(MarkupType.Bold, 0, 20),
+        ),
     ),
     Paragraph(
         ParagraphType.Text,
@@ -1078,10 +1079,10 @@ val paragraphsPost6 = listOf(
                 MarkupType.Link,
                 0,
                 9,
-                "https://android-developers.googleblog.com/2023/05/redesigning-android-studio-logo.html"
-            )
-        )
-    )
+                "https://android-developers.googleblog.com/2023/05/redesigning-android-studio-logo.html",
+            ),
+        ),
+    ),
 )
 
 val post1 = Post(
@@ -1093,11 +1094,11 @@ val post1 = Post(
     metadata = Metadata(
         author = pietro,
         date = "August 02",
-        readTimeMinutes = 1
+        readTimeMinutes = 1,
     ),
     paragraphs = paragraphsPost1,
     imageId = R.drawable.post_1,
-    imageThumbId = R.drawable.post_1_thumb
+    imageThumbId = R.drawable.post_1_thumb,
 )
 
 val post2 = Post(
@@ -1109,11 +1110,11 @@ val post2 = Post(
     metadata = Metadata(
         author = manuel,
         date = "July 30",
-        readTimeMinutes = 3
+        readTimeMinutes = 3,
     ),
     paragraphs = paragraphsPost2,
     imageId = R.drawable.post_2,
-    imageThumbId = R.drawable.post_2_thumb
+    imageThumbId = R.drawable.post_2_thumb,
 )
 
 val post3 = Post(
@@ -1125,11 +1126,11 @@ val post3 = Post(
     metadata = Metadata(
         author = florina,
         date = "July 09",
-        readTimeMinutes = 1
+        readTimeMinutes = 1,
     ),
     paragraphs = paragraphsPost3,
     imageId = R.drawable.post_3,
-    imageThumbId = R.drawable.post_3_thumb
+    imageThumbId = R.drawable.post_3_thumb,
 )
 
 val post4 = Post(
@@ -1141,11 +1142,11 @@ val post4 = Post(
     metadata = Metadata(
         author = jose,
         date = "April 02",
-        readTimeMinutes = 1
+        readTimeMinutes = 1,
     ),
     paragraphs = paragraphsPost4,
     imageId = R.drawable.post_4,
-    imageThumbId = R.drawable.post_4_thumb
+    imageThumbId = R.drawable.post_4_thumb,
 )
 
 val post5 = Post(
@@ -1157,11 +1158,11 @@ val post5 = Post(
     metadata = Metadata(
         author = florina,
         date = "July 24",
-        readTimeMinutes = 4
+        readTimeMinutes = 4,
     ),
     paragraphs = paragraphsPost5,
     imageId = R.drawable.post_5,
-    imageThumbId = R.drawable.post_5_thumb
+    imageThumbId = R.drawable.post_5_thumb,
 )
 
 val post6 = Post(
@@ -1173,11 +1174,11 @@ val post6 = Post(
     metadata = Metadata(
         author = androidstudioteam,
         date = "May 10",
-        readTimeMinutes = 5
+        readTimeMinutes = 5,
     ),
     paragraphs = paragraphsPost6,
     imageId = R.drawable.post_6,
-    imageThumbId = R.drawable.post_6_thumb
+    imageThumbId = R.drawable.post_6_thumb,
 )
 
 val posts: PostsFeed =
@@ -1187,12 +1188,12 @@ val posts: PostsFeed =
         popularPosts = listOf(
             post5,
             post1.copy(id = "post6"),
-            post2.copy(id = "post7")
+            post2.copy(id = "post7"),
         ),
         recentPosts = listOf(
             post6,
             post3.copy(id = "post8"),
             post4.copy(id = "post9"),
-            post5.copy(id = "post10")
-        )
+            post5.copy(id = "post10"),
+        ),
     )

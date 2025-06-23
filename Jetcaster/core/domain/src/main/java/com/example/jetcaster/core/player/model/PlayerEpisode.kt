@@ -35,6 +35,7 @@ data class PlayerEpisode(
     val author: String = "",
     val summary: String = "",
     val podcastImageUrl: String = "",
+    val mediaUrls: List<String> = emptyList<String>(),
 ) {
     constructor(podcastInfo: PodcastInfo, episodeInfo: EpisodeInfo) : this(
         title = episodeInfo.title,
@@ -45,19 +46,20 @@ data class PlayerEpisode(
         author = episodeInfo.author,
         summary = episodeInfo.summary,
         podcastImageUrl = podcastInfo.imageUrl,
-        uri = episodeInfo.uri
+        uri = episodeInfo.uri,
+        mediaUrls = episodeInfo.mediaUrls,
     )
 }
 
-fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode =
-    PlayerEpisode(
-        uri = episode.uri,
-        title = episode.title,
-        subTitle = episode.subtitle ?: "",
-        published = episode.published,
-        duration = episode.duration,
-        podcastName = podcast.title,
-        author = episode.author ?: podcast.author ?: "",
-        summary = episode.summary ?: "",
-        podcastImageUrl = podcast.imageUrl ?: "",
-    )
+fun EpisodeToPodcast.toPlayerEpisode(): PlayerEpisode = PlayerEpisode(
+    uri = episode.uri,
+    title = episode.title,
+    subTitle = episode.subtitle ?: "",
+    published = episode.published,
+    duration = episode.duration,
+    podcastName = podcast.title,
+    author = episode.author ?: podcast.author ?: "",
+    summary = episode.summary ?: "",
+    podcastImageUrl = podcast.imageUrl ?: "",
+    mediaUrls = episode.mediaUrls,
+)

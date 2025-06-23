@@ -36,6 +36,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # https://github.com/diffplug/spotless/issues/710
+          # Check out full history for Spotless to ensure ratchetFrom can find the ratchet version
+          fetch-depth: 0
 
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
@@ -59,7 +63,7 @@ jobs:
 
       - name: Check formatting
         working-directory: ${{ inputs.path }}
-        run: ./gradlew --init-script buildscripts/init.gradle.kts spotlessCheck --stacktrace
+        run: ./gradlew spotlessCheck --stacktrace
 
       - name: Check lint
         working-directory: ${{ inputs.path }}

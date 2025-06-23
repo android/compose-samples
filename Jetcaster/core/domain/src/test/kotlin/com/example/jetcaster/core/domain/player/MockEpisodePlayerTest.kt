@@ -36,15 +36,15 @@ class MockEpisodePlayerTest {
     private val testEpisodes = listOf(
         PlayerEpisode(
             uri = "uri1",
-            duration = Duration.ofSeconds(60)
+            duration = Duration.ofSeconds(60),
         ),
         PlayerEpisode(
             uri = "uri2",
-            duration = Duration.ofSeconds(60)
+            duration = Duration.ofSeconds(60),
         ),
         PlayerEpisode(
             uri = "uri3",
-            duration = Duration.ofSeconds(60)
+            duration = Duration.ofSeconds(60),
         ),
     )
 
@@ -53,7 +53,7 @@ class MockEpisodePlayerTest {
         val playSpeed = Duration.ofSeconds(2)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
-            duration = Duration.ofSeconds(60)
+            duration = Duration.ofSeconds(60),
         )
         mockEpisodePlayer.currentEpisode = currEpisode
         mockEpisodePlayer.playerSpeed = playSpeed
@@ -69,7 +69,7 @@ class MockEpisodePlayerTest {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
-            duration = duration
+            duration = duration,
         )
         mockEpisodePlayer.currentEpisode = currEpisode
         testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
@@ -85,7 +85,7 @@ class MockEpisodePlayerTest {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
-            duration = duration
+            duration = duration,
         )
 
         mockEpisodePlayer.currentEpisode = currEpisode
@@ -101,18 +101,18 @@ class MockEpisodePlayerTest {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
-            duration = duration
+            duration = duration,
         )
         val firstEpisodeFromList = PlayerEpisode(
             uri = "firstEpisodeFromList",
-            duration = duration
+            duration = duration,
         )
         val secondEpisodeFromList = PlayerEpisode(
             uri = "secondEpisodeFromList",
-            duration = duration
+            duration = duration,
         )
         val episodeListToBeAddedToTheQueue: List<PlayerEpisode> = listOf(
-            firstEpisodeFromList, secondEpisodeFromList
+            firstEpisodeFromList, secondEpisodeFromList,
         )
         mockEpisodePlayer.currentEpisode = currEpisode
 
@@ -154,7 +154,7 @@ class MockEpisodePlayerTest {
     fun whenNext_queueIsNotEmpty_removeFromQueue() = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = PlayerEpisode(
             uri = "currentEpisode",
-            duration = Duration.ofSeconds(60)
+            duration = Duration.ofSeconds(60),
         )
         testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
 
@@ -174,7 +174,7 @@ class MockEpisodePlayerTest {
     fun whenNext_queueIsNotEmpty_notRemovedFromQueue() = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = PlayerEpisode(
             uri = "currentEpisode",
-            duration = Duration.ofSeconds(60)
+            duration = Duration.ofSeconds(60),
         )
         testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
 

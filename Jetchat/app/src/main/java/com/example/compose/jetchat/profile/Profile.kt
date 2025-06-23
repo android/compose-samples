@@ -76,7 +76,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun ProfileScreen(
     userData: ProfileScreenState,
-    nestedScrollInteropConnection: NestedScrollConnection = rememberNestedScrollInteropConnection()
+    nestedScrollInteropConnection: NestedScrollConnection = rememberNestedScrollInteropConnection(),
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -89,7 +89,7 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(nestedScrollInteropConnection)
-            .systemBarsPadding()
+            .systemBarsPadding(),
     ) {
         Surface {
             Column(
@@ -100,7 +100,7 @@ fun ProfileScreen(
                 ProfileHeader(
                     scrollState,
                     userData,
-                    this@BoxWithConstraints.maxHeight
+                    this@BoxWithConstraints.maxHeight,
                 )
                 UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
             }
@@ -114,7 +114,7 @@ fun ProfileScreen(
                 .align(Alignment.BottomEnd)
                 // Offsets the FAB to compensate for CoordinatorLayout collapsing behaviour
                 .offset(y = ((-100).dp)),
-            onFabClicked = { functionalityNotAvailablePopupShown = true }
+            onFabClicked = { functionalityNotAvailablePopupShown = true },
         )
     }
 }
@@ -143,19 +143,17 @@ private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
 }
 
 @Composable
-private fun NameAndPosition(
-    userData: ProfileScreenState
-) {
+private fun NameAndPosition(userData: ProfileScreenState) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Name(
             userData,
-            modifier = Modifier.baselineHeight(32.dp)
+            modifier = Modifier.baselineHeight(32.dp),
         )
         Position(
             userData,
             modifier = Modifier
                 .padding(bottom = 20.dp)
-                .baselineHeight(24.dp)
+                .baselineHeight(24.dp),
         )
     }
 }
@@ -165,7 +163,7 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     Text(
         text = userData.name,
         modifier = modifier,
-        style = MaterialTheme.typography.headlineSmall
+        style = MaterialTheme.typography.headlineSmall,
     )
 }
 
@@ -175,16 +173,12 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
         text = userData.position,
         modifier = modifier,
         style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
 @Composable
-private fun ProfileHeader(
-    scrollState: ScrollState,
-    data: ProfileScreenState,
-    containerHeight: Dp
-) {
+private fun ProfileHeader(scrollState: ScrollState, data: ProfileScreenState, containerHeight: Dp) {
     val offset = (scrollState.value / 2)
     val offsetDp = with(LocalDensity.current) { offset.toDp() }
 
@@ -197,12 +191,12 @@ private fun ProfileHeader(
                 .padding(
                     start = 16.dp,
                     top = offsetDp,
-                    end = 16.dp
+                    end = 16.dp,
                 )
                 .clip(CircleShape),
             painter = painterResource(id = it),
             contentScale = ContentScale.Crop,
-            contentDescription = null
+            contentDescription = null,
         )
     }
 }
@@ -215,7 +209,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
             text = label,
             modifier = Modifier.baselineHeight(24.dp),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         val style = if (isLink) {
             MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
@@ -225,7 +219,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = value,
             modifier = Modifier.baselineHeight(24.dp),
-            style = style
+            style = style,
         )
     }
 }
@@ -236,13 +230,9 @@ fun ProfileError() {
 }
 
 @Composable
-fun ProfileFab(
-    extended: Boolean,
-    userIsMe: Boolean,
-    modifier: Modifier = Modifier,
-    onFabClicked: () -> Unit = { }
-) {
-    key(userIsMe) { // Prevent multiple invocations to execute during composition
+fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifier, onFabClicked: () -> Unit = { }) {
+    key(userIsMe) {
+        // Prevent multiple invocations to execute during composition
         FloatingActionButton(
             onClick = onFabClicked,
             modifier = modifier
@@ -250,25 +240,25 @@ fun ProfileFab(
                 .navigationBarsPadding()
                 .height(48.dp)
                 .widthIn(min = 48.dp),
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         ) {
             AnimatingFabContent(
                 icon = {
                     Icon(
                         imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
                         contentDescription = stringResource(
-                            if (userIsMe) R.string.edit_profile else R.string.message
-                        )
+                            if (userIsMe) R.string.edit_profile else R.string.message,
+                        ),
                     )
                 },
                 text = {
                     Text(
                         text = stringResource(
-                            id = if (userIsMe) R.string.edit_profile else R.string.message
+                            id = if (userIsMe) R.string.edit_profile else R.string.message,
                         ),
                     )
                 },
-                extended = extended
+                extended = extended,
             )
         }
     }

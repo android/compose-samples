@@ -39,7 +39,7 @@ class PodcastsRepository @Inject constructor(
     private val episodeStore: EpisodeStore,
     private val categoryStore: CategoryStore,
     private val transactionRunner: TransactionRunner,
-    @Dispatcher(JetcasterDispatchers.Main) mainDispatcher: CoroutineDispatcher
+    @Dispatcher(JetcasterDispatchers.Main) mainDispatcher: CoroutineDispatcher,
 ) {
     private var refreshingJob: Job? = null
 
@@ -49,8 +49,7 @@ class PodcastsRepository @Inject constructor(
         if (refreshingJob?.isActive == true) {
             refreshingJob?.join()
         } else if (force || podcastStore.isEmpty()) {
-
-            refreshingJob = scope.launch {
+            val job = scope.launch {
                 // Now fetch the podcasts, and add each to each store
                 podcastsFetcher(SampleFeeds)
                     .filter { it is PodcastRssResponse.Success }
@@ -66,12 +65,15 @@ class PodcastsRepository @Inject constructor(
                                 // Now we can add the podcast to the category
                                 categoryStore.addPodcastToCategory(
                                     podcastUri = podcast.uri,
-                                    categoryId = categoryId
+                                    categoryId = categoryId,
                                 )
                             }
                         }
                     }
             }
+            refreshingJob = job
+            // We need to wait here for the job to finish, otherwise the coroutine completes ~immediatelly
+            job.join()
         }
     }
 }

@@ -41,7 +41,7 @@ fun JetchatAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { },
     title: @Composable () -> Unit,
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -54,9 +54,9 @@ fun JetchatAppBar(
                 modifier = Modifier
                     .size(64.dp)
                     .clickable(onClick = onNavIconPressed)
-                    .padding(16.dp)
+                    .padding(16.dp),
             )
-        }
+        },
     )
 }
 

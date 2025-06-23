@@ -24,7 +24,9 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class JetcasterWearApplication : Application(), ImageLoaderFactory {
+class JetcasterWearApplication :
+    Application(),
+    ImageLoaderFactory {
 
     @Inject lateinit var imageLoader: ImageLoader
 
@@ -44,6 +46,5 @@ class JetcasterWearApplication : Application(), ImageLoaderFactory {
         )
     }
 
-    override fun newImageLoader(): ImageLoader =
-        imageLoader
+    override fun newImageLoader(): ImageLoader = imageLoader
 }

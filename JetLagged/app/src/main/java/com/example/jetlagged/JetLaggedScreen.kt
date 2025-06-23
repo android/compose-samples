@@ -64,30 +64,30 @@ fun JetLaggedScreen(
     modifier: Modifier = Modifier,
     windowSizeClass: WindowWidthSizeClass = WindowWidthSizeClass.COMPACT,
     viewModel: JetLaggedHomeScreenViewModel = viewModel(),
-    onDrawerClicked: () -> Unit = {}
+    onDrawerClicked: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
     ) {
         Column(
             modifier = Modifier.movingStripesBackground(
                 stripeColor = JetLaggedTheme.extraColors.header,
                 backgroundColor = MaterialTheme.colorScheme.background,
-            )
+            ),
         ) {
             JetLaggedHeader(
                 modifier = Modifier.fillMaxWidth(),
-                onDrawerClicked = onDrawerClicked
+                onDrawerClicked = onDrawerClicked,
             )
         }
 
         val uiState =
             viewModel.uiState.collectAsStateWithLifecycle()
         val insets = WindowInsets.safeDrawing.only(
-            WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
+            WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal,
         )
         val boundsTransform = { _: Rect, _: Rect ->
             spring(
@@ -119,19 +119,19 @@ fun JetLaggedScreen(
                     uiState.value.sleepGraphData,
                     Modifier.widthIn(max = 600.dp)
                 )
-                if (windowSizeClass == WindowWidthSizeClass.COMPACT) {
+                if (windowSizeClass == WindowWidthSizeClass.Compact) {
                     timeSleepSummaryCards()
                 } else {
                     FlowColumn {
                         timeSleepSummaryCards()
                     }
                 }
-                if (windowSizeClass == WindowWidthSizeClass.COMPACT) {
+                if (windowSizeClass == WindowWidthSizeClass.Compact) {
                     WellnessCard(
                         wellnessData = uiState.value.wellnessData,
                         modifier = animateBoundsModifier
                             .widthIn(max = 400.dp)
-                            .heightIn(min = 200.dp)
+                            .heightIn(min = 200.dp),
                     )
                     HeartRateCard(
                         modifier = animateBoundsModifier.widthIn(max = 400.dp, min = 200.dp),

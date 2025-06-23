@@ -3,7 +3,9 @@
 # Jetcaster sample 🎙️
 
 Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The goal of the sample is to
-showcase building with Compose across multiple form factors (mobile, TV, and Wear) and full featured architecture.
+showcase building with Compose across multiple form factors (mobile, TV, and Wear) and full featured architecture. This sample also showcases Material Expressive elements.
+
+Set your device to dark theme when trying out Jetcaster. This app features a dark theme as the primary theme of the app, since contextually media apps benefit greatly from dark themes. It also shows that contrast and expressive design can still be honored with dark themes.
 
 To try out this sample app, use the latest stable version
 of [Android Studio](https://developer.android.com/studio).
@@ -83,7 +85,7 @@ if you want to see an advanced Media sample built on Compose that uses Exoplayer
 refer to the [Media Toolkit sample][mediatoolkitsample].
 
 The [official media app guidance for Wear OS][wearmediaguidance]
-advices to download content on the watch before listening to preserve power, this feature will be added to this sample in future iterations. You can
+recommends downloading content onto the watch before listening to preserve power, this feature will be added to this sample in future iterations. You can
 refer to the [Media Toolkit sample][mediatoolkitsample] to learn how to implement the media download feature.
 
 ### Architecture
@@ -94,7 +96,7 @@ own [ViewModel][viewmodel] which exposes a `StateFlow<ScreenState>` for the UI t
 
 ### Podcast data
 
-The podcast data in this sample is dynamically fetched from a number of podcast RSS feeds, which are listed in [`Feeds.kt`](mobile/src/main/java/com/example/jetcaster/data/Feeds.kt). 
+The podcast data in this sample is dynamically fetched from a number of podcast RSS feeds, which are listed in [`Feeds.kt`](core/data/src/main/java/com/example/jetcaster/core/data/network/Feeds.kt).
 
 The [`PodcastRepository`][podcastrepo] class is responsible for handling the data fetching of all podcast information:
 
@@ -103,11 +105,11 @@ The [`PodcastRepository`][podcastrepo] class is responsible for handling the dat
 
  ### Follow podcasts
 
- The sample allows users to 'follow' podcasts, which is implemented within the data layer in the [`PodcastFollowedEntry`](mobile/src/main/java/com/example/jetcaster/data/PodcastFollowedEntry.kt) entity class, and as functions in [PodcastStore][podcaststore]: `followPodcast()`, `unfollowPodcast()`.
+ The sample allows users to 'follow' podcasts, which is implemented within the data layer in the [`PodcastFollowedEntry`](core/data/src/main/java/com/example/jetcaster/core/data/database/model/PodcastFollowedEntry.kt) entity class, and as functions in [PodcastStore][podcaststore]: `followPodcast()`, `unfollowPodcast()`.
 
  ### Date + time
 
- The sample uses the JDK 8 [date and time APIs](https://developer.android.com/reference/java/time/package-summary) through the [desugaring support][jdk8desugar] available in Android Gradle Plugin 4.0+. Relevant Room [`TypeConverters`](https://developer.android.com/reference/kotlin/androidx/room/TypeConverters) are implemented in [`DateTimeTypeConverters.kt`](mobile/src/main/java/com/example/jetcaster/data/room/DateTimeTypeConverters.kt).
+ The sample uses the JDK 8 [date and time APIs](https://developer.android.com/reference/java/time/package-summary) through the [desugaring support][jdk8desugar] available in Android Gradle Plugin 4.0+. Relevant Room [`TypeConverters`](https://developer.android.com/reference/kotlin/androidx/room/TypeConverters) are implemented in [`DateTimeTypeConverters.kt`](core/data/src/main/java/com/example/jetcaster/core/data/database/DateTimeTypeConverters.kt).
 
 ## License
 
@@ -134,6 +136,7 @@ limitations under the License.
  [epstore]: mobile/src/main/java/com/example/jetcaster/data/EpisodeStore.kt
  [catstore]: mobile/src/main/java/com/example/jetcaster/data/CategoryStore.kt
  [db]: mobile/src/main/java/com/example/jetcaster/data/room/JetcasterDatabase.kt
+ [glance]: https://developer.android.com/develop/ui/compose/glance
  [homevm]: mobile/src/main/java/com/example/jetcaster/ui/home/HomeViewModel.kt
  [homeui]: mobile/src/main/java/com/example/jetcaster/ui/home/Home.kt
  [compose]: https://developer.android.com/jetpack/compose

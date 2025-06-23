@@ -21,7 +21,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.google.android.horologist.media.ui.navigation.NavigationScreens
+import com.google.android.horologist.media.ui.material3.navigation.NavigationScreens
 
 /**
  * NavController extensions that links to the screens of the Jetcaster app.
@@ -46,10 +46,6 @@ public object JetcasterNavController {
 
     public fun NavController.navigateToEpisode(episodeUri: String) {
         navigate(Episode.destination(episodeUri))
-    }
-
-    public fun NavController.navigateToPlaybackSpeed() {
-        navigate(PlaybackSpeed.destination())
     }
 }
 
@@ -92,9 +88,5 @@ public object Episode : NavigationScreens("episode?episodeUri={episodeUri}") {
 }
 
 public object UpNext : NavigationScreens("upNext") {
-    public fun destination(): String = navRoute
-}
-
-public object PlaybackSpeed : NavigationScreens("playbackSpeed") {
     public fun destination(): String = navRoute
 }

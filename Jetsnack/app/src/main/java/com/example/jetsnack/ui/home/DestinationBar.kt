@@ -64,8 +64,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     .renderInSharedTransitionScopeOverlay()
                     .animateEnterExit(
                         enter = slideInVertically(spatialExpressiveSpring()) { -it * 2 },
-                        exit = slideOutVertically(spatialExpressiveSpring()) { -it * 2 }
-                    )
+                        exit = slideOutVertically(spatialExpressiveSpring()) { -it * 2 },
+                    ),
             ) {
                 TopAppBar(
                     windowInsets = WindowInsets(0, 0, 0, 0),
@@ -80,17 +80,17 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier
                                     .weight(1f)
-                                    .align(Alignment.CenterVertically)
+                                    .align(Alignment.CenterVertically),
                             )
                             IconButton(
                                 onClick = { /* todo */ },
-                                modifier = Modifier.align(Alignment.CenterVertically)
+                                modifier = Modifier.align(Alignment.CenterVertically),
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.ExpandMore,
                                     tint = JetsnackTheme.colors.brand,
                                     contentDescription =
-                                    stringResource(R.string.label_select_delivery)
+                                    stringResource(R.string.label_select_delivery),
                                 )
                             }
                         }
@@ -98,7 +98,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     colors = TopAppBarDefaults.topAppBarColors().copy(
                         containerColor = JetsnackTheme.colors.uiBackground
                             .copy(alpha = AlphaNearOpaque),
-                        titleContentColor = JetsnackTheme.colors.textSecondary
+                        titleContentColor = JetsnackTheme.colors.textSecondary,
                     ),
                 )
                 JetsnackDivider()

@@ -76,11 +76,7 @@ import com.example.jetsnack.ui.components.FilterChip
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun FilterScreen(
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
-    onDismiss: () -> Unit
-) {
+fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilityScope: AnimatedVisibilityScope, onDismiss: () -> Unit) {
     var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
     var maxCalories by remember { mutableFloatStateOf(0f) }
     val defaultFilter = SnackRepo.getSortDefault()
@@ -90,10 +86,10 @@ fun FilterScreen(
             .fillMaxSize()
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }
+                interactionSource = remember { MutableInteractionSource() },
             ) {
                 // capture click
-            }
+            },
     ) {
         val priceFilters = remember { SnackRepo.getPriceFilters() }
         val categoryFilters = remember { SnackRepo.getCategoryFilters() }
@@ -104,10 +100,10 @@ fun FilterScreen(
                 .background(Color.Black.copy(alpha = 0.5f))
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
+                    interactionSource = remember { MutableInteractionSource() },
                 ) {
                     onDismiss()
-                }
+                },
         )
         with(sharedTransitionScope) {
             Column(
@@ -119,14 +115,14 @@ fun FilterScreen(
                         rememberSharedContentState(FilterSharedElementKey),
                         animatedVisibilityScope = animatedVisibilityScope,
                         resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
-                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium)
+                        clipInOverlayDuringTransition = OverlayClip(MaterialTheme.shapes.medium),
                     )
                     .wrapContentSize()
                     .heightIn(max = 450.dp)
                     .verticalScroll(rememberScrollState())
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
+                        interactionSource = remember { MutableInteractionSource() },
                     ) { }
                     .background(JetsnackTheme.colors.uiFloated)
                     .padding(horizontal = 24.dp, vertical = 16.dp)
@@ -136,7 +132,7 @@ fun FilterScreen(
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(id = R.string.close)
+                            contentDescription = stringResource(id = R.string.close),
                         )
                     }
                     Text(
@@ -146,13 +142,13 @@ fun FilterScreen(
                             .fillMaxHeight()
                             .padding(top = 8.dp, end = 48.dp),
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
                     )
                     val resetEnabled = sortState != defaultFilter
 
                     IconButton(
                         onClick = { /* TODO: Open search */ },
-                        enabled = resetEnabled
+                        enabled = resetEnabled,
                     ) {
                         val fontWeight = if (resetEnabled) {
                             FontWeight.Bold
@@ -165,7 +161,7 @@ fun FilterScreen(
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = fontWeight,
                             color = JetsnackTheme.colors.uiBackground
-                                .copy(alpha = if (!resetEnabled) 0.38f else 1f)
+                                .copy(alpha = if (!resetEnabled) 0.38f else 1f),
                         )
                     }
                 }
@@ -174,26 +170,26 @@ fun FilterScreen(
                     sortState = sortState,
                     onFilterChange = { filter ->
                         sortState = filter.name
-                    }
+                    },
                 )
                 FilterChipSection(
                     title = stringResource(id = R.string.price),
-                    filters = priceFilters
+                    filters = priceFilters,
                 )
                 FilterChipSection(
                     title = stringResource(id = R.string.category),
-                    filters = categoryFilters
+                    filters = categoryFilters,
                 )
 
                 MaxCalories(
                     sliderPosition = maxCalories,
                     onValueChanged = { newValue ->
                         maxCalories = newValue
-                    }
+                    },
                 )
                 FilterChipSection(
                     title = stringResource(id = R.string.lifestyle),
-                    filters = lifeStyleFilters
+                    filters = lifeStyleFilters,
                 )
             }
         }
@@ -208,12 +204,12 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp, bottom = 16.dp)
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp),
     ) {
         filters.forEach { filter ->
             FilterChip(
                 filter = filter,
-                modifier = Modifier.padding(end = 4.dp, bottom = 8.dp)
+                modifier = Modifier.padding(end = 4.dp, bottom = 8.dp),
             )
         }
     }
@@ -225,17 +221,13 @@ fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
     Column(Modifier.padding(bottom = 24.dp)) {
         SortFilters(
             sortState = sortState,
-            onChanged = onFilterChange
+            onChanged = onFilterChange,
         )
     }
 }
 
 @Composable
-fun SortFilters(
-    sortFilters: List<Filter> = SnackRepo.getSortFilters(),
-    sortState: String,
-    onChanged: (Filter) -> Unit
-) {
+fun SortFilters(sortFilters: List<Filter> = SnackRepo.getSortFilters(), sortState: String, onChanged: (Filter) -> Unit) {
 
     sortFilters.forEach { filter ->
         SortOption(
@@ -244,7 +236,7 @@ fun SortFilters(
             selected = sortState == filter.name,
             onClickOption = {
                 onChanged(filter)
-            }
+            },
         )
     }
 }
@@ -257,7 +249,7 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
             text = stringResource(id = R.string.per_serving),
             style = MaterialTheme.typography.bodyMedium,
             color = JetsnackTheme.colors.brand,
-            modifier = Modifier.padding(top = 5.dp, start = 10.dp)
+            modifier = Modifier.padding(top = 5.dp, start = 10.dp),
         )
     }
     Slider(
@@ -272,8 +264,8 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
         colors = SliderDefaults.colors(
             thumbColor = JetsnackTheme.colors.brand,
             activeTrackColor = JetsnackTheme.colors.brand,
-            inactiveTrackColor = JetsnackTheme.colors.iconInteractive
-        )
+            inactiveTrackColor = JetsnackTheme.colors.iconInteractive,
+        ),
     )
 }
 
@@ -283,21 +275,16 @@ fun FilterTitle(text: String) {
         text = text,
         style = MaterialTheme.typography.titleLarge,
         color = JetsnackTheme.colors.brand,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = 8.dp),
     )
 }
 
 @Composable
-fun SortOption(
-    text: String,
-    icon: ImageVector?,
-    onClickOption: () -> Unit,
-    selected: Boolean
-) {
+fun SortOption(text: String, icon: ImageVector?, onClickOption: () -> Unit, selected: Boolean) {
     Row(
         modifier = Modifier
             .padding(top = 14.dp)
-            .selectable(selected) { onClickOption() }
+            .selectable(selected) { onClickOption() },
     ) {
         if (icon != null) {
             Icon(imageVector = icon, contentDescription = null)
@@ -307,13 +294,13 @@ fun SortOption(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .padding(start = 10.dp)
-                .weight(1f)
+                .weight(1f),
         )
         if (selected) {
             Icon(
                 imageVector = Icons.Filled.Done,
                 contentDescription = null,
-                tint = JetsnackTheme.colors.brand
+                tint = JetsnackTheme.colors.brand,
             )
         }
     }
@@ -328,7 +315,7 @@ fun FilterScreenPreview() {
                 FilterScreen(
                     animatedVisibilityScope = this,
                     sharedTransitionScope = this@SharedTransitionLayout,
-                    onDismiss = {}
+                    onDismiss = {},
                 )
             }
         }

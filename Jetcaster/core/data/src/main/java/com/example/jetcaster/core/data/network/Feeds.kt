@@ -43,5 +43,5 @@ val SampleFeeds = listOf(
     "https://audioboom.com/channels/5025217.rss",
     "https://feeds.simplecast.com/7PvD7RPL",
     "https://feeds.buzzsprout.com/1006078.rss",
-    "https://feeds.megaphone.fm/HSW9992617712"
+    "https://feeds.megaphone.fm/HSW9992617712",
 )

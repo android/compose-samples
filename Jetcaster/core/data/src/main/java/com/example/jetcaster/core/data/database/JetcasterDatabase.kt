@@ -40,10 +40,10 @@ import com.example.jetcaster.core.data.database.model.PodcastFollowedEntry
         Episode::class,
         PodcastCategoryEntry::class,
         Category::class,
-        PodcastFollowedEntry::class
+        PodcastFollowedEntry::class,
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
 )
 @TypeConverters(DateTimeTypeConverters::class)
 abstract class JetcasterDatabase : RoomDatabase() {
