@@ -1,0 +1,32 @@
+name: Changes to project files
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'Jetcaster/**'
+      - 'Jetchat/**'
+      - 'JetLagged/**'
+      - 'JetNews/**'
+      - 'Jetsnack/**'
+      - 'Reply/**'
+  pull_request:
+    paths-ignore:
+      - 'Jetcaster/**'
+      - 'Jetchat/**'
+      - 'JetLagged/**'
+      - 'JetNews/**'
+      - 'Jetsnack/**'
+      - 'Reply/**'
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run a simple check
+        run: echo "Running a simple check on files outside sample directories"

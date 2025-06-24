@@ -50,7 +50,7 @@ fun LibraryScreen(
     navigateToDiscover: () -> Unit,
     showPodcastDetails: (PodcastInfo) -> Unit,
     playEpisode: (PlayerEpisode) -> Unit,
-    libraryScreenViewModel: LibraryScreenViewModel = hiltViewModel()
+    libraryScreenViewModel: LibraryScreenViewModel = hiltViewModel(),
 ) {
     val uiState by libraryScreenViewModel.uiState.collectAsState()
     when (val s = uiState) {
@@ -93,15 +93,12 @@ private fun Library(
         onEpisodeSelected = onEpisodeSelected,
         modifier = modifier
             .focusRequester(focusRequester)
-            .focusRestorer()
+            .focusRestorer(),
     )
 }
 
 @Composable
-private fun NavigateToDiscover(
-    onNavigationRequested: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun NavigateToDiscover(onNavigationRequested: () -> Unit, modifier: Modifier = Modifier) {
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -110,14 +107,14 @@ private fun NavigateToDiscover(
         Column {
             Text(
                 text = stringResource(id = R.string.display_no_subscribed_podcast),
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.displayMedium,
             )
             Text(text = stringResource(id = R.string.message_no_subscribed_podcast))
             Button(
                 onClick = onNavigationRequested,
                 modifier = Modifier
                     .padding(top = JetcasterAppDefaults.gap.podcastRow)
-                    .focusRequester(focusRequester)
+                    .focusRequester(focusRequester),
             ) {
                 Text(text = stringResource(id = R.string.label_navigate_to_discover))
             }

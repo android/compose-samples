@@ -24,6 +24,7 @@ import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.rometools.modules.itunes.EntryInformation
 import com.rometools.modules.itunes.FeedInformation
+import com.rometools.rome.feed.synd.SyndEnclosure
 import com.rometools.rome.feed.synd.SyndEntry
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
@@ -53,7 +54,7 @@ import okhttp3.Request
 class PodcastsFetcher @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val syndFeedInput: SyndFeedInput,
-    @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) {
 
     /**
@@ -108,15 +109,9 @@ class PodcastsFetcher @Inject constructor(
 }
 
 sealed class PodcastRssResponse {
-    data class Error(
-        val throwable: Throwable?,
-    ) : PodcastRssResponse()
+    data class Error(val throwable: Throwable?) : PodcastRssResponse()
 
-    data class Success(
-        val podcast: Podcast,
-        val episodes: List<Episode>,
-        val categories: Set<Category>
-    ) : PodcastRssResponse()
+    data class Success(val podcast: Podcast, val episodes: List<Episode>, val categories: Set<Category>) : PodcastRssResponse()
 }
 
 /**
@@ -124,7 +119,7 @@ sealed class PodcastRssResponse {
  */
 private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
     val podcastUri = uri ?: feedUrl
-    val episodes = entries.map { it.toEpisode(podcastUri) }
+    val episodes = entries.map { it.toEpisode(podcastUri, it.enclosures) }
 
     val feedInfo = getModule(PodcastModuleDtd) as? FeedInformation
     val podcast = Podcast(
@@ -133,7 +128,7 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
         description = feedInfo?.summary ?: description,
         author = author,
         copyright = copyright,
-        imageUrl = feedInfo?.imageUri?.toString()
+        imageUrl = feedInfo?.imageUri?.toString(),
     )
 
     val categories = feedInfo?.categories
@@ -146,7 +141,7 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
 /**
  * Map a Rome [SyndEntry] instance to our own [Episode] data class.
  */
-private fun SyndEntry.toEpisode(podcastUri: String): Episode {
+private fun SyndEntry.toEpisode(podcastUri: String, enclosures: List<SyndEnclosure>): Episode {
     val entryInformation = getModule(PodcastModuleDtd) as? EntryInformation
     return Episode(
         uri = uri,
@@ -156,7 +151,8 @@ private fun SyndEntry.toEpisode(podcastUri: String): Episode {
         summary = entryInformation?.summary ?: description?.value,
         subtitle = entryInformation?.subtitle,
         published = Instant.ofEpochMilli(publishedDate.time).atOffset(ZoneOffset.UTC),
-        duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) }
+        duration = entryInformation?.duration?.milliseconds?.let { Duration.ofMillis(it) },
+        mediaUrls = enclosures.map { it.url },
     )
 }
 

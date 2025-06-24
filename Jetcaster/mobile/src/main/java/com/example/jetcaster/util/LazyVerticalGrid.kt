@@ -24,13 +24,9 @@ import androidx.compose.runtime.Composable
 /**
  * An item that occupies the entire width.
  */
-fun LazyGridScope.fullWidthItem(
-    key: Any? = null,
-    contentType: Any? = null,
-    content: @Composable LazyGridItemScope.() -> Unit
-) = item(
+fun LazyGridScope.fullWidthItem(key: Any? = null, contentType: Any? = null, content: @Composable LazyGridItemScope.() -> Unit) = item(
     span = { GridItemSpan(this.maxLineSpan) },
     key = key,
     contentType = contentType,
-    content = content
+    content = content,
 )

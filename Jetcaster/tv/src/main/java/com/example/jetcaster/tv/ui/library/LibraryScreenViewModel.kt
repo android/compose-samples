@@ -78,7 +78,7 @@ class LibraryScreenViewModel @Inject constructor(
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
-            LibraryScreenUiState.Loading
+            LibraryScreenUiState.Loading,
         )
 
     init {
@@ -95,8 +95,5 @@ class LibraryScreenViewModel @Inject constructor(
 sealed interface LibraryScreenUiState {
     data object Loading : LibraryScreenUiState
     data object NoSubscribedPodcast : LibraryScreenUiState
-    data class Ready(
-        val subscribedPodcastList: PodcastList,
-        val latestEpisodeList: EpisodeList,
-    ) : LibraryScreenUiState
+    data class Ready(val subscribedPodcastList: PodcastList, val latestEpisodeList: EpisodeList) : LibraryScreenUiState
 }

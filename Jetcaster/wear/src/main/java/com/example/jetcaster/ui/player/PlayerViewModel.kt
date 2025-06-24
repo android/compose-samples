@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.stateIn
 @OptIn(ExperimentalHorologistApi::class)
 data class PlayerUiState(
     val episodePlayerState: EpisodePlayerState = EpisodePlayerState(),
-    var trackPositionUiModel: TrackPositionUiModel = TrackPositionUiModel.Actual.ZERO
+    var trackPositionUiModel: TrackPositionUiModel = TrackPositionUiModel.Actual.ZERO,
 )
 
 /**
@@ -41,9 +41,7 @@ data class PlayerUiState(
  */
 @HiltViewModel
 @OptIn(ExperimentalHorologistApi::class)
-class PlayerViewModel @Inject constructor(
-    private val episodePlayer: EpisodePlayer,
-) : ViewModel() {
+class PlayerViewModel @Inject constructor(private val episodePlayer: EpisodePlayer) : ViewModel() {
 
     val uiState = episodePlayer.playerState.map {
         if (it.currentEpisode == null && it.queue.isEmpty()) {
@@ -54,24 +52,23 @@ class PlayerViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        PlayerScreenUiState.Loading
+        PlayerScreenUiState.Loading,
     )
 
-    private fun buildPositionModel(it: EpisodePlayerState) =
-        if (it.currentEpisode != null) {
-            TrackPositionUiModel.Actual(
-                percent = it.timeElapsed.toMillis().toFloat() /
-                    (
-                        it.currentEpisode?.duration?.toMillis()
-                            ?.toFloat() ?: 0f
-                        ),
-                duration = it.currentEpisode?.duration?.toKotlinDuration()
-                    ?: Duration.ZERO.toKotlinDuration(),
-                position = it.timeElapsed.toKotlinDuration()
-            )
-        } else {
-            TrackPositionUiModel.Actual.ZERO
-        }
+    private fun buildPositionModel(it: EpisodePlayerState) = if (it.currentEpisode != null) {
+        TrackPositionUiModel.Actual(
+            percent = it.timeElapsed.toMillis().toFloat() /
+                (
+                    it.currentEpisode?.duration?.toMillis()
+                        ?.toFloat() ?: 0f
+                    ),
+            duration = it.currentEpisode?.duration?.toKotlinDuration()
+                ?: Duration.ZERO.toKotlinDuration(),
+            position = it.timeElapsed.toKotlinDuration(),
+        )
+    } else {
+        TrackPositionUiModel.Actual.ZERO
+    }
 
     fun onPlay() {
         episodePlayer.play()
@@ -100,9 +97,7 @@ class PlayerViewModel @Inject constructor(
 
 sealed class PlayerScreenUiState {
     data object Loading : PlayerScreenUiState()
-    data class Ready(
-        val playerState: PlayerUiState
-    ) : PlayerScreenUiState()
+    data class Ready(val playerState: PlayerUiState) : PlayerScreenUiState()
 
     data object Empty : PlayerScreenUiState()
 }

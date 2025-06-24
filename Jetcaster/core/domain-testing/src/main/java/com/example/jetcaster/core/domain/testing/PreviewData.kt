@@ -27,7 +27,7 @@ import java.time.ZoneOffset
 val PreviewCategories = listOf(
     CategoryInfo(id = 1, name = "Crime"),
     CategoryInfo(id = 2, name = "News"),
-    CategoryInfo(id = 3, name = "Comedy")
+    CategoryInfo(id = 3, name = "Comedy"),
 )
 
 val PreviewPodcasts = listOf(
@@ -36,14 +36,14 @@ val PreviewPodcasts = listOf(
         title = "Android Developers Backstage",
         author = "Android Developers",
         isSubscribed = true,
-        lastEpisodeDate = OffsetDateTime.now()
+        lastEpisodeDate = OffsetDateTime.now(),
     ),
     PodcastInfo(
         uri = "fakeUri://podcast/2",
         title = "Google Developers podcast",
         author = "Google Developers",
-        lastEpisodeDate = OffsetDateTime.now()
-    )
+        lastEpisodeDate = OffsetDateTime.now(),
+    ),
 )
 
 val PreviewEpisodes = listOf(
@@ -54,21 +54,21 @@ val PreviewEpisodes = listOf(
             "Tsurkan from the System UI team about... Bubbles!",
         published = OffsetDateTime.of(
             2020, 6, 2, 9,
-            27, 0, 0, ZoneOffset.of("-0800")
-        )
-    )
+            27, 0, 0, ZoneOffset.of("-0800"),
+        ),
+    ),
 )
 
 val PreviewPlayerEpisodes = listOf(
     PlayerEpisode(
         PreviewPodcasts[0],
-        PreviewEpisodes[0]
-    )
+        PreviewEpisodes[0],
+    ),
 )
 
 val PreviewPodcastEpisodes = listOf(
     PodcastToEpisodeInfo(
         podcast = PreviewPodcasts[0],
         episode = PreviewEpisodes[0],
-    )
+    ),
 )

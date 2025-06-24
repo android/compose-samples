@@ -34,12 +34,7 @@ sealed interface Route {
     @Serializable data object Groups : Route
 }
 
-data class ReplyTopLevelDestination(
-    val route: Route,
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-    val iconTextId: Int
-)
+data class ReplyTopLevelDestination(val route: Route, val selectedIcon: ImageVector, val unselectedIcon: ImageVector, val iconTextId: Int)
 
 class ReplyNavigationActions(private val navController: NavHostController) {
 
@@ -65,25 +60,25 @@ val TOP_LEVEL_DESTINATIONS = listOf(
         route = Route.Inbox,
         selectedIcon = Icons.Default.Inbox,
         unselectedIcon = Icons.Default.Inbox,
-        iconTextId = R.string.tab_inbox
+        iconTextId = R.string.tab_inbox,
     ),
     ReplyTopLevelDestination(
         route = Route.Articles,
         selectedIcon = Icons.AutoMirrored.Filled.Article,
         unselectedIcon = Icons.AutoMirrored.Filled.Article,
-        iconTextId = R.string.tab_article
+        iconTextId = R.string.tab_article,
     ),
     ReplyTopLevelDestination(
         route = Route.DirectMessages,
         selectedIcon = Icons.Outlined.ChatBubbleOutline,
         unselectedIcon = Icons.Outlined.ChatBubbleOutline,
-        iconTextId = R.string.tab_inbox
+        iconTextId = R.string.tab_inbox,
     ),
     ReplyTopLevelDestination(
         route = Route.Groups,
         selectedIcon = Icons.Default.People,
         unselectedIcon = Icons.Default.People,
-        iconTextId = R.string.tab_article
-    )
+        iconTextId = R.string.tab_article,
+    ),
 
 )

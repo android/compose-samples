@@ -30,5 +30,5 @@ data class Email(
     var isStarred: Boolean = false,
     var mailbox: MailboxType = MailboxType.INBOX,
     val createdAt: String,
-    val threads: List<Email> = emptyList()
+    val threads: List<Email> = emptyList(),
 )

@@ -55,7 +55,7 @@ class SearchScreenViewModel @Inject constructor(
         combine(
             keywordFlow,
             selectedCategoryListFlow,
-            categoryInfoListFlow
+            categoryInfoListFlow,
         ) { keyword, selectedCategories, categories ->
             val selected = selectedCategories.ifEmpty {
                 categories
@@ -67,18 +67,18 @@ class SearchScreenViewModel @Inject constructor(
     private val searchResultFlow = searchConditionFlow.flatMapLatest {
         podcastStore.searchPodcastByTitleAndCategories(
             it.keyword,
-            it.selectedCategories.intoCategoryList()
+            it.selectedCategories.intoCategoryList(),
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        emptyList()
+        emptyList(),
     )
 
     private val categorySelectionFlow =
         combine(
             categoryInfoListFlow,
-            selectedCategoryListFlow
+            selectedCategoryListFlow,
         ) { categoryList, selectedCategories ->
             val list = categoryList.map {
                 CategorySelection(it, selectedCategories.contains(it))
@@ -90,7 +90,7 @@ class SearchScreenViewModel @Inject constructor(
         combine(
             keywordFlow,
             categorySelectionFlow,
-            searchResultFlow
+            searchResultFlow,
         ) { keyword, categorySelection, result ->
             val podcastList = result.map { it.asExternalModel() }
             when {
@@ -133,20 +133,14 @@ class SearchScreenViewModel @Inject constructor(
 private data class SearchCondition(val keyword: String, val selectedCategories: CategoryInfoList) {
     constructor(keyword: String, categoryInfoList: List<CategoryInfo>) : this(
         keyword,
-        CategoryInfoList(categoryInfoList)
+        CategoryInfoList(categoryInfoList),
     )
 }
 
 sealed interface SearchScreenUiState {
     data object Loading : SearchScreenUiState
-    data class Ready(
-        val keyword: String,
-        val categorySelectionList: CategorySelectionList
-    ) : SearchScreenUiState
+    data class Ready(val keyword: String, val categorySelectionList: CategorySelectionList) : SearchScreenUiState
 
-    data class HasResult(
-        val keyword: String,
-        val categorySelectionList: CategorySelectionList,
-        val result: PodcastList
-    ) : SearchScreenUiState
+    data class HasResult(val keyword: String, val categorySelectionList: CategorySelectionList, val result: PodcastList) :
+        SearchScreenUiState
 }

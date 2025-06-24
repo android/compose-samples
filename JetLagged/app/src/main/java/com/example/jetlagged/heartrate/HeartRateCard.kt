@@ -40,18 +40,15 @@ import com.example.jetlagged.ui.theme.TitleStyle
 
 @Preview
 @Composable
-fun HeartRateCard(
-    modifier: Modifier = Modifier,
-    heartRateData: HeartRateOverallData = HeartRateOverallData()
-) {
+fun HeartRateCard(modifier: Modifier = Modifier, heartRateData: HeartRateOverallData = HeartRateOverallData()) {
     BasicInformationalCard(
         borderColor = JetLaggedTheme.extraColors.heart,
         modifier = modifier
-            .height(260.dp)
+            .height(260.dp),
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
 
         ) {
             HomeScreenCardHeading(text = stringResource(R.string.heart_rate_heading))
@@ -59,18 +56,18 @@ fun HeartRateCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
                     heartRateData.averageBpm.toString(),
                     style = TitleStyle,
                     modifier = Modifier.alignByBaseline(),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Text(
                     "bpm",
                     modifier = Modifier.alignByBaseline(),
-                    style = SmallHeadingStyle
+                    style = SmallHeadingStyle,
                 )
             }
             HeartRateGraph(heartRateData.listData)

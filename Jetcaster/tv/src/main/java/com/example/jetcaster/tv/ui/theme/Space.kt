@@ -39,37 +39,28 @@ internal data class OverScanMarginSettings(
         top = 40.dp,
         bottom = 40.dp,
         start = 80.dp,
-        end = 80.dp
+        end = 80.dp,
     ),
     val player: OverScanMargin = OverScanMargin(
         top = 40.dp,
         bottom = 40.dp,
         start = 80.dp,
-        end = 80.dp
+        end = 80.dp,
     ),
 )
 
-internal data class OverScanMargin(
-    val top: Dp = 24.dp,
-    val bottom: Dp = 24.dp,
-    val start: Dp = 48.dp,
-    val end: Dp = 48.dp,
-) {
+internal data class OverScanMargin(val top: Dp = 24.dp, val bottom: Dp = 24.dp, val start: Dp = 48.dp, val end: Dp = 48.dp) {
     fun intoPaddingValues(): PaddingValues {
         return PaddingValues(start, top, end, bottom)
     }
 }
 
-internal data class CardWidth(
-    val large: Dp = 268.dp,
-    val medium: Dp = 196.dp,
-    val small: Dp = 124.dp
-)
+internal data class CardWidth(val large: Dp = 268.dp, val medium: Dp = 196.dp, val small: Dp = 124.dp)
 
 internal data class ThumbnailSize(
     val episodeDetails: DpSize = DpSize(266.dp, 266.dp),
     val podcast: DpSize = DpSize(196.dp, 196.dp),
-    val episode: DpSize = DpSize(124.dp, 124.dp)
+    val episode: DpSize = DpSize(124.dp, 124.dp),
 )
 
 internal data class PaddingSettings(
@@ -98,7 +89,7 @@ internal data class GapSettings(
 internal data class IconButtonSize(
     val default: Radius = Radius(14.dp),
     val medium: Radius = Radius(20.dp),
-    val large: Radius = Radius(28.dp)
+    val large: Radius = Radius(28.dp),
 )
 
 internal data class Radius(private val value: Dp) {

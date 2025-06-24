@@ -36,9 +36,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-data class PlayerUiState(
-    val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
-)
+data class PlayerUiState(val episodePlayerState: EpisodePlayerState = EpisodePlayerState())
 
 /**
  * ViewModel that handles the business logic and screen state of the Player screen
@@ -48,7 +46,7 @@ data class PlayerUiState(
 class PlayerViewModel @Inject constructor(
     episodeStore: EpisodeStore,
     private val episodePlayer: EpisodePlayer,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     // episodeUri should always be present in the PlayerViewModel.
