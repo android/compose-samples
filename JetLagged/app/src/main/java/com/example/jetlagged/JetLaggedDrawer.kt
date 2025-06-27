@@ -39,8 +39,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +53,8 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.launch
 
@@ -133,7 +133,7 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
         })
         val decay = rememberSplineBasedDecay<Float>()
         ScreenContents(
-            windowWidthSizeClass = windowSizeClass.widthSizeClass,
+            windowWidthSizeClass = windowSizeClass.windowWidthSizeClass,
             selectedScreen = screenState,
             onDrawerClicked = ::toggleDrawerState,
             modifier = Modifier

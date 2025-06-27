@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -197,7 +196,7 @@ fun WellnessCard(modifier: Modifier = Modifier, wellnessData: WellnessData = Wel
         borderColor = JetLaggedTheme.extraColors.wellness,
         modifier = modifier
             .widthIn(max = 400.dp)
-            .heightIn(min = 200.dp),
+            .heightIn(min = 100.dp, max = 200.dp)
     ) {
         FadingCircleBackground(36.dp, JetLaggedTheme.extraColors.wellness.copy(0.25f))
         Column(
@@ -206,10 +205,10 @@ fun WellnessCard(modifier: Modifier = Modifier, wellnessData: WellnessData = Wel
                 .fillMaxWidth(),
         ) {
             HomeScreenCardHeading(text = stringResource(R.string.wellness_heading))
-            FlowRow(
+            Row(
                 horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxHeight()
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxHeight(),
             ) {
                 WellnessBubble(
                     titleText = stringResource(R.string.snoring_heading),
