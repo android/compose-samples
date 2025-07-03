@@ -22,21 +22,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.jetnews.R
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun SelectTopicButton(modifier: Modifier = Modifier, selected: Boolean = false) {
-    val icon = if (selected) Icons.Filled.Done else Icons.Filled.Add
+    val icon = if (selected) painterResource(R.drawable.ic_check) else painterResource(R.drawable.ic_add)
     val iconColor = if (selected) {
         MaterialTheme.colorScheme.onPrimary
     } else {
@@ -59,7 +58,7 @@ fun SelectTopicButton(modifier: Modifier = Modifier, selected: Boolean = false) 
         modifier = modifier.size(36.dp, 36.dp),
     ) {
         Image(
-            imageVector = icon,
+            painter = icon,
             colorFilter = ColorFilter.tint(iconColor),
             modifier = Modifier.padding(8.dp),
             contentDescription = null, // toggleable at higher level
