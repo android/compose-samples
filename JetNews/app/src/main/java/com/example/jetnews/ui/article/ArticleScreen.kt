@@ -73,7 +73,7 @@ import kotlinx.coroutines.runBlocking
  * @param showNavigationIcon (state) if the navigation icon should be shown
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
- * @param onToggleFavorite (event) request that this post toggle it\'s favorite state
+ * @param onToggleFavorite (event) request that this post toggle its favorite state
  * @param lazyListState (state) the [LazyListState] for the article content
  */
 @OptIn(ExperimentalMaterial3Api::class)
