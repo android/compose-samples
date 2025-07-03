@@ -114,7 +114,9 @@ fun ReplyInboxScreen(
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ExtendedFloatingActionButton(
                     text = { Text(text = stringResource(id = R.string.compose)) },
-                    icon = { Icon(painter = painterResource(id = R.drawable.ic_edit), contentDescription = stringResource(id = R.string.compose)) },
+                    icon = {
+                        Icon(painter = painterResource(id = R.drawable.ic_edit), contentDescription = stringResource(id = R.string.compose))
+                    },
                     onClick = { /*TODO*/ },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
