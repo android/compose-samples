@@ -25,10 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -50,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
@@ -99,7 +96,7 @@ fun ReplyDockedSearchBar(emails: List<Email>, onSearchItemSelected: (Email) -> U
                 leadingIcon = {
                     if (expanded) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
                             contentDescription = stringResource(id = R.string.back_button),
                             modifier = Modifier
                                 .padding(start = 16.dp)
@@ -110,7 +107,7 @@ fun ReplyDockedSearchBar(emails: List<Email>, onSearchItemSelected: (Email) -> U
                         )
                     } else {
                         Icon(
-                            imageVector = Icons.Default.Search,
+                            painter = painterResource(id = R.drawable.ic_search),
                             contentDescription = stringResource(id = R.string.search),
                             modifier = Modifier.padding(start = 16.dp),
                         )
@@ -209,7 +206,7 @@ fun EmailDetailAppBar(email: Email, isFullScreen: Boolean, modifier: Modifier = 
                     ),
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        painter = painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = stringResource(id = R.string.back_button),
                         modifier = Modifier.size(14.dp),
                     )
@@ -221,7 +218,7 @@ fun EmailDetailAppBar(email: Email, isFullScreen: Boolean, modifier: Modifier = 
                 onClick = { /*TODO*/ },
             ) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    painter = painterResource(id = R.drawable.ic_more_vert),
                     contentDescription = stringResource(id = R.string.more_options_button),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

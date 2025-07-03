@@ -114,7 +114,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
 
     implementation(libs.androidx.compose.materialWindow)
-    implementation(libs.androidx.compose.material.iconsExtended)
 
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.viewModelCompose)
