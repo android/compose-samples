@@ -50,7 +50,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.example.jetlagged.R
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.launch
 
@@ -109,7 +108,7 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
                     )
                 }
                 closeDrawer(velocityTracker.calculateVelocity().x)
-            } catch (e: CancellationException) {
+            } catch (_: CancellationException) {
                 openDrawer(velocityTracker.calculateVelocity().x)
             }
             velocityTracker.resetTracking()

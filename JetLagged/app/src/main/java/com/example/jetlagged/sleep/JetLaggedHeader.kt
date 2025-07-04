@@ -39,7 +39,7 @@ import com.example.jetlagged.ui.theme.TitleBarStyle
 
 @Preview
 @Composable
-fun JetLaggedHeader(onDrawerClicked: () -> Unit = {}, modifier: Modifier = Modifier) {
+fun JetLaggedHeader(modifier: Modifier = Modifier, onDrawerClicked: () -> Unit = {}) {
     Box(
         modifier.height(150.dp),
     ) {

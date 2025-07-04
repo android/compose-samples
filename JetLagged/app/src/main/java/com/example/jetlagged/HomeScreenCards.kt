@@ -57,7 +57,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jetlagged.R
 import com.example.jetlagged.backgrounds.BubbleBackground
 import com.example.jetlagged.backgrounds.FadingCircleBackground
 import com.example.jetlagged.data.WellnessData
