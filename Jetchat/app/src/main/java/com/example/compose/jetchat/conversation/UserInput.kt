@@ -57,12 +57,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AlternateEmail
-import androidx.compose.material.icons.outlined.Duo
-import androidx.compose.material.icons.outlined.InsertPhoto
-import androidx.compose.material.icons.outlined.Mood
-import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -93,9 +87,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -286,31 +280,31 @@ private fun UserInputSelector(
     ) {
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.EMOJI) },
-            icon = Icons.Outlined.Mood,
+            icon = painterResource(id = R.drawable.ic_mood),
             selected = currentInputSelector == InputSelector.EMOJI,
             description = stringResource(id = R.string.emoji_selector_bt_desc),
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.DM) },
-            icon = Icons.Outlined.AlternateEmail,
+            icon = painterResource(id = R.drawable.ic_alternate_email),
             selected = currentInputSelector == InputSelector.DM,
             description = stringResource(id = R.string.dm_desc),
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.PICTURE) },
-            icon = Icons.Outlined.InsertPhoto,
+            icon = painterResource(id = R.drawable.ic_insert_photo),
             selected = currentInputSelector == InputSelector.PICTURE,
             description = stringResource(id = R.string.attach_photo_desc),
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.MAP) },
-            icon = Icons.Outlined.Place,
+            icon = painterResource(id = R.drawable.ic_place),
             selected = currentInputSelector == InputSelector.MAP,
             description = stringResource(id = R.string.map_selector_desc),
         )
         InputSelectorButton(
             onClick = { onSelectorChange(InputSelector.PHONE) },
-            icon = Icons.Outlined.Duo,
+            icon = painterResource(id = R.drawable.ic_duo),
             selected = currentInputSelector == InputSelector.PHONE,
             description = stringResource(id = R.string.videochat_desc),
         )
@@ -352,7 +346,7 @@ private fun UserInputSelector(
 @Composable
 private fun InputSelectorButton(
     onClick: () -> Unit,
-    icon: ImageVector,
+    icon: androidx.compose.ui.graphics.painter.Painter,
     description: String,
     selected: Boolean,
     modifier: Modifier = Modifier,
