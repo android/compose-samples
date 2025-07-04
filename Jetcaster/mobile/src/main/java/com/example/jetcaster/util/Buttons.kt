@@ -18,9 +18,6 @@ package com.example.jetcaster.util
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
@@ -29,6 +26,7 @@ import androidx.compose.material3.IconToggleButtonShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.jetcaster.R
@@ -56,9 +54,9 @@ fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modi
     ) {
         Icon(
             // TODO: think about animating these icons
-            imageVector = when {
-                isFollowed -> Icons.Default.Check
-                else -> Icons.Default.Add
+            painter = when {
+                isFollowed -> painterResource(id = R.drawable.ic_check)
+                else -> painterResource(id = R.drawable.ic_add)
             },
             contentDescription = when {
                 isFollowed -> stringResource(R.string.cd_following)

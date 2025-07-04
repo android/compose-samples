@@ -38,10 +38,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.LibraryMusic
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -338,13 +334,13 @@ private fun HomeAppBar(isExpanded: Boolean, modifier: Modifier = Modifier) {
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Search,
+                            painterResource(id = R.drawable.ic_search),
                             contentDescription = null,
                         )
                     },
                     trailingIcon = {
                         Icon(
-                            imageVector = Icons.Default.AccountCircle,
+                            painterResource(id = R.drawable.ic_account_circle),
                             contentDescription = stringResource(R.string.cd_account),
                         )
                     },
@@ -492,7 +488,7 @@ fun PillToolbar(selectedHomeCategory: HomeCategory, onHomeAction: (HomeAction) -
             ) {
                 Row(Modifier) {
                     Icon(
-                        Icons.Filled.LibraryMusic,
+                        painterResource(id = R.drawable.ic_library_music),
                         modifier = Modifier.padding(end = 8.dp),
                         contentDescription = stringResource(
                             R.string.library_toolbar_content_description,

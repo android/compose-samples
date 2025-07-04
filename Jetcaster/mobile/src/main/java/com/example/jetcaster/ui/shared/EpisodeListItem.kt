@@ -27,11 +27,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -91,7 +87,7 @@ fun EpisodeListItem(
                     .padding(end = 40.dp),
             ) {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    painterResource(id = R.drawable.ic_delete),
                     contentDescription = null,
                     modifier = Modifier.align(Alignment.CenterEnd),
                 )
@@ -156,7 +152,7 @@ private fun EpisodeListItemFooter(
         modifier = modifier,
     ) {
         Image(
-            imageVector = Icons.Rounded.PlayCircleFilled,
+            painterResource(id = R.drawable.ic_play_circle),
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
@@ -204,7 +200,7 @@ private fun EpisodeListItemFooter(
             },
         ) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                painterResource(id = R.drawable.ic_playlist_add),
                 contentDescription = stringResource(R.string.cd_add),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -214,7 +210,7 @@ private fun EpisodeListItemFooter(
             onClick = { /* TODO */ },
         ) {
             Icon(
-                imageVector = Icons.Default.MoreVert,
+                painterResource(id = R.drawable.ic_more_vert),
                 contentDescription = stringResource(R.string.cd_more),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
