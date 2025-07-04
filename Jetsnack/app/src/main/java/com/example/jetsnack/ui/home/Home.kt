@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContentScope
@@ -39,11 +40,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,13 +54,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -157,11 +153,11 @@ fun NavGraphBuilder.addHomeGraph(onSnackSelected: (Long, String, NavBackStackEnt
     }
 }
 
-enum class HomeSections(@StringRes val title: Int, val icon: ImageVector, val route: String) {
-    FEED(R.string.home_feed, Icons.Outlined.Home, "home/feed"),
-    SEARCH(R.string.home_search, Icons.Outlined.Search, "home/search"),
-    CART(R.string.home_cart, Icons.Outlined.ShoppingCart, "home/cart"),
-    PROFILE(R.string.home_profile, Icons.Outlined.AccountCircle, "home/profile"),
+enum class HomeSections(@StringRes val title: Int, @DrawableRes val icon: Int, val route: String) {
+    FEED(R.string.home_feed, R.drawable.ic_home, "home/feed"),
+    SEARCH(R.string.home_search, R.drawable.ic_search, "home/search"),
+    CART(R.string.home_cart, R.drawable.ic_shopping_cart, "home/cart"),
+    PROFILE(R.string.home_profile, R.drawable.ic_account_circle, "home/profile"),
 }
 
 @Composable
@@ -209,7 +205,7 @@ fun JetsnackBottomBar(
                 JetsnackBottomNavigationItem(
                     icon = {
                         Icon(
-                            imageVector = section.icon,
+                            painter = painterResource(id = section.icon),
                             tint = tint,
                             contentDescription = text,
                         )

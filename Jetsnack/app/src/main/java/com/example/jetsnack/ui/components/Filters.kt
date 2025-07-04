@@ -35,8 +35,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -82,7 +81,7 @@ fun FilterBar(
                             ),
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.FilterList,
+                            painterResource(R.drawable.ic_filter_list),
                             tint = JetsnackTheme.colors.brand,
                             contentDescription = stringResource(R.string.label_filters),
                             modifier = Modifier.diagonalGradientBorder(

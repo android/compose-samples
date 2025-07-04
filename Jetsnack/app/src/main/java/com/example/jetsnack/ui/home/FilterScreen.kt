@@ -18,6 +18,7 @@
 
 package com.example.jetsnack.ui.home
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -43,9 +44,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,7 +60,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -131,7 +129,7 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                 Row(modifier = Modifier.height(IntrinsicSize.Min)) {
                     IconButton(onClick = onDismiss) {
                         Icon(
-                            imageVector = Icons.Filled.Close,
+                            painter = painterResource(id = R.drawable.ic_close),
                             contentDescription = stringResource(id = R.string.close),
                         )
                     }
@@ -280,14 +278,14 @@ fun FilterTitle(text: String) {
 }
 
 @Composable
-fun SortOption(text: String, icon: ImageVector?, onClickOption: () -> Unit, selected: Boolean) {
+fun SortOption(text: String, @DrawableRes icon: Int?, onClickOption: () -> Unit, selected: Boolean) {
     Row(
         modifier = Modifier
             .padding(top = 14.dp)
             .selectable(selected) { onClickOption() },
     ) {
         if (icon != null) {
-            Icon(imageVector = icon, contentDescription = null)
+            Icon(painter = painterResource(id = icon), contentDescription = null)
         }
         Text(
             text = text,
@@ -298,7 +296,7 @@ fun SortOption(text: String, icon: ImageVector?, onClickOption: () -> Unit, sele
         )
         if (selected) {
             Icon(
-                imageVector = Icons.Filled.Done,
+                painter = painterResource(id = R.drawable.ic_check),
                 contentDescription = null,
                 tint = JetsnackTheme.colors.brand,
             )
