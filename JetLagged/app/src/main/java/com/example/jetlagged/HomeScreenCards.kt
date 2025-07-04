@@ -39,9 +39,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SingleBed
-import androidx.compose.material.icons.filled.Watch
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -54,12 +51,13 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jetlagged.R
 import com.example.jetlagged.backgrounds.BubbleBackground
 import com.example.jetlagged.backgrounds.FadingCircleBackground
 import com.example.jetlagged.data.WellnessData
@@ -86,7 +84,7 @@ fun BasicInformationalCard(modifier: Modifier = Modifier, borderColor: Color, co
 }
 
 @Composable
-fun TwoLineInfoCard(borderColor: Color, firstLineText: String, secondLineText: String, icon: ImageVector, modifier: Modifier = Modifier) {
+fun TwoLineInfoCard(borderColor: Color, firstLineText: String, secondLineText: String, icon: Int, modifier: Modifier = Modifier) {
     BasicInformationalCard(
         borderColor = borderColor,
         modifier = modifier.size(200.dp),
@@ -107,7 +105,7 @@ fun TwoLineInfoCard(borderColor: Color, firstLineText: String, secondLineText: S
                         .align(CenterStart),
                 ) {
                     Icon(
-                        icon, contentDescription = null,
+                        painter = painterResource(id = icon), contentDescription = null,
                         modifier = Modifier
                             .size(50.dp)
                             .align(CenterVertically),
@@ -135,7 +133,7 @@ fun TwoLineInfoCard(borderColor: Color, firstLineText: String, secondLineText: S
                         .align(Center),
                 ) {
                     Icon(
-                        icon, contentDescription = null,
+                        painter = painterResource(id = icon), contentDescription = null,
                         modifier = Modifier
                             .size(50.dp)
                             .align(CenterHorizontally),
@@ -167,7 +165,7 @@ fun AverageTimeInBedCard(modifier: Modifier = Modifier) {
         borderColor = JetLaggedTheme.extraColors.bed,
         firstLineText = stringResource(R.string.ave_time_in_bed_heading),
         secondLineText = "8h42min",
-        icon = Icons.Default.Watch,
+        icon = R.drawable.ic_watch,
         modifier = modifier
             .wrapContentWidth()
             .heightIn(min = 156.dp),
@@ -182,7 +180,7 @@ fun AverageTimeAsleepCard(modifier: Modifier = Modifier) {
         borderColor = JetLaggedTheme.extraColors.sleep,
         firstLineText = stringResource(R.string.ave_time_sleep_heading),
         secondLineText = "7h42min",
-        icon = Icons.Default.SingleBed,
+        icon = R.drawable.ic_single_bed,
         modifier = modifier
             .wrapContentWidth()
             .heightIn(min = 156.dp),

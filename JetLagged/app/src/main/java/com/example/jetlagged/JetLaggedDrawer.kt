@@ -30,11 +30,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bedtime
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Leaderboard
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Surface
@@ -50,11 +45,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import com.example.jetlagged.R
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.launch
 
@@ -251,7 +247,7 @@ private fun HomeScreenDrawerContents(selectedScreen: Screen, onScreenSelected: (
                     Text(it.text)
                 },
                 icon = {
-                    Icon(imageVector = it.icon, contentDescription = it.text)
+                    Icon(painter = painterResource(id = it.icon), contentDescription = it.text)
                 },
                 selected = selectedScreen == it,
                 onClick = {
@@ -264,9 +260,9 @@ private fun HomeScreenDrawerContents(selectedScreen: Screen, onScreenSelected: (
 
 private val DrawerWidth = 300.dp
 
-private enum class Screen(val text: String, val icon: ImageVector) {
-    Home("Home", Icons.Default.Home),
-    SleepDetails("Sleep", Icons.Default.Bedtime),
-    Leaderboard("Leaderboard", Icons.Default.Leaderboard),
-    Settings("Settings", Icons.Default.Settings),
+private enum class Screen(val text: String, val icon: Int) {
+    Home("Home", R.drawable.ic_home),
+    SleepDetails("Sleep", R.drawable.ic_bedtime),
+    Leaderboard("Leaderboard", R.drawable.ic_leaderboard),
+    Settings("Settings", R.drawable.ic_settings),
 }
