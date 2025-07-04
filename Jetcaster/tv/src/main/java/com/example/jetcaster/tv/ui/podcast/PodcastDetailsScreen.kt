@@ -29,9 +29,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -228,10 +225,10 @@ private fun ToggleSubscriptionButton(
     unsubscribe: (PodcastInfo, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val icon = if (isSubscribed) {
-        Icons.Default.Remove
+    val iconId = if (isSubscribed) {
+        R.drawable.ic_remove
     } else {
-        Icons.Default.Add
+        R.drawable.ic_add
     }
     val label = if (isSubscribed) {
         stringResource(R.string.label_unsubscribe)
@@ -245,7 +242,7 @@ private fun ToggleSubscriptionButton(
     }
     ButtonWithIcon(
         label = label,
-        icon = icon,
+        iconId = iconId,
         onClick = { action(podcastInfo, isSubscribed) },
         scale = ButtonDefaults.scale(scale = 1f),
         modifier = modifier,

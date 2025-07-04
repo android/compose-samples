@@ -20,8 +20,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -238,7 +236,7 @@ fun LoadedButtonsContent(
             enabled = enabled,
         ) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                painterResource(id = R.drawable.ic_playlist_add),
                 contentDescription = stringResource(id = R.string.add_to_queue_content_description),
             )
         }

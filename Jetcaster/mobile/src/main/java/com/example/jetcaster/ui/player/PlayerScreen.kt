@@ -50,16 +50,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.rounded.Forward10
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Replay10
-import androidx.compose.material.icons.rounded.SkipNext
-import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -87,6 +77,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -586,20 +577,20 @@ private fun TopAppBar(onBackPress: () -> Unit, onAddToQueue: () -> Unit) {
     Row(Modifier.fillMaxWidth()) {
         IconButton(onClick = onBackPress) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                painterResource(id = R.drawable.ic_arrow_back),
                 contentDescription = stringResource(R.string.cd_back),
             )
         }
         Spacer(Modifier.weight(1f))
         IconButton(onClick = onAddToQueue) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                painterResource(id = R.drawable.ic_playlist_add),
                 contentDescription = stringResource(R.string.cd_add),
             )
         }
         IconButton(onClick = { /* TODO */ }) {
             Icon(
-                imageVector = Icons.Default.MoreVert,
+                painterResource(id = R.drawable.ic_more_vert),
                 contentDescription = stringResource(R.string.cd_more),
             )
         }
@@ -755,7 +746,7 @@ private fun PlayerButtons(
                 .height(136.dp),
         ) {
             Icon(
-                imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                painterResource(id = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play_arrow),
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = null,
             )
@@ -788,7 +779,7 @@ private fun PlayerButtons(
                         enabled = isPlaying,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.SkipPrevious,
+                            painterResource(id = R.drawable.ic_skip_previous),
                             contentDescription = null,
                         )
                     }
@@ -812,7 +803,7 @@ private fun PlayerButtons(
                         enabled = isPlaying,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Replay10,
+                            painterResource(id = R.drawable.ic_replay_10),
                             contentDescription = null,
                         )
                     }
@@ -836,7 +827,7 @@ private fun PlayerButtons(
                         enabled = isPlaying,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Forward10,
+                            painterResource(id = R.drawable.ic_forward_10),
                             contentDescription = null,
                         )
                     }
@@ -860,7 +851,7 @@ private fun PlayerButtons(
                         enabled = hasNext,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.SkipNext,
+                            painterResource(id = R.drawable.ic_skip_next),
                             contentDescription = null,
                         )
                     }
