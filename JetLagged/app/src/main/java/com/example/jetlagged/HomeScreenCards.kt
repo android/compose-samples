@@ -83,7 +83,7 @@ fun BasicInformationalCard(modifier: Modifier = Modifier, borderColor: Color, co
 }
 
 @Composable
-fun TwoLineInfoCard(borderColor: Color, firstLineText: String, secondLineText: String, icon: Int, modifier: Modifier = Modifier) {
+fun TwoLineInfoCard(borderColor: Color, firstLineText: String, secondLineText: String, @androidx.annotation.DrawableRes icon: Int, modifier: Modifier = Modifier) {
     BasicInformationalCard(
         borderColor = borderColor,
         modifier = modifier.size(200.dp),
