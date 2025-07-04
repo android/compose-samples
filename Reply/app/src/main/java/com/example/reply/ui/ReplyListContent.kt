@@ -32,8 +32,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.window.layout.DisplayFeature
@@ -115,7 +114,9 @@ fun ReplyInboxScreen(
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ExtendedFloatingActionButton(
                     text = { Text(text = stringResource(id = R.string.compose)) },
-                    icon = { Icon(Icons.Default.Edit, stringResource(id = R.string.compose)) },
+                    icon = {
+                        Icon(painter = painterResource(id = R.drawable.ic_edit), contentDescription = stringResource(id = R.string.compose))
+                    },
                     onClick = { /*TODO*/ },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

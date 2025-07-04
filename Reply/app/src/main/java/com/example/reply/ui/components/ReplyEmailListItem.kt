@@ -30,9 +30,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -44,10 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.reply.R
 import com.example.reply.data.Email
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -86,8 +85,8 @@ fun ReplyEmailListItem(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) { toggleSelection(email.id) }
-                AnimatedContent(targetState = isSelected, label = "avatar") { selected ->
-                    if (selected) {
+                AnimatedContent(targetState = isSelected, label = "avatar") {
+                    if (it) {
                         SelectedProfileImage(clickModifier)
                     } else {
                         ReplyProfileImage(
@@ -120,7 +119,7 @@ fun ReplyEmailListItem(
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh),
                 ) {
                     Icon(
-                        imageVector = Icons.Default.StarBorder,
+                        painter = painterResource(id = R.drawable.ic_star_border),
                         contentDescription = "Favorite",
                         tint = MaterialTheme.colorScheme.outline,
                     )
@@ -151,7 +150,7 @@ fun SelectedProfileImage(modifier: Modifier = Modifier) {
             .background(MaterialTheme.colorScheme.primary),
     ) {
         Icon(
-            Icons.Default.Check,
+            painter = painterResource(id = R.drawable.ic_check),
             contentDescription = null,
             modifier = Modifier
                 .size(24.dp)
