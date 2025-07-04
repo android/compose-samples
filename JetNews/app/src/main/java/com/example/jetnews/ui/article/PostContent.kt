@@ -36,8 +36,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -132,7 +130,7 @@ private fun PostMetadata(metadata: Metadata, modifier: Modifier = Modifier) {
         modifier = modifier.semantics(mergeDescendants = true) {},
     ) {
         Image(
-            imageVector = Icons.Filled.AccountCircle,
+            painter = painterResource(id = R.drawable.ic_account_circle),
             contentDescription = null, // decorative
             modifier = Modifier.size(40.dp),
             colorFilter = ColorFilter.tint(LocalContentColor.current),

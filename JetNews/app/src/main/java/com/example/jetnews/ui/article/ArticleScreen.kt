@@ -27,8 +27,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -75,7 +73,7 @@ import kotlinx.coroutines.runBlocking
  * @param showNavigationIcon (state) if the navigation icon should be shown
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
- * @param onToggleFavorite (event) request that this post toggle it's favorite state
+ * @param onToggleFavorite (event) request that this post toggle its favorite state
  * @param lazyListState (state) the [LazyListState] for the article content
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,7 +101,7 @@ fun ArticleScreen(
                 if (!isExpandedScreen) {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            painter = painterResource(R.drawable.ic_arrow_back),
                             contentDescription = stringResource(R.string.cd_navigate_up),
                             tint = MaterialTheme.colorScheme.primary,
                         )

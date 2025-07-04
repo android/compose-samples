@@ -16,11 +16,6 @@
 
 package com.example.jetnews.ui.utils
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.ThumbUpOffAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
@@ -36,7 +31,7 @@ import com.example.jetnews.R
 fun FavoriteButton(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
-            imageVector = Icons.Filled.ThumbUpOffAlt,
+            painter = painterResource(R.drawable.ic_thumb_up),
             contentDescription = stringResource(R.string.cd_add_to_favorites),
         )
     }
@@ -57,7 +52,7 @@ fun BookmarkButton(isBookmarked: Boolean, onClick: () -> Unit, modifier: Modifie
         },
     ) {
         Icon(
-            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+            painter = if (isBookmarked) painterResource(R.drawable.ic_bookmark) else painterResource(R.drawable.ic_bookmark_outline),
             contentDescription = null, // handled by click label of parent
         )
     }
@@ -67,7 +62,7 @@ fun BookmarkButton(isBookmarked: Boolean, onClick: () -> Unit, modifier: Modifie
 fun ShareButton(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
-            imageVector = Icons.Filled.Share,
+            painter = painterResource(R.drawable.ic_share),
             contentDescription = stringResource(R.string.cd_share),
         )
     }
