@@ -25,8 +25,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +35,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -87,7 +86,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                                 modifier = Modifier.align(Alignment.CenterVertically),
                             ) {
                                 Icon(
-                                    imageVector = Icons.Outlined.ExpandMore,
+                                    painter = painterResource(id = R.drawable.ic_expand_more),
                                     tint = JetsnackTheme.colors.brand,
                                     contentDescription =
                                     stringResource(R.string.label_select_delivery),
