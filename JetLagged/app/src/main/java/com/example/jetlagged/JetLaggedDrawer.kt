@@ -18,6 +18,7 @@ package com.example.jetlagged
 
 import android.os.SystemClock
 import androidx.activity.compose.PredictiveBackHandler
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
@@ -259,7 +260,7 @@ private fun HomeScreenDrawerContents(selectedScreen: Screen, onScreenSelected: (
 
 private val DrawerWidth = 300.dp
 
-private enum class Screen(val text: String, @androidx.annotation.DrawableRes val icon: Int) {
+private enum class Screen(val text: String, @DrawableRes val icon: Int) {
     Home("Home", R.drawable.ic_home),
     SleepDetails("Sleep", R.drawable.ic_bedtime),
     Leaderboard("Leaderboard", R.drawable.ic_leaderboard),
