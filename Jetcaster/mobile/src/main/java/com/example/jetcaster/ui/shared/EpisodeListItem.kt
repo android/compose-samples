@@ -152,7 +152,7 @@ private fun EpisodeListItemFooter(
         modifier = modifier,
     ) {
         Image(
-            painterResource(id = R.drawable.ic_play_arrow),
+            painterResource(id = R.drawable.ic_play_circle),
             contentDescription = stringResource(R.string.cd_play),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),

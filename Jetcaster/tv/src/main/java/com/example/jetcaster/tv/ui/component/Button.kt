@@ -71,7 +71,7 @@ internal fun PreviousButton(onClick: () -> Unit, modifier: Modifier = Modifier) 
 internal fun NextButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            painterResource(id = R.drawable.ic_forward_10),
+            painterResource(id = R.drawable.ic_skip_next),
             contentDescription = stringResource(R.string.label_next_episode),
         )
     }
