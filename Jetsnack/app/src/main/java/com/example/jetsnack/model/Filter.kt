@@ -16,16 +16,13 @@
 
 package com.example.jetsnack.model
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Android
-import androidx.compose.material.icons.filled.SortByAlpha
-import androidx.compose.material.icons.filled.Star
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.jetsnack.R
 
 @Stable
-class Filter(val name: String, enabled: Boolean = false, val icon: ImageVector? = null) {
+class Filter(val name: String, enabled: Boolean = false, @DrawableRes val icon: Int? = null) {
     val enabled = mutableStateOf(enabled)
 }
 
@@ -43,9 +40,9 @@ val priceFilters = listOf(
     Filter(name = "$$$$"),
 )
 val sortFilters = listOf(
-    Filter(name = "Android's favorite (default)", icon = Icons.Filled.Android),
-    Filter(name = "Rating", icon = Icons.Filled.Star),
-    Filter(name = "Alphabetical", icon = Icons.Filled.SortByAlpha),
+    Filter(name = "Android's favorite (default)", icon = R.drawable.ic_android),
+    Filter(name = "Rating", icon = R.drawable.ic_star),
+    Filter(name = "Alphabetical", icon = R.drawable.ic_sort_by_alpha),
 )
 
 val categoryFilters = listOf(
