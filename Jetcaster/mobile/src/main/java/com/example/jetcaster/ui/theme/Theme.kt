@@ -21,8 +21,6 @@ import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.ui.graphics.Color
 import com.example.jetcaster.designsystem.theme.JetcasterShapes
 import com.example.jetcaster.designsystem.theme.JetcasterTypography
 import com.example.jetcaster.designsystem.theme.backgroundDark
@@ -101,9 +99,7 @@ private val darkScheme = darkColorScheme(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun JetcasterTheme(
-    content: @Composable () -> Unit,
-) {
+fun JetcasterTheme(content: @Composable () -> Unit) {
     val colorScheme = darkScheme
 
     MaterialExpressiveTheme(
