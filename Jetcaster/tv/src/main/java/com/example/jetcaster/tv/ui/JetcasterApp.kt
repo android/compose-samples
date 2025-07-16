@@ -21,12 +21,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -35,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,6 +39,7 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.NavigationDrawerItem
 import androidx.tv.material3.Text
+import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.ui.discover.DiscoverScreen
 import com.example.jetcaster.tv.ui.episode.EpisodeScreen
 import com.example.jetcaster.tv.ui.library.LibraryScreen
@@ -90,7 +86,7 @@ private fun GlobalNavigationContainer(
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Profile.route,
                     onClick = jetcasterAppState::navigateToProfile,
-                    leadingContent = { Icon(Icons.Default.Person, contentDescription = null) },
+                    leadingContent = { Icon(painterResource(id = R.drawable.ic_person), contentDescription = null) },
                 ) {
                     Column {
                         Text(text = "Name")
@@ -106,7 +102,7 @@ private fun GlobalNavigationContainer(
                     onClick = jetcasterAppState::navigateToSearch,
                     leadingContent = {
                         Icon(
-                            Icons.Default.Search,
+                            painterResource(id = R.drawable.ic_search),
                             contentDescription = null,
                         )
                     },
@@ -118,7 +114,7 @@ private fun GlobalNavigationContainer(
                     onClick = jetcasterAppState::navigateToDiscover,
                     leadingContent = {
                         Icon(
-                            Icons.Default.Home,
+                            painterResource(id = R.drawable.ic_home),
                             contentDescription = null,
                         )
                     },
@@ -131,7 +127,7 @@ private fun GlobalNavigationContainer(
                     onClick = jetcasterAppState::navigateToLibrary,
                     leadingContent = {
                         Icon(
-                            Icons.Default.VideoLibrary,
+                            painterResource(id = R.drawable.ic_video_library),
                             contentDescription = null,
                         )
                     },
@@ -143,7 +139,7 @@ private fun GlobalNavigationContainer(
                 NavigationDrawerItem(
                     selected = isClosed && currentRoute == Screen.Settings.route,
                     onClick = jetcasterAppState::navigateToSettings,
-                    leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) },
+                    leadingContent = { Icon(painterResource(id = R.drawable.ic_settings), contentDescription = null) },
                 ) {
                     Text(text = "Settings")
                 }

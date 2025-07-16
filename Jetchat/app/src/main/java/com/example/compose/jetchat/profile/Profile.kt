@@ -33,9 +33,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Chat
-import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -245,7 +242,7 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
             AnimatingFabContent(
                 icon = {
                     Icon(
-                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
+                        painter = painterResource(id = if (userIsMe) R.drawable.ic_create else R.drawable.ic_chat),
                         contentDescription = stringResource(
                             if (userIsMe) R.string.edit_profile else R.string.message,
                         ),

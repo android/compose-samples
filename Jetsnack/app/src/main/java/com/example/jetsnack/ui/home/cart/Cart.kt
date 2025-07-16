@@ -43,9 +43,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,6 +57,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -259,7 +257,7 @@ private fun SwipeDismissItemBackground(progress: Float) {
                         )
 
                         Icon(
-                            imageVector = Icons.Filled.DeleteForever,
+                            painter = painterResource(id = R.drawable.ic_delete_forever),
                             modifier = Modifier
                                 .size(32.dp)
                                 .graphicsLayer(alpha = iconAlpha),
@@ -345,7 +343,7 @@ fun CartItem(
                 .padding(top = 12.dp),
         ) {
             Icon(
-                imageVector = Icons.Filled.Close,
+                painter = painterResource(id = R.drawable.ic_close),
                 tint = JetsnackTheme.colors.iconSecondary,
                 contentDescription = stringResource(R.string.label_remove),
             )

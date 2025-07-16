@@ -92,7 +92,6 @@ dependencies {
 
     implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.materialWindow)
     implementation(libs.androidx.compose.runtime.livedata)

@@ -48,8 +48,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -612,7 +610,7 @@ private fun HomeSearch(modifier: Modifier = Modifier, searchInput: String = "", 
         value = searchInput,
         onValueChange = onSearchInputChanged,
         placeholder = { Text(stringResource(R.string.home_search)) },
-        leadingIcon = { Icon(Icons.Filled.Search, null) },
+        leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), contentDescription = null) },
         modifier = modifier
             .fillMaxWidth()
             .interceptKey(Key.Enter) {
@@ -706,7 +704,7 @@ private fun HomeTopAppBar(
                 ).show()
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Search,
+                    painter = painterResource(R.drawable.ic_search),
                     contentDescription = stringResource(R.string.cd_search),
                 )
             }

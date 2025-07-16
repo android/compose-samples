@@ -21,9 +21,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,7 +51,7 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
                 .align(Alignment.CenterVertically),
         )
         JetsnackGradientTintedIconButton(
-            imageVector = Icons.Default.Remove,
+            iconResourceId = R.drawable.ic_remove,
             onClick = decreaseItemCount,
             contentDescription = stringResource(R.string.label_decrease),
             modifier = Modifier.align(Alignment.CenterVertically),
@@ -74,7 +71,7 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
             )
         }
         JetsnackGradientTintedIconButton(
-            imageVector = Icons.Default.Add,
+            iconResourceId = R.drawable.ic_add,
             onClick = increaseItemCount,
             contentDescription = stringResource(R.string.label_increase),
             modifier = Modifier.align(Alignment.CenterVertically),

@@ -19,9 +19,6 @@ package com.example.jetnews.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
@@ -54,14 +51,14 @@ fun AppNavRail(currentRoute: String, navigateToHome: () -> Unit, navigateToInter
         NavigationRailItem(
             selected = currentRoute == JetnewsDestinations.HOME_ROUTE,
             onClick = navigateToHome,
-            icon = { Icon(Icons.Filled.Home, stringResource(R.string.home_title)) },
+            icon = { Icon(painterResource(id = R.drawable.ic_home), stringResource(R.string.home_title)) },
             label = { Text(stringResource(R.string.home_title)) },
             alwaysShowLabel = false,
         )
         NavigationRailItem(
             selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             onClick = navigateToInterests,
-            icon = { Icon(Icons.Filled.ListAlt, stringResource(R.string.interests_title)) },
+            icon = { Icon(painterResource(id = R.drawable.ic_list_alt), stringResource(R.string.interests_title)) },
             label = { Text(stringResource(R.string.interests_title)) },
             alwaysShowLabel = false,
         )

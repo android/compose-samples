@@ -30,10 +30,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuOpen
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -65,6 +61,7 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -191,7 +188,7 @@ fun ReplyNavigationRail(
                 onClick = onDrawerClicked,
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.Menu,
+                        painter = painterResource(id = R.drawable.ic_menu),
                         contentDescription = stringResource(id = R.string.navigation_drawer),
                     )
                 },
@@ -203,7 +200,7 @@ fun ReplyNavigationRail(
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             ) {
                 Icon(
-                    imageVector = Icons.Default.Edit,
+                    painter = painterResource(id = R.drawable.ic_edit),
                     contentDescription = stringResource(id = R.string.compose),
                     modifier = Modifier.size(18.dp),
                 )
@@ -223,7 +220,7 @@ fun ReplyNavigationRail(
                     onClick = { navigateToTopLevelDestination(replyDestination) },
                     icon = {
                         Icon(
-                            imageVector = replyDestination.selectedIcon,
+                            painter = painterResource(id = replyDestination.selectedIcon),
                             contentDescription = stringResource(
                                 id = replyDestination.iconTextId,
                             ),
@@ -244,7 +241,7 @@ fun ReplyBottomNavigationBar(currentDestination: NavDestination?, navigateToTopL
                 onClick = { navigateToTopLevelDestination(replyDestination) },
                 icon = {
                     Icon(
-                        imageVector = replyDestination.selectedIcon,
+                        painter = painterResource(id = replyDestination.selectedIcon),
                         contentDescription = stringResource(id = replyDestination.iconTextId),
                     )
                 },
@@ -290,7 +287,7 @@ fun PermanentNavigationDrawerContent(
                         contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Edit,
+                            painter = painterResource(id = R.drawable.ic_edit),
                             contentDescription = stringResource(id = R.string.compose),
                             modifier = Modifier.size(24.dp),
                         )
@@ -319,7 +316,7 @@ fun PermanentNavigationDrawerContent(
                             },
                             icon = {
                                 Icon(
-                                    imageVector = replyDestination.selectedIcon,
+                                    painter = painterResource(id = replyDestination.selectedIcon),
                                     contentDescription = stringResource(
                                         id = replyDestination.iconTextId,
                                     ),
@@ -371,7 +368,7 @@ fun ModalNavigationDrawerContent(
                         )
                         IconButton(onClick = onDrawerClicked) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Filled.MenuOpen,
+                                painter = painterResource(id = R.drawable.ic_menu_open),
                                 contentDescription = stringResource(id = R.string.close_drawer),
                             )
                         }
@@ -386,7 +383,7 @@ fun ModalNavigationDrawerContent(
                         contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Edit,
+                            painter = painterResource(id = R.drawable.ic_edit),
                             contentDescription = stringResource(id = R.string.compose),
                             modifier = Modifier.size(18.dp),
                         )
@@ -415,7 +412,7 @@ fun ModalNavigationDrawerContent(
                             },
                             icon = {
                                 Icon(
-                                    imageVector = replyDestination.selectedIcon,
+                                    painter = painterResource(id = replyDestination.selectedIcon),
                                     contentDescription = stringResource(
                                         id = replyDestination.iconTextId,
                                     ),
