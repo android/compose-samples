@@ -31,7 +31,10 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.window.layout.DisplayFeature
@@ -44,7 +47,11 @@ import com.example.jetcaster.ui.player.PlayerScreen
 fun JetcasterApp(displayFeatures: List<DisplayFeature>, appState: JetcasterAppState = rememberJetcasterAppState()) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     if (appState.isOnline) {
-        SharedTransitionLayout {
+        SharedTransitionLayout(
+            modifier =  Modifier.semantics {
+                testTagsAsResourceId = true
+            }
+        ) {
             CompositionLocalProvider(
                 LocalSharedTransitionScope provides this,
             ) {

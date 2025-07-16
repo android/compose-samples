@@ -88,8 +88,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -574,6 +577,8 @@ private fun HomeContent(
     )
 }
 
+const val HOME_CONTENT_GRID_TAG = "home_content_grid"
+
 @Composable
 private fun HomeContentGrid(
     featuredPodcasts: PersistentList<PodcastInfo>,
@@ -588,7 +593,7 @@ private fun HomeContentGrid(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().testTag(HOME_CONTENT_GRID_TAG),
     ) {
         when (selectedHomeCategory) {
             HomeCategory.Library -> {

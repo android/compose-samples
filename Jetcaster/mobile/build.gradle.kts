@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -63,9 +64,11 @@ android {
         getByName("debug") {
         }
 
-        getByName("release") {
+        release {
             isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

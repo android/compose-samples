@@ -47,3 +47,4 @@ include(
     ":glancewidget"
 )
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include(":mobile:benchmark")
