@@ -23,8 +23,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jetsnack"
-
-        >
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="33">
         <receiver
             android:name=".widget.RecentOrdersWidgetReceiver"
             android:label="@string/snack_order_widget_name"
