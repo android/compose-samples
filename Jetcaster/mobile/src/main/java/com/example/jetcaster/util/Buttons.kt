@@ -16,8 +16,11 @@
 
 package com.example.jetcaster.util
 
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -56,13 +59,23 @@ fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modi
             checkedShape = CircleShape,
         ),
     ) {
-        val iconRotation by animateFloatAsState(
-            targetValue = if(isFollowed) 0f else 360f,
-            animationSpec = spring(
-                dampingRatio = .6f,
-                stiffness = 200f
-            )
-        )
+        val transition = updateTransition(targetState = isFollowed, label = "FollowToggle")
+        val iconRotation by transition.animateFloat(
+            label = "IconRotation",
+            transitionSpec = {
+                if (initialState == targetState) {
+                    tween(durationMillis = 0)
+                } else {
+                    spring(
+                        dampingRatio = 0.6f,
+                        stiffness = 200f
+                    )
+                }
+            }
+        ) { followed ->
+            if (followed) 360f else 0f
+        }
+
 
         Icon(
             // Animated rotation when follow state changes
