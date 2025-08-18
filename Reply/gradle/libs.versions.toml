@@ -30,7 +30,7 @@ androidxHiltNavigationCompose = "1.2.0"
 androix-test-uiautomator = "2.3.0"
 coil = "2.7.0"
 # @keep
-compileSdk = "35"
+compileSdk = "36"
 coroutines = "1.10.2"
 google-maps = "19.2.0"
 gradle-versions = "0.52.0"
