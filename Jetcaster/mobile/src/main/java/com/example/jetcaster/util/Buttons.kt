@@ -16,6 +16,8 @@
 
 package com.example.jetcaster.util
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -25,7 +27,9 @@ import androidx.compose.material3.IconToggleButtonColors
 import androidx.compose.material3.IconToggleButtonShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -52,8 +56,16 @@ fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modi
             checkedShape = CircleShape,
         ),
     ) {
+        val iconRotation by animateFloatAsState(
+            targetValue = if(isFollowed) 0f else 360f,
+            animationSpec = spring(
+                dampingRatio = .6f,
+                stiffness = 200f
+            )
+        )
+
         Icon(
-            // TODO: think about animating these icons
+            // Animated rotation when follow state changes
             painter = when {
                 isFollowed -> painterResource(id = R.drawable.ic_check)
                 else -> painterResource(id = R.drawable.ic_add)
@@ -62,6 +74,7 @@ fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modi
                 isFollowed -> stringResource(R.string.cd_following)
                 else -> stringResource(R.string.cd_not_following)
             },
+            modifier = Modifier.rotate(iconRotation)
         )
     }
 }
