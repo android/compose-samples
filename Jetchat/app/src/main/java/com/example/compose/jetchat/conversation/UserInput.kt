@@ -213,7 +213,7 @@ private fun SelectorExpanded(currentSelector: InputSelector, onCloseRequested: (
     if (currentSelector == InputSelector.NONE) return
 
     // Request focus to force the TextField to lose it
-    val focusRequester = FocusRequester()
+    val focusRequester = remember { FocusRequester() }
     // If the selector is shown, always request focus to trigger a TextField.onFocusChange.
     SideEffect {
         if (currentSelector == InputSelector.EMOJI) {
