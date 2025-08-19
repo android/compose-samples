@@ -18,6 +18,7 @@ package com.example.jetcaster.util
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
@@ -64,7 +65,7 @@ fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modi
             label = "IconRotation",
             transitionSpec = {
                 if (initialState == targetState) {
-                    tween(durationMillis = 0)
+                    snap()
                 } else {
                     spring(
                         dampingRatio = 0.6f,
