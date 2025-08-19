@@ -17,10 +17,8 @@
 package com.example.jetcaster.util
 
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,14 +67,13 @@ fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modi
                 } else {
                     spring(
                         dampingRatio = 0.6f,
-                        stiffness = 200f
+                        stiffness = 200f,
                     )
                 }
-            }
+            },
         ) { followed ->
             if (followed) 360f else 0f
         }
-
 
         Icon(
             // Animated rotation when follow state changes
@@ -88,7 +85,7 @@ fun ToggleFollowPodcastIconButton(isFollowed: Boolean, onClick: () -> Unit, modi
                 isFollowed -> stringResource(R.string.cd_following)
                 else -> stringResource(R.string.cd_not_following)
             },
-            modifier = Modifier.rotate(iconRotation)
+            modifier = Modifier.rotate(iconRotation),
         )
     }
 }
