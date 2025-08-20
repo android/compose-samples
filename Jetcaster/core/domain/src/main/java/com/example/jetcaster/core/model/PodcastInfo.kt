@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.model
 
+import androidx.compose.runtime.Immutable
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import java.time.OffsetDateTime
@@ -23,6 +24,7 @@ import java.time.OffsetDateTime
 /**
  * External data layer representation of a podcast.
  */
+@Immutable
 data class PodcastInfo(
     val uri: String = "",
     val title: String = "",

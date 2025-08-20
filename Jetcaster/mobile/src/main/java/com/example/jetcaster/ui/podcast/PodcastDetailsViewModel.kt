@@ -17,6 +17,7 @@
 package com.example.jetcaster.ui.podcast
 
 import android.net.Uri
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.repository.EpisodeStore
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@Immutable
 sealed interface PodcastUiState {
     data object Loading : PodcastUiState
     data class Ready(val podcast: PodcastInfo, val episodes: List<EpisodeInfo>) : PodcastUiState

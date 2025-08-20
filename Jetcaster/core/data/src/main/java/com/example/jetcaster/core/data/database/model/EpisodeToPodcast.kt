@@ -16,11 +16,13 @@
 
 package com.example.jetcaster.core.data.database.model
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
 import androidx.room.Ignore
 import androidx.room.Relation
 import java.util.Objects
 
+@Immutable
 class EpisodeToPodcast {
     @Embedded
     lateinit var episode: Episode
