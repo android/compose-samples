@@ -73,7 +73,7 @@ class PodcastDetailsViewModel @AssistedInject constructor(
             initialValue = PodcastUiState.Loading,
         )
 
-    fun toggleSusbcribe(podcast: PodcastInfo) {
+    fun toggleSubscribe(podcast: PodcastInfo) {
         viewModelScope.launch {
             podcastStore.togglePodcastFollowed(podcast.uri)
         }
