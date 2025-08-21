@@ -101,7 +101,7 @@ fun PodcastDetailsScreen(
             PodcastDetailsScreen(
                 podcast = s.podcast,
                 episodes = s.episodes,
-                toggleSubscribe = viewModel::toggleSusbcribe,
+                toggleSubscribe = viewModel::toggleSubscribe,
                 onQueueEpisode = viewModel::onQueueEpisode,
                 removeFromQueue = viewModel::deleteEpisode,
                 navigateToPlayer = navigateToPlayer,

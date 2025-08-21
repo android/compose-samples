@@ -118,8 +118,8 @@ import com.example.jetcaster.util.radialGradientScrim
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -373,7 +373,7 @@ private fun HomeScreenBackground(modifier: Modifier = Modifier, content: @Compos
 private fun HomeScreen(
     windowSizeClass: WindowSizeClass,
     isLoading: Boolean,
-    featuredPodcasts: PersistentList<PodcastInfo>,
+    featuredPodcasts: ImmutableList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
     homeCategories: List<HomeCategory>,
     filterableCategoriesModel: FilterableCategoriesModel,
@@ -538,7 +538,7 @@ fun PillToolbar(selectedHomeCategory: HomeCategory, onHomeAction: (HomeAction) -
 
 @Composable
 private fun HomeContent(
-    featuredPodcasts: PersistentList<PodcastInfo>,
+    featuredPodcasts: ImmutableList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
@@ -572,7 +572,7 @@ private fun HomeContent(
 
 @Composable
 private fun HomeContentGrid(
-    featuredPodcasts: PersistentList<PodcastInfo>,
+    featuredPodcasts: ImmutableList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
@@ -630,7 +630,7 @@ private fun HomeContentGrid(
 
 @Composable
 private fun FollowedPodcastItem(
-    items: PersistentList<PodcastInfo>,
+    items: ImmutableList<PodcastInfo>,
     onPodcastUnfollowed: (PodcastInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
@@ -652,7 +652,7 @@ private fun FollowedPodcastItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FollowedPodcasts(
-    items: PersistentList<PodcastInfo>,
+    items: ImmutableList<PodcastInfo>,
     onPodcastUnfollowed: (PodcastInfo) -> Unit,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier,
@@ -767,7 +767,7 @@ private fun PreviewHome() {
         HomeScreen(
             windowSizeClass = CompactWindowSizeClass,
             isLoading = true,
-            featuredPodcasts = PreviewPodcasts.toPersistentList(),
+            featuredPodcasts = PreviewPodcasts.toImmutableList(),
             homeCategories = HomeCategory.entries,
             selectedHomeCategory = HomeCategory.Discover,
             filterableCategoriesModel = FilterableCategoriesModel(

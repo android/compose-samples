@@ -38,7 +38,7 @@ import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -229,7 +229,7 @@ sealed interface HomeAction {
 data class HomeScreenUiState(
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
-    val featuredPodcasts: PersistentList<PodcastInfo> = persistentListOf(),
+    val featuredPodcasts: ImmutableList<PodcastInfo> = persistentListOf(),
     val selectedHomeCategory: HomeCategory = HomeCategory.Discover,
     val homeCategories: List<HomeCategory> = emptyList(),
     val filterableCategoriesModel: FilterableCategoriesModel = FilterableCategoriesModel(),

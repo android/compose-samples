@@ -16,9 +16,13 @@
 
 package com.example.jetcaster.core.model
 
+import androidx.compose.runtime.Immutable
+
 /**
  * Model holding a list of categories and a selected category in the collection
  */
+
+@Immutable
 data class FilterableCategoriesModel(val categories: List<CategoryInfo> = emptyList(), val selectedCategory: CategoryInfo? = null) {
     val isEmpty = categories.isEmpty() || selectedCategory == null
 }

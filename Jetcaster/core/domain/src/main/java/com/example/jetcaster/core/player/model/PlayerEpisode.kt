@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.player.model
 
+import androidx.compose.runtime.Immutable
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.PodcastInfo
@@ -25,6 +26,8 @@ import java.time.OffsetDateTime
 /**
  * Episode data with necessary information to be used within a player.
  */
+
+@Immutable
 data class PlayerEpisode(
     val uri: String = "",
     val title: String = "",

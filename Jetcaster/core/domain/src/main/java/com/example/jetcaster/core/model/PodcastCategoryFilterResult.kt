@@ -16,9 +16,12 @@
 
 package com.example.jetcaster.core.model
 
+import androidx.compose.runtime.Immutable
+
 /**
  * A model holding top podcasts and matching episodes when filtering based on a category.
  */
+@Immutable
 data class PodcastCategoryFilterResult(
     val topPodcasts: List<PodcastInfo> = emptyList(),
     val episodes: List<PodcastToEpisodeInfo> = emptyList(),
