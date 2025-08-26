@@ -96,6 +96,7 @@ val colorSchemeForDarkMode = darkColorScheme(
     onSurface = onSurfaceDark,
     surfaceVariant = surfaceVariantDark,
     onSurfaceVariant = onSurfaceVariantDark,
+    surfaceTint = primaryDark,
     border = outlineDark,
     borderVariant = outlineVariantDark,
     scrim = scrimDark,
@@ -106,7 +107,6 @@ val colorSchemeForDarkMode = darkColorScheme(
     onErrorContainer = onErrorContainerDark,
 )
 
-// Todo: specify surfaceTint
 val colorSchemeForLightMode = lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
@@ -128,6 +128,7 @@ val colorSchemeForLightMode = lightColorScheme(
     onSurface = onSurfaceLight,
     surfaceVariant = surfaceVariantLight,
     onSurfaceVariant = onSurfaceVariantLight,
+    surfaceTint = primaryLight,
     border = outlineLight,
     borderVariant = outlineVariantLight,
     scrim = scrimLight,
