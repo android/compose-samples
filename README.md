@@ -13,6 +13,12 @@ You can clone this repository or import the
 project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
+> **Java / JDK**  
+> Building with recent Android Gradle Plugin versions requires **JDK 17**.  
+> Android Studio (Flamingo and newer) bundles JDK 17 by default.  
+> See: https://developer.android.com/studio/releases/gradle-plugin#jdk-17
+
+
 🧬 Samples
 ------------
 
