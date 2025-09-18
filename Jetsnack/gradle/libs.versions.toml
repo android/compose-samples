@@ -46,7 +46,7 @@ kotlinx_immutable = "0.4.0"
 ksp = "2.2.20-2.0.3"
 maps-compose = "6.10.0"
 # @keep
-minSdk = "21"
+minSdk = "23"
 okhttp = "5.1.0"
 play-services-wearable = "19.0.0"
 robolectric = "4.16"
