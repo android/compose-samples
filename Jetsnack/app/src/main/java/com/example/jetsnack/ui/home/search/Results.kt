@@ -31,8 +31,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -167,7 +165,7 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
                 },
         ) {
             Icon(
-                imageVector = Icons.Outlined.Add,
+                painter = painterResource(id = R.drawable.ic_add),
                 contentDescription = stringResource(R.string.label_add),
             )
         }
