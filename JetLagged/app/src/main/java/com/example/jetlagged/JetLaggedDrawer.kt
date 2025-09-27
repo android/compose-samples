@@ -158,19 +158,13 @@ fun HomeScreenDrawer(windowSizeClass: WindowSizeClass) {
                             } else {
                                 0f
                             }
-                            // checking if the difference between the target and actual is + or -
-                            val targetDifference = (actualTargetX - targetOffsetX)
-                            val canReachTargetWithDecay =
-                                (
-                                    targetOffsetX > actualTargetX &&
-                                        velocity > 0f &&
-                                        targetDifference > 0f
-                                    ) ||
-                                    (
-                                        targetOffsetX < actualTargetX &&
-                                            velocity < 0 &&
-                                            targetDifference < 0f
-                                        )
+                            val canReachTargetWithDecay = if (actualTargetX > 0f) {
+                                // We are aiming for the open state, check if the fling is strong enough to overshoot.
+                                velocity > 0f && targetOffsetX > actualTargetX
+                            } else {
+                                // We are aiming for the closed state, check if the fling is strong enough to overshoot.
+                                velocity < 0f && targetOffsetX < actualTargetX
+                            }
                             if (canReachTargetWithDecay) {
                                 translationX.animateDecay(
                                     initialVelocity = velocity,
