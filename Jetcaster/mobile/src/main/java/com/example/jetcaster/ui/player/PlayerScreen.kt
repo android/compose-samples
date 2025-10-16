@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -40,10 +39,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -167,7 +166,7 @@ private fun PlayerScreen(
             SnackbarHost(hostState = snackbarHostState)
         },
         modifier = modifier,
-    ) { contentPadding ->
+    ) { _ ->
         if (uiState.episodePlayerState.currentEpisode != null) {
             PlayerContentWithBackground(
                 uiState = uiState,
@@ -180,8 +179,7 @@ private fun PlayerScreen(
                     }
                     onAddToQueue()
                 },
-                playerControlActions = playerControlActions,
-                contentPadding = contentPadding,
+                playerControlActions = playerControlActions
             )
         } else {
             FullScreenLoading()
@@ -207,14 +205,11 @@ fun PlayerContentWithBackground(
     onAddToQueue: () -> Unit,
     playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         PlayerBackground(
             episode = uiState.episodePlayerState.currentEpisode,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
+            modifier = modifier.fillMaxSize()
         )
         PlayerContent(
             uiState = uiState,
@@ -222,7 +217,7 @@ fun PlayerContentWithBackground(
             displayFeatures = displayFeatures,
             onBackPress = onBackPress,
             onAddToQueue = onAddToQueue,
-            playerControlActions = playerControlActions,
+            playerControlActions = playerControlActions
         )
     }
 }
@@ -300,8 +295,8 @@ fun PlayerContent(
                         startYPercentage = 1f,
                         endYPercentage = 0f,
                     )
-                    .systemBarsPadding()
-                    .padding(horizontal = 8.dp),
+                    .windowInsetsPadding(WindowInsets.safeDrawing)
+                    .padding(horizontal = 8.dp)
             ) {
                 TopAppBar(
                     onBackPress = onBackPress,
@@ -360,8 +355,8 @@ private fun PlayerContentRegular(
                 startYPercentage = 1f,
                 endYPercentage = 0f,
             )
-            .systemBarsPadding()
-            .padding(horizontal = 8.dp),
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .padding(horizontal = 8.dp)
     ) {
         TopAppBar(
             onBackPress = onBackPress,
