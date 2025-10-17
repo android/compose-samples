@@ -43,6 +43,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -179,7 +180,7 @@ private fun PlayerScreen(
                     }
                     onAddToQueue()
                 },
-                playerControlActions = playerControlActions
+                playerControlActions = playerControlActions,
             )
         } else {
             FullScreenLoading()
@@ -295,7 +296,7 @@ fun PlayerContent(
                         startYPercentage = 1f,
                         endYPercentage = 0f,
                     )
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
+                    .systemBarsPadding()
                     .padding(horizontal = 8.dp),
             ) {
                 TopAppBar(
@@ -355,7 +356,7 @@ private fun PlayerContentRegular(
                 startYPercentage = 1f,
                 endYPercentage = 0f,
             )
-            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .systemBarsPadding()
             .padding(horizontal = 8.dp),
     ) {
         TopAppBar(
