@@ -206,7 +206,7 @@ fun PlayerContentWithBackground(
     playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    Box(contentAlignment = Alignment.Center) {
         PlayerBackground(
             episode = uiState.episodePlayerState.currentEpisode,
             modifier = modifier.fillMaxSize()
