@@ -217,7 +217,7 @@ fun PlayerContentWithBackground(
             displayFeatures = displayFeatures,
             onBackPress = onBackPress,
             onAddToQueue = onAddToQueue,
-            playerControlActions = playerControlActions
+            playerControlActions = playerControlActions,
         )
     }
 }
@@ -296,7 +296,7 @@ fun PlayerContent(
                         endYPercentage = 0f,
                     )
                     .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = 8.dp),
             ) {
                 TopAppBar(
                     onBackPress = onBackPress,
@@ -356,7 +356,7 @@ private fun PlayerContentRegular(
                 endYPercentage = 0f,
             )
             .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp),
     ) {
         TopAppBar(
             onBackPress = onBackPress,

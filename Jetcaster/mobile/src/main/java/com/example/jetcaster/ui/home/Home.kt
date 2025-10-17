@@ -395,9 +395,7 @@ private fun HomeScreen(
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    HomeScreenBackground(
-//        modifier = modifier.windowInsetsPadding(WindowInsets.navigationBars),
-    ) {
+    HomeScreenBackground {
         Scaffold(
             topBar = {
                 Column {
