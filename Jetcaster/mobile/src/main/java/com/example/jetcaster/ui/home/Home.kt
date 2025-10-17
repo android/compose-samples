@@ -430,13 +430,13 @@ private fun HomeScreen(
                 library = library,
                 /**
                  * Edge-to-edge:
-                 * Handles left, right and top insets allowing content to scroll behind the system navigation bar for an edge-to-edge look.
+                 * Handles start, end and top insets allowing content to scroll behind the system navigation bar for an edge-to-edge look.
                  * Bottom insets are applied to the last list item in [HomeContentGrid].
                  */
-                modifier = modifier.windowInsetsPadding(
-                    WindowInsets(
-                        left = contentPadding.calculateLeftPadding(layoutDirection),
-                        right = contentPadding.calculateRightPadding(layoutDirection),
+                modifier = modifier.padding(
+                    PaddingValues(
+                        start = contentPadding.calculateLeftPadding(layoutDirection),
+                        end = contentPadding.calculateRightPadding(layoutDirection),
                         top = contentPadding.calculateTopPadding(),
                         bottom = 0.dp,
                     )
@@ -602,7 +602,7 @@ private fun HomeContentGrid(
         /**
          * Edge-to-edge:
          * Allows content to scroll behind the system navigation bar while ensuring the last list item is still accessible.
-         * Top, right and left insets are handled in [HomeScreen].
+         * Top, start and end insets are handled in [HomeScreen].
          */
         contentPadding = WindowInsets.navigationBars.asPaddingValues()
     ) {
