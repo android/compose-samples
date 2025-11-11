@@ -19,7 +19,7 @@ package com.example.jetcaster.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.core.view.WindowCompat
 import com.example.jetcaster.glancewidget.updateWidgetPreview
 import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
+        WindowCompat.enableEdgeToEdge(window)
         updateWidgetPreview(this)
         setContent {
             val displayFeatures = calculateDisplayFeatures(this)

@@ -28,10 +28,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -84,6 +86,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -393,9 +396,7 @@ private fun HomeScreen(
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    HomeScreenBackground(
-        modifier = modifier.windowInsetsPadding(WindowInsets.navigationBars),
-    ) {
+    HomeScreenBackground {
         Scaffold(
             topBar = {
                 Column {
@@ -418,6 +419,7 @@ private fun HomeScreen(
             containerColor = Color.Transparent,
         ) { contentPadding ->
             // Main Content
+            val layoutDirection = LocalLayoutDirection.current
             val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
             val showHomeCategoryTabs = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
             HomeContent(
@@ -426,7 +428,19 @@ private fun HomeScreen(
                 filterableCategoriesModel = filterableCategoriesModel,
                 podcastCategoryFilterResult = podcastCategoryFilterResult,
                 library = library,
-                modifier = Modifier.padding(contentPadding),
+                /**
+                 * Edge-to-edge:
+                 * Handles start, end and top insets allowing content to scroll behind the system navigation bar for an edge-to-edge look.
+                 * Bottom insets are applied to the last list item in [HomeContentGrid].
+                 */
+                modifier = modifier.padding(
+                    PaddingValues(
+                        start = contentPadding.calculateLeftPadding(layoutDirection),
+                        end = contentPadding.calculateRightPadding(layoutDirection),
+                        top = contentPadding.calculateTopPadding(),
+                        bottom = 0.dp,
+                    )
+                ),
                 onHomeAction = { action ->
                     if (action is HomeAction.QueueEpisode) {
                         coroutineScope.launch {
@@ -454,7 +468,7 @@ private fun HomeScreen(
 @Composable
 fun PillToolbar(selectedHomeCategory: HomeCategory, onHomeAction: (HomeAction) -> Unit, modifier: Modifier = Modifier) {
     HorizontalFloatingToolbar(
-        modifier = modifier,
+        modifier = modifier.navigationBarsPadding(),
         colors = FloatingToolbarColors(
             toolbarContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             toolbarContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -585,6 +599,12 @@ private fun HomeContentGrid(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(362.dp),
         modifier = modifier.fillMaxSize(),
+        /**
+         * Edge-to-edge:
+         * Allows content to scroll behind the system navigation bar while ensuring the last list item is still accessible.
+         * Top, start and end insets are handled in [HomeScreen].
+         */
+        contentPadding = WindowInsets.navigationBars.asPaddingValues()
     ) {
         when (selectedHomeCategory) {
             HomeCategory.Library -> {
