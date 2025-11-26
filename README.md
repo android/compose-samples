@@ -98,10 +98,10 @@ the most up to date resources.
 
 | Project                                          | Removed    | Commit                                                              |
 | ------------------------------------------------ | -----------|-------------------------------------------------------------------- |
-| [Crane](../../../tree/v2024.05.00/Crane)         | 2024-08-02 | [ee8e272](../../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
-| [Owl](../../../tree/v2024.05.00/Owl)             | 2024-08-02 | [ee8e272](../../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
-| [Jetsurvey](../../../tree/v2024.05.00/Jetsurvey) | 2024-08-02 | [ee8e272](../../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
-| [Rally](../../../tree/v2024.05.00/Rally)         | 2024-08-02 | [ee8e272](../../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
+| [Crane](../../tree/v2024.05.00/Crane)         | 2024-08-02 | [ee8e272](../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
+| [Owl](../../tree/v2024.05.00/Owl)             | 2024-08-02 | [ee8e272](../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
+| [Jetsurvey](../../tree/v2024.05.00/Jetsurvey) | 2024-08-02 | [ee8e272](../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
+| [Rally](../../tree/v2024.05.00/Rally)         | 2024-08-02 | [ee8e272](../../commit/ee8e27289f4bc36304ee9f04397f49c35f402a65) |
 
 ## License
 ```
