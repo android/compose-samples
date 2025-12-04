@@ -227,7 +227,7 @@ private fun Header(snackId: Long, origin: String) {
                     boundsTransform = snackDetailBoundsTransform,
                     enter = fadeIn(nonSpatialExpressiveSpring()),
                     exit = fadeOut(nonSpatialExpressiveSpring()),
-                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                    resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
                 )
                 .height(280.dp)
                 .fillMaxWidth()
