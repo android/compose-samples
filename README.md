@@ -29,6 +29,8 @@ project from Android Studio following the steps
 | <br><img src="readme/reply.png" alt="Reply" width="240"></img>  <br><br>A compose implementation of the Reply material study, an email client app that focuses on adaptive design for mobile, tablets and foldables. It also showcases brand new Material design 3 theming, dynamic colors and navigation components.<br><br>• Medium complexity<br>• Adaptive UI for phones, tablet and desktops<br>• Foldable support<br>• Material 3 theming & Components<br>• Dynamic colors and Light/Dark theme support<br><br>**[> Browse](Reply/)** <br><br>  | <img src="readme/screenshots/Reply.png" width="320" alt="Reply sample demo">|
 |  |  |
 | <br><img src="readme/jetlagged_heading.png" alt="JetLagged" width="240"></img>  <br><br>A sample sleep tracker app, showcasing how to create custom layouts and graphics in Compose<br><br>• Custom Layouts<br>• Graphs with Paths<br><br>**[> Browse](JetLagged/)** <br><br>  | <img src="JetLagged/screenshots/JetLagged_Full.png" width="320" alt="JetLagged sample demo">|
+|  |  |
+| <br><img src="readme/Animora.png" alt="Animora" width="240"></img>  <br><br>An interactive Jetpack Compose animation showcase<br><br>• Animation demos<br>• Real-time Spring tuning<br>• Modular architecture<br>• Comprehensive animation APIs<br>• Beginner-friendly FS_Explain.md<br><br>**[> Browse](Animora/)** <br><br>  | <img src="readme/screenshots/AnimoraStudio.png" width="320" alt="Animora sample demo">|
 
 🧬 Additional samples
 ------------
