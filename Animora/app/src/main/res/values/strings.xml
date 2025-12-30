@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">Animora</string>
+    <string name="Lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata</string>
+
+    <!-- animateColorAsState -->
+    <string name="animateColorAsState_shortInfo">这个动画根据 blueState 的布尔值变化，在红色与灰色之间平滑过渡，并实时更新 Box 的背景色。\n\n它是一个最基础、最轻量的 颜色过渡动画（Color Transition Animation），适用于状态变化时快速给用户一个自然的视觉反馈。</string>
+
+    <!-- animateContentSize -->
+    <string name="animateContentSize_shortInfo">当一个组件的尺寸因内容或状态改变时，这个 Modifier 会自动为其尺寸变化添加平滑的动画过渡效果。\n\n它非常适合用于可展开/折叠的卡片、动态文本块等场景，避免尺寸突变带来的生硬感。</string>
+
+    <!-- animateContentVisibility -->
+    <string name="animateContentVisibility_shortInfo">通过一个布尔值来控制其子内容的出现和消失，并在此过程中应用指定的进入（Enter）和退出（Exit）动画。\n\n你可以用它轻松实现元素的淡入淡出、滑动进入/退出等效果，是控制UI元素显隐的理想选择。</string>
+
+    <!-- animateOpacityAsState -->
+    <string name="animateOpacityAsState_shortInfo">这是一个专门用于处理透明度（Alpha）的单值动画。它根据状态变化，在两个浮点数值之间平滑过渡，常用于实现组件的淡入淡出效果。\n\n和 animateColorAsState 类似，它也是一个轻量级的“即发即忘”式动画。</string>
+
+    <!-- shareBorder -->
+    <string name="shareBorder_shortInfo">共享元素过渡（Shared Element Transition）可以在两个不同的布局状态之间，为一个或多个共享的组件创建连贯的、魔法般的移动和形变动画。\n\n它极大地提升了用户体验，尤其是在导航场景中（如从列表页到详情页），能帮助用户清晰地感知元素的来龙去脉。</string>
+
+    <!-- shareElement -->
+    <string name="shareElement_shortInfo">sharedElement 是 Jetpack Compose 中用于实现共享元素过渡的状态驱动动画 API。\n\n它通过 sharedContentState 为不同状态下的 Composable 绑定统一身份，并结合 AnimatedContent 或 AnimatedVisibility 的作用域，在布局结构、尺寸或位置发生变化时，自动生成连贯、自然的过渡动画，使界面切换更具空间连续性与视觉一致性。</string>
+
+    <!-- updateTransition -->
+    <string name="updateTransition_shortInfo">这是一个功能强大的动画协调器。当你的UI需要根据单一状态（如 `Expanded`/`Collapsed`）同时改变多个属性（如颜色、尺寸、圆角）时，`updateTransition` 可以确保所有这些动画同步开始、协同执行。\n\n它是处理复杂、多属性、状态驱动动画的首选方案。</string>
+
+    <!-- animatable -->
+    <string name="AnimateTo_shortInfo">Animatable 是一个功能强大的、基于协程的 API，用于对单个值（如 Float, Color, Dp 等）进行动画。\n\n与animate*AsState 不同，它提供了更精细的控制能力，尤其适合处理手势驱动或需要中断和重启的复杂动画场景。</string>
+
+    <!-- withMediumSpringSpec -->
+    <string name="withMediumSpringSpec_shortInfo">通过为 Animatable.animateTo 提供 spring动画规范（AnimationSpec），可以轻松创建出符合物理规律的弹簧动画效果，让组件的运动看起来更自然、生动。</string>
+
+    <!-- withDIYBezier -->
+    <string name="withDIYBezier_shortInfo">使用 tween 结合自定义的
+    CubicBezierEasing（三次贝塞尔缓动曲线），可以精确控制动画在时间上的速度变化，实现从“慢-快-慢”到“快-慢”等各种高度定制化的缓动效果。</string>
+
+    <!--withKeyframesSpline-->
+    <string name="withKeyframesSpline_shortInfo">keyframes（关键帧）动画允许你将一个动画过程分解为多个阶段，并为每个阶段指定目标值和持续时间。\n\n这对于创建复杂的
+    、多步骤的动画序列非常有用，例如模拟一个物体先加速后减速再停止的运动。</string>
+
+    <!--withInfinityRepeatable-->
+    <string name="withInfinityRepeatable_shortInfo">infiniteRepeatable 是一个特殊的 AnimationSpec，它可以将任何其他动画规范（如 tween 或
+    keyframes）包装成一个无限循环的动画。\n\n这对于创建持续的背景效果或加载指示器非常有用。</string>
+
+    <!-- withSnap -->
+    <string name="withSnap_shortInfo">snap 是一种特殊的 AnimationSpec，它会让值的变化瞬间完成，没有任何过渡动画。\n\n当你需要立即将一个 Composable
+    更新到新的状态而不需要动画时，可以使用它。</string>
+
+    <!-- animateColor -->
+    <string name="animateColor_shortInfo">rememberInfiniteTransition 是专门用于创建无限循环动画的 API。\n\n通过它的 animateColor
+    扩展函数，可以轻松实现一个在多个颜色之间平滑、无限循环过渡的效果，常用于创建闪烁、呼吸或渐变的背景。</string>
+
+    <!-- animateFloat -->
+    <string name="animateFloat_shortInfo">rememberInfiniteTransition 的 animateFloat
+    扩展函数可以创建一个在两个浮点数值之间无限循环的动画。\n\n这非常灵活，可以用来驱动尺寸、透明度、旋转角度、位置偏移等多种视觉属性的持续变化。</string>
+
+    <string name="creater_note">这是我学习 Jetpack Compose 过程中的最终作品，用于练习 Compose 语法、Android 开发，并记录那些容易被遗忘的动画 API✨\n\n如果这个 App 对你有所帮助，欢迎在 GitHub 点个 ⭐️!\n\n祝你在 Android 的旅程中，始终保持灵感与热爱🚀\n\nCreater. Bai\n2025.12.16</string>
+    <string name="project_github">https\:\/\/github.com\/Baidaidai-GFWD-origin\/Animora</string>
+    <string name="app_version_local">1.2.8</string>
+
+</resources>

@@ -1,0 +1,39 @@
+name: Animora CI/CD
+
+run-name: "Building Animora APK And Release"
+
+on:
+  push:
+    tags:
+      - v*.*.*
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17 + Gradle cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build Debug APK (MVP)
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          files: app/build/outputs/apk/debug/app-debug.apk
+          body_path: releases/${{ github.ref_name }}.md
