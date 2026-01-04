@@ -16,9 +16,13 @@
 
 package com.example.jetnews.ui.home
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
@@ -28,6 +32,7 @@ import com.example.jetnews.utils.ErrorMessage
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -75,7 +80,7 @@ sealed interface HomeUiState {
  */
 private data class HomeViewModelState(
     val postsFeed: PostsFeed? = null,
-    val selectedPostId: String? = null, // TODO back selectedPostId in a SavedStateHandle
+    val selectedPostId: String? = null,
     val isArticleOpen: Boolean = false,
     val favorites: Set<String> = emptySet(),
     val isLoading: Boolean = false,
@@ -114,13 +119,23 @@ private data class HomeViewModelState(
 /**
  * ViewModel that handles the business logic of the Home screen
  */
-class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPostId: String?) : ViewModel() {
+class HomeViewModel(
+    private val postsRepository: PostsRepository,
+    private val savedStateHandle: SavedStateHandle,
+    preSelectedPostId: String?,
+) : ViewModel() {
+
+    // StateFlow backed by SavedStateHandle for selectedPostId persistence across process death
+    private val selectedPostIdState: StateFlow<String?> = savedStateHandle.getStateFlow(
+        key = SELECTED_POST_ID_KEY,
+        initialValue = preSelectedPostId,
+    )
 
     private val viewModelState = MutableStateFlow(
         HomeViewModelState(
             isLoading = true,
-            selectedPostId = preSelectedPostId,
-            isArticleOpen = preSelectedPostId != null,
+            selectedPostId = selectedPostIdState.value,
+            isArticleOpen = selectedPostIdState.value != null,
         ),
     )
 
@@ -140,6 +155,18 @@ class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPos
         viewModelScope.launch {
             postsRepository.observeFavorites().collect { favorites ->
                 viewModelState.update { it.copy(favorites = favorites) }
+            }
+        }
+
+        // Observe selectedPostId changes from SavedStateHandle
+        viewModelScope.launch {
+            selectedPostIdState.collect { selectedPostId ->
+                viewModelState.update {
+                    it.copy(
+                        selectedPostId = selectedPostId,
+                        isArticleOpen = selectedPostId != null,
+                    )
+                }
             }
         }
     }
@@ -208,12 +235,8 @@ class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPos
      * Notify that the user interacted with the article details
      */
     fun interactedWithArticleDetails(postId: String) {
-        viewModelState.update {
-            it.copy(
-                selectedPostId = postId,
-                isArticleOpen = true,
-            )
-        }
+        // Save to SavedStateHandle for persistence across process death
+        savedStateHandle[SELECTED_POST_ID_KEY] = postId
     }
 
     /**
@@ -229,12 +252,19 @@ class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPos
      * Factory for HomeViewModel that takes PostsRepository as a dependency
      */
     companion object {
-        fun provideFactory(postsRepository: PostsRepository, preSelectedPostId: String? = null): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return HomeViewModel(postsRepository, preSelectedPostId) as T
-                }
+        private const val SELECTED_POST_ID_KEY = "selectedPostId"
+
+        fun provideFactory(
+            postsRepository: PostsRepository,
+            preSelectedPostId: String? = null,
+        ): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                HomeViewModel(
+                    postsRepository = postsRepository,
+                    savedStateHandle = createSavedStateHandle(),
+                    preSelectedPostId = preSelectedPostId,
+                )
             }
+        }
     }
 }
