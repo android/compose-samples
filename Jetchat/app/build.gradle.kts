@@ -63,8 +63,10 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget("17")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

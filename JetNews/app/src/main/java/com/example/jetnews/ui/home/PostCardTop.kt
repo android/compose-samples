@@ -74,10 +74,8 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         Text(
             text = stringResource(
                 id = R.string.home_post_min_read,
-                formatArgs = arrayOf(
-                    post.metadata.date,
-                    post.metadata.readTimeMinutes,
-                ),
+                post.metadata.date,
+                post.metadata.readTimeMinutes,
             ),
             style = typography.bodySmall,
         )

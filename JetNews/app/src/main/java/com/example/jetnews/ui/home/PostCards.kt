@@ -57,10 +57,8 @@ fun AuthorAndReadTime(post: Post, modifier: Modifier = Modifier) {
         Text(
             text = stringResource(
                 id = R.string.home_post_min_read,
-                formatArgs = arrayOf(
-                    post.metadata.author.name,
-                    post.metadata.readTimeMinutes,
-                ),
+                post.metadata.author.name,
+                post.metadata.readTimeMinutes,
             ),
             style = MaterialTheme.typography.bodyMedium,
         )
