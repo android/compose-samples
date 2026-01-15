@@ -147,10 +147,7 @@ private fun PostMetadata(metadata: Metadata, modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(
                     id = R.string.article_post_min_read,
-                    formatArgs = arrayOf(
-                        metadata.date,
-                        metadata.readTimeMinutes,
-                    ),
+                    metadata.date, metadata.readTimeMinutes,
                 ),
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -174,11 +171,13 @@ private fun Paragraph(paragraph: Paragraph) {
                 textStyle = textStyle,
                 paragraphStyle = paragraphStyle,
             )
+
             ParagraphType.CodeBlock -> CodeBlockParagraph(
                 text = annotatedString,
                 textStyle = textStyle,
                 paragraphStyle = paragraphStyle,
             )
+
             ParagraphType.Header -> {
                 Text(
                     modifier = Modifier.padding(4.dp),
@@ -186,6 +185,7 @@ private fun Paragraph(paragraph: Paragraph) {
                     style = textStyle.merge(paragraphStyle),
                 )
             }
+
             else -> Text(
                 modifier = Modifier.padding(4.dp),
                 text = annotatedString,
@@ -251,16 +251,20 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
             textStyle = typography.headlineSmall
             trailingPadding = 16.dp
         }
+
         ParagraphType.Text -> {
             textStyle = typography.bodyLarge.copy(lineHeight = 28.sp)
         }
+
         ParagraphType.Header -> {
             textStyle = typography.headlineMedium
             trailingPadding = 16.dp
         }
+
         ParagraphType.CodeBlock -> textStyle = typography.bodyLarge.copy(
             fontFamily = FontFamily.Monospace,
         )
+
         ParagraphType.Quote -> textStyle = typography.bodyLarge
         ParagraphType.Bullet -> {
             paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
@@ -288,6 +292,7 @@ fun Markup.toAnnotatedStringItem(typography: Typography, codeBlockBackground: Co
                 end,
             )
         }
+
         MarkupType.Link -> {
             AnnotatedString.Range(
                 typography.bodyLarge.copy(textDecoration = TextDecoration.Underline).toSpanStyle(),
@@ -295,6 +300,7 @@ fun Markup.toAnnotatedStringItem(typography: Typography, codeBlockBackground: Co
                 end,
             )
         }
+
         MarkupType.Bold -> {
             AnnotatedString.Range(
                 typography.bodyLarge.copy(fontWeight = FontWeight.Bold).toSpanStyle(),
@@ -302,6 +308,7 @@ fun Markup.toAnnotatedStringItem(typography: Typography, codeBlockBackground: Co
                 end,
             )
         }
+
         MarkupType.Code -> {
             AnnotatedString.Range(
                 typography.bodyLarge
