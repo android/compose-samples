@@ -363,6 +363,7 @@ private fun InterestsTabRow(
                 InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
             }
         }
+
         true -> {
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,

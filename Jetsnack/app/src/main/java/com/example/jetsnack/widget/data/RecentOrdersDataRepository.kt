@@ -62,7 +62,7 @@ class RecentOrdersDataRepository {
                     supportingImage = item.supportingImage,
                     trailingIconButton = R.drawable.add_shopping_cart,
                     trailingIconButtonContentDescription =
-                    getString(context, R.string.add_to_cart_content_description),
+                        getString(context, R.string.add_to_cart_content_description),
                     snackKeys = item.snackKeys,
                 )
             }

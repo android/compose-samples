@@ -246,7 +246,9 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
 
     when (this) {
         ParagraphType.Caption -> textStyle = typography.labelMedium
+
         ParagraphType.Title -> textStyle = typography.headlineLarge
+
         ParagraphType.Subhead -> {
             textStyle = typography.headlineSmall
             trailingPadding = 16.dp
@@ -266,6 +268,7 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
         )
 
         ParagraphType.Quote -> textStyle = typography.bodyLarge
+
         ParagraphType.Bullet -> {
             paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
         }

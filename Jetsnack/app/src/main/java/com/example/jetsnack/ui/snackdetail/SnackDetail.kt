@@ -171,7 +171,7 @@ fun SnackDetail(snackId: Long, origin: String, upPress: () -> Unit) {
                     ),
                     animatedVisibilityScope,
                     clipInOverlayDuringTransition =
-                    OverlayClip(RoundedCornerShape(roundedCornerAnim)),
+                        OverlayClip(RoundedCornerShape(roundedCornerAnim)),
                     boundsTransform = snackDetailBoundsTransform,
                     exit = fadeOut(nonSpatialExpressiveSpring()),
                     enter = fadeIn(nonSpatialExpressiveSpring()),

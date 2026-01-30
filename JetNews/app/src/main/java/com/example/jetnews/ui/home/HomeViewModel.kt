@@ -156,6 +156,7 @@ class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPos
             viewModelState.update {
                 when (result) {
                     is Result.Success -> it.copy(postsFeed = result.data, isLoading = false)
+
                     is Result.Error -> {
                         val errorMessages = it.errorMessages + ErrorMessage(
                             id = UUID.randomUUID().mostSignificantBits,

@@ -126,6 +126,7 @@ private fun getSymbolAnnotation(
                 tag = SymbolAnnotationType.PERSON.name,
             ),
         )
+
         '*' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('*'),
@@ -133,6 +134,7 @@ private fun getSymbolAnnotation(
             ),
             null,
         )
+
         '_' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('_'),
@@ -140,6 +142,7 @@ private fun getSymbolAnnotation(
             ),
             null,
         )
+
         '~' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('~'),
@@ -147,6 +150,7 @@ private fun getSymbolAnnotation(
             ),
             null,
         )
+
         '`' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('`'),
@@ -159,6 +163,7 @@ private fun getSymbolAnnotation(
             ),
             null,
         )
+
         'h' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value,
@@ -173,6 +178,7 @@ private fun getSymbolAnnotation(
                 tag = SymbolAnnotationType.LINK.name,
             ),
         )
+
         else -> SymbolAnnotation(AnnotatedString(matchResult.value), null)
     }
 }

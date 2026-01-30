@@ -124,7 +124,7 @@ private fun SleepRoundedBar(sleepData: SleepDayData, transition: Transition<Bool
         spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness =
-            Spring.StiffnessLow,
+                Spring.StiffnessLow,
         )
     }) { targetExpanded ->
         if (targetExpanded) 100.dp else 24.dp
@@ -133,7 +133,7 @@ private fun SleepRoundedBar(sleepData: SleepDayData, transition: Transition<Bool
         spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness =
-            Spring.StiffnessLow,
+                Spring.StiffnessLow,
         )
     }) { target ->
         if (target) 1f else 0f

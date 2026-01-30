@@ -94,16 +94,21 @@ fun ReplyNavigationWrapper(
 
     val navLayoutType = when {
         adaptiveInfo.windowPosture.isTabletop -> NavigationSuiteType.NavigationBar
+
         adaptiveInfo.windowSizeClass.isCompact() -> NavigationSuiteType.NavigationBar
+
         adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED &&
             windowSize.width >= 1200.dp -> NavigationSuiteType.NavigationDrawer
+
         else -> NavigationSuiteType.NavigationRail
     }
     val navContentPosition = when (adaptiveInfo.windowSizeClass.windowHeightSizeClass) {
         WindowHeightSizeClass.COMPACT -> ReplyNavigationContentPosition.TOP
+
         WindowHeightSizeClass.MEDIUM,
         WindowHeightSizeClass.EXPANDED,
         -> ReplyNavigationContentPosition.CENTER
+
         else -> ReplyNavigationContentPosition.TOP
     }
 
@@ -144,6 +149,7 @@ fun ReplyNavigationWrapper(
                         currentDestination = currentDestination,
                         navigateToTopLevelDestination = navigateToTopLevelDestination,
                     )
+
                     NavigationSuiteType.NavigationRail -> ReplyNavigationRail(
                         currentDestination = currentDestination,
                         navigationContentPosition = navContentPosition,
@@ -154,6 +160,7 @@ fun ReplyNavigationWrapper(
                             }
                         },
                     )
+
                     NavigationSuiteType.NavigationDrawer -> PermanentNavigationDrawerContent(
                         currentDestination = currentDestination,
                         navigationContentPosition = navContentPosition,
@@ -458,6 +465,7 @@ fun navigationMeasurePolicy(navigationContentPosition: ReplyNavigationContentPos
                 // Figure out the place we want to place the content, with respect to the
                 // parent (ignoring the header for now)
                 ReplyNavigationContentPosition.TOP -> 0
+
                 ReplyNavigationContentPosition.CENTER -> nonContentVerticalSpace / 2
             }
                 // And finally, make sure we don't overlap with the header.
