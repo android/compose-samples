@@ -5,7 +5,7 @@
 [versions]
 accompanist = "0.37.3"
 android-material3 = "1.14.0-alpha08"
-androidGradlePlugin = "8.13.2"
+androidGradlePlugin = "9.0.0"
 androidx-activity-compose = "1.12.2"
 androidx-appcompat = "1.7.1"
 androidx-compose-bom = "2026.01.00"
@@ -34,7 +34,7 @@ compileSdk = "36"
 coroutines = "1.10.2"
 google-maps = "20.0.0"
 gradle-versions = "0.53.0"
-hilt = "2.57.2"
+hilt = "2.59"
 hiltExt = "1.3.0"
 horologist = "0.7.15"
 jdkDesugar = "2.1.5"
@@ -42,7 +42,7 @@ junit = "4.13.2"
 kotlin = "2.3.0"
 kotlinx-serialization-json = "1.9.0"
 kotlinx_immutable = "0.4.0"
-ksp = "2.3.4"
+ksp = "2.3.5"
 maps-compose = "7.0.0"
 # @keep
 minSdk = "23"
@@ -55,7 +55,7 @@ room = "2.8.4"
 secrets = "2.0.1"
 spotless = "8.1.0"
 # @keep
-targetSdk = "33"
+targetSdk = "36"
 version-catalog-update = "1.0.1"
 
 [libraries]
@@ -166,8 +166,6 @@ android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
