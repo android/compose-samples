@@ -21,18 +21,16 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
-import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationWrapper
+import com.example.reply.ui.navigation.ReplyTopLevelDestination
 import com.example.reply.ui.navigation.Route
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
@@ -84,68 +82,55 @@ fun ReplyApp(
         else -> ReplyContentType.SINGLE_PANE
     }
 
-    val navController = rememberNavController()
-    val navigationActions = remember(navController) {
-        ReplyNavigationActions(navController)
+    val backStack = remember { mutableStateListOf<Route>(Route.Inbox) }
+    val currentRoute: Route? = backStack.lastOrNull()
+
+    val navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit = { destination ->
+        if (backStack.lastOrNull() != destination.route) {
+            if (backStack.size > 1) backStack.subList(1, backStack.size).clear()
+            if (destination.route != Route.Inbox) {
+                backStack.add(destination.route)
+            }
+        }
     }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
 
     Surface {
         ReplyNavigationWrapper(
-            currentDestination = currentDestination,
-            navigateToTopLevelDestination = navigationActions::navigateTo,
+            currentRoute = currentRoute,
+            navigateToTopLevelDestination = navigateToTopLevelDestination,
         ) {
-            ReplyNavHost(
-                navController = navController,
-                contentType = contentType,
-                displayFeatures = displayFeatures,
-                replyHomeUIState = replyHomeUIState,
-                navigationType = navSuiteType.toReplyNavType(),
-                closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail,
-                toggleSelectedEmail = toggleSelectedEmail,
+            NavDisplay(
+                backStack = backStack,
+                onBack = { backStack.removeLastOrNull() },
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator(),
+                ),
+                entryProvider = { route ->
+                    when (route) {
+                        Route.Inbox -> NavEntry(route) {
+                            ReplyInboxScreen(
+                                contentType = contentType,
+                                replyHomeUIState = replyHomeUIState,
+                                navigationType = navSuiteType.toReplyNavType(),
+                                displayFeatures = displayFeatures,
+                                closeDetailScreen = closeDetailScreen,
+                                navigateToDetail = navigateToDetail,
+                                toggleSelectedEmail = toggleSelectedEmail,
+                            )
+                        }
+                        Route.DirectMessages -> NavEntry(route) {
+                            EmptyComingSoon()
+                        }
+                        Route.Articles -> NavEntry(route) {
+                            EmptyComingSoon()
+                        }
+                        Route.Groups -> NavEntry(route) {
+                            EmptyComingSoon()
+                        }
+                    }
+                },
             )
-        }
-    }
-}
-
-@Composable
-private fun ReplyNavHost(
-    navController: NavHostController,
-    contentType: ReplyContentType,
-    displayFeatures: List<DisplayFeature>,
-    replyHomeUIState: ReplyHomeUIState,
-    navigationType: ReplyNavigationType,
-    closeDetailScreen: () -> Unit,
-    navigateToDetail: (Long, ReplyContentType) -> Unit,
-    toggleSelectedEmail: (Long) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = Route.Inbox,
-    ) {
-        composable<Route.Inbox> {
-            ReplyInboxScreen(
-                contentType = contentType,
-                replyHomeUIState = replyHomeUIState,
-                navigationType = navigationType,
-                displayFeatures = displayFeatures,
-                closeDetailScreen = closeDetailScreen,
-                navigateToDetail = navigateToDetail,
-                toggleSelectedEmail = toggleSelectedEmail,
-            )
-        }
-        composable<Route.DirectMessages> {
-            EmptyComingSoon()
-        }
-        composable<Route.Articles> {
-            EmptyComingSoon()
-        }
-        composable<Route.Groups> {
-            EmptyComingSoon()
         }
     }
 }
