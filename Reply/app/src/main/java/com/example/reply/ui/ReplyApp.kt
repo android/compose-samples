@@ -87,7 +87,7 @@ fun ReplyApp(
 
     val navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit = { destination ->
         if (backStack.lastOrNull() != destination.route) {
-            while (backStack.size > 1) backStack.removeLast()
+            if (backStack.size > 1) backStack.subList(1, backStack.size).clear()
             if (destination.route != Route.Inbox) {
                 backStack.add(destination.route)
             }
