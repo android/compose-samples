@@ -42,7 +42,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
-    currentRoute: JetnewsRoute,
+    currentRoute: JetnewsRoute?,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit,

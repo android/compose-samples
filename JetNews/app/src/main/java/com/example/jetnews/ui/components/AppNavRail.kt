@@ -37,7 +37,7 @@ import com.example.jetnews.ui.JetnewsRoute
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun AppNavRail(currentRoute: JetnewsRoute, navigateToHome: () -> Unit, navigateToInterests: () -> Unit, modifier: Modifier = Modifier) {
+fun AppNavRail(currentRoute: JetnewsRoute?, navigateToHome: () -> Unit, navigateToInterests: () -> Unit, modifier: Modifier = Modifier) {
     NavigationRail(
         header = {
             Icon(

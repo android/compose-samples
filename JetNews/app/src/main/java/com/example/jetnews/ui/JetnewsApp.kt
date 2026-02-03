@@ -39,16 +39,17 @@ fun JetnewsApp(
 ) {
     JetnewsTheme {
         val backStack = remember { mutableStateListOf<JetnewsRoute>(startRoute) }
-        val currentRoute: JetnewsRoute = backStack.lastOrNull() ?: Home()
+        val currentRoute: JetnewsRoute? = backStack.lastOrNull()
 
         val navigateToHome: () -> Unit = {
             // Pop everything back to Home (the start destination)
             while (backStack.size > 1) backStack.removeLast()
         }
         val navigateToInterests: () -> Unit = {
-            // Pop to Home, then add Interests on top (single top behavior)
-            while (backStack.size > 1) backStack.removeLast()
-            backStack.add(Interests)
+            if (backStack.lastOrNull() != Interests) {
+                while (backStack.size > 1) backStack.removeLast()
+                backStack.add(Interests)
+            }
         }
 
         val coroutineScope = rememberCoroutineScope()
