@@ -42,7 +42,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
-    currentRoute: String,
+    currentRoute: JetnewsRoute,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit,
@@ -58,7 +58,7 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.home_title)) },
             icon = { Icon(painterResource(R.drawable.ic_home), null) },
-            selected = currentRoute == JetnewsDestinations.HOME_ROUTE,
+            selected = currentRoute is Home,
             onClick = {
                 navigateToHome()
                 closeDrawer()
@@ -68,7 +68,7 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.interests_title)) },
             icon = { Icon(painterResource(R.drawable.ic_list_alt), null) },
-            selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
+            selected = currentRoute is Interests,
             onClick = {
                 navigateToInterests()
                 closeDrawer()
@@ -102,7 +102,7 @@ fun PreviewAppDrawer() {
     JetnewsTheme {
         AppDrawer(
             drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
-            currentRoute = JetnewsDestinations.HOME_ROUTE,
+            currentRoute = Home(),
             navigateToHome = {},
             navigateToInterests = {},
             closeDrawer = { },

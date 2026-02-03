@@ -23,29 +23,35 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun JetnewsApp(appContainer: AppContainer, widthSizeClass: WindowWidthSizeClass) {
+fun JetnewsApp(
+    appContainer: AppContainer,
+    widthSizeClass: WindowWidthSizeClass,
+    startRoute: Home = Home(),
+) {
     JetnewsTheme {
-        val navController = rememberNavController()
-        val navigationActions = remember(navController) {
-            JetnewsNavigationActions(navController)
+        val backStack = remember { mutableStateListOf<JetnewsRoute>(startRoute) }
+        val currentRoute: JetnewsRoute = backStack.lastOrNull() ?: Home()
+
+        val navigateToHome: () -> Unit = {
+            // Pop everything back to Home (the start destination)
+            while (backStack.size > 1) backStack.removeLast()
+        }
+        val navigateToInterests: () -> Unit = {
+            // Pop to Home, then add Interests on top (single top behavior)
+            while (backStack.size > 1) backStack.removeLast()
+            backStack.add(Interests)
         }
 
         val coroutineScope = rememberCoroutineScope()
-
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute =
-            navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
         val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
         val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
@@ -55,8 +61,8 @@ fun JetnewsApp(appContainer: AppContainer, widthSizeClass: WindowWidthSizeClass)
                 AppDrawer(
                     drawerState = sizeAwareDrawerState,
                     currentRoute = currentRoute,
-                    navigateToHome = navigationActions.navigateToHome,
-                    navigateToInterests = navigationActions.navigateToInterests,
+                    navigateToHome = navigateToHome,
+                    navigateToInterests = navigateToInterests,
                     closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
                 )
             },
@@ -68,14 +74,14 @@ fun JetnewsApp(appContainer: AppContainer, widthSizeClass: WindowWidthSizeClass)
                 if (isExpandedScreen) {
                     AppNavRail(
                         currentRoute = currentRoute,
-                        navigateToHome = navigationActions.navigateToHome,
-                        navigateToInterests = navigationActions.navigateToInterests,
+                        navigateToHome = navigateToHome,
+                        navigateToInterests = navigateToInterests,
                     )
                 }
                 JetnewsNavGraph(
                     appContainer = appContainer,
                     isExpandedScreen = isExpandedScreen,
-                    navController = navController,
+                    backStack = backStack,
                     openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                 )
             }
