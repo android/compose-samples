@@ -32,9 +32,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val appContainer = (application as JetnewsApplication).container
+
+        val postId = intent?.data?.getQueryParameter("postId")
+        val startRoute = Home(preSelectedPostId = postId)
+
         setContent {
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            JetnewsApp(appContainer, widthSizeClass)
+            JetnewsApp(appContainer, widthSizeClass, startRoute)
         }
     }
 }
