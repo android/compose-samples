@@ -16,12 +16,11 @@
 
 package com.example.reply.ui.navigation
 
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
+import androidx.navigation3.runtime.NavKey
 import com.example.reply.R
 import kotlinx.serialization.Serializable
 
-sealed interface Route {
+sealed interface Route : NavKey {
     @Serializable data object Inbox : Route
     @Serializable data object Articles : Route
     @Serializable data object DirectMessages : Route
@@ -29,25 +28,6 @@ sealed interface Route {
 }
 
 data class ReplyTopLevelDestination(val route: Route, val selectedIcon: Int, val unselectedIcon: Int, val iconTextId: Int)
-
-class ReplyNavigationActions(private val navController: NavHostController) {
-
-    fun navigateTo(destination: ReplyTopLevelDestination) {
-        navController.navigate(destination.route) {
-            // Pop up to the start destination of the graph to
-            // avoid building up a large stack of destinations
-            // on the back stack as users select items
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            // Avoid multiple copies of the same destination when
-            // reselecting the same item
-            launchSingleTop = true
-            // Restore state when reselecting a previously selected item
-            restoreState = true
-        }
-    }
-}
 
 val TOP_LEVEL_DESTINATIONS = listOf(
     ReplyTopLevelDestination(
