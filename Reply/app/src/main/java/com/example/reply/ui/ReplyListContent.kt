@@ -66,9 +66,7 @@ fun ReplyInboxScreen(
     toggleSelectedEmail: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    /**
-     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
-     */
+    // When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
             closeDetailScreen()

@@ -75,12 +75,15 @@ fun ReplyApp(
 
     val contentType = when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> ReplyContentType.SINGLE_PANE
+
         WindowWidthSizeClass.Medium -> if (foldingDevicePosture != DevicePosture.NormalPosture) {
             ReplyContentType.DUAL_PANE
         } else {
             ReplyContentType.SINGLE_PANE
         }
+
         WindowWidthSizeClass.Expanded -> ReplyContentType.DUAL_PANE
+
         else -> ReplyContentType.SINGLE_PANE
     }
 

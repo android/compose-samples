@@ -94,10 +94,13 @@ fun JetchatTheme(isDarkTheme: Boolean = isSystemInDarkTheme(), isDynamicColor: B
         dynamicColor && isDarkTheme -> {
             dynamicDarkColorScheme(LocalContext.current)
         }
+
         dynamicColor && !isDarkTheme -> {
             dynamicLightColorScheme(LocalContext.current)
         }
+
         isDarkTheme -> JetchatDarkColorScheme
+
         else -> JetchatLightColorScheme
     }
 

@@ -89,7 +89,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                                     painter = painterResource(id = R.drawable.ic_expand_more),
                                     tint = JetsnackTheme.colors.brand,
                                     contentDescription =
-                                    stringResource(R.string.label_select_delivery),
+                                        stringResource(R.string.label_select_delivery),
                                 )
                             }
                         }

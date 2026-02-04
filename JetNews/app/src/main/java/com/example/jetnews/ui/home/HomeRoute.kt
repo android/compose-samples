@@ -128,6 +128,7 @@ fun HomeRoute(
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
+
         HomeScreenType.Feed -> {
             HomeFeedScreen(
                 uiState = uiState,
@@ -142,6 +143,7 @@ fun HomeRoute(
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
+
         HomeScreenType.ArticleDetails -> {
             // Guaranteed by above condition for home screen type
             check(uiState is HomeUiState.HasPosts)
@@ -198,8 +200,10 @@ private fun getHomeScreenType(isExpandedScreen: Boolean, uiState: HomeUiState): 
                     HomeScreenType.Feed
                 }
             }
+
             is HomeUiState.NoPosts -> HomeScreenType.Feed
         }
     }
+
     true -> HomeScreenType.FeedWithArticleDetails
 }

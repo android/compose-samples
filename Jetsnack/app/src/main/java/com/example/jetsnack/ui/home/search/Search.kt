@@ -84,6 +84,7 @@ fun Search(onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier, 
             }
             when (state.searchDisplay) {
                 SearchDisplay.Categories -> SearchCategories(state.categories)
+
                 SearchDisplay.Suggestions -> SearchSuggestions(
                     suggestions = state.suggestions,
                     onSuggestionSelect = { suggestion ->
