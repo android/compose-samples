@@ -35,15 +35,18 @@ data class HomeKey(val postId: String? = null) : NavKey
 @Serializable
 object InterestsKey : NavKey
 
-val NAVIGATION_KEYS = listOf(HomeKey(), InterestsKey)
+fun getNavigationKeys(startKey: HomeKey) = listOf(startKey, InterestsKey)
 
 @Composable
-fun rememberNavigationState(startKey: NavKey = HomeKey()): NavigationState {
+fun rememberNavigationState(startKey: HomeKey): NavigationState {
     val currentKeys = rememberNavBackStack(startKey)
-    val backStacks = buildMap { NAVIGATION_KEYS.forEach { put(it::class.toString(), rememberNavBackStack(it)) } }.toMutableMap()
-    return remember(startKey) {
-        NavigationState(currentKeys, backStacks)
-    }
+    val backStacks = buildMap {
+        getNavigationKeys(startKey)
+            .forEach {
+                put(it::class.toString(), rememberNavBackStack(it))
+            }
+    }.toMutableMap()
+    return remember(startKey) { NavigationState(currentKeys, backStacks) }
 }
 
 /**

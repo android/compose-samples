@@ -25,8 +25,10 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
+import com.example.jetnews.ui.navigation.HomeKey
 import com.example.jetnews.ui.navigation.JetnewsNavDisplay
 import com.example.jetnews.ui.navigation.NavigationState
 import com.example.jetnews.ui.navigation.Navigator
@@ -35,14 +37,14 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun JetnewsApp(appContainer: AppContainer, widthSizeClass: WindowWidthSizeClass) {
+fun JetnewsApp(appContainer: AppContainer, widthSizeClass: WindowWidthSizeClass, deeplinkKey: HomeKey?) {
     JetnewsTheme {
         val coroutineScope = rememberCoroutineScope()
 
         val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
         val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
-        val navigationState = rememberNavigationState()
+        val navigationState = rememberNavigationState(deeplinkKey ?: HomeKey())
         val navigator = Navigator(navigationState)
 
         ModalNavigationDrawer(
