@@ -16,13 +16,18 @@
 
 package com.example.jetnews.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.ui.navigation.HomeKey
+import com.example.jetnews.ui.navigation.POST_ID
 
 class MainActivity : ComponentActivity() {
 
@@ -34,7 +39,18 @@ class MainActivity : ComponentActivity() {
         val appContainer = (application as JetnewsApplication).container
         setContent {
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            JetnewsApp(appContainer, widthSizeClass)
+            JetnewsApp(appContainer, widthSizeClass, getDeepLinkKey(intent))
         }
     }
+}
+
+private fun getDeepLinkKey(intent: Intent): HomeKey? {
+    val uri: Uri = intent.data ?: return null
+    val pathParams = uri.pathSegments
+    if (pathParams.lastOrNull() != "home") return null
+
+    val queryParams = uri.getQueryParameters(POST_ID)
+    if (queryParams.isEmpty() || queryParams.size > 1) return null
+    // "https://developer.android.com/jetnews/home?postId={$POST_ID}"
+    return HomeKey(postId = Uri.decode(queryParams.firstOrNull()))
 }

@@ -40,6 +40,14 @@
                     android:pathPrefix="/jetnews"
                     android:scheme="https" />
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                    android:host="developer.android.com"
+                    android:pathPrefix="/jetnews/home" />
+            </intent-filter>
         </activity>
 
         <receiver
