@@ -31,8 +31,6 @@ import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
 
-const val POST_ID = "postId"
-
 @Composable
 fun JetnewsNavDisplay(
     navigationState: NavigationState,

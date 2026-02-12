@@ -23,28 +23,26 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.navigation.HomeKey
 import com.example.jetnews.ui.navigation.JetnewsNavDisplay
-import com.example.jetnews.ui.navigation.NavigationState
 import com.example.jetnews.ui.navigation.Navigator
 import com.example.jetnews.ui.navigation.rememberNavigationState
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun JetnewsApp(appContainer: AppContainer, widthSizeClass: WindowWidthSizeClass, deeplinkKey: HomeKey?) {
+fun JetnewsApp(appContainer: AppContainer, widthSizeClass: WindowWidthSizeClass, deepLinkKey: NavKey?) {
     JetnewsTheme {
         val coroutineScope = rememberCoroutineScope()
 
         val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
         val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
-        val navigationState = rememberNavigationState(deeplinkKey ?: HomeKey())
+        val navigationState = rememberNavigationState(deepLinkKey ?: HomeKey())
         val navigator = Navigator(navigationState)
 
         ModalNavigationDrawer(

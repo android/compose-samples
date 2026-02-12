@@ -16,10 +16,13 @@
 
 package com.example.jetnews.ui.navigation
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
@@ -27,18 +30,33 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import com.example.jetnews.ui.navigation.deeplinks.DeepLinkMatcher
+import com.example.jetnews.ui.navigation.deeplinks.DeepLinkPattern
+import com.example.jetnews.ui.navigation.deeplinks.KeyDecoder
 import kotlinx.serialization.Serializable
 
+interface DeepLinkable {
+    val deepLinkPattern: DeepLinkPattern<out NavKey>
+}
+
 @Serializable
-data class HomeKey(val postId: String? = null) : NavKey
+data class HomeKey(val postId: String? = null) : NavKey {
+    companion object : DeepLinkable {
+
+        override val deepLinkPattern = DeepLinkPattern(
+            serializer = serializer(),
+            uriPattern = "https://developer.android.com/jetnews/home?postId={postId}".toUri()
+        )
+    }
+}
 
 @Serializable
 object InterestsKey : NavKey
 
-fun getNavigationKeys(startKey: HomeKey) = listOf(startKey, InterestsKey)
+fun getNavigationKeys(startKey: NavKey) = listOf(startKey, InterestsKey)
 
 @Composable
-fun rememberNavigationState(startKey: HomeKey): NavigationState {
+fun rememberNavigationState(startKey: NavKey): NavigationState {
     val currentKeys = rememberNavBackStack(startKey)
     val backStacks = buildMap {
         getNavigationKeys(startKey)
@@ -56,8 +74,6 @@ class NavigationState(val currentKeys: NavBackStack<NavKey>, val backStacks: Mut
 
     val currentKey
         get() = currentKeys.last()
-    val currentBackStack
-        get() = backStacks[currentKey::class.toString()]
 
     @Composable
     fun getEntries(entryProvider: (NavKey) -> NavEntry<NavKey>): SnapshotStateList<NavEntry<NavKey>> {
@@ -102,5 +118,25 @@ class Navigator(val state: NavigationState) {
 
     fun pop() {
         state.currentKeys.removeLastOrNull()
+    }
+}
+
+private val deepLinkPatterns = listOf(HomeKey.deepLinkPattern)
+
+/**
+ * Convert an `Intent` into a `NavKey`.
+ *
+ * @return the `NavKey` or null if conversion was not possible.
+ */
+fun Intent.toNavKey(): NavKey? {
+
+    val uri: Uri = this.data ?: return null
+
+    val match = deepLinkPatterns.firstNotNullOfOrNull { pattern ->
+        DeepLinkMatcher(uri, pattern).match()
+    }
+
+    return match?.let {
+        KeyDecoder(match.args).decodeSerializableValue(match.serializer)
     }
 }
