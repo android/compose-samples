@@ -79,7 +79,19 @@ fun JetsnackApp() {
                     bottomBar = {
                         val showBottomBar = backStack.last() !is SnackDetailKey
 
-                        AnimatedVisibility(visible = showBottomBar) {
+                        AnimatedVisibility(
+                            visible = showBottomBar,
+                            enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(
+                                spatialExpressiveSpring(),
+                            ) {
+                                it
+                            },
+                            exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(
+                                spatialExpressiveSpring(),
+                            ) {
+                                it
+                            }
+                        ) {
                             JetsnackBottomBar(
                                 tabs = HomeSections.entries.toTypedArray(),
                                 currentKey = backStack.currentHomeSectionKey(),
@@ -87,18 +99,6 @@ fun JetsnackApp() {
                                 modifier = Modifier
                                     .renderInSharedTransitionScopeOverlay(
                                         zIndexInOverlay = 1f,
-                                    )
-                                    .animateEnterExit(
-                                        enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(
-                                            spatialExpressiveSpring(),
-                                        ) {
-                                            it
-                                        },
-                                        exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(
-                                            spatialExpressiveSpring(),
-                                        ) {
-                                            it
-                                        },
                                     ),
                             )
                         }
@@ -128,19 +128,19 @@ fun JetsnackApp() {
                             entry<FeedKey> {
                                 Feed(
                                     onSnackClick = backStack.addSnackDetail(),
-                                    modifier = modifier
+                                    modifier = modifier,
                                 )
                             }
                             entry<CartKey> {
                                 Cart(
                                     onSnackClick = backStack.addSnackDetail(),
-                                    modifier = modifier
+                                    modifier = modifier,
                                 )
                             }
                             entry<SearchKey> {
                                 Search(
                                     onSnackClick = backStack.addSnackDetail(),
-                                    modifier = modifier
+                                    modifier = modifier,
                                 )
                             }
                             entry<ProfileKey> {
