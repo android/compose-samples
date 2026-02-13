@@ -57,6 +57,7 @@ import com.example.jetsnack.ui.navigation.SearchKey
 import com.example.jetsnack.ui.navigation.SnackDetailKey
 import com.example.jetsnack.ui.navigation.addHomeSection
 import com.example.jetsnack.ui.navigation.addSnackDetail
+import com.example.jetsnack.ui.navigation.currentHomeSectionKey
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
@@ -81,7 +82,7 @@ fun JetsnackApp() {
                         AnimatedVisibility(visible = showBottomBar) {
                             JetsnackBottomBar(
                                 tabs = HomeSections.entries.toTypedArray(),
-                                currentKey = backStack.findLast { it in HomeSections.entries.map { it.route } } ?: FeedKey,
+                                currentKey = backStack.currentHomeSectionKey(),
                                 onItemClick = { navKey -> backStack.addHomeSection(navKey) },
                                 modifier = Modifier
                                     .renderInSharedTransitionScopeOverlay(

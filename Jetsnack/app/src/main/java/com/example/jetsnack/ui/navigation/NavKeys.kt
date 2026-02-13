@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.example.jetsnack.ui.home.HomeSections
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -30,6 +31,9 @@ fun NavBackStack<NavKey>.addHomeSection(key: NavKey) {
         add(key)
     }
 }
+
+fun NavBackStack<NavKey>.currentHomeSectionKey() : NavKey = findLast { it in HomeSections.routes }
+    ?: error("No HomeSection key found in the back stack")
 
 @Composable
 fun NavBackStack<NavKey>.addSnackDetail() : (snackId: Long, origin: String) -> Unit {
