@@ -40,8 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.example.jetsnack.R
-import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
@@ -55,7 +55,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
     val sharedElementScope =
         LocalSharedTransitionScope.current ?: throw IllegalStateException("No shared element scope")
     val navAnimatedScope =
-        LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No nav scope")
+        LocalNavAnimatedContentScope.current
     with(sharedElementScope) {
         with(navAnimatedScope) {
             Column(
