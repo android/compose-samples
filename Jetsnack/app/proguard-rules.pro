@@ -35,3 +35,6 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 
 -keep class androidx.compose.ui.platform.AndroidCompositionLocals_androidKt { *; }
+
+-keep class androidx.work.** { *; }
+-keep class androidx.work.impl.** { *; }

@@ -57,7 +57,7 @@ spotless = "8.2.1"
 targetSdk = "36"
 version-catalog-update = "1.0.1"
 navigation3 = "1.0.0"
-work = "2.9.1"
+work = "2.10.0"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
