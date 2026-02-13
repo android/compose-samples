@@ -75,7 +75,8 @@ enum class HomeSections(@StringRes val title: Int, @DrawableRes val icon: Int, v
     FEED(R.string.home_feed, R.drawable.ic_home, FeedKey),
     SEARCH(R.string.home_search, R.drawable.ic_search, SearchKey),
     CART(R.string.home_cart, R.drawable.ic_shopping_cart, CartKey),
-    PROFILE(R.string.home_profile, R.drawable.ic_account_circle, ProfileKey);
+    PROFILE(R.string.home_profile, R.drawable.ic_account_circle, ProfileKey),
+    ;
 
     companion object {
         val routes = entries.map { it.route }

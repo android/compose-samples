@@ -90,7 +90,7 @@ fun JetsnackApp() {
                                 spatialExpressiveSpring(),
                             ) {
                                 it
-                            }
+                            },
                         ) {
                             JetsnackBottomBar(
                                 tabs = HomeSections.entries.toTypedArray(),
@@ -118,7 +118,7 @@ fun JetsnackApp() {
                         .consumeWindowInsets(padding)
 
                     val transitionSpec = fadeIn(nonSpatialExpressiveSpring()) togetherWith
-                            fadeOut(nonSpatialExpressiveSpring())
+                        fadeOut(nonSpatialExpressiveSpring())
 
                     NavDisplay(
                         backStack = backStack,
