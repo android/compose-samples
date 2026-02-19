@@ -19,16 +19,10 @@ package com.example.jetsnack.ui.home
 import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -44,7 +38,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -67,110 +60,40 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.os.ConfigurationCompat
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDeepLink
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
+import androidx.navigation3.runtime.NavKey
 import com.example.jetsnack.R
-import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.components.JetsnackSurface
-import com.example.jetsnack.ui.home.cart.Cart
-import com.example.jetsnack.ui.home.search.Search
-import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
+import com.example.jetsnack.ui.navigation.CartKey
+import com.example.jetsnack.ui.navigation.FeedKey
+import com.example.jetsnack.ui.navigation.ProfileKey
+import com.example.jetsnack.ui.navigation.SearchKey
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import java.util.Locale
 
-fun NavGraphBuilder.composableWithCompositionLocal(
-    route: String,
-    arguments: List<NamedNavArgument> = emptyList(),
-    deepLinks: List<NavDeepLink> = emptyList(),
-    enterTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
-    )? = {
-        fadeIn(nonSpatialExpressiveSpring())
-    },
-    exitTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
-    )? = {
-        fadeOut(nonSpatialExpressiveSpring())
-    },
-    popEnterTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
-    )? =
-        enterTransition,
-    popExitTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
-    )? =
-        exitTransition,
-    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
-) {
-    composable(
-        route,
-        arguments,
-        deepLinks,
-        enterTransition,
-        exitTransition,
-        popEnterTransition,
-        popExitTransition,
-    ) {
-        CompositionLocalProvider(
-            LocalNavAnimatedVisibilityScope provides this@composable,
-        ) {
-            content(it)
-        }
-    }
-}
+enum class HomeSections(@StringRes val title: Int, @DrawableRes val icon: Int, val route: NavKey) {
+    FEED(R.string.home_feed, R.drawable.ic_home, FeedKey),
+    SEARCH(R.string.home_search, R.drawable.ic_search, SearchKey),
+    CART(R.string.home_cart, R.drawable.ic_shopping_cart, CartKey),
+    PROFILE(R.string.home_profile, R.drawable.ic_account_circle, ProfileKey),
+    ;
 
-fun NavGraphBuilder.addHomeGraph(onSnackSelected: (Long, String, NavBackStackEntry) -> Unit, modifier: Modifier = Modifier) {
-    composable(HomeSections.FEED.route) { from ->
-        Feed(
-            onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
-            modifier,
-        )
+    companion object {
+        val routes = entries.map { it.route }
     }
-    composable(HomeSections.SEARCH.route) { from ->
-        Search(
-            onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
-            modifier,
-        )
-    }
-    composable(
-        HomeSections.CART.route,
-        deepLinks = listOf(
-            navDeepLink { uriPattern = "https://jetsnack.example.com/home/cart" },
-        ),
-    ) { from ->
-        Cart(
-            onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
-            modifier,
-        )
-    }
-    composable(HomeSections.PROFILE.route) {
-        Profile(modifier)
-    }
-}
-
-enum class HomeSections(@StringRes val title: Int, @DrawableRes val icon: Int, val route: String) {
-    FEED(R.string.home_feed, R.drawable.ic_home, "home/feed"),
-    SEARCH(R.string.home_search, R.drawable.ic_search, "home/search"),
-    CART(R.string.home_cart, R.drawable.ic_shopping_cart, "home/cart"),
-    PROFILE(R.string.home_profile, R.drawable.ic_account_circle, "home/profile"),
 }
 
 @Composable
 fun JetsnackBottomBar(
     tabs: Array<HomeSections>,
-    currentRoute: String,
-    navigateToRoute: (String) -> Unit,
+    currentKey: NavKey,
+    onItemClick: (NavKey) -> Unit,
     modifier: Modifier = Modifier,
     color: Color = JetsnackTheme.colors.iconPrimary,
     contentColor: Color = JetsnackTheme.colors.iconInteractive,
 ) {
     val routes = remember { tabs.map { it.route } }
-    val currentSection = tabs.first { it.route == currentRoute }
+    val currentSection = tabs.first { it.route == currentKey }
 
     JetsnackSurface(
         modifier = modifier,
@@ -219,7 +142,7 @@ fun JetsnackBottomBar(
                         )
                     },
                     selected = selected,
-                    onSelected = { navigateToRoute(section.route) },
+                    onSelected = { onItemClick(section.route) },
                     animSpec = springSpec,
                     modifier = BottomNavigationItemPadding
                         .clip(BottomNavIndicatorShape),
@@ -422,8 +345,8 @@ private fun JetsnackBottomNavPreview() {
     JetsnackTheme {
         JetsnackBottomBar(
             tabs = HomeSections.entries.toTypedArray(),
-            currentRoute = "home/feed",
-            navigateToRoute = { },
+            currentKey = FeedKey,
+            onItemClick = { },
         )
     }
 }

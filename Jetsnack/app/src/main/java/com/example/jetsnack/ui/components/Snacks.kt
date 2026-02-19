@@ -20,6 +20,7 @@ package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -69,6 +70,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetsnack.R
@@ -76,7 +78,6 @@ import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.snacks
-import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
@@ -199,8 +200,7 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
     ) {
         val sharedTransitionScope = LocalSharedTransitionScope.current
             ?: throw IllegalStateException("No sharedTransitionScope found")
-        val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-            ?: throw IllegalStateException("No animatedVisibilityScope found")
+        val animatedContentScope = LocalNavAnimatedContentScope.current
 
         with(sharedTransitionScope) {
             Column(
@@ -225,7 +225,7 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                                     type = SnackSharedElementType.Image,
                                 ),
                             ),
-                            animatedVisibilityScope = animatedVisibilityScope,
+                            animatedVisibilityScope = animatedContentScope,
                             boundsTransform = snackDetailBoundsTransform,
                         ),
                 )
@@ -244,7 +244,7 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                                     type = SnackSharedElementType.Title,
                                 ),
                             ),
-                            animatedVisibilityScope = animatedVisibilityScope,
+                            animatedVisibilityScope = animatedContentScope,
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
@@ -268,10 +268,10 @@ private fun HighlightSnackItem(
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-        ?: throw IllegalStateException("No Scope found")
+    val animatedContentScope = LocalNavAnimatedContentScope.current
+
     with(sharedTransitionScope) {
-        val roundedCornerAnimation by animatedVisibilityScope.transition
+        val roundedCornerAnimation by animatedContentScope.transition
             .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
                 when (enterExit) {
                     EnterExitState.PreEnter -> 0.dp
@@ -292,7 +292,7 @@ private fun HighlightSnackItem(
                             type = SnackSharedElementType.Bounds,
                         ),
                     ),
-                    animatedVisibilityScope = animatedVisibilityScope,
+                    animatedVisibilityScope = animatedContentScope,
                     boundsTransform = snackDetailBoundsTransform,
                     clipInOverlayDuringTransition = OverlayClip(
                         RoundedCornerShape(
@@ -339,7 +339,7 @@ private fun HighlightSnackItem(
                                         type = SnackSharedElementType.Background,
                                     ),
                                 ),
-                                animatedVisibilityScope = animatedVisibilityScope,
+                                animatedVisibilityScope = animatedContentScope,
                                 boundsTransform = snackDetailBoundsTransform,
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
@@ -374,7 +374,7 @@ private fun HighlightSnackItem(
                                         type = SnackSharedElementType.Image,
                                     ),
                                 ),
-                                animatedVisibilityScope = animatedVisibilityScope,
+                                animatedVisibilityScope = animatedContentScope,
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
                                 boundsTransform = snackDetailBoundsTransform,
@@ -401,7 +401,7 @@ private fun HighlightSnackItem(
                                     type = SnackSharedElementType.Title,
                                 ),
                             ),
-                            animatedVisibilityScope = animatedVisibilityScope,
+                            animatedVisibilityScope = animatedContentScope,
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
@@ -425,7 +425,7 @@ private fun HighlightSnackItem(
                                     type = SnackSharedElementType.Tagline,
                                 ),
                             ),
-                            animatedVisibilityScope = animatedVisibilityScope,
+                            animatedVisibilityScope = animatedContentScope,
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
@@ -494,10 +494,10 @@ fun SnackCardPreview() {
 fun JetsnackPreviewWrapper(content: @Composable () -> Unit) {
     JetsnackTheme {
         SharedTransitionLayout {
-            AnimatedVisibility(visible = true) {
+            AnimatedContent(targetState = true) { _ ->
                 CompositionLocalProvider(
                     LocalSharedTransitionScope provides this@SharedTransitionLayout,
-                    LocalNavAnimatedVisibilityScope provides this,
+                    LocalNavAnimatedContentScope provides this,
                 ) {
                     content()
                 }
