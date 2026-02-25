@@ -72,36 +72,31 @@ fun SearchResults(searchResults: List<Snack>, onSnackClick: (Long, String) -> Un
 }
 
 @Composable
-private fun SearchResult(
-    snack: Snack,
-    onSnackClick: (Long, String) -> Unit,
-    showDivider: Boolean,
-    modifier: Modifier = Modifier
-) {
+private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, showDivider: Boolean, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onSnackClick(snack.id, "search") }
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = 24.dp),
     ) {
         if (showDivider) {
             JetsnackDivider(
-                Modifier.align(Alignment.TopCenter)
+                Modifier.align(Alignment.TopCenter),
             )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(vertical = 16.dp),
         ) {
             SnackImage(
                 imageRes = snack.imageRes,
                 contentDescription = null,
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier.size(100.dp),
             )
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 16.dp, end = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp),
             ) {
                 Text(
                     text = snack.name,
@@ -124,7 +119,7 @@ private fun SearchResult(
                 onClick = { /* todo */ },
                 shape = CircleShape,
                 contentPadding = PaddingValues(0.dp),
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(36.dp),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add),

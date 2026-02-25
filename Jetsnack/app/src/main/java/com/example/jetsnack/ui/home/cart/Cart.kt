@@ -301,22 +301,22 @@ fun CartItem(
             .fillMaxWidth()
             .clickable { onSnackClick(snack.id, "cart") }
             .background(JetsnackTheme.colors.uiBackground)
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = 24.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             SnackImage(
                 imageRes = snack.imageRes,
                 contentDescription = null,
                 modifier = Modifier
                     .padding(vertical = 16.dp)
-                    .size(100.dp)
+                    .size(100.dp),
             )
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 16.dp)
+                    .padding(start = 16.dp),
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
@@ -325,11 +325,11 @@ fun CartItem(
                         color = JetsnackTheme.colors.textSecondary,
                         modifier = Modifier
                             .weight(1f)
-                            .padding(top = 16.dp, end = 16.dp)
+                            .padding(top = 16.dp, end = 16.dp),
                     )
                     IconButton(
                         onClick = { removeSnack(snack.id) },
-                        modifier = Modifier.padding(top = 12.dp)
+                        modifier = Modifier.padding(top = 12.dp),
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close),
@@ -342,11 +342,11 @@ fun CartItem(
                     text = snack.tagline,
                     style = MaterialTheme.typography.bodyLarge,
                     color = JetsnackTheme.colors.textHelp,
-                    modifier = Modifier.padding(end = 16.dp)
+                    modifier = Modifier.padding(end = 16.dp),
                 )
                 Spacer(Modifier.height(8.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
                         text = formatPrice(snack.price),
@@ -355,13 +355,13 @@ fun CartItem(
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = 16.dp)
-                            .alignBy(LastBaseline)
+                            .alignBy(LastBaseline),
                     )
                     QuantitySelector(
                         count = orderLine.count,
                         decreaseItemCount = { decreaseItemCount(snack.id) },
                         increaseItemCount = { increaseItemCount(snack.id) },
-                        modifier = Modifier.alignBy(LastBaseline)
+                        modifier = Modifier.alignBy(LastBaseline),
                     )
                 }
             }
