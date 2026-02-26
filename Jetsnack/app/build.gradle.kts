@@ -119,7 +119,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.constraintlayout.compose)
 
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.foundation)
