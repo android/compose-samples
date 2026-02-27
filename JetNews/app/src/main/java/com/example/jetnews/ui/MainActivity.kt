@@ -23,6 +23,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.ui.navigation.toNavKey
 
 class MainActivity : ComponentActivity() {
 
@@ -34,7 +35,12 @@ class MainActivity : ComponentActivity() {
         val appContainer = (application as JetnewsApplication).container
         setContent {
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            JetnewsApp(appContainer, widthSizeClass)
+
+            JetnewsApp(
+                appContainer = appContainer,
+                widthSizeClass = widthSizeClass,
+                deepLinkKey = intent.toNavKey()
+            )
         }
     }
 }

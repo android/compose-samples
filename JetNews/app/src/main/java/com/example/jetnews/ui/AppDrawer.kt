@@ -36,13 +36,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
+import com.example.jetnews.ui.navigation.HomeKey
+import com.example.jetnews.ui.navigation.InterestsKey
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
-    currentRoute: String,
+    currentKey: NavKey,
     navigateToHome: () -> Unit,
     navigateToInterests: () -> Unit,
     closeDrawer: () -> Unit,
@@ -58,7 +61,7 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.home_title)) },
             icon = { Icon(painterResource(R.drawable.ic_home), null) },
-            selected = currentRoute == JetnewsDestinations.HOME_ROUTE,
+            selected = currentKey is HomeKey,
             onClick = {
                 navigateToHome()
                 closeDrawer()
@@ -68,7 +71,7 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = { Text(stringResource(id = R.string.interests_title)) },
             icon = { Icon(painterResource(R.drawable.ic_list_alt), null) },
-            selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
+            selected = currentKey == InterestsKey,
             onClick = {
                 navigateToInterests()
                 closeDrawer()
@@ -102,7 +105,7 @@ fun PreviewAppDrawer() {
     JetnewsTheme {
         AppDrawer(
             drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
-            currentRoute = JetnewsDestinations.HOME_ROUTE,
+            currentKey = HomeKey(),
             navigateToHome = {},
             navigateToInterests = {},
             closeDrawer = { },
