@@ -30,12 +30,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
-import com.example.jetnews.ui.JetnewsDestinations
+import com.example.jetnews.ui.navigation.HomeKey
+import com.example.jetnews.ui.navigation.InterestsKey
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun AppNavRail(currentRoute: String, navigateToHome: () -> Unit, navigateToInterests: () -> Unit, modifier: Modifier = Modifier) {
+fun AppNavRail(currentKey: NavKey, navigateToHome: () -> Unit, navigateToInterests: () -> Unit, modifier: Modifier = Modifier) {
     NavigationRail(
         header = {
             Icon(
@@ -49,14 +51,14 @@ fun AppNavRail(currentRoute: String, navigateToHome: () -> Unit, navigateToInter
     ) {
         Spacer(Modifier.weight(1f))
         NavigationRailItem(
-            selected = currentRoute == JetnewsDestinations.HOME_ROUTE,
+            selected = currentKey is HomeKey,
             onClick = navigateToHome,
             icon = { Icon(painterResource(id = R.drawable.ic_home), stringResource(R.string.home_title)) },
             label = { Text(stringResource(R.string.home_title)) },
             alwaysShowLabel = false,
         )
         NavigationRailItem(
-            selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
+            selected = currentKey == InterestsKey,
             onClick = navigateToInterests,
             icon = { Icon(painterResource(id = R.drawable.ic_list_alt), stringResource(R.string.interests_title)) },
             label = { Text(stringResource(R.string.interests_title)) },
@@ -72,7 +74,7 @@ fun AppNavRail(currentRoute: String, navigateToHome: () -> Unit, navigateToInter
 fun PreviewAppNavRail() {
     JetnewsTheme {
         AppNavRail(
-            currentRoute = JetnewsDestinations.HOME_ROUTE,
+            currentKey = HomeKey(),
             navigateToHome = {},
             navigateToInterests = {},
         )
