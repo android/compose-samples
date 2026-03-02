@@ -19,8 +19,10 @@ package com.example.jetsnack.ui.home.search
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,8 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ChainStyle
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.snacks
@@ -73,101 +73,59 @@ fun SearchResults(searchResults: List<Snack>, onSnackClick: (Long, String) -> Un
 
 @Composable
 private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, showDivider: Boolean, modifier: Modifier = Modifier) {
-    ConstraintLayout(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onSnackClick(snack.id, "search") }
             .padding(horizontal = 24.dp),
     ) {
-        val (divider, image, name, tag, priceSpacer, price, add) = createRefs()
-        createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         if (showDivider) {
             JetsnackDivider(
-                Modifier.constrainAs(divider) {
-                    linkTo(start = parent.start, end = parent.end)
-                    top.linkTo(parent.top)
-                },
+                Modifier.align(Alignment.TopCenter),
             )
         }
-        SnackImage(
-            imageRes = snack.imageRes,
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .constrainAs(image) {
-                    linkTo(
-                        top = parent.top,
-                        topMargin = 16.dp,
-                        bottom = parent.bottom,
-                        bottomMargin = 16.dp,
-                    )
-                    start.linkTo(parent.start)
-                },
-        )
-        Text(
-            text = snack.name,
-            style = MaterialTheme.typography.titleMedium,
-            color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = add.start,
-                    endMargin = 16.dp,
-                    bias = 0f,
-                )
-            },
-        )
-        Text(
-            text = snack.tagline,
-            style = MaterialTheme.typography.bodyLarge,
-            color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = add.start,
-                    endMargin = 16.dp,
-                    bias = 0f,
-                )
-            },
-        )
-        Spacer(
-            Modifier
-                .height(8.dp)
-                .constrainAs(priceSpacer) {
-                    linkTo(top = tag.bottom, bottom = price.top)
-                },
-        )
-        Text(
-            text = formatPrice(snack.price),
-            style = MaterialTheme.typography.titleMedium,
-            color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = add.start,
-                    endMargin = 16.dp,
-                    bias = 0f,
-                )
-            },
-        )
-        JetsnackButton(
-            onClick = { /* todo */ },
-            shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
-            modifier = Modifier
-                .size(36.dp)
-                .constrainAs(add) {
-                    linkTo(top = parent.top, bottom = parent.bottom)
-                    end.linkTo(parent.end)
-                },
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 16.dp),
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = stringResource(R.string.label_add),
+            SnackImage(
+                imageRes = snack.imageRes,
+                contentDescription = null,
+                modifier = Modifier.size(100.dp),
             )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp, end = 16.dp),
+            ) {
+                Text(
+                    text = snack.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = JetsnackTheme.colors.textSecondary,
+                )
+                Text(
+                    text = snack.tagline,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = JetsnackTheme.colors.textHelp,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = formatPrice(snack.price),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = JetsnackTheme.colors.textPrimary,
+                )
+            }
+            JetsnackButton(
+                onClick = { /* todo */ },
+                shape = CircleShape,
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier.size(36.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_add),
+                    contentDescription = stringResource(R.string.label_add),
+                )
+            }
         }
     }
 }

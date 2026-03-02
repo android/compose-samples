@@ -65,8 +65,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ChainStyle
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
@@ -298,106 +296,77 @@ fun CartItem(
     modifier: Modifier = Modifier,
 ) {
     val snack = orderLine.snack
-    ConstraintLayout(
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onSnackClick(snack.id, "cart") }
             .background(JetsnackTheme.colors.uiBackground)
             .padding(horizontal = 24.dp),
-
     ) {
-        val (divider, image, name, tag, priceSpacer, price, remove, quantity) = createRefs()
-        createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
-        SnackImage(
-            imageRes = snack.imageRes,
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .constrainAs(image) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    start.linkTo(parent.start)
-                },
-        )
-        Text(
-            text = snack.name,
-            style = MaterialTheme.typography.titleMedium,
-            color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = remove.start,
-                    endMargin = 16.dp,
-                    bias = 0f,
-                )
-            },
-        )
-        IconButton(
-            onClick = { removeSnack(snack.id) },
-            modifier = Modifier
-                .constrainAs(remove) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }
-                .padding(top = 12.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_close),
-                tint = JetsnackTheme.colors.iconSecondary,
-                contentDescription = stringResource(R.string.label_remove),
+            SnackImage(
+                imageRes = snack.imageRes,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .size(100.dp),
             )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp),
+            ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = snack.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = JetsnackTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 16.dp, end = 16.dp),
+                    )
+                    IconButton(
+                        onClick = { removeSnack(snack.id) },
+                        modifier = Modifier.padding(top = 12.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close),
+                            tint = JetsnackTheme.colors.iconSecondary,
+                            contentDescription = stringResource(R.string.label_remove),
+                        )
+                    }
+                }
+                Text(
+                    text = snack.tagline,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = JetsnackTheme.colors.textHelp,
+                    modifier = Modifier.padding(end = 16.dp),
+                )
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = formatPrice(snack.price),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = JetsnackTheme.colors.textPrimary,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 16.dp)
+                            .alignBy(LastBaseline),
+                    )
+                    QuantitySelector(
+                        count = orderLine.count,
+                        decreaseItemCount = { decreaseItemCount(snack.id) },
+                        increaseItemCount = { increaseItemCount(snack.id) },
+                        modifier = Modifier.alignBy(LastBaseline),
+                    )
+                }
+            }
         }
-        Text(
-            text = snack.tagline,
-            style = MaterialTheme.typography.bodyLarge,
-            color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
-                linkTo(
-                    start = image.end,
-                    startMargin = 16.dp,
-                    end = parent.end,
-                    endMargin = 16.dp,
-                    bias = 0f,
-                )
-            },
-        )
-        Spacer(
-            Modifier
-                .height(8.dp)
-                .constrainAs(priceSpacer) {
-                    linkTo(top = tag.bottom, bottom = price.top)
-                },
-        )
-        Text(
-            text = formatPrice(snack.price),
-            style = MaterialTheme.typography.titleMedium,
-            color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
-                linkTo(
-                    start = image.end,
-                    end = quantity.start,
-                    startMargin = 16.dp,
-                    endMargin = 16.dp,
-                    bias = 0f,
-                )
-            },
-        )
-        QuantitySelector(
-            count = orderLine.count,
-            decreaseItemCount = { decreaseItemCount(snack.id) },
-            increaseItemCount = { increaseItemCount(snack.id) },
-            modifier = Modifier.constrainAs(quantity) {
-                baseline.linkTo(price.baseline)
-                end.linkTo(parent.end)
-            },
-        )
-        JetsnackDivider(
-            Modifier.constrainAs(divider) {
-                linkTo(start = parent.start, end = parent.end)
-                top.linkTo(parent.bottom)
-            },
-        )
+        JetsnackDivider()
     }
 }
 
