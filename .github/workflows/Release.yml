@@ -13,7 +13,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6   
@@ -32,12 +33,12 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1        
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
           draft: true
           prerelease: false
 
