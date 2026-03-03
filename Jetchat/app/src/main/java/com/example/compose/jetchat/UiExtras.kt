@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
  * @author Jetchat Team
  * @since 1.0
  */
+@Composable
 fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
