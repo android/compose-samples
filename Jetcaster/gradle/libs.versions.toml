@@ -5,7 +5,7 @@
 [versions]
 accompanist = "0.37.3"
 android-material3 = "1.13.0-alpha13"
-androidGradlePlugin = "8.10.1"
+androidGradlePlugin = "9.0.0"
 androidx-activity-compose = "1.10.1"
 androidx-appcompat = "1.7.1"
 androidx-compose-bom = "2025.09.00"
@@ -35,7 +35,7 @@ compileSdk = "36"
 coroutines = "1.10.2"
 google-maps = "19.2.0"
 gradle-versions = "0.52.0"
-hilt = "2.56.2"
+hilt = "2.59"
 hiltExt = "1.2.0"
 horologist = "0.7.15"
 jdkDesugar = "2.1.5"
@@ -51,9 +51,9 @@ minSdk = "23"
 okhttp = "4.12.0"
 play-services-wearable = "19.0.0"
 robolectric = "4.14.1"
-roborazzi = "1.45.1"
+roborazzi = "1.58.0"
 rome = "2.1.0"
-room = "2.7.1"
+room = "2.8.4"
 secrets = "2.0.1"
 spotless = "7.0.4"
 # @keep
@@ -177,7 +177,6 @@ compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
