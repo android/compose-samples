@@ -24,7 +24,21 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import com.example.compose.jetchat.theme.JetchatTheme
-
+/**
+ * JetchatScaffold.kt - Main scaffold component combining drawer and app bar for Jetchat.
+ *
+ * This file is intentionally minimal and serves as a foundation for the main screen
+ * structure. The [JetchatDrawer] composable handles all drawer-related UI and interactions.
+ *
+ * This file can be extended in the future to add:
+ * - Floating action buttons
+ * - Bottom app bars
+ * - Snackbar hosts
+ * - Other Material Design 3 scaffold features
+ *
+ * @see JetchatDrawer
+ * @see JetchatAppBar
+ */
 @Composable
 fun JetchatDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),

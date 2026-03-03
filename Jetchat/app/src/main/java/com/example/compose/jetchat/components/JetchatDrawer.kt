@@ -60,7 +60,44 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.widget.WidgetReceiver
-
+/**
+ * JetchatDrawer.kt - Navigation drawer component for Jetchat.
+ *
+ * This file provides the main navigation drawer that allows users to:
+ * - Switch between different chat channels
+ * - Access user profiles
+ * - View and manage recent profiles
+ * - Add widgets (on supported devices)
+ *
+ * Key Components:
+ * - [JetchatDrawerContent]: Main drawer content with all menu items
+ * - [JetchatDrawer]: Wrapper composable with drawer state management
+ * - [DrawerHeader]: Jetchat logo and branding
+ * - [ChatItem]: Individual chat channel list item
+ * - [ProfileItem]: User profile list item with avatar
+ * - [DrawerItemHeader]: Section header for drawer groups
+ * - [WidgetDiscoverability]: Widget discovery and installation section
+ * - [DividerItem]: Visual separator between sections
+ *
+ * Structure:
+ * ```
+ * ├── Drawer Header (Logo)
+ * ├── Divider
+ * ├── Chats Section
+ * │   ├── composers
+ * │   └── droidcon-nyc
+ * ├── Divider
+ * ├── Recent Profiles Section
+ * │   ├── Ali Conors (Current User)
+ * │   └── Taylor Brooks
+ * ├── Divider (if widget supported)
+ * └── Settings Section
+ *     └── Add Widget to Home
+ * ```
+ *
+ * @see androidx.compose.material3.ModalNavigationDrawer
+ * @see androidx.compose.material3.ModalDrawerSheet
+ */
 @Composable
 fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit, selectedMenu: String = "composers") {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content

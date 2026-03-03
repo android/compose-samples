@@ -21,7 +21,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * Used to communicate between screens.
+ * MainViewModel manages the main application state and business logic for Jetchat.
+ *
+ * This ViewModel handles:
+ * - Managing conversation data
+ * - Handling user interactions
+ * - Coordinating with the data layer
+ * - Providing UI state through LiveData/StateFlow
+ *
+ * The ViewModel survives configuration changes like screen rotations,
+ * ensuring data persistence across activity recreations.
+ *
+ * @see androidx.lifecycle.ViewModel
  */
 class MainViewModel : ViewModel() {
 

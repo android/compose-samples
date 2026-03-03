@@ -33,7 +33,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
-
+/**
+ * JetchatAppBar.kt - Custom top app bar component for Jetchat.
+ *
+ * This file provides a customized top app bar following Material Design 3 specifications,
+ * tailored specifically for the Jetchat messaging application.
+ *
+ * Key Components:
+ * - [JetchatAppBar]: Main composable for the app bar with custom navigation icon
+ * - [JetchatAppBarPreview]: Light theme preview
+ * - [JetchatAppBarPreviewDark]: Dark theme preview
+ *
+ * Features:
+ * - Center-aligned title text
+ * - Custom Jetchat icon as navigation button
+ * - Support for action buttons on the right
+ * - Scroll behavior support for collapsing/pinning
+ * - Full accessibility support
+ *
+ * The app bar uses [CenterAlignedTopAppBar] from Material 3 and customizes the
+ * navigation icon with the Jetchat-specific icon component.
+ *
+ * @see androidx.compose.material3.CenterAlignedTopAppBar
+ * @see JetchatIcon
+ * @see JetchatTheme
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JetchatAppBar(

@@ -32,9 +32,29 @@ import androidx.compose.ui.util.lerp
 import kotlin.math.roundToInt
 
 /**
- * A layout that shows an icon and a text element used as the content for a FAB that extends with
- * an animation.
+ * AnimatingFabContent.kt - Provides animated FAB content with smooth transitions.
+ *
+ * This file contains composables for creating a Floating Action Button (FAB) with smooth
+ * animations that transition between collapsed and extended states.
+ *
+ * Key Components:
+ * - [AnimatingFabContent]: Main composable that animates FAB content based on state
+ * - [IconAndTextRow]: Internal layout composable for positioning icon and text
+ * - [ExpandableFabStates]: Enum defining FAB states (Collapsed/Extended)
+ *
+ * Features:
+ * - Smooth width expansion animation using FastOutSlowInEasing
+ * - Text fade in/out animation with proper timing
+ * - Performance optimized using lambda-based reads instead of direct Float values
+ * - Proper aspect ratio maintenance during transitions
+ *
+ * Animation Duration: 200ms for all transitions
+ *
+ * @see androidx.compose.animation.core.updateTransition
+ * @see androidx.compose.animation.core.animateFloat
  */
+
+
 @Composable
 fun AnimatingFabContent(
     icon: @Composable () -> Unit,

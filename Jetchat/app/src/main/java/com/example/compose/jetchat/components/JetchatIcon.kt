@@ -27,7 +27,28 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import com.example.compose.jetchat.R
-
+/**
+ * JetchatIcon.kt - Custom branded icon component for Jetchat.
+ *
+ * This file provides the custom Jetchat logo icon that is used throughout the application
+ * as the primary brand icon, typically in the top app bar as navigation icon.
+ *
+ * Key Components:
+ * - [JetchatIcon]: Main composable rendering the layered Jetchat icon
+ *
+ * Design:
+ * The Jetchat icon is composed of two layered drawables:
+ * - Back layer (ic_jetchat_back): Primary container color
+ * - Front layer (ic_jetchat_front): Primary color
+ *
+ * This creates a depth effect with the Material Design color scheme.
+ *
+ * Accessibility:
+ * - Supports optional content description for screen readers
+ * - Can be marked as an Image role for proper accessibility tree placement
+ *
+ * @see androidx.compose.material3.Icon
+ */
 @Composable
 fun JetchatIcon(contentDescription: String?, modifier: Modifier = Modifier) {
     val semantics = if (contentDescription != null) {

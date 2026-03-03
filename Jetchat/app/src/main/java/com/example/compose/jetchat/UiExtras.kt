@@ -22,7 +22,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
-@Composable
+/**
+ * UIExtras.kt contains utility functions and extension functions for UI components in Jetchat.
+ *
+ * This file provides:
+ * - Extension functions for common UI operations
+ * - Helper functions for styling and formatting
+ * - Reusable UI utility functions across the application
+ *
+ * By consolidating UI utilities here, we promote code reuse and maintain
+ * a clean separation of concerns in the UI layer.
+ *
+ * @author Jetchat Team
+ * @since 1.0
+ */
 fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,

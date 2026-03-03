@@ -27,17 +27,43 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 
 /**
- * Applied to a Text, it sets the distance between the top and the first baseline. It
- * also makes the bottom of the element coincide with the last baseline of the text.
+ * Custom layout modifier that positions elements relative to text baseline.
  *
+ * This modifier sets the distance between the top of the composable and its first baseline.
+ * The bottom of the element aligns with the last baseline of the content.
+ *
+ * @param heightFromBaseline Distance from the top to the first baseline in density-independent pixels
+ *
+ * @see baselineHeight
+ */
+
+/**
+ * BaselineHeightModifier.kt - Custom layout modifier for baseline-based text alignment.
+ *
+ * This file provides a specialized LayoutModifier that positions text elements
+ * based on their baselines, enabling pixel-perfect text alignment across the UI.
+ *
+ * Key Components:
+ * - [BaselineHeightModifier]: LayoutModifier implementation for baseline positioning
+ * - [baselineHeight]: Extension function for convenient modifier application
+ *
+ * Use Cases:
+ * - Aligning multiple text elements with consistent baseline spacing
+ * - Creating professional typography layouts
+ * - Distributing text elements with precise visual alignment
+ *
+ * Visual Example:
+ * ```
  *     _______________
  *     |             |   ↑
  *     |             |   |  heightFromBaseline
  *     |Hello, World!|   ↓
  *     ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+ * ```
  *
- * This modifier can be used to distribute multiple text elements using a certain distance between
- * baselines.
+ * @see androidx.compose.ui.layout.LayoutModifier
+ * @see androidx.compose.ui.layout.FirstBaseline
+ * @see androidx.compose.ui.layout.LastBaseline
  */
 data class BaselineHeightModifier(val heightFromBaseline: Dp) : LayoutModifier {
 
@@ -54,5 +80,14 @@ data class BaselineHeightModifier(val heightFromBaseline: Dp) : LayoutModifier {
         }
     }
 }
-
+/**
+ * Custom layout modifier that positions elements relative to text baseline.
+ *
+ * This modifier sets the distance between the top of the composable and its first baseline.
+ * The bottom of the element aligns with the last baseline of the content.
+ *
+ * @param heightFromBaseline Distance from the top to the first baseline in density-independent pixels
+ *
+ * @see baselineHeight
+ */
 fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier = this.then(BaselineHeightModifier(heightFromBaseline))

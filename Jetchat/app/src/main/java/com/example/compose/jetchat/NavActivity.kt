@@ -42,7 +42,22 @@ import com.example.compose.jetchat.databinding.ContentMainBinding
 import kotlinx.coroutines.launch
 
 /**
- * Main activity for the app.
+ * NavActivity is the main entry point of the Jetchat application.
+ *
+ * This activity serves as the container for the navigation graph and manages:
+ * - The application's main navigation flow
+ * - System-level UI configurations
+ * - Integration with Jetpack Compose for UI rendering
+ *
+ * The activity uses Navigation Compose to handle screen transitions and
+ * maintain the back stack across different screens in the application.
+ *
+ * Lifecycle:
+ * - onCreate: Initializes the compose content and sets up the UI
+ * - onDestroy: Automatically handled by Compose
+ *
+ * @see androidx.activity.ComponentActivity
+ * @see androidx.navigation.compose.NavHost
  */
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
