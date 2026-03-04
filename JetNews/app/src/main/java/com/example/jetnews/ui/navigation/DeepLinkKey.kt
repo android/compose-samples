@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2026 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package com.example.jetnews
+package com.example.jetnews.ui.navigation
 
-import android.content.Context
-import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import com.example.jetnews.ui.JetnewsApp
-import com.example.jetnews.ui.home.HomeKey
+import androidx.navigation3.runtime.NavKey
 
-/**
- * Launches the app from a test context
- */
-fun ComposeContentTestRule.launchJetNewsApp(context: Context) {
-    setContent {
-        JetnewsApp(
-            appContainer = TestAppContainer(context),
-            isOpenedByDeepLink = false,
-            initialBackStack = listOf(HomeKey),
-        )
-    }
+interface DeepLinkKey : NavKey {
+    val parent: NavKey
 }

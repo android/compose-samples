@@ -22,7 +22,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.ErrorMessage
 import java.util.UUID
@@ -56,13 +55,9 @@ sealed interface HomeUiState {
 
     /**
      * There are posts to render, as contained in [postsFeed].
-     *
-     * There is guaranteed to be a [selectedPost], which is one of the posts from [postsFeed].
      */
     data class HasPosts(
         val postsFeed: PostsFeed,
-        val selectedPost: Post,
-        val isArticleOpen: Boolean,
         val favorites: Set<String>,
         override val isLoading: Boolean,
         override val errorMessages: List<ErrorMessage>,
@@ -75,8 +70,6 @@ sealed interface HomeUiState {
  */
 private data class HomeViewModelState(
     val postsFeed: PostsFeed? = null,
-    val selectedPostId: String? = null, // TODO back selectedPostId in a SavedStateHandle
-    val isArticleOpen: Boolean = false,
     val favorites: Set<String> = emptySet(),
     val isLoading: Boolean = false,
     val errorMessages: List<ErrorMessage> = emptyList(),
@@ -96,13 +89,6 @@ private data class HomeViewModelState(
     } else {
         HomeUiState.HasPosts(
             postsFeed = postsFeed,
-            // Determine the selected post. This will be the post the user last selected.
-            // If there is none (or that post isn't in the current feed), default to the
-            // highlighted post
-            selectedPost = postsFeed.allPosts.find {
-                it.id == selectedPostId
-            } ?: postsFeed.highlightedPost,
-            isArticleOpen = isArticleOpen,
             favorites = favorites,
             isLoading = isLoading,
             errorMessages = errorMessages,
@@ -114,13 +100,11 @@ private data class HomeViewModelState(
 /**
  * ViewModel that handles the business logic of the Home screen
  */
-class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPostId: String?) : ViewModel() {
+class HomeViewModel(private val postsRepository: PostsRepository) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(
         HomeViewModelState(
             isLoading = true,
-            selectedPostId = preSelectedPostId,
-            isArticleOpen = preSelectedPostId != null,
         ),
     )
 
@@ -179,41 +163,12 @@ class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPos
     }
 
     /**
-     * Selects the given article to view more information about it.
-     */
-    fun selectArticle(postId: String) {
-        // Treat selecting a detail as simply interacting with it
-        interactedWithArticleDetails(postId)
-    }
-
-    /**
      * Notify that an error was displayed on the screen
      */
     fun errorShown(errorId: Long) {
         viewModelState.update { currentUiState ->
             val errorMessages = currentUiState.errorMessages.filterNot { it.id == errorId }
             currentUiState.copy(errorMessages = errorMessages)
-        }
-    }
-
-    /**
-     * Notify that the user interacted with the feed
-     */
-    fun interactedWithFeed() {
-        viewModelState.update {
-            it.copy(isArticleOpen = false)
-        }
-    }
-
-    /**
-     * Notify that the user interacted with the article details
-     */
-    fun interactedWithArticleDetails(postId: String) {
-        viewModelState.update {
-            it.copy(
-                selectedPostId = postId,
-                isArticleOpen = true,
-            )
         }
     }
 
@@ -230,12 +185,11 @@ class HomeViewModel(private val postsRepository: PostsRepository, preSelectedPos
      * Factory for HomeViewModel that takes PostsRepository as a dependency
      */
     companion object {
-        fun provideFactory(postsRepository: PostsRepository, preSelectedPostId: String? = null): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return HomeViewModel(postsRepository, preSelectedPostId) as T
-                }
+        fun provideFactory(postsRepository: PostsRepository): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return HomeViewModel(postsRepository) as T
             }
+        }
     }
 }

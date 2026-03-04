@@ -20,21 +20,41 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.deeplink.handleDeepLink
+import com.example.jetnews.ui.home.HomeKey
+import com.example.jetnews.ui.navigation.rememberInitialBackStack
+import com.example.jetnews.ui.utils.NewIntentEffect
 
 class MainActivity : ComponentActivity() {
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val appContainer = (application as JetnewsApplication).container
         setContent {
-            val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            JetnewsApp(appContainer, widthSizeClass)
+            val initialDeepLinkBackStack = remember { intent.data?.handleDeepLink() }
+            var isOpenedByDeepLink by rememberSaveable { mutableStateOf(initialDeepLinkBackStack != null) }
+            var initialBackStack by rememberInitialBackStack(initialDeepLinkBackStack ?: listOf(HomeKey))
+
+            NewIntentEffect { newIntent ->
+                newIntent.data?.handleDeepLink()?.let {
+                    isOpenedByDeepLink = true
+                    initialBackStack = it
+                }
+            }
+
+            JetnewsApp(
+                appContainer,
+                isOpenedByDeepLink,
+                initialBackStack,
+            )
         }
     }
 }

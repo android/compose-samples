@@ -21,6 +21,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import com.example.jetnews.data.interests.InterestsRepository
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object InterestsKey : NavKey
+
+fun EntryProviderScope<NavKey>.interestsEntry(
+    interestsRepository: InterestsRepository,
+    isExpandedScreen: () -> Boolean,
+    openDrawer: () -> Unit,
+) {
+    entry<InterestsKey> {
+        val interestsViewModel: InterestsViewModel =
+            viewModel(factory = InterestsViewModel.provideFactory(interestsRepository))
+
+        InterestsRoute(
+            interestsViewModel,
+            isExpandedScreen = isExpandedScreen(),
+            openDrawer = openDrawer,
+        )
+    }
+}
 
 /**
  * Stateful composable that displays the Navigation route for the Interests screen.
