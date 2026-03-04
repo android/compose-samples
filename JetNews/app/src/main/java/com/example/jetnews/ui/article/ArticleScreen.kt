@@ -19,14 +19,21 @@ package com.example.jetnews.ui.article
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -35,6 +42,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -45,6 +53,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -53,6 +62,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -92,8 +102,8 @@ fun ArticleScreen(
         FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
 
-    Row(modifier.fillMaxSize()) {
-        val context = LocalContext.current
+    val context = LocalContext.current
+    Box {
         ArticleScreenContent(
             post = post,
             // Allow opening the Drawer if the screen is not expanded
@@ -116,13 +126,31 @@ fun ArticleScreen(
                             FavoriteButton(onClick = { showUnimplementedActionDialog = true })
                             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
                             ShareButton(onClick = { sharePost(post, context) })
-                            TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
+                            TextSettingsButton(
+                                onClick = {
+                                    showUnimplementedActionDialog = true
+                                },
+                            )
                         },
                     )
                 }
             },
             lazyListState = lazyListState,
+            showTopAppBar = !isExpandedScreen,
         )
+
+        if (isExpandedScreen) {
+            // Floating toolbar
+            PostTopBar(
+                isFavorite = isFavorite,
+                onToggleFavorite = onToggleFavorite,
+                onSharePost = { sharePost(post, context) },
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.safeDrawing)
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.End),
+            )
+        }
     }
 }
 
@@ -140,24 +168,29 @@ private fun ArticleScreenContent(
     navigationIconContent: @Composable () -> Unit = { },
     bottomBarContent: @Composable () -> Unit = { },
     lazyListState: LazyListState = rememberLazyListState(),
+    showTopAppBar: Boolean = true,
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = post.publication?.name.orEmpty(),
-                navigationIconContent = navigationIconContent,
-                scrollBehavior = scrollBehavior,
-            )
+            if (showTopAppBar) {
+                TopAppBar(
+                    title = post.publication?.name.orEmpty(),
+                    navigationIconContent = navigationIconContent,
+                    scrollBehavior = scrollBehavior,
+                )
+            }
         },
         bottomBar = bottomBarContent,
     ) { innerPadding ->
         PostContent(
             post = post,
             contentPadding = innerPadding,
-            modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = if (showTopAppBar) {
+                Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+            } else Modifier,
             state = lazyListState,
         )
     }
@@ -192,6 +225,25 @@ private fun TopAppBar(
         scrollBehavior = scrollBehavior,
         modifier = modifier,
     )
+}
+
+/**
+ * Top bar for a Post when displayed next to the Home feed
+ */
+@Composable
+private fun PostTopBar(isFavorite: Boolean, onToggleFavorite: () -> Unit, onSharePost: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(Dp.Hairline, MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)),
+        modifier = modifier.padding(end = 16.dp),
+    ) {
+        Row(Modifier.padding(horizontal = 8.dp)) {
+            FavoriteButton(onClick = { /* Functionality not available */ })
+            BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
+            ShareButton(onClick = onSharePost)
+            TextSettingsButton(onClick = { /* Functionality not available */ })
+        }
+    }
 }
 
 /**

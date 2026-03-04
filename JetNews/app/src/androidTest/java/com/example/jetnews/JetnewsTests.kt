@@ -61,7 +61,7 @@ class JetnewsTests {
 
         println(composeTestRule.onRoot().printToString())
         try {
-            composeTestRule.onAllNodes(hasText("3 min read", substring = true))[0].assertExists()
+            composeTestRule.onAllNodes(hasText("It provides fully static", substring = true))[0].assertExists()
         } catch (e: AssertionError) {
             println(composeTestRule.onRoot().printToString())
             throw e
