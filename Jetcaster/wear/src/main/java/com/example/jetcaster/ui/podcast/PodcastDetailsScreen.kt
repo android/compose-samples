@@ -116,6 +116,7 @@ fun PodcastDetailsScreen(
                     title = { stringResource(R.string.podcasts_no_episode_podcasts) },
                 )
             }
+
             PodcastDetailsScreenState.Loading -> {
                 PodcastDetailScreenLoaded(
                     emptyList(),

@@ -106,6 +106,7 @@ fun PlayerScreen(
 
     when (val s = uiState) {
         PlayerScreenUiState.Loading -> Loading(modifier)
+
         PlayerScreenUiState.NoEpisodeInQueue -> {
             NoEpisodeInQueue(backToHome = backToHome, modifier = modifier)
         }

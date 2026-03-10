@@ -81,7 +81,9 @@ fun PodcastDetailsScreen(
     val uiState by podcastDetailsScreenViewModel.uiStateFlow.collectAsState()
     when (val s = uiState) {
         PodcastScreenUiState.Loading -> Loading(modifier = modifier)
+
         PodcastScreenUiState.Error -> ErrorState(backToHome = backToHomeScreen, modifier = modifier)
+
         is PodcastScreenUiState.Ready -> PodcastDetailsWithBackground(
             podcastInfo = s.podcastInfo,
             episodeList = s.episodeList,
@@ -146,7 +148,7 @@ private fun PodcastDetails(
     TwoColumn(
         modifier = modifier,
         horizontalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
+            Arrangement.spacedBy(JetcasterAppDefaults.gap.twoColumn),
         first = {
             PodcastInfo(
                 podcastInfo = podcastInfo,

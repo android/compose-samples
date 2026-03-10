@@ -178,6 +178,7 @@ private fun EpisodeListItemFooter(
                         duration.toMinutes().toInt(),
                     )
                 }
+
                 // Otherwise we just use the date
                 else -> MediumDateFormatter.format(episode.published)
             },
@@ -230,9 +231,9 @@ private fun EpisodeListItemHeader(
     Row(modifier = modifier) {
         Column(
             modifier =
-            Modifier
-                .weight(1f)
-                .padding(end = 16.dp),
+                Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp),
         ) {
             Text(
                 text = episode.title,

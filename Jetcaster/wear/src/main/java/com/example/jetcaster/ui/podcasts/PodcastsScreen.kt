@@ -116,8 +116,10 @@ fun PodcastsScreen(
                 contentPadding = contentPadding,
                 placeholderState = placeholderState,
             )
+
             PodcastsScreenState.Empty ->
                 PodcastScreenEmpty(onDismiss)
+
             PodcastsScreenState.Loading ->
                 PodcastScreenLoaded(
                     podcastList = emptyList(),

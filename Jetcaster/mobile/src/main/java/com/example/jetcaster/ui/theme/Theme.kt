@@ -474,6 +474,7 @@ fun JetcasterTheme(dynamicColor: Boolean = false, content: @Composable () -> Uni
             val context = LocalContext.current
             dynamicDarkColorScheme(context)
         }
+
         else -> darkScheme
     }
 

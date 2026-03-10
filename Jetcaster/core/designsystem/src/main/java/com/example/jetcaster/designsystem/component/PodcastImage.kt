@@ -81,6 +81,7 @@ fun PodcastImage(
                         .fillMaxSize(),
                 )
             }
+
             else -> {
                 Box(
                     modifier = modifier

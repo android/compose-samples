@@ -40,11 +40,13 @@ class PodcastWithExtraInfo {
 
     override fun equals(other: Any?): Boolean = when {
         other === this -> true
+
         other is PodcastWithExtraInfo -> {
             podcast == other.podcast &&
                 lastEpisodeDate == other.lastEpisodeDate &&
                 isFollowed == other.isFollowed
         }
+
         else -> false
     }
 

@@ -56,7 +56,9 @@ fun EpisodeScreen(
     val screenModifier = modifier.fillMaxSize()
     when (val s = uiState) {
         EpisodeScreenUiState.Loading -> Loading(modifier = screenModifier)
+
         EpisodeScreenUiState.Error -> ErrorState(backToHome = backToHome, modifier = screenModifier)
+
         is EpisodeScreenUiState.Ready -> EpisodeDetailsWithBackground(
             playerEpisode = s.playerEpisode,
             playEpisode = {

@@ -100,8 +100,10 @@ private fun calculateSizeBucket(): SizeBucket {
 
     return when {
         width < Sizes.minWidth -> SizeBucket.Invalid
+
         width <= Sizes.smallBucketCutoffWidth ->
             if (height >= Sizes.short) SizeBucket.Narrow else SizeBucket.NarrowShort
+
         else ->
             if (height >= Sizes.short) SizeBucket.Normal else SizeBucket.NormalShort
     }
@@ -114,7 +116,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val testState = JetcasterAppWidgetViewState(
             episodeTitle =
-            "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
+                "100 - Android 15 DP 1, Stable Studio Iguana, Cloud Photo Picker, and more!",
             podcastTitle = "Now in Android",
             isPlaying = false,
             albumArtUri = "https://static.libsyn.com/p/assets/9/f/f/3/" +
@@ -129,6 +131,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
             GlanceTheme {
                 when (sizeBucket) {
                     SizeBucket.Invalid -> WidgetUiInvalidSize()
+
                     SizeBucket.Narrow -> Widget(
                         iconSize = Sizes.medium,
                         imageUri = artUri,
@@ -224,6 +227,7 @@ fun PodcastText(title: String, subtitle: String, modifier: GlanceModifier = Glan
                 maxLines = 2,
             )
         }
+
         else -> Column(modifier) {
             Text(
                 text = title,

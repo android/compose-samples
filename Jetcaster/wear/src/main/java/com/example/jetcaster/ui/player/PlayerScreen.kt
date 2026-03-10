@@ -111,6 +111,7 @@ private fun PlayerScreen(
 
     when (val state = uiState) {
         PlayerScreenUiState.Loading -> LoadingMediaDisplay(modifier)
+
         PlayerScreenUiState.Empty -> {
             PlayerScreen(
                 mediaDisplay = {

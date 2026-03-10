@@ -58,7 +58,7 @@ internal fun Catalog(
         modifier = modifier,
         contentPadding = JetcasterAppDefaults.overScanMargin.catalog.intoPaddingValues(),
         verticalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
+            Arrangement.spacedBy(JetcasterAppDefaults.gap.section),
         state = state,
     ) {
         if (header != null) {

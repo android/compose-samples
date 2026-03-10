@@ -738,12 +738,14 @@ private fun lastUpdated(updated: OffsetDateTime): String {
 
     return when {
         days > 28 -> stringResource(R.string.updated_longer)
+
         days >= 7 -> {
             val weeks = days / 7
             quantityStringResource(R.plurals.updated_weeks_ago, weeks, weeks)
         }
 
         days > 0 -> quantityStringResource(R.plurals.updated_days_ago, days, days)
+
         else -> stringResource(R.string.updated_today)
     }
 }

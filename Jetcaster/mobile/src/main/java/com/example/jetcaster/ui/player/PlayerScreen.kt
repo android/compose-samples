@@ -388,7 +388,7 @@ private fun PlayerContentRegular(
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             clipInOverlayDuringTransition =
-                            OverlayClip(MaterialTheme.shapes.medium),
+                                OverlayClip(MaterialTheme.shapes.medium),
                         ),
                     )
                 }

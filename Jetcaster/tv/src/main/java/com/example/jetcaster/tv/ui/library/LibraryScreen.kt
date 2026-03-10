@@ -55,6 +55,7 @@ fun LibraryScreen(
     val uiState by libraryScreenViewModel.uiState.collectAsState()
     when (val s = uiState) {
         LibraryScreenUiState.Loading -> Loading(modifier = modifier)
+
         LibraryScreenUiState.NoSubscribedPodcast -> {
             NavigateToDiscover(onNavigationRequested = navigateToDiscover, modifier = modifier)
         }

@@ -66,6 +66,7 @@ fun MediaContent(
                 duration.toMinutes().toInt(),
             )
         }
+
         // Otherwise we just use the date
         else -> MediumDateFormatter.format(episode.published)
     }

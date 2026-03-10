@@ -73,6 +73,7 @@ fun SearchScreen(
 
     when (val s = uiState) {
         SearchScreenUiState.Loading -> Loading(modifier = modifier)
+
         is SearchScreenUiState.Ready -> Ready(
             keyword = s.keyword,
             categorySelectionList = s.categorySelectionList,
@@ -257,7 +258,7 @@ private fun SearchResult(
     LazyVerticalGrid(
         columns = GridCells.Fixed(4),
         horizontalArrangement =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
+            Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         verticalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.podcastRow),
         modifier = modifier,
     ) {
