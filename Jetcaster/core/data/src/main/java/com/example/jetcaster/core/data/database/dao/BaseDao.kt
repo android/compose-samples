@@ -24,7 +24,7 @@ import androidx.room.Update
 /**
  * Base DAO.
  */
-interface BaseDao<T> {
+interface BaseDao<T : Any> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: T): Long
 
