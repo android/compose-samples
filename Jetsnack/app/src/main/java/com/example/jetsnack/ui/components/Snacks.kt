@@ -49,6 +49,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,6 +60,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -188,8 +190,9 @@ private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (
 
 @Composable
 fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
+    val snackShape = MaterialTheme.shapes.medium
     JetsnackSurface(
-        shape = MaterialTheme.shapes.medium,
+        style = Style { shape(snackShape); clip() },
         modifier = modifier.padding(
             start = 4.dp,
             end = 4.dp,
@@ -198,9 +201,9 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
 
     ) {
         val sharedTransitionScope = LocalSharedTransitionScope.current
-            ?: throw IllegalStateException("No sharedTransitionScope found")
+            ?: throw IllegalStateException("No Scope found")
         val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-            ?: throw IllegalStateException("No animatedVisibilityScope found")
+            ?: throw IllegalStateException("No Scope found")
 
         with(sharedTransitionScope) {
             Column(
@@ -213,10 +216,10 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
             ) {
                 SnackImage(
                     imageRes = snack.imageRes,
-                    elevation = 1.dp,
                     contentDescription = null,
                     modifier = Modifier
                         .size(120.dp)
+                        .padding(bottom = 8.dp)
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -266,6 +269,7 @@ private fun HighlightSnackItem(
     scrollProvider: () -> Float,
     modifier: Modifier = Modifier,
 ) {
+    val cardWidthWithPaddingPx = with(LocalDensity.current) { cardWidthWithPaddingPx }
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
@@ -280,8 +284,7 @@ private fun HighlightSnackItem(
                 }
             }
         JetsnackCard(
-            elevation = 0.dp,
-            shape = RoundedCornerShape(roundedCornerAnimation),
+            style = Style { shape(RoundedCornerShape(roundedCornerAnimation)); clip() },
             modifier = modifier
                 .padding(bottom = 16.dp)
                 .sharedBounds(
@@ -454,11 +457,12 @@ fun SnackImage(
     elevation: Dp = 0.dp,
 ) {
     JetsnackSurface(
-        elevation = elevation,
-        shape = CircleShape,
+        style = Style {
+            shape(CircleShape);
+            clip()
+        },
         modifier = modifier,
     ) {
-
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageRes)

@@ -17,38 +17,32 @@
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalAppStyles
 
 @Composable
 fun JetsnackCard(
     modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.medium,
-    color: Color = JetsnackTheme.colors.uiBackground,
-    contentColor: Color = JetsnackTheme.colors.textPrimary,
-    border: BorderStroke? = null,
-    elevation: Dp = 4.dp,
+    style: Style = Style,
     content: @Composable () -> Unit,
 ) {
-    JetsnackSurface(
-        modifier = modifier,
-        shape = shape,
-        color = color,
-        contentColor = contentColor,
-        elevation = elevation,
-        border = border,
-        content = content,
-    )
+    val styleState = remember { MutableStyleState(null) }
+    Box(
+        modifier = modifier.styleable(styleState, LocalAppStyles.current.cardStyle, style),
+    ) {
+        content()
+    }
 }
 
 @Preview("default")

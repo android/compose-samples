@@ -40,6 +40,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -171,11 +172,16 @@ fun JetsnackBottomBar(
 ) {
     val routes = remember { tabs.map { it.route } }
     val currentSection = tabs.first { it.route == currentRoute }
+    val bgColor = color
+    val fgColor = contentColor
 
     JetsnackSurface(
         modifier = modifier,
-        color = color,
-        contentColor = contentColor,
+        style = Style {
+            background(bgColor)
+            contentColor(fgColor)
+            clip()
+        }
     ) {
         val springSpec = spatialExpressiveSpring<Float>()
         JetsnackBottomNavLayout(

@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -124,7 +125,7 @@ private fun SnackCollectionList(
         }
         itemsIndexed(snackCollections) { index, snackCollection ->
             if (index > 0) {
-                JetsnackDivider(thickness = 2.dp)
+                JetsnackDivider(style = Style { height(2.dp) })
             }
 
             SnackCollection(

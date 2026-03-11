@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -169,10 +170,16 @@ private fun SearchBar(
     searching: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val shape = MaterialTheme.shapes.small
+    val uiFloated = JetsnackTheme.colors.uiFloated
+    val textSecondary = JetsnackTheme.colors.textSecondary
     JetsnackSurface(
-        color = JetsnackTheme.colors.uiFloated,
-        contentColor = JetsnackTheme.colors.textSecondary,
-        shape = MaterialTheme.shapes.small,
+        style = Style {
+            background(uiFloated)
+            contentColor(textSecondary)
+            shape(shape)
+            clip()
+        },
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)

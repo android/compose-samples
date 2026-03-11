@@ -21,7 +21,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +32,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.style.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -117,8 +117,11 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
             }
             JetsnackButton(
                 onClick = { /* todo */ },
-                shape = CircleShape,
-                contentPadding = PaddingValues(0.dp),
+                style = Style {
+                    shape(CircleShape)
+                    clip()
+                    contentPadding(0.dp)
+                },
                 modifier = Modifier.size(36.dp),
             ) {
                 Icon(

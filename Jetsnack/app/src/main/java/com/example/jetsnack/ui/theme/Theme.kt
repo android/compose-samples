@@ -24,6 +24,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.style.StyleScope
+import androidx.compose.material3.Shapes
 
 private val LightColorPalette = JetsnackColors(
     brand = Shadow5,
@@ -82,12 +84,14 @@ fun JetsnackTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
 
     ProvideJetsnackColors(colors) {
-        MaterialTheme(
-            colorScheme = debugColors(darkTheme),
-            typography = Typography,
-            shapes = Shapes,
-            content = content,
-        )
+        CompositionLocalProvider(LocalAppStyles provides AppStyles()) {
+            MaterialTheme(
+                colorScheme = debugColors(darkTheme),
+                typography = Typography,
+                shapes = Shapes,
+                content = content,
+            )
+        }
     }
 }
 
@@ -137,6 +141,8 @@ fun ProvideJetsnackColors(colors: JetsnackColors, content: @Composable () -> Uni
     CompositionLocalProvider(LocalJetsnackColors provides colors, content = content)
 }
 
+val StyleScope.colors: JetsnackColors
+    get() = LocalJetsnackColors.currentValue
 private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
     error("No JetsnackColorPalette provided")
 }
