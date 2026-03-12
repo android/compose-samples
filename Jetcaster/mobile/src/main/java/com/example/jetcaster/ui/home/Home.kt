@@ -140,12 +140,12 @@ fun calculateScaffoldDirective(
         maxHorizontalPartitions = 1
         verticalSpacerSize = 0.dp
     } else {
-        if (!windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) {
-            maxHorizontalPartitions = 1
-            verticalSpacerSize = 0.dp
-        } else {
+        if (windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) {
             maxHorizontalPartitions = 2
             verticalSpacerSize = 24.dp
+        } else {
+            maxHorizontalPartitions = 1
+            verticalSpacerSize = 0.dp
         }
     }
     val maxVerticalPartitions: Int
