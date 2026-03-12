@@ -36,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TooltipState
@@ -103,7 +104,9 @@ fun RecordButton(
         val scope = rememberCoroutineScope()
         val tooltipState = remember { TooltipState() }
         TooltipBox(
-            positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                positioning = TooltipAnchorPosition.Above
+            ),
             tooltip = {
                 RichTooltip {
                     Text(stringResource(R.string.touch_and_hold_to_record))

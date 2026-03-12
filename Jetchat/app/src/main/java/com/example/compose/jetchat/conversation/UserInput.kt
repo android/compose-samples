@@ -233,9 +233,7 @@ private fun SelectorExpanded(currentSelector: InputSelector, onCloseRequested: (
 
             InputSelector.PHONE -> FunctionalityNotAvailablePanel()
 
-            else -> {
-                throw NotImplementedError()
-            }
+            InputSelector.NONE -> Unit
         }
     }
 }
