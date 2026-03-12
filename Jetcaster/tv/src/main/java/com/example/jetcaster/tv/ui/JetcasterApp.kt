@@ -73,7 +73,7 @@ private fun GlobalNavigationContainer(
                 modifier = Modifier
                     .padding(JetcasterAppDefaults.overScanMargin.drawer.intoPaddingValues())
                     .focusProperties {
-                        enter = {
+                        onEnter = {
                             when (currentRoute) {
                                 Screen.Discover.route -> discover
                                 Screen.Library.route -> library

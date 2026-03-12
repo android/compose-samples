@@ -6,7 +6,7 @@
 accompanist = "0.37.3"
 android-material3 = "1.14.0-alpha09"
 androidGradlePlugin = "9.0.1"
-androidx-activity-compose = "1.12.4"
+androidx-activity-compose = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-compose-bom = "2026.03.00"
 androidx-constraintlayout = "1.1.1"
