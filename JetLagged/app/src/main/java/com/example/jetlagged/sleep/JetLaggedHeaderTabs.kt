@@ -50,7 +50,7 @@ fun JetLaggedHeaderTabs(onTabSelected: (SleepTab) -> Unit, selectedTab: SleepTab
         modifier = modifier,
         edgePadding = 12.dp,
         selectedTabIndex = selectedTab.ordinal,
-        indicator = { 
+        indicator = {
             Box(
                 Modifier
                     .tabIndicatorOffset(selectedTab.ordinal, matchContentSize = true)

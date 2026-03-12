@@ -105,7 +105,7 @@ fun RecordButton(
         val tooltipState = remember { TooltipState() }
         TooltipBox(
             positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-                positioning = TooltipAnchorPosition.Above
+                positioning = TooltipAnchorPosition.Above,
             ),
             tooltip = {
                 RichTooltip {
