@@ -252,7 +252,7 @@ private fun HomeScreenReady(
             directive = navigator.scaffoldDirective,
             mainPane = {
                 HomeScreen(
-                    windowSizeClass = windowSizeClass,
+                    isHomeAppBarExpanded = windowSizeClass.isCompact,
                     isLoading = uiState.isLoading,
                     featuredPodcasts = uiState.featuredPodcasts,
                     homeCategories = uiState.homeCategories,
@@ -362,7 +362,7 @@ private fun HomeScreenBackground(modifier: Modifier = Modifier, content: @Compos
 
 @Composable
 private fun HomeScreen(
-    windowSizeClass: WindowSizeClass,
+    isHomeAppBarExpanded: Boolean,
     isLoading: Boolean,
     featuredPodcasts: ImmutableList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
@@ -391,7 +391,7 @@ private fun HomeScreen(
             topBar = {
                 Column {
                     HomeAppBar(
-                        isExpanded = windowSizeClass.isCompact,
+                        isExpanded = isHomeAppBarExpanded,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     if (isLoading) {
@@ -749,14 +749,12 @@ private fun HomeAppBarPreview() {
     }
 }
 
-private val CompactWindowSizeClass = WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(360f, 780f)
-
 @DevicePreviews
 @Composable
 private fun PreviewHome() {
     JetcasterTheme {
         HomeScreen(
-            windowSizeClass = CompactWindowSizeClass,
+            isHomeAppBarExpanded = true,
             isLoading = true,
             featuredPodcasts = PreviewPodcasts.toImmutableList(),
             homeCategories = HomeCategory.entries,
