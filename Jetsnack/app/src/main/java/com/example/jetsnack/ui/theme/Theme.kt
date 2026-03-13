@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalFoundationStyleApi::class)
+
 package com.example.jetsnack.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
@@ -80,21 +84,26 @@ private val DarkColorPalette = JetsnackColors(
 @Composable
 fun JetsnackTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
-
+    val styles = AppStyles()
     ProvideJetsnackColors(colors) {
-        MaterialTheme(
-            colorScheme = debugColors(darkTheme),
-            typography = Typography,
-            shapes = Shapes,
-            content = content,
-        )
+        CompositionLocalProvider(LocalAppStyles provides styles) {
+            MaterialTheme(
+                colorScheme = debugColors(darkTheme),
+                typography = Typography,
+                shapes = Shapes,
+                content = content,
+            )
+        }
     }
 }
-
+//todo discuss best practise for exposing composition locals with @Composable, vs ProvideCompositionLocal
 object JetsnackTheme {
     val colors: JetsnackColors
         @Composable
         get() = LocalJetsnackColors.current
+    val appStyles : AppStyles
+        @Composable
+        get() = LocalAppStyles.current
 }
 
 /**
@@ -137,9 +146,10 @@ fun ProvideJetsnackColors(colors: JetsnackColors, content: @Composable () -> Uni
     CompositionLocalProvider(LocalJetsnackColors provides colors, content = content)
 }
 
-private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
+val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
     error("No JetsnackColorPalette provided")
 }
+val LocalAppStyles = staticCompositionLocalOf { AppStyles() }
 
 /**
  * A Material [Colors] implementation which sets all colors to [debugColor] to discourage usage of

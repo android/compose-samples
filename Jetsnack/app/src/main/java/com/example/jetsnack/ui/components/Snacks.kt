@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class)
 
 package com.example.jetsnack.ui.components
 
@@ -49,10 +49,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalShapes
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -83,6 +85,7 @@ import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.snackDetailBoundsTransform
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -104,10 +107,12 @@ fun SnackCollection(
                 .heightIn(min = 56.dp)
                 .padding(start = 24.dp),
         ) {
-            Text(
+            JetsnackText(
                 text = snackCollection.name,
-                style = MaterialTheme.typography.titleLarge,
-                color = JetsnackTheme.colors.brand,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+                    contentColor(LocalJetsnackColors.currentValue.brand)
+                },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -189,7 +194,9 @@ private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (
 @Composable
 fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
     JetsnackSurface(
-        shape = MaterialTheme.shapes.medium,
+        style = {
+            shape(LocalShapes.currentValue.medium)
+        },
         modifier = modifier.padding(
             start = 4.dp,
             end = 4.dp,
@@ -229,10 +236,12 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                             boundsTransform = snackDetailBoundsTransform,
                         ),
                 )
-                Text(
+                JetsnackText(
                     text = snack.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = {
+                        jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                        contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                    },
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .wrapContentWidth()
@@ -280,8 +289,9 @@ private fun HighlightSnackItem(
                 }
             }
         JetsnackCard(
-            elevation = 0.dp,
-            shape = RoundedCornerShape(roundedCornerAnimation),
+            style = Style {
+                shape( RoundedCornerShape(roundedCornerAnimation))
+            },
             modifier = modifier
                 .padding(bottom = 16.dp)
                 .sharedBounds(
@@ -385,12 +395,14 @@ private fun HighlightSnackItem(
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
+                JetsnackText(
                     text = snack.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = {
+                        jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+                        contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                    },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .sharedBounds(
@@ -411,10 +423,12 @@ private fun HighlightSnackItem(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Text(
+                JetsnackText(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = JetsnackTheme.colors.textHelp,
+                    style = {
+                        jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                        contentColor(LocalJetsnackColors.currentValue.textHelp)
+                    },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .sharedBounds(
@@ -454,11 +468,12 @@ fun SnackImage(
     elevation: Dp = 0.dp,
 ) {
     JetsnackSurface(
-        elevation = elevation,
-        shape = CircleShape,
+        style = {
+            shape(CircleShape)
+            // todo elevation
+        },
         modifier = modifier,
     ) {
-
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageRes)

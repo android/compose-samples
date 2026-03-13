@@ -86,6 +86,7 @@ android {
     kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.fromTarget("17")
+            freeCompilerArgs.add("-opt-in=androidx.compose.foundation.style.ExperimentalFoundationStyleApi")
         }
     }
     compileOptions {

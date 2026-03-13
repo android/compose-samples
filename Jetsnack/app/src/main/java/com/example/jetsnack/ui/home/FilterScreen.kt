@@ -46,10 +46,10 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTypography
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -71,7 +71,10 @@ import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.components.FilterChip
+import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 
 @Composable
 fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilityScope: AnimatedVisibilityScope, onDismiss: () -> Unit) {
@@ -133,14 +136,16 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                             contentDescription = stringResource(id = R.string.close),
                         )
                     }
-                    Text(
+                    JetsnackText(
                         text = stringResource(id = R.string.label_filters),
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .padding(top = 8.dp, end = 48.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = {
+                            textAlign(TextAlign.Center)
+                            jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+                        }
                     )
                     val resetEnabled = sortState != defaultFilter
 
@@ -154,12 +159,16 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                             FontWeight.Normal
                         }
 
-                        Text(
+                        JetsnackText(
                             text = stringResource(id = R.string.reset),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = fontWeight,
-                            color = JetsnackTheme.colors.uiBackground
-                                .copy(alpha = if (!resetEnabled) 0.38f else 1f),
+                            style = {
+                                jetsnackTextStyle(LocalTypography.currentValue.bodyMedium)
+                                fontWeight(fontWeight)
+                                contentColor(
+                                    LocalJetsnackColors.currentValue.uiBackground
+                                        .copy(alpha = if (!resetEnabled) 0.38f else 1f)
+                                )
+                            }
                         )
                     }
                 }
@@ -243,10 +252,12 @@ fun SortFilters(sortFilters: List<Filter> = SnackRepo.getSortFilters(), sortStat
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     FlowRow {
         FilterTitle(text = stringResource(id = R.string.max_calories))
-        Text(
+        JetsnackText(
             text = stringResource(id = R.string.per_serving),
-            style = MaterialTheme.typography.bodyMedium,
-            color = JetsnackTheme.colors.brand,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.bodyMedium)
+                contentColor(LocalJetsnackColors.currentValue.brand)
+            },
             modifier = Modifier.padding(top = 5.dp, start = 10.dp),
         )
     }
@@ -269,10 +280,12 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
 
 @Composable
 fun FilterTitle(text: String) {
-    Text(
+    JetsnackText(
         text = text,
-        style = MaterialTheme.typography.titleLarge,
-        color = JetsnackTheme.colors.brand,
+        style = {
+            jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+            contentColor(LocalJetsnackColors.currentValue.brand)
+        },
         modifier = Modifier.padding(bottom = 8.dp),
     )
 }
@@ -287,9 +300,11 @@ fun SortOption(text: String, @DrawableRes icon: Int?, onClickOption: () -> Unit,
         if (icon != null) {
             Icon(painter = painterResource(id = icon), contentDescription = null)
         }
-        Text(
+        JetsnackText(
             text = text,
-            style = MaterialTheme.typography.titleMedium,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+            },
             modifier = Modifier
                 .padding(start = 10.dp)
                 .weight(1f),

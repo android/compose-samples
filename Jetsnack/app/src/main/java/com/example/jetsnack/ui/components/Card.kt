@@ -14,39 +14,30 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalFoundationStyleApi::class)
+
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.then
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun JetsnackCard(
     modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.medium,
-    color: Color = JetsnackTheme.colors.uiBackground,
-    contentColor: Color = JetsnackTheme.colors.textPrimary,
-    border: BorderStroke? = null,
-    elevation: Dp = 4.dp,
+    style: Style = Style,
     content: @Composable () -> Unit,
 ) {
     JetsnackSurface(
         modifier = modifier,
-        shape = shape,
-        color = color,
-        contentColor = contentColor,
-        elevation = elevation,
-        border = border,
+        style = JetsnackTheme.appStyles.cardStyle then style,
         content = content,
     )
 }
@@ -58,7 +49,7 @@ fun JetsnackCard(
 private fun CardPreview() {
     JetsnackTheme {
         JetsnackCard {
-            Text(text = "Demo", modifier = Modifier.padding(16.dp))
+            JetsnackText(text = "Demo", modifier = Modifier.padding(16.dp))
         }
     }
 }

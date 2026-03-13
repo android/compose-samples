@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalFoundationStyleApi::class)
+
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -21,8 +23,8 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -37,15 +39,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 
 @Composable
 fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCount: () -> Unit, modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
-        Text(
+        JetsnackText(
             text = stringResource(R.string.quantity),
-            style = MaterialTheme.typography.titleMedium,
-            color = JetsnackTheme.colors.textSecondary,
-            fontWeight = FontWeight.Normal,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                fontWeight(FontWeight.Normal)
+            },
             modifier = Modifier
                 .padding(end = 18.dp)
                 .align(Alignment.CenterVertically),
@@ -61,12 +66,14 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
             modifier = Modifier
                 .align(Alignment.CenterVertically),
         ) {
-            Text(
+            JetsnackText(
                 text = "$it",
-                style = MaterialTheme.typography.titleSmall,
-                fontSize = 18.sp,
-                color = JetsnackTheme.colors.textPrimary,
-                textAlign = TextAlign.Center,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.titleSmall)
+                    fontSize(18.sp)
+                    contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                    textAlign(TextAlign.Center)
+                },
                 modifier = Modifier.widthIn(min = 24.dp),
             )
         }

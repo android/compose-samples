@@ -124,7 +124,9 @@ private fun SnackCollectionList(
         }
         itemsIndexed(snackCollections) { index, snackCollection ->
             if (index > 0) {
-                JetsnackDivider(thickness = 2.dp)
+                JetsnackDivider(style = {
+                    height(2.dp)
+                })
             }
 
             SnackCollection(

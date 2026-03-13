@@ -30,8 +30,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,9 +44,12 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
+import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.VerticalGrid
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 import kotlin.math.max
 
 @Composable
@@ -63,10 +65,12 @@ fun SearchCategories(categories: List<SearchCategoryCollection>) {
 @Composable
 private fun SearchCategoryCollection(collection: SearchCategoryCollection, index: Int, modifier: Modifier = Modifier) {
     Column(modifier) {
-        Text(
+        JetsnackText(
             text = collection.name,
-            style = MaterialTheme.typography.titleLarge,
-            color = JetsnackTheme.colors.textPrimary,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+                contentColor(LocalJetsnackColors.currentValue.textPrimary)
+            },
             modifier = Modifier
                 .heightIn(min = 56.dp)
                 .padding(horizontal = 24.dp, vertical = 4.dp)
@@ -103,10 +107,12 @@ private fun SearchCategory(category: SearchCategory, gradient: List<Color>, modi
             .background(Brush.horizontalGradient(gradient))
             .clickable { /* todo */ },
         content = {
-            Text(
+            JetsnackText(
                 text = category.name,
-                style = MaterialTheme.typography.titleMedium,
-                color = JetsnackTheme.colors.textSecondary,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                    contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                },
                 modifier = Modifier
                     .padding(4.dp)
                     .padding(start = 8.dp),
