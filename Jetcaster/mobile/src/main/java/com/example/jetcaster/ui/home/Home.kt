@@ -93,6 +93,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.computeWindowSizeClass
 import com.example.jetcaster.R
 import com.example.jetcaster.core.domain.testing.PreviewCategories
 import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
@@ -748,8 +749,7 @@ private fun HomeAppBarPreview() {
     }
 }
 
-@Suppress("DEPRECATION")
-private val CompactWindowSizeClass = WindowSizeClass.compute(360f, 780f)
+private val CompactWindowSizeClass = WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(360f, 780f)
 
 @DevicePreviews
 @Composable

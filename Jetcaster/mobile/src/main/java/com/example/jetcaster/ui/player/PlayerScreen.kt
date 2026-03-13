@@ -85,6 +85,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.computeWindowSizeClass
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import com.example.jetcaster.R
@@ -925,7 +926,7 @@ fun PlayerScreenPreview() {
                     ),
                 ),
                 displayFeatures = emptyList(),
-                windowSizeClass = WindowSizeClass.compute(maxWidth.value, maxHeight.value),
+                windowSizeClass = WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(maxWidth.value, maxHeight.value),
                 onBackPress = { },
                 onAddToQueue = {},
                 onStop = {},
