@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
@@ -120,7 +120,7 @@ private fun CatalogWithCategorySelection(
         TabRow(
             selectedTabIndex = selectedTabIndex,
             modifier = Modifier.focusProperties {
-                enter = {
+                onEnter = {
                     selectedTab
                 }
             },

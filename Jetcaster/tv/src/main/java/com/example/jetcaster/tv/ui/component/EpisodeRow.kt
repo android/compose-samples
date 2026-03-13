@@ -56,14 +56,14 @@ internal fun EpisodeRow(
         modifier = Modifier
             .focusRequester(focusRequester)
             .focusProperties {
-                enter = {
+                onEnter = {
                     when {
                         lazyListState.layoutInfo.visibleItemsInfo.isEmpty() -> FocusRequester.Cancel
                         isSameList && focusRequester.restoreFocusedChild() -> FocusRequester.Cancel
                         else -> firstItem
                     }
                 }
-                exit = {
+                onExit = {
                     previousEpisodeListHash = playerEpisodeList.hashCode()
                     focusRequester.saveFocusedChild()
                     FocusRequester.Default

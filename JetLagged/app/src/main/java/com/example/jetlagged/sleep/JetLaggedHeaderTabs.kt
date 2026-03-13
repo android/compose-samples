@@ -23,7 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -46,14 +46,14 @@ enum class SleepTab(val title: Int) {
 
 @Composable
 fun JetLaggedHeaderTabs(onTabSelected: (SleepTab) -> Unit, selectedTab: SleepTab, modifier: Modifier = Modifier) {
-    ScrollableTabRow(
+    PrimaryScrollableTabRow(
         modifier = modifier,
         edgePadding = 12.dp,
         selectedTabIndex = selectedTab.ordinal,
-        indicator = { tabPositions: List<TabPosition> ->
+        indicator = {
             Box(
                 Modifier
-                    .tabIndicatorOffset(tabPositions[selectedTab.ordinal])
+                    .tabIndicatorOffset(selectedTab.ordinal, matchContentSize = true)
                     .fillMaxSize()
                     .padding(horizontal = 2.dp)
                     .border(
