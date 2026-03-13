@@ -25,8 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +35,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
+import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
@@ -52,17 +53,21 @@ fun Profile(modifier: Modifier = Modifier) {
             contentDescription = null,
         )
         Spacer(Modifier.height(24.dp))
-        Text(
+        JetsnackText(
             text = stringResource(R.string.work_in_progress),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(16.dp))
-        Text(
+        JetsnackText(
             text = stringResource(R.string.grab_beverage),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.bodyMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
     }

@@ -8,17 +8,22 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.fillWidth
+import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.selected
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalShapes
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.LocalTypography
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 
 @Immutable
 data class AppStyles(
@@ -27,7 +32,7 @@ data class AppStyles(
         background(Brush.linearGradient(LocalJetsnackColors.currentValue.interactivePrimary))
         contentColor(LocalJetsnackColors.currentValue.textInteractive)
         contentPadding( ButtonDefaults.ContentPadding.calculateTopPadding()) // todo file issue to support padding values
-        textStyle(LocalTypography.currentValue.labelLarge)
+        jetsnackTextStyle(LocalTypography.currentValue.labelLarge)
         disabled {
             animate {
                 background(Brush.linearGradient(LocalJetsnackColors.currentValue.interactiveSecondary))
@@ -59,7 +64,7 @@ data class AppStyles(
                     // this was a parameter input into the function? might want to make helper function for it
                     colors = LocalJetsnackColors.currentValue.interactiveSecondary,
                     startX = 0f,
-                    endX = 200f, // todo double check px/dp
+                    endX = 200f,
                     tileMode = TileMode.Mirror,
                 ))
             }
@@ -79,8 +84,8 @@ data class AppStyles(
             }
         }
     },
-    val scaffoldStyle: Style = Style {
-
+    val defaultTextStyle: Style = Style {
+        jetsnackTextStyle(LocalTextStyle.currentValue)
     },
     val surfaceStyle: Style = Style {
         shape(RectangleShape)

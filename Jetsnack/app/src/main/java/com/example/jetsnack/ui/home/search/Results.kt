@@ -34,8 +34,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,17 +49,22 @@ import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
 fun SearchResults(searchResults: List<Snack>, onSnackClick: (Long, String) -> Unit) {
     Column {
-        Text(
+        JetsnackText(
             text = stringResource(R.string.search_count, searchResults.size),
-            style = MaterialTheme.typography.titleLarge,
-            color = JetsnackTheme.colors.textPrimary,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+                contentColor(LocalJetsnackColors.currentValue.textPrimary)
+            },
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
         )
         LazyColumn {
@@ -98,21 +102,27 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
                     .weight(1f)
                     .padding(start = 16.dp, end = 16.dp),
             ) {
-                Text(
+                JetsnackText(
                     text = snack.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = {
+                        jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                        contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                    },
                 )
-                Text(
+                JetsnackText(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = JetsnackTheme.colors.textHelp,
+                    style = {
+                        jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                        contentColor(LocalJetsnackColors.currentValue.textHelp)
+                    },
                 )
                 Spacer(Modifier.height(8.dp))
-                Text(
+                JetsnackText(
                     text = formatPrice(snack.price),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = JetsnackTheme.colors.textPrimary,
+                    style = {
+                        jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                        contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                    },
                 )
             }
             JetsnackButton(
@@ -146,17 +156,21 @@ fun NoResults(query: String, modifier: Modifier = Modifier) {
             contentDescription = null,
         )
         Spacer(Modifier.height(24.dp))
-        Text(
+        JetsnackText(
             text = stringResource(R.string.search_no_matches, query),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(16.dp))
-        Text(
+        JetsnackText(
             text = stringResource(R.string.search_no_matches_retry),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.bodyMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
     }

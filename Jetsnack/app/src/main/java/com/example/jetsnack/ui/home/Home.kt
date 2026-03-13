@@ -41,8 +41,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -76,6 +75,8 @@ import androidx.navigation.navDeepLink
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
@@ -214,10 +215,12 @@ fun JetsnackBottomBar(
                         )
                     },
                     text = {
-                        Text(
+                        JetsnackText(
                             text = text,
-                            color = tint,
-                            style = MaterialTheme.typography.labelLarge,
+                            style = {
+                                contentColor(tint)
+                                jetsnackTextStyle(LocalTypography.currentValue.labelLarge)
+                            },
                             maxLines = 1,
                         )
                     },

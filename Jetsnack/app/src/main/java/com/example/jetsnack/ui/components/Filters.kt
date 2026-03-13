@@ -41,8 +41,7 @@ import androidx.compose.foundation.style.then
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalShapes
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -155,9 +154,11 @@ fun FilterChip(
             modifier = Modifier
                 .styleable(styleState, innerBackgroundStyle),
         ) {
-            Text(
+            JetsnackText(
                 text = filter.name,
-                style = MaterialTheme.typography.bodySmall,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.bodySmall)
+                },
                 maxLines = 1,
                 modifier = Modifier.padding(
                     horizontal = 20.dp,

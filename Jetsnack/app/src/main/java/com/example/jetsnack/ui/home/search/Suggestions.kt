@@ -26,8 +26,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +35,10 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.model.SearchRepo
 import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 
 @Composable
 fun SearchSuggestions(suggestions: List<SearchSuggestionGroup>, onSuggestionSelect: (String) -> Unit) {
@@ -61,10 +63,12 @@ fun SearchSuggestions(suggestions: List<SearchSuggestionGroup>, onSuggestionSele
 
 @Composable
 private fun SuggestionHeader(name: String, modifier: Modifier = Modifier) {
-    Text(
+    JetsnackText(
         text = name,
-        style = MaterialTheme.typography.titleLarge,
-        color = JetsnackTheme.colors.textPrimary,
+        style = {
+            jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+            contentColor(LocalJetsnackColors.currentValue.textPrimary)
+        },
         modifier = modifier
             .heightIn(min = 56.dp)
             .padding(horizontal = 24.dp, vertical = 4.dp)
@@ -74,9 +78,11 @@ private fun SuggestionHeader(name: String, modifier: Modifier = Modifier) {
 
 @Composable
 private fun Suggestion(suggestion: String, onSuggestionSelect: (String) -> Unit, modifier: Modifier = Modifier) {
-    Text(
+    JetsnackText(
         text = suggestion,
-        style = MaterialTheme.typography.titleMedium,
+        style = {
+            jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+        },
         modifier = modifier
             .heightIn(min = 48.dp)
             .clickable { onSuggestionSelect(suggestion) }

@@ -45,9 +45,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTypography
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -74,6 +74,8 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
@@ -82,8 +84,10 @@ import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.roundToInt
+import androidx.compose.ui.platform.LocalResources
 
 @Composable
 fun Cart(
@@ -141,7 +145,7 @@ private fun CartContent(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
     val snackCountFormattedString = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,
@@ -157,10 +161,12 @@ private fun CartContent(
                     WindowInsets.statusBars.add(WindowInsets(top = 56.dp)),
                 ),
             )
-            Text(
+            JetsnackText(
                 text = stringResource(R.string.cart_order_header, snackCountFormattedString),
-                style = MaterialTheme.typography.titleLarge,
-                color = JetsnackTheme.colors.brand,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+                    contentColor(LocalJetsnackColors.currentValue.brand)
+                },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -269,11 +275,13 @@ private fun SwipeDismissItemBackground(progress: Float) {
                         if (progress > 0.5f) 1f else 0.5f, label = "text alpha",
                     )
                     if (progress > 0.5f) {
-                        Text(
+                        JetsnackText(
                             text = stringResource(id = R.string.remove_item),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = JetsnackTheme.colors.uiBackground,
-                            textAlign = TextAlign.Center,
+                            style = {
+                                jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                                contentColor(LocalJetsnackColors.currentValue.uiBackground)
+                                textAlign(TextAlign.Center)
+                            },
                             modifier = Modifier
                                 .graphicsLayer(
                                     alpha = textAlpha,
@@ -319,10 +327,12 @@ fun CartItem(
                     .padding(start = 16.dp),
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(
+                    JetsnackText(
                         text = snack.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = JetsnackTheme.colors.textSecondary,
+                        style = {
+                            jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                            contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .padding(top = 16.dp, end = 16.dp),
@@ -338,20 +348,24 @@ fun CartItem(
                         )
                     }
                 }
-                Text(
+                JetsnackText(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = JetsnackTheme.colors.textHelp,
+                    style = {
+                        jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                        contentColor(LocalJetsnackColors.currentValue.textHelp)
+                    },
                     modifier = Modifier.padding(end = 16.dp),
                 )
                 Spacer(Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(
+                    JetsnackText(
                         text = formatPrice(snack.price),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = JetsnackTheme.colors.textPrimary,
+                        style = {
+                            jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                            contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = 16.dp)
@@ -373,10 +387,12 @@ fun CartItem(
 @Composable
 fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifier) {
     Column(modifier) {
-        Text(
+        JetsnackText(
             text = stringResource(R.string.cart_summary_header),
-            style = MaterialTheme.typography.titleLarge,
-            color = JetsnackTheme.colors.brand,
+            style = {
+                jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
+                contentColor(LocalJetsnackColors.currentValue.brand)
+            },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
@@ -385,50 +401,62 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
                 .wrapContentHeight(),
         )
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
-            Text(
+            JetsnackText(
                 text = stringResource(R.string.cart_subtotal_label),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
                     .alignBy(LastBaseline),
             )
-            Text(
+            JetsnackText(
                 text = formatPrice(subtotal),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                },
                 modifier = Modifier.alignBy(LastBaseline),
             )
         }
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
-            Text(
+            JetsnackText(
                 text = stringResource(R.string.cart_shipping_label),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
                     .alignBy(LastBaseline),
             )
-            Text(
+            JetsnackText(
                 text = formatPrice(shippingCosts),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                },
                 modifier = Modifier.alignBy(LastBaseline),
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
         JetsnackDivider()
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
-            Text(
+            JetsnackText(
                 text = stringResource(R.string.cart_total_label),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 16.dp)
                     .wrapContentWidth(Alignment.End)
                     .alignBy(LastBaseline),
             )
-            Text(
+            JetsnackText(
                 text = formatPrice(subtotal + shippingCosts),
-                style = MaterialTheme.typography.titleMedium,
+                style = {
+                    jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                },
                 modifier = Modifier.alignBy(LastBaseline),
             )
         }
@@ -456,10 +484,12 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
                     .padding(horizontal = 12.dp, vertical = 8.dp)
                     .weight(1f),
             ) {
-                Text(
+                JetsnackText(
                     text = stringResource(id = R.string.cart_checkout),
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Left,
+                    style = {
+                        textAlign(TextAlign.Left)
+                    },
                     maxLines = 1,
                 )
             }
