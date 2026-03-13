@@ -34,6 +34,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,6 +62,7 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LocalJetsnackColors
 
 @Composable
 fun Search(onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier, state: SearchState = rememberSearchState()) {
@@ -170,9 +172,11 @@ private fun SearchBar(
     modifier: Modifier = Modifier,
 ) {
     JetsnackSurface(
-        color = JetsnackTheme.colors.uiFloated,
-        contentColor = JetsnackTheme.colors.textSecondary,
-        shape = MaterialTheme.shapes.small,
+        style = {
+            background(LocalJetsnackColors.currentValue.uiFloated)
+            contentColor(LocalJetsnackColors.currentValue.textSecondary)
+            shape(LocalShapes.currentValue.small)
+        },
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)

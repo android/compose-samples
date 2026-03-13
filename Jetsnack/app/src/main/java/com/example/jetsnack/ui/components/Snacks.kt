@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class)
 
 package com.example.jetsnack.ui.components
 
@@ -49,8 +49,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -189,7 +192,9 @@ private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (
 @Composable
 fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
     JetsnackSurface(
-        shape = MaterialTheme.shapes.medium,
+        style = {
+            shape(LocalShapes.currentValue.medium)
+        },
         modifier = modifier.padding(
             start = 4.dp,
             end = 4.dp,
@@ -280,8 +285,9 @@ private fun HighlightSnackItem(
                 }
             }
         JetsnackCard(
-            elevation = 0.dp,
-            shape = RoundedCornerShape(roundedCornerAnimation),
+            style = Style {
+                shape( RoundedCornerShape(roundedCornerAnimation))
+            },
             modifier = modifier
                 .padding(bottom = 16.dp)
                 .sharedBounds(
@@ -454,11 +460,12 @@ fun SnackImage(
     elevation: Dp = 0.dp,
 ) {
     JetsnackSurface(
-        elevation = elevation,
-        shape = CircleShape,
+        style = {
+            shape(CircleShape)
+            // todo elevation
+        },
         modifier = modifier,
     ) {
-
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageRes)

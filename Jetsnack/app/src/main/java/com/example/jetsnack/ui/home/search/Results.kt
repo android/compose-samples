@@ -117,8 +117,10 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
             }
             JetsnackButton(
                 onClick = { /* todo */ },
-                shape = CircleShape,
-                contentPadding = PaddingValues(0.dp),
+                style = {
+                    shape(CircleShape)
+                    contentPadding(0.dp)
+                },
                 modifier = Modifier.size(36.dp),
             ) {
                 Icon(

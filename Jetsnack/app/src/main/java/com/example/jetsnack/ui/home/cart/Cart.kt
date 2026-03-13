@@ -449,7 +449,9 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
             Spacer(Modifier.weight(1f))
             JetsnackButton(
                 onClick = { /* todo */ },
-                shape = RectangleShape,
+                style = {
+                    shape(RectangleShape)
+                },
                 modifier = Modifier
                     .padding(horizontal = 12.dp, vertical = 8.dp)
                     .weight(1f),
