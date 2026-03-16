@@ -30,11 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun JetsnackCard(
-    modifier: Modifier = Modifier,
-    style: Style = Style,
-    content: @Composable () -> Unit,
-) {
+fun JetsnackCard(modifier: Modifier = Modifier, style: Style = Style, content: @Composable () -> Unit) {
     JetsnackSurface(
         modifier = modifier,
         style = JetsnackTheme.appStyles.cardStyle then style,

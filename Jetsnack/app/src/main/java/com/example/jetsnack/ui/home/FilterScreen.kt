@@ -144,7 +144,7 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                         style = {
                             textAlign(TextAlign.Center)
                             jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
-                        }
+                        },
                     )
                     val resetEnabled = sortState != defaultFilter
 
@@ -165,9 +165,9 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                                 fontWeight(fontWeight)
                                 contentColor(
                                     currentJetsnackTheme.colors.uiBackground
-                                        .copy(alpha = if (!resetEnabled) 0.38f else 1f)
+                                        .copy(alpha = if (!resetEnabled) 0.38f else 1f),
                                 )
-                            }
+                            },
                         )
                     }
                 }

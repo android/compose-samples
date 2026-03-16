@@ -44,9 +44,9 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
 import com.example.jetsnack.ui.components.JetsnackText
-import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.VerticalGrid
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import kotlin.math.max

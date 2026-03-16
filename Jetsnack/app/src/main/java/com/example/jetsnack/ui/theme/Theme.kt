@@ -30,7 +30,6 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 
-
 @Immutable
 class JetsnackTheme(
     val colors: JetsnackColors = LightColorPalette,
@@ -41,16 +40,20 @@ class JetsnackTheme(
 
     companion object {
         val colors: JetsnackColors
-            @Composable @ReadOnlyComposable get() = LocalJetsnackTheme.current.colors
+            @Composable @ReadOnlyComposable
+            get() = LocalJetsnackTheme.current.colors
 
         val typography: Typography
-            @Composable @ReadOnlyComposable get() = LocalJetsnackTheme.current.typography
+            @Composable @ReadOnlyComposable
+            get() = LocalJetsnackTheme.current.typography
 
         val shapes: Shapes
-            @Composable @ReadOnlyComposable get() = LocalJetsnackTheme.current.shapes
+            @Composable @ReadOnlyComposable
+            get() = LocalJetsnackTheme.current.shapes
 
         val appStyles: AppStyles
-            @Composable @ReadOnlyComposable get() = LocalJetsnackTheme.current.appStyles
+            @Composable @ReadOnlyComposable
+            get() = LocalJetsnackTheme.current.appStyles
 
         val LocalJetsnackTheme: ProvidableCompositionLocal<JetsnackTheme>
             get() = LocalJetsnackThemeInstance
@@ -67,7 +70,7 @@ fun JetsnackTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
     val theme = JetsnackTheme(colors = colors, appStyles = AppStyles())
 
     CompositionLocalProvider(
-        JetsnackTheme.LocalJetsnackTheme provides theme
+        JetsnackTheme.LocalJetsnackTheme provides theme,
     ) {
         MaterialTheme(
             colorScheme = debugColors(darkTheme),

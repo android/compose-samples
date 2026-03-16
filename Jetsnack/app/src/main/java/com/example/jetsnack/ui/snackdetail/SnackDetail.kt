@@ -108,13 +108,13 @@ import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.JetsnackText
-import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.max
 import kotlin.math.min
@@ -312,7 +312,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                                 jetsnackTextStyle(currentJetsnackTheme.typography.headlineMedium)
                                 contentColor(currentJetsnackTheme.colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
-                            }
+                            },
                         )
                         Spacer(Modifier.height(16.dp))
                         var seeMore by remember { mutableStateOf(true) }
@@ -359,7 +359,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                                 jetsnackTextStyle(currentJetsnackTheme.typography.labelSmall)
                                 contentColor(currentJetsnackTheme.colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
-                            }
+                            },
                         )
                         Spacer(Modifier.height(4.dp))
                         JetsnackText(
@@ -368,7 +368,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                                 jetsnackTextStyle(currentJetsnackTheme.typography.bodyLarge)
                                 contentColor(currentJetsnackTheme.colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
-                            }
+                            },
                         )
 
                         Spacer(Modifier.height(16.dp))

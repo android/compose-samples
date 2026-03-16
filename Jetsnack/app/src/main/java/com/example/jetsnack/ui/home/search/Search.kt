@@ -243,7 +243,7 @@ private fun SearchHint() {
             text = stringResource(R.string.search_jetsnack),
             style = {
                 contentColor(currentJetsnackTheme.colors.textHelp)
-            }
+            },
         )
     }
 }

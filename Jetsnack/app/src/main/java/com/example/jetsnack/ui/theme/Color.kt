@@ -108,7 +108,7 @@ fun debugColors(darkTheme: Boolean, debugColor: Color = Color.Magenta) = ColorSc
     tertiaryFixed = debugColor,
     tertiaryFixedDim = debugColor,
     onTertiaryFixed = debugColor,
-    onTertiaryFixedVariant = debugColor
+    onTertiaryFixedVariant = debugColor,
 )
 
 val Shadow11 = Color(0xff001787)
@@ -180,7 +180,6 @@ val FunctionalGrey = Color(0xfff6f6f6)
 val FunctionalDarkGrey = Color(0xff2e2e2e)
 
 const val AlphaNearOpaque = 0.95f
-
 
 internal val LightColorPalette = JetsnackColors(
     brand = Shadow5,

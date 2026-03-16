@@ -107,11 +107,7 @@ fun FilterBar(
 }
 
 @Composable
-fun FilterChip(
-    filter: Filter,
-    modifier: Modifier = Modifier,
-    style: Style = Style,
-) {
+fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Style) {
 
     val (selected, setSelected) = filter.enabled
     val interactionSource = remember { MutableInteractionSource() }

@@ -58,6 +58,7 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,7 +84,6 @@ import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import java.util.Locale
-import androidx.compose.ui.platform.LocalLocale
 
 fun NavGraphBuilder.composableWithCompositionLocal(
     route: String,
@@ -179,7 +179,7 @@ fun JetsnackBottomBar(
         style = {
             background(color)
             contentColor(contentColor)
-        }
+        },
     ) {
         val springSpec = spatialExpressiveSpring<Float>()
         JetsnackBottomNavLayout(

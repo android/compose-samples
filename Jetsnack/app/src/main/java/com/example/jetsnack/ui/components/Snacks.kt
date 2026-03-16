@@ -288,7 +288,7 @@ private fun HighlightSnackItem(
             }
         JetsnackCard(
             style = Style {
-                shape( RoundedCornerShape(roundedCornerAnimation))
+                shape(RoundedCornerShape(roundedCornerAnimation))
             },
             modifier = modifier
                 .padding(bottom = 16.dp)

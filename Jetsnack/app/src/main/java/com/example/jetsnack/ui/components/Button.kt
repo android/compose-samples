@@ -43,7 +43,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
-//todo think about the text style here
+// todo think about the text style here
 @Composable
 fun JetsnackButton(
     onClick: () -> Unit,
