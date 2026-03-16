@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
-import com.example.jetsnack.ui.theme.LocalAppStyles
+import com.example.jetsnack.ui.theme.JetsnackTheme
 
 // Workaround for b/492528450 - setting textStyle currently doesn't set fontFamily.
 @ExperimentalFoundationStyleApi
@@ -35,7 +35,7 @@ fun JetsnackText(
     ) {
     BasicText(
         text = text,
-        modifier = modifier.styleable(null, LocalAppStyles.current.defaultTextStyle, style),
+        modifier = modifier.styleable(null, JetsnackTheme.appStyles.defaultTextStyle, style),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,

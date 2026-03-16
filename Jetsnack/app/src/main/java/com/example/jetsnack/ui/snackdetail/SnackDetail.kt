@@ -65,7 +65,6 @@ import androidx.compose.foundation.style.fillWidth
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTypography
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -114,7 +113,7 @@ import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalJetsnackColors
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.max
@@ -310,8 +309,8 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         JetsnackText(
                             text = stringResource(R.string.detail_header),
                             style = {
-                                jetsnackTextStyle(LocalTypography.currentValue.headlineMedium)
-                                contentColor(LocalJetsnackColors.currentValue.textHelp)
+                                jetsnackTextStyle(currentJetsnackTheme.typography.headlineMedium)
+                                contentColor(currentJetsnackTheme.colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             }
                         )
@@ -321,8 +320,8 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                             JetsnackText(
                                 text = stringResource(R.string.detail_placeholder),
                                 style = {
-                                    jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
-                                    contentColor(LocalJetsnackColors.currentValue.textHelp)
+                                    jetsnackTextStyle(currentJetsnackTheme.typography.bodyLarge)
+                                    contentColor(currentJetsnackTheme.colors.textHelp)
                                     contentPaddingHorizontal(24.dp)
                                 },
                                 maxLines = if (seeMore) 5 else Int.MAX_VALUE,
@@ -339,8 +338,8 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         JetsnackText(
                             text = textButton,
                             style = {
-                                jetsnackTextStyle(LocalTypography.currentValue.labelLarge)
-                                contentColor(LocalJetsnackColors.currentValue.textLink)
+                                jetsnackTextStyle(currentJetsnackTheme.typography.labelLarge)
+                                contentColor(currentJetsnackTheme.colors.textLink)
                                 textAlign(TextAlign.Center)
                                 contentPaddingTop(15.dp)
                                 fillWidth()
@@ -357,8 +356,8 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         JetsnackText(
                             text = stringResource(R.string.ingredients),
                             style = {
-                                jetsnackTextStyle(LocalTypography.currentValue.labelSmall)
-                                contentColor(LocalJetsnackColors.currentValue.textHelp)
+                                jetsnackTextStyle(currentJetsnackTheme.typography.labelSmall)
+                                contentColor(currentJetsnackTheme.colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             }
                         )
@@ -366,8 +365,8 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         JetsnackText(
                             text = stringResource(R.string.ingredients_list),
                             style = {
-                                jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
-                                contentColor(LocalJetsnackColors.currentValue.textHelp)
+                                jetsnackTextStyle(currentJetsnackTheme.typography.bodyLarge)
+                                contentColor(currentJetsnackTheme.colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             }
                         )
@@ -425,8 +424,8 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             JetsnackText(
                 text = snack.name,
                 style = {
-                    jetsnackTextStyle(LocalTypography.currentValue.headlineMedium)
-                    contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                    jetsnackTextStyle(currentJetsnackTheme.typography.headlineMedium)
+                    contentColor(currentJetsnackTheme.colors.textSecondary)
                     fontStyle(FontStyle.Italic)
                 },
                 modifier = HzPadding
@@ -446,9 +445,9 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             JetsnackText(
                 text = snack.tagline,
                 style = {
-                    jetsnackTextStyle(LocalTypography.currentValue.titleSmall)
+                    jetsnackTextStyle(currentJetsnackTheme.typography.titleSmall)
                     fontStyle(FontStyle.Italic)
-                    contentColor(LocalJetsnackColors.currentValue.textHelp)
+                    contentColor(currentJetsnackTheme.colors.textHelp)
                     fontSize(20.sp)
                 },
                 modifier = HzPadding
@@ -470,8 +469,8 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                 JetsnackText(
                     text = formatPrice(snack.price),
                     style = {
-                        jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
-                        contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                        jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
+                        contentColor(currentJetsnackTheme.colors.textPrimary)
                     },
                     modifier = HzPadding
                         .animateEnterExit(

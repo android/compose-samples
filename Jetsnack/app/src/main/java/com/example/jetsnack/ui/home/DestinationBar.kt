@@ -29,7 +29,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTypography
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -50,7 +49,7 @@ import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalJetsnackColors
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,8 +75,8 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                             JetsnackText(
                                 text = "Delivery to 1600 Amphitheater Way",
                                 style = {
-                                    jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
-                                    contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                                    jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
+                                    contentColor(currentJetsnackTheme.colors.textSecondary)
                                     textAlign(TextAlign.Center)
                                 },
                                 maxLines = 1,

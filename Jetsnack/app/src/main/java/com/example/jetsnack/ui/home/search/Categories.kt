@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +48,7 @@ import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.VerticalGrid
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalJetsnackColors
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import kotlin.math.max
 
 @Composable
@@ -68,8 +67,8 @@ private fun SearchCategoryCollection(collection: SearchCategoryCollection, index
         JetsnackText(
             text = collection.name,
             style = {
-                jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
-                contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
+                contentColor(currentJetsnackTheme.colors.textPrimary)
             },
             modifier = Modifier
                 .heightIn(min = 56.dp)
@@ -110,8 +109,8 @@ private fun SearchCategory(category: SearchCategory, gradient: List<Color>, modi
             JetsnackText(
                 text = category.name,
                 style = {
-                    jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
-                    contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                    jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
+                    contentColor(currentJetsnackTheme.colors.textSecondary)
                 },
                 modifier = Modifier
                     .padding(4.dp)

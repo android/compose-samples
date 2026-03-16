@@ -34,7 +34,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +52,7 @@ import com.example.jetsnack.ui.components.JetsnackText
 import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalJetsnackColors
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
@@ -62,8 +61,8 @@ fun SearchResults(searchResults: List<Snack>, onSnackClick: (Long, String) -> Un
         JetsnackText(
             text = stringResource(R.string.search_count, searchResults.size),
             style = {
-                jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
-                contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
+                contentColor(currentJetsnackTheme.colors.textPrimary)
             },
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
         )
@@ -105,23 +104,23 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
                 JetsnackText(
                     text = snack.name,
                     style = {
-                        jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
-                        contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                        jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
+                        contentColor(currentJetsnackTheme.colors.textSecondary)
                     },
                 )
                 JetsnackText(
                     text = snack.tagline,
                     style = {
-                        jetsnackTextStyle(LocalTypography.currentValue.bodyLarge)
-                        contentColor(LocalJetsnackColors.currentValue.textHelp)
+                        jetsnackTextStyle(currentJetsnackTheme.typography.bodyLarge)
+                        contentColor(currentJetsnackTheme.colors.textHelp)
                     },
                 )
                 Spacer(Modifier.height(8.dp))
                 JetsnackText(
                     text = formatPrice(snack.price),
                     style = {
-                        jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
-                        contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                        jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
+                        contentColor(currentJetsnackTheme.colors.textPrimary)
                     },
                 )
             }
@@ -159,7 +158,7 @@ fun NoResults(query: String, modifier: Modifier = Modifier) {
         JetsnackText(
             text = stringResource(R.string.search_no_matches, query),
             style = {
-                jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+                jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),
@@ -168,7 +167,7 @@ fun NoResults(query: String, modifier: Modifier = Modifier) {
         JetsnackText(
             text = stringResource(R.string.search_no_matches_retry),
             style = {
-                jetsnackTextStyle(LocalTypography.currentValue.bodyMedium)
+                jetsnackTextStyle(currentJetsnackTheme.typography.bodyMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),

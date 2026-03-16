@@ -41,7 +41,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -82,6 +81,7 @@ import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 import java.util.Locale
 import androidx.compose.ui.platform.LocalLocale
 
@@ -219,7 +219,7 @@ fun JetsnackBottomBar(
                             text = text,
                             style = {
                                 contentColor(tint)
-                                jetsnackTextStyle(LocalTypography.currentValue.labelLarge)
+                                jetsnackTextStyle(currentJetsnackTheme.typography.labelLarge)
                             },
                             maxLines = 1,
                         )

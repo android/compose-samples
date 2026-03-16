@@ -31,14 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalAppStyles
+import com.example.jetsnack.ui.theme.JetsnackTheme.Companion.LocalJetsnackTheme
 
 @Composable
 fun JetsnackDivider(
     modifier: Modifier = Modifier,
     style: Style = Style
 ) {
-    Box(modifier = modifier.styleable(null, LocalAppStyles.current.dividerStyle, style))
+    Box(modifier = modifier.styleable(null, LocalJetsnackTheme.current.appStyles.dividerStyle, style))
 }
 
 

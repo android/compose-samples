@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +37,7 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.JetsnackText
 import com.example.jetsnack.ui.components.jetsnackTextStyle
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalJetsnackColors
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 
 @Composable
 fun SearchSuggestions(suggestions: List<SearchSuggestionGroup>, onSuggestionSelect: (String) -> Unit) {
@@ -66,8 +65,8 @@ private fun SuggestionHeader(name: String, modifier: Modifier = Modifier) {
     JetsnackText(
         text = name,
         style = {
-            jetsnackTextStyle(LocalTypography.currentValue.titleLarge)
-            contentColor(LocalJetsnackColors.currentValue.textPrimary)
+            jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
+            contentColor(currentJetsnackTheme.colors.textPrimary)
         },
         modifier = modifier
             .heightIn(min = 56.dp)
@@ -81,7 +80,7 @@ private fun Suggestion(suggestion: String, onSuggestionSelect: (String) -> Unit,
     JetsnackText(
         text = suggestion,
         style = {
-            jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
+            jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
         },
         modifier = modifier
             .heightIn(min = 48.dp)

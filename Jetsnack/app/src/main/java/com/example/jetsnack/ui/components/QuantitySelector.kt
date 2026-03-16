@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
-import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -39,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalJetsnackColors
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 
 @Composable
 fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCount: () -> Unit, modifier: Modifier = Modifier) {
@@ -47,8 +46,8 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
         JetsnackText(
             text = stringResource(R.string.quantity),
             style = {
-                jetsnackTextStyle(LocalTypography.currentValue.titleMedium)
-                contentColor(LocalJetsnackColors.currentValue.textSecondary)
+                jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
+                contentColor(currentJetsnackTheme.colors.textSecondary)
                 fontWeight(FontWeight.Normal)
             },
             modifier = Modifier
@@ -69,9 +68,9 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
             JetsnackText(
                 text = "$it",
                 style = {
-                    jetsnackTextStyle(LocalTypography.currentValue.titleSmall)
+                    jetsnackTextStyle(currentJetsnackTheme.typography.titleSmall)
                     fontSize(18.sp)
-                    contentColor(LocalJetsnackColors.currentValue.textPrimary)
+                    contentColor(currentJetsnackTheme.colors.textPrimary)
                     textAlign(TextAlign.Center)
                 },
                 modifier = Modifier.widthIn(min = 24.dp),

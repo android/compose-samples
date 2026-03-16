@@ -40,8 +40,6 @@ import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.style.then
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalShapes
-import androidx.compose.material3.LocalTypography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -57,7 +55,7 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.LocalJetsnackColors
+import com.example.jetsnack.ui.theme.currentJetsnackTheme
 
 @Composable
 fun FilterBar(
@@ -100,7 +98,7 @@ fun FilterBar(
                 FilterChip(
                     filter = filter,
                     style = Style {
-                        shape(LocalShapes.currentValue.small)
+                        shape(currentJetsnackTheme.shapes.small)
                     },
                 )
             }
@@ -141,7 +139,7 @@ fun FilterChip(
                 animate {
                     background(
                         Brush.horizontalGradient(
-                            colors = LocalJetsnackColors.currentValue.interactiveSecondary,
+                            colors = currentJetsnackTheme.colors.interactiveSecondary,
                             startX = 0f,
                             endX = 200f,
                             tileMode = TileMode.Mirror,
@@ -157,7 +155,7 @@ fun FilterChip(
             JetsnackText(
                 text = filter.name,
                 style = {
-                    jetsnackTextStyle(LocalTypography.currentValue.bodySmall)
+                    jetsnackTextStyle(currentJetsnackTheme.typography.bodySmall)
                 },
                 maxLines = 1,
                 modifier = Modifier.padding(
