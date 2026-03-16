@@ -128,7 +128,7 @@ fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Sty
                 interactionSource = interactionSource,
                 indication = null,
             ),
-        style = JetsnackTheme.appStyles.filterChipStyle then style,
+        style = JetsnackTheme.styles.filterChipStyle then style,
         styleState = styleState,
     ) {
         val innerBackgroundStyle = Style {

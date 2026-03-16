@@ -53,7 +53,7 @@ fun Button(
         it.isEnabled = enabled
     })
     Surface(
-        style = JetsnackTheme.appStyles.buttonStyle then style,
+        style = JetsnackTheme.styles.buttonStyle then style,
         styleState = styleState,
         modifier = modifier
             .clickable(

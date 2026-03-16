@@ -33,7 +33,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 fun JetsnackCard(modifier: Modifier = Modifier, style: Style = Style, content: @Composable () -> Unit) {
     Surface(
         modifier = modifier,
-        style = JetsnackTheme.appStyles.cardStyle then style,
+        style = JetsnackTheme.styles.cardStyle then style,
         content = content,
     )
 }

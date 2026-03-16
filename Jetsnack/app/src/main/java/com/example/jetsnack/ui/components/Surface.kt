@@ -42,7 +42,7 @@ fun Surface(
 ) {
     Box(
         modifier = modifier
-            .styleable(styleState, JetsnackTheme.appStyles.surfaceStyle, style)
+            .styleable(styleState, JetsnackTheme.styles.surfaceStyle, style)
     ) {
         //todo double check CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
         content()

@@ -36,7 +36,7 @@ class JetsnackTheme(
     val colors: JetsnackColors = LightColorPalette,
     val typography: Typography = Typography,
     val shapes: Shapes = Shapes,
-    val appStyles: AppStyles = AppStyles(),
+    val styles: Styles = Styles(),
 ) {
     companion object {
         val colors: JetsnackColors
@@ -51,9 +51,9 @@ class JetsnackTheme(
             @Composable @ReadOnlyComposable
             get() = LocalJetsnackTheme.current.shapes
 
-        val appStyles: AppStyles
+        val styles: Styles
             @Composable @ReadOnlyComposable
-            get() = LocalJetsnackTheme.current.appStyles
+            get() = LocalJetsnackTheme.current.styles
 
         val LocalJetsnackTheme: ProvidableCompositionLocal<JetsnackTheme>
             get() = LocalJetsnackThemeInstance
@@ -74,7 +74,7 @@ internal val LocalJetsnackThemeInstance = staticCompositionLocalOf { JetsnackThe
 @Composable
 fun JetsnackTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
-    val theme = JetsnackTheme(colors = colors, appStyles = AppStyles())
+    val theme = JetsnackTheme(colors = colors, styles = Styles())
 
     CompositionLocalProvider(
         JetsnackTheme.LocalJetsnackTheme provides theme,

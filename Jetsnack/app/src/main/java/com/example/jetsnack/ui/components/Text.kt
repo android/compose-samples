@@ -33,7 +33,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 @ExperimentalFoundationStyleApi
 fun StyleScope.textStyleWithFontFamilyFix(value: TextStyle) {
     textStyle(value)
-    value.fontFamily?.let { fontFamily(it) }
+    //value.fontFamily?.let { fontFamily(it) }
 }
 
 @ExperimentalFoundationStyleApi
@@ -51,7 +51,7 @@ fun Text(
 ) {
     BasicText(
         text = text,
-        modifier = modifier.styleable(null, JetsnackTheme.appStyles.defaultTextStyle, style),
+        modifier = modifier.styleable(null, JetsnackTheme.styles.defaultTextStyle, style),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,

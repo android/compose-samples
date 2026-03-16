@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.styleable
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +34,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme.Companion.LocalJetsnackTheme
 
 @Composable
 fun JetsnackDivider(modifier: Modifier = Modifier, style: Style = Style) {
-    Box(modifier = modifier.styleable(null, LocalJetsnackTheme.current.appStyles.dividerStyle, style))
+    Box(modifier = modifier.styleable(null, LocalJetsnackTheme.current.styles.dividerStyle, style))
 }
 
 @Preview("default", showBackground = true)

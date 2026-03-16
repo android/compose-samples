@@ -291,6 +291,8 @@ private fun HighlightSnackItem(
         JetsnackCard(
             style = Style {
                 shape(RoundedCornerShape(roundedCornerAnimation))
+                border(1.dp, colors.uiBorder.copy(alpha = 0.12f))
+                size(width = HighlightCardWidth, height = 250.dp)
             },
             modifier = modifier
                 .padding(bottom = 16.dp)
@@ -311,15 +313,6 @@ private fun HighlightSnackItem(
                     ),
                     enter = fadeIn(),
                     exit = fadeOut(),
-                )
-                .size(
-                    width = HighlightCardWidth,
-                    height = 250.dp,
-                )
-                .border(
-                    1.dp,
-                    JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
-                    RoundedCornerShape(roundedCornerAnimation),
                 ),
 
         ) {
@@ -395,6 +388,7 @@ private fun HighlightSnackItem(
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = snack.name,
                     maxLines = 1,

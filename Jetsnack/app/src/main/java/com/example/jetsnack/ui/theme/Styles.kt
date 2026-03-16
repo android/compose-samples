@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 
 @Immutable
-data class AppStyles(
+data class Styles(
     val buttonStyle: Style = Style {
         shape(RoundedCornerShape(percent = 50))
         background(Brush.linearGradient(colors.interactivePrimary))
