@@ -70,10 +70,11 @@ import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.components.FilterChip
-import com.example.jetsnack.ui.components.JetsnackText
-import com.example.jetsnack.ui.components.jetsnackTextStyle
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilityScope: AnimatedVisibilityScope, onDismiss: () -> Unit) {
@@ -135,7 +136,7 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                             contentDescription = stringResource(id = R.string.close),
                         )
                     }
-                    JetsnackText(
+                    Text(
                         text = stringResource(id = R.string.label_filters),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -143,7 +144,7 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                             .padding(top = 8.dp, end = 48.dp),
                         style = {
                             textAlign(TextAlign.Center)
-                            jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
+                            textStyleWithFontFamilyFix(typography.titleLarge)
                         },
                     )
                     val resetEnabled = sortState != defaultFilter
@@ -158,13 +159,13 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                             FontWeight.Normal
                         }
 
-                        JetsnackText(
+                        Text(
                             text = stringResource(id = R.string.reset),
                             style = {
-                                jetsnackTextStyle(currentJetsnackTheme.typography.bodyMedium)
+                                textStyleWithFontFamilyFix(typography.bodyMedium)
                                 fontWeight(fontWeight)
                                 contentColor(
-                                    currentJetsnackTheme.colors.uiBackground
+                                    colors.uiBackground
                                         .copy(alpha = if (!resetEnabled) 0.38f else 1f),
                                 )
                             },
@@ -251,11 +252,11 @@ fun SortFilters(sortFilters: List<Filter> = SnackRepo.getSortFilters(), sortStat
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     FlowRow {
         FilterTitle(text = stringResource(id = R.string.max_calories))
-        JetsnackText(
+        Text(
             text = stringResource(id = R.string.per_serving),
             style = {
-                jetsnackTextStyle(currentJetsnackTheme.typography.bodyMedium)
-                contentColor(currentJetsnackTheme.colors.brand)
+                textStyleWithFontFamilyFix(typography.bodyMedium)
+                contentColor(colors.brand)
             },
             modifier = Modifier.padding(top = 5.dp, start = 10.dp),
         )
@@ -279,11 +280,11 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
 
 @Composable
 fun FilterTitle(text: String) {
-    JetsnackText(
+    Text(
         text = text,
         style = {
-            jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
-            contentColor(currentJetsnackTheme.colors.brand)
+            textStyleWithFontFamilyFix(typography.titleLarge)
+            contentColor(colors.brand)
         },
         modifier = Modifier.padding(bottom = 8.dp),
     )
@@ -299,10 +300,10 @@ fun SortOption(text: String, @DrawableRes icon: Int?, onClickOption: () -> Unit,
         if (icon != null) {
             Icon(painter = painterResource(id = icon), contentDescription = null)
         }
-        JetsnackText(
+        Text(
             text = text,
             style = {
-                jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
+                textStyleWithFontFamilyFix(typography.titleMedium)
             },
             modifier = Modifier
                 .padding(start = 10.dp)

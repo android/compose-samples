@@ -34,10 +34,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
-import com.example.jetsnack.ui.components.JetsnackText
-import com.example.jetsnack.ui.components.jetsnackTextStyle
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.shapes
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun Profile(modifier: Modifier = Modifier) {
@@ -53,19 +55,19 @@ fun Profile(modifier: Modifier = Modifier) {
             contentDescription = null,
         )
         Spacer(Modifier.height(24.dp))
-        JetsnackText(
+        Text(
             text = stringResource(R.string.work_in_progress),
             style = {
-                jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
+                textStyleWithFontFamilyFix(typography.titleMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(16.dp))
-        JetsnackText(
+        Text(
             text = stringResource(R.string.grab_beverage),
             style = {
-                jetsnackTextStyle(currentJetsnackTheme.typography.bodyMedium)
+                textStyleWithFontFamilyFix(typography.bodyMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),

@@ -31,14 +31,14 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 
 // Workaround for b/492528450 - setting textStyle currently doesn't set fontFamily.
 @ExperimentalFoundationStyleApi
-fun StyleScope.jetsnackTextStyle(value: TextStyle) {
+fun StyleScope.textStyleWithFontFamilyFix(value: TextStyle) {
     textStyle(value)
     value.fontFamily?.let { fontFamily(it) }
 }
 
 @ExperimentalFoundationStyleApi
 @Composable
-fun JetsnackText(
+fun Text(
     text: String,
     modifier: Modifier = Modifier,
     style: Style = Style,

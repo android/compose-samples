@@ -47,7 +47,7 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
@@ -70,7 +70,7 @@ private fun Feed(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    JetsnackSurface(modifier = modifier.fillMaxSize()) {
+    Surface(modifier = modifier.fillMaxSize()) {
         var filtersVisible by remember {
             mutableStateOf(false)
         }

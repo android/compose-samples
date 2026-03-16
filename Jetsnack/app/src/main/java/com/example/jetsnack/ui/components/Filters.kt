@@ -55,7 +55,9 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.shapes
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun FilterBar(
@@ -98,7 +100,7 @@ fun FilterBar(
                 FilterChip(
                     filter = filter,
                     style = Style {
-                        shape(currentJetsnackTheme.shapes.small)
+                        shape(shapes.small)
                     },
                 )
             }
@@ -118,7 +120,7 @@ fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Sty
         },
     )
 
-    JetsnackSurface(
+    Surface(
         modifier = modifier
             .toggleable(
                 value = selected,
@@ -135,7 +137,7 @@ fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Sty
                 animate {
                     background(
                         Brush.horizontalGradient(
-                            colors = currentJetsnackTheme.colors.interactiveSecondary,
+                            colors = colors.interactiveSecondary,
                             startX = 0f,
                             endX = 200f,
                             tileMode = TileMode.Mirror,
@@ -148,10 +150,10 @@ fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Sty
             modifier = Modifier
                 .styleable(styleState, innerBackgroundStyle),
         ) {
-            JetsnackText(
+            Text(
                 text = filter.name,
                 style = {
-                    jetsnackTextStyle(currentJetsnackTheme.typography.bodySmall)
+                    textStyleWithFontFamilyFix(typography.bodySmall)
                 },
                 maxLines = 1,
                 modifier = Modifier.padding(

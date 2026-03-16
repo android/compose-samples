@@ -65,7 +65,6 @@ import androidx.compose.foundation.style.fillWidth
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -103,18 +102,19 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
-import com.example.jetsnack.ui.components.JetsnackButton
+import com.example.jetsnack.ui.components.Button
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
-import com.example.jetsnack.ui.components.JetsnackSurface
-import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.Surface
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
-import com.example.jetsnack.ui.components.jetsnackTextStyle
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.max
 import kotlin.math.min
@@ -299,29 +299,29 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
             ) {
                 Spacer(Modifier.height(GradientScroll))
                 Spacer(Modifier.height(ImageOverlap))
-                JetsnackSurface(
+                Surface(
                     Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp),
                 ) {
                     Column {
                         Spacer(Modifier.height(TitleHeight))
-                        JetsnackText(
+                        Text(
                             text = stringResource(R.string.detail_header),
                             style = {
-                                jetsnackTextStyle(currentJetsnackTheme.typography.headlineMedium)
-                                contentColor(currentJetsnackTheme.colors.textHelp)
+                                textStyleWithFontFamilyFix(typography.headlineMedium)
+                                contentColor(colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             },
                         )
                         Spacer(Modifier.height(16.dp))
                         var seeMore by remember { mutableStateOf(true) }
                         with(sharedTransitionScope) {
-                            JetsnackText(
+                            Text(
                                 text = stringResource(R.string.detail_placeholder),
                                 style = {
-                                    jetsnackTextStyle(currentJetsnackTheme.typography.bodyLarge)
-                                    contentColor(currentJetsnackTheme.colors.textHelp)
+                                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                                    contentColor(colors.textHelp)
                                     contentPaddingHorizontal(24.dp)
                                 },
                                 maxLines = if (seeMore) 5 else Int.MAX_VALUE,
@@ -335,11 +335,11 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                             stringResource(id = R.string.see_less)
                         }
 
-                        JetsnackText(
+                        Text(
                             text = textButton,
                             style = {
-                                jetsnackTextStyle(currentJetsnackTheme.typography.labelLarge)
-                                contentColor(currentJetsnackTheme.colors.textLink)
+                                textStyleWithFontFamilyFix(typography.labelLarge)
+                                contentColor(colors.textLink)
                                 textAlign(TextAlign.Center)
                                 contentPaddingTop(15.dp)
                                 fillWidth()
@@ -353,20 +353,20 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         )
 
                         Spacer(Modifier.height(40.dp))
-                        JetsnackText(
+                        Text(
                             text = stringResource(R.string.ingredients),
                             style = {
-                                jetsnackTextStyle(currentJetsnackTheme.typography.labelSmall)
-                                contentColor(currentJetsnackTheme.colors.textHelp)
+                                textStyleWithFontFamilyFix(typography.labelSmall)
+                                contentColor(colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             },
                         )
                         Spacer(Modifier.height(4.dp))
-                        JetsnackText(
+                        Text(
                             text = stringResource(R.string.ingredients_list),
                             style = {
-                                jetsnackTextStyle(currentJetsnackTheme.typography.bodyLarge)
-                                contentColor(currentJetsnackTheme.colors.textHelp)
+                                textStyleWithFontFamilyFix(typography.bodyLarge)
+                                contentColor(colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             },
                         )
@@ -421,11 +421,11 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                 .background(JetsnackTheme.colors.uiBackground),
         ) {
             Spacer(Modifier.height(16.dp))
-            JetsnackText(
+            Text(
                 text = snack.name,
                 style = {
-                    jetsnackTextStyle(currentJetsnackTheme.typography.headlineMedium)
-                    contentColor(currentJetsnackTheme.colors.textSecondary)
+                    textStyleWithFontFamilyFix(typography.headlineMedium)
+                    contentColor(colors.textSecondary)
                     fontStyle(FontStyle.Italic)
                 },
                 modifier = HzPadding
@@ -442,12 +442,12 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                     )
                     .wrapContentWidth(),
             )
-            JetsnackText(
+            Text(
                 text = snack.tagline,
                 style = {
-                    jetsnackTextStyle(currentJetsnackTheme.typography.titleSmall)
+                    textStyleWithFontFamilyFix(typography.titleSmall)
                     fontStyle(FontStyle.Italic)
-                    contentColor(currentJetsnackTheme.colors.textHelp)
+                    contentColor(colors.textHelp)
                     fontSize(20.sp)
                 },
                 modifier = HzPadding
@@ -466,11 +466,11 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             )
             Spacer(Modifier.height(4.dp))
             with(animatedVisibilityScope) {
-                JetsnackText(
+                Text(
                     text = formatPrice(snack.price),
                     style = {
-                        jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
-                        contentColor(currentJetsnackTheme.colors.textPrimary)
+                        textStyleWithFontFamilyFix(typography.titleLarge)
+                        contentColor(colors.textPrimary)
                     },
                     modifier = HzPadding
                         .animateEnterExit(
@@ -572,7 +572,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
         LocalNavAnimatedVisibilityScope.current ?: throw IllegalStateException("No Shared scope")
     with(sharedTransitionScope) {
         with(animatedVisibilityScope) {
-            JetsnackSurface(
+            Surface(
                 modifier = modifier
                     .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 4f)
                     .animateEnterExit(
@@ -601,11 +601,11 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                             increaseItemCount = { updateCount(count + 1) },
                         )
                         Spacer(Modifier.width(16.dp))
-                        JetsnackButton(
+                        Button(
                             onClick = { /* todo */ },
                             modifier = Modifier.weight(1f),
                         ) {
-                            JetsnackText(
+                            Text(
                                 text = stringResource(R.string.add_to_cart),
                                 modifier = Modifier.fillMaxWidth(),
                                 style = {

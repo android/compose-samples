@@ -44,12 +44,13 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
-import com.example.jetsnack.ui.components.JetsnackText
-import com.example.jetsnack.ui.components.jetsnackTextStyle
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,11 +73,11 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     windowInsets = WindowInsets(0, 0, 0, 0),
                     title = {
                         Row {
-                            JetsnackText(
+                            Text(
                                 text = "Delivery to 1600 Amphitheater Way",
                                 style = {
-                                    jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
-                                    contentColor(currentJetsnackTheme.colors.textSecondary)
+                                    textStyleWithFontFamilyFix(typography.titleMedium)
+                                    contentColor(colors.textSecondary)
                                     textAlign(TextAlign.Center)
                                 },
                                 maxLines = 1,

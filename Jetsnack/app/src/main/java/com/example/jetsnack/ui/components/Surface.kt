@@ -33,7 +33,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * [com.example.jetsnack.ui.theme.JetsnackColors]
  */
 @Composable
-fun JetsnackSurface(
+fun Surface(
     modifier: Modifier = Modifier,
     style: Style = Style,
     // todo confirm patten is acceptable

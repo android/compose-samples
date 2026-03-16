@@ -43,12 +43,13 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
-import com.example.jetsnack.ui.components.JetsnackText
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.VerticalGrid
-import com.example.jetsnack.ui.components.jetsnackTextStyle
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 import kotlin.math.max
 
 @Composable
@@ -64,11 +65,11 @@ fun SearchCategories(categories: List<SearchCategoryCollection>) {
 @Composable
 private fun SearchCategoryCollection(collection: SearchCategoryCollection, index: Int, modifier: Modifier = Modifier) {
     Column(modifier) {
-        JetsnackText(
+        Text(
             text = collection.name,
             style = {
-                jetsnackTextStyle(currentJetsnackTheme.typography.titleLarge)
-                contentColor(currentJetsnackTheme.colors.textPrimary)
+                textStyleWithFontFamilyFix(typography.titleLarge)
+                contentColor(colors.textPrimary)
             },
             modifier = Modifier
                 .heightIn(min = 56.dp)
@@ -106,11 +107,11 @@ private fun SearchCategory(category: SearchCategory, gradient: List<Color>, modi
             .background(Brush.horizontalGradient(gradient))
             .clickable { /* todo */ },
         content = {
-            JetsnackText(
+            Text(
                 text = category.name,
                 style = {
-                    jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
-                    contentColor(currentJetsnackTheme.colors.textSecondary)
+                    textStyleWithFontFamilyFix(typography.titleMedium)
+                    contentColor(colors.textSecondary)
                 },
                 modifier = Modifier
                     .padding(4.dp)

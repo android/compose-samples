@@ -38,16 +38,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCount: () -> Unit, modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
-        JetsnackText(
+        Text(
             text = stringResource(R.string.quantity),
             style = {
-                jetsnackTextStyle(currentJetsnackTheme.typography.titleMedium)
-                contentColor(currentJetsnackTheme.colors.textSecondary)
+                textStyleWithFontFamilyFix(typography.titleMedium)
+                contentColor(colors.textSecondary)
                 fontWeight(FontWeight.Normal)
             },
             modifier = Modifier
@@ -65,12 +66,12 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
             modifier = Modifier
                 .align(Alignment.CenterVertically),
         ) {
-            JetsnackText(
+            Text(
                 text = "$it",
                 style = {
-                    jetsnackTextStyle(currentJetsnackTheme.typography.titleSmall)
+                    textStyleWithFontFamilyFix(typography.titleSmall)
                     fontSize(18.sp)
-                    contentColor(currentJetsnackTheme.colors.textPrimary)
+                    contentColor(colors.textPrimary)
                     textAlign(TextAlign.Center)
                 },
                 modifier = Modifier.widthIn(min = 24.dp),
@@ -91,7 +92,7 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
 @Composable
 fun QuantitySelectorPreview() {
     JetsnackTheme {
-        JetsnackSurface {
+        Surface {
             QuantitySelector(1, {}, {})
         }
     }
@@ -101,7 +102,7 @@ fun QuantitySelectorPreview() {
 @Composable
 fun QuantitySelectorPreviewRtl() {
     JetsnackTheme {
-        JetsnackSurface {
+        Surface {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 QuantitySelector(1, {}, {})
             }

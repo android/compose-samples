@@ -20,6 +20,7 @@ package com.example.jetsnack.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.StyleScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
@@ -34,10 +35,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 class JetsnackTheme(
     val colors: JetsnackColors = LightColorPalette,
     val typography: Typography = Typography,
+    val shapes: Shapes = Shapes,
     val appStyles: AppStyles = AppStyles(),
 ) {
-    val shapes: Shapes = _shapes
-
     companion object {
         val colors: JetsnackColors
             @Composable @ReadOnlyComposable
@@ -57,10 +57,17 @@ class JetsnackTheme(
 
         val LocalJetsnackTheme: ProvidableCompositionLocal<JetsnackTheme>
             get() = LocalJetsnackThemeInstance
-
-        private val _shapes = Shapes
     }
 }
+
+val StyleScope.colors: JetsnackColors
+    get() = JetsnackTheme.LocalJetsnackTheme.currentValue.colors
+
+val StyleScope.typography: Typography
+    get() = JetsnackTheme.LocalJetsnackTheme.currentValue.typography
+
+val StyleScope.shapes: Shapes
+    get() = JetsnackTheme.LocalJetsnackTheme.currentValue.shapes
 
 internal val LocalJetsnackThemeInstance = staticCompositionLocalOf { JetsnackTheme() }
 

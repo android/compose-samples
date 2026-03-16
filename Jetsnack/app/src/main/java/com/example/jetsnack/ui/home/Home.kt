@@ -74,15 +74,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
-import com.example.jetsnack.ui.components.JetsnackSurface
-import com.example.jetsnack.ui.components.JetsnackText
-import com.example.jetsnack.ui.components.jetsnackTextStyle
+import com.example.jetsnack.ui.components.Surface
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.currentJetsnackTheme
+import com.example.jetsnack.ui.theme.typography
 import java.util.Locale
 
 fun NavGraphBuilder.composableWithCompositionLocal(
@@ -174,7 +174,7 @@ fun JetsnackBottomBar(
     val routes = remember { tabs.map { it.route } }
     val currentSection = tabs.first { it.route == currentRoute }
 
-    JetsnackSurface(
+    Surface(
         modifier = modifier,
         style = {
             background(color)
@@ -215,11 +215,11 @@ fun JetsnackBottomBar(
                         )
                     },
                     text = {
-                        JetsnackText(
+                        Text(
                             text = text,
                             style = {
                                 contentColor(tint)
-                                jetsnackTextStyle(currentJetsnackTheme.typography.labelLarge)
+                                textStyleWithFontFamilyFix(typography.labelLarge)
                             },
                             maxLines = 1,
                         )

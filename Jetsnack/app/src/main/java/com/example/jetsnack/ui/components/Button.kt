@@ -20,7 +20,6 @@ package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -31,8 +30,6 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.then
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -43,9 +40,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
-// todo think about the text style here
 @Composable
-fun JetsnackButton(
+fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     style: Style = Style,
@@ -56,7 +52,7 @@ fun JetsnackButton(
     val styleState = rememberUpdatedStyleState(interactionSource, {
         it.isEnabled = enabled
     })
-    JetsnackSurface(
+    Surface(
         style = JetsnackTheme.appStyles.buttonStyle then style,
         styleState = styleState,
         modifier = modifier
@@ -65,24 +61,19 @@ fun JetsnackButton(
                 enabled = enabled,
                 role = Role.Button,
                 interactionSource = interactionSource,
-                indication = null,
+                indication = ripple() //TODO This ripple doesn't know the shape of the button.
             ),
     ) {
-        ProvideTextStyle(
-            value = MaterialTheme.typography.labelLarge,
-        ) {
-            Row(
-                Modifier
-                    .defaultMinSize(
-                        minWidth = ButtonDefaults.MinWidth,
-                        minHeight = ButtonDefaults.MinHeight,
-                    )
-                    .indication(interactionSource, ripple()),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                content = content,
-            )
-        }
+        Row(
+            Modifier
+                .defaultMinSize(
+                    minWidth = ButtonDefaults.MinWidth,
+                    minHeight = ButtonDefaults.MinHeight,
+                ),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            content = content,
+        )
     }
 }
 
@@ -92,8 +83,8 @@ fun JetsnackButton(
 @Composable
 private fun ButtonPreview() {
     JetsnackTheme {
-        JetsnackButton(onClick = {}) {
-            JetsnackText(text = "Demo")
+        Button(onClick = {}) {
+            Text(text = "Demo")
         }
     }
 }
@@ -104,12 +95,12 @@ private fun ButtonPreview() {
 @Composable
 private fun RectangleButtonPreview() {
     JetsnackTheme {
-        JetsnackButton(
+        Button(
             onClick = {}, style = {
                 shape(RectangleShape)
             },
         ) {
-            JetsnackText(text = "Demo")
+            Text(text = "Demo")
         }
     }
 }
