@@ -17,10 +17,9 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -43,16 +42,23 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.StyleScope
+import androidx.compose.foundation.style.StyleStateKey
+import androidx.compose.foundation.style.fillWidth
+import androidx.compose.foundation.style.rememberUpdatedStyleState
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.invalidateGroupsWithKey
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
@@ -60,7 +66,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -84,7 +89,6 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
 import com.example.jetsnack.ui.utils.formatPrice
-import kotlin.math.roundToInt
 
 @Composable
 fun Cart(
@@ -218,7 +222,22 @@ private fun CartContent(
         }
     }
 }
+private val swipeDismissProgressKey = StyleStateKey(0f)
+private var MutableStyleState.swipeDismissProgress
+    get() = this[swipeDismissProgressKey]
+    set(value) { this[swipeDismissProgressKey] = value }
 
+// this feels odd, i dont think im doing this right... I want to get access to the progress or do some
+// conditionals on the progress, maybe we need some built in conditionals or just an easier sample to copy from.
+
+private fun StyleScope.swipeDismissProgressGreaterThan(amount: Float, value: Style) {
+    state(swipeDismissProgressKey, value) { key, state -> state[key] > amount }
+}
+private fun StyleScope.swipeDismissProgressLessThan(amount: Float, value: Style) {
+    state(swipeDismissProgressKey, value) { key, state -> state[key] < amount }
+}
+
+// todo migrate to custom style state
 @Composable
 private fun SwipeDismissItemBackground(progress: Float) {
     Column(
@@ -229,22 +248,34 @@ private fun SwipeDismissItemBackground(progress: Float) {
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.Center,
     ) {
-        // Set 4.dp padding only if progress is less than halfway
-        val padding: Dp by animateDpAsState(
-            if (progress < 0.5f) 4.dp else 0.dp, label = "padding",
-        )
-        BoxWithConstraints(
+
+        Box(
             Modifier
                 .fillMaxWidth(progress),
         ) {
-            Surface(
+            val mutableInteractionSource = remember {
+                MutableInteractionSource()
+            }
+            val styleState = rememberUpdatedStyleState(mutableInteractionSource, {
+                it.swipeDismissProgress = progress
+            })
+            com.example.jetsnack.ui.components.Surface(
+                style = {
+                    contentPadding(0.dp)
+                    swipeDismissProgressLessThan(0.5f) {
+                        animate {
+                            contentPadding(4.dp)
+                        }
+                    }
+                    // TODO how do I query the progress here, this doesn't seem to work
+                    // its not cropping to the shape properly not sure if its a layering/placement of style parameter vs progress just not working
+                    shape(RoundedCornerShape((1 - progress) * 100))
+                    background(colors.error)
+                    clip(true)
+                },
+                styleState = styleState,
                 modifier = Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .height(maxWidth)
-                    .align(Alignment.Center),
-                shape = RoundedCornerShape(percent = ((1 - progress) * 100).roundToInt()),
-                color = JetsnackTheme.colors.error,
+                    .align(Alignment.Center)
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -252,25 +283,23 @@ private fun SwipeDismissItemBackground(progress: Float) {
                 ) {
                     // Icon must be visible while in this width range
                     if (progress in 0.125f..0.475f) {
-                        // Icon alpha decreases as it is about to disappear
-                        val iconAlpha: Float by animateFloatAsState(
-                            if (progress > 0.4f) 0.5f else 1f, label = "icon alpha",
-                        )
-
                         Icon(
                             painter = painterResource(id = R.drawable.ic_delete_forever),
                             modifier = Modifier
-                                .size(32.dp)
-                                .graphicsLayer(alpha = iconAlpha),
+                                .styleable(styleState, {
+                                    // Icon alpha decreases as it is about to disappear
+                                    alpha(1f)
+                                    swipeDismissProgressGreaterThan(0.4f) {
+                                        animate {
+                                            alpha(0.5f)
+                                        }
+                                    }
+                                })
+                                .size(32.dp),
                             tint = JetsnackTheme.colors.uiBackground,
                             contentDescription = null,
                         )
                     }
-                    /*Text opacity increases as the text is supposed to appear in
-                                            the screen*/
-                    val textAlpha by animateFloatAsState(
-                        if (progress > 0.5f) 1f else 0.5f, label = "text alpha",
-                    )
                     if (progress > 0.5f) {
                         Text(
                             text = stringResource(id = R.string.remove_item),
@@ -278,11 +307,15 @@ private fun SwipeDismissItemBackground(progress: Float) {
                                 textStyleWithFontFamilyFix(typography.titleMedium)
                                 contentColor(colors.uiBackground)
                                 textAlign(TextAlign.Center)
-                            },
-                            modifier = Modifier
-                                .graphicsLayer(
-                                    alpha = textAlpha,
-                                ),
+                                alpha(0.5f)
+                                /* Text opacity increases as the text is supposed to appear in
+                                          the screen*/
+                                swipeDismissProgressGreaterThan(0.5f) {
+                                    animate {
+                                        alpha(1f)
+                                    }
+                                }
+                            }
                         )
                     }
                 }
