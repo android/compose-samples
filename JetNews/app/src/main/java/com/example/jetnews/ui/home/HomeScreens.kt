@@ -403,9 +403,6 @@ private fun LoadingContent(
         emptyContent()
     } else {
         val refreshState = rememberPullToRefreshState()
-        // Block pull-to-refresh when the current drag gesture scrolled the
-        // list before reaching the top. Only a fresh pull-down that begins
-        // while already at the top of the list should activate refresh.
         val guardConnection = remember {
             object : NestedScrollConnection {
                 var scrolledInCurrentGesture = false
@@ -416,13 +413,9 @@ private fun LoadingContent(
                     source: NestedScrollSource,
                 ): Offset {
                     if (source == NestedScrollSource.UserInput) {
-                        // The child consumed a downward scroll — the list
-                        // was not yet at the top when the gesture started.
                         if (consumed.y > 0f) {
                             scrolledInCurrentGesture = true
                         }
-                        // Consume overscroll so PullToRefreshBox never sees
-                        // it when the gesture didn't start at the top.
                         if (scrolledInCurrentGesture && available.y > 0f) {
                             return available
                         }
@@ -431,7 +424,6 @@ private fun LoadingContent(
                 }
 
                 override suspend fun onPreFling(available: Velocity): Velocity {
-                    // Finger lifted — reset for the next gesture.
                     scrolledInCurrentGesture = false
                     return Velocity.Zero
                 }
