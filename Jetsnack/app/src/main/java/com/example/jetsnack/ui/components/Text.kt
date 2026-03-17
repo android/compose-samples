@@ -33,7 +33,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 @ExperimentalFoundationStyleApi
 fun StyleScope.textStyleWithFontFamilyFix(value: TextStyle) {
     textStyle(value)
-    //value.fontFamily?.let { fontFamily(it) }
+    value.fontFamily?.let { fontFamily(it) }
 }
 
 @ExperimentalFoundationStyleApi
