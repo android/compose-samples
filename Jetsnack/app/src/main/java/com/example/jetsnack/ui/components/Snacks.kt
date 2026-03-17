@@ -51,6 +51,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -58,7 +59,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -220,7 +224,6 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
             ) {
                 SnackImage(
                     imageRes = snack.imageRes,
-                    elevation = 1.dp,
                     contentDescription = null,
                     modifier = Modifier
                         .size(120.dp)
@@ -291,7 +294,8 @@ private fun HighlightSnackItem(
         JetsnackCard(
             style = Style {
                 shape(RoundedCornerShape(roundedCornerAnimation))
-                border(1.dp, colors.uiBorder.copy(alpha = 0.12f))
+                clip(true)
+                border(1.dp, colors.uiBorder)
                 size(width = HighlightCardWidth, height = 250.dp)
             },
             modifier = modifier
@@ -313,8 +317,7 @@ private fun HighlightSnackItem(
                     ),
                     enter = fadeIn(),
                     exit = fadeOut(),
-                ),
-
+                )
         ) {
             Column(
                 modifier = Modifier
@@ -332,6 +335,20 @@ private fun HighlightSnackItem(
                         .height(160.dp)
                         .fillMaxWidth(),
                 ) {
+                    // todo investigate this is not clipping properly to the container
+                    val spannedBackgroundGradient = Style {
+                        val left = index * cardWidthWithPaddingPx
+                        val gradientOffset = left - (scrollProvider() / 3f)
+
+                        val brush =
+                            Brush.horizontalGradient(
+                                colors = gradient,
+                                startX = -gradientOffset,
+                                endX = (6 * cardWidthWithPaddingPx) - gradientOffset,
+                                tileMode = TileMode.Mirror,
+                            )
+                        background(brush)
+                    }
                     Box(
                         modifier = Modifier
                             .sharedBounds(
@@ -348,21 +365,9 @@ private fun HighlightSnackItem(
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
                                 resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
                             )
+                            .styleable(null, spannedBackgroundGradient)
                             .height(100.dp)
                             .fillMaxWidth()
-                            .offsetGradientBackground(
-                                colors = gradient,
-                                width = {
-                                    // The Cards show a gradient which spans 6 cards and
-                                    // scrolls with parallax.
-                                    6 * cardWidthWithPaddingPx
-                                },
-                                offset = {
-                                    val left = index * cardWidthWithPaddingPx
-                                    val gradientOffset = left - (scrollProvider() / 3f)
-                                    gradientOffset
-                                },
-                            ),
                     )
 
                     SnackImage(
@@ -458,13 +463,11 @@ fun SnackImage(
     @DrawableRes
     imageRes: Int,
     contentDescription: String?,
-    modifier: Modifier = Modifier,
-    elevation: Dp = 0.dp,
+    modifier: Modifier = Modifier
 ) {
     Surface(
         style = {
             shape(CircleShape)
-            // todo elevation
         },
         modifier = modifier,
     ) {

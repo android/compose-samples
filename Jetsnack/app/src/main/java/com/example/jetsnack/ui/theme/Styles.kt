@@ -38,7 +38,7 @@ import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 @Immutable
 data class Styles(
     val buttonStyle: Style = Style {
-        shape(RoundedCornerShape(percent = 50))
+        shape(shapes.small)
         background(Brush.linearGradient(colors.interactivePrimary))
         contentColor(colors.textInteractive)
         contentPaddingVertical(8.dp)

@@ -604,6 +604,9 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                         Button(
                             onClick = { /* todo */ },
                             modifier = Modifier.weight(1f),
+                            style = {
+                                externalPadding(4.dp)
+                            }
                         ) {
                             Text(
                                 text = stringResource(R.string.add_to_cart),
