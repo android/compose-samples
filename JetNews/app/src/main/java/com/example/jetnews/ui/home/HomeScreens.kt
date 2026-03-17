@@ -415,17 +415,17 @@ private fun LoadingContent(
                     available: Offset,
                     source: NestedScrollSource,
                 ): Offset {
-                    if (source == NestedScrollSource.UserInput) {
-                        // The child consumed a downward scroll — the list
-                        // was not yet at the top when the gesture started.
-                        if (consumed.y > 0f) {
-                            scrolledInCurrentGesture = true
-                        }
-                        // Consume overscroll so PullToRefreshBox never sees
-                        // it when the gesture didn't start at the top.
-                        if (scrolledInCurrentGesture && available.y > 0f) {
-                            return available
-                        }
+                    if (source != NestedScrollSource.UserInput) return Offset.Zero
+
+                    // The child consumed a downward scroll — the list
+                    // was not yet at the top when the gesture started.
+                    if (consumed.y > 0f) {
+                        scrolledInCurrentGesture = true
+                    }
+                    // Consume overscroll so PullToRefreshBox never sees
+                    // it when the gesture didn't start at the top.
+                    if (scrolledInCurrentGesture && available.y > 0f) {
+                        return available
                     }
                     return Offset.Zero
                 }
