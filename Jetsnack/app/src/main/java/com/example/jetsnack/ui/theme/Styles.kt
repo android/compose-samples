@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationStyleApi::class)
+@file:OptIn(ExperimentalFoundationStyleApi::class, ExperimentalMediaQueryApi::class)
 
 package com.example.jetsnack.ui.theme
 
@@ -22,18 +22,46 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.StyleScope
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.fillWidth
+import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.selected
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.ExperimentalMediaQueryApi
+import androidx.compose.ui.LocalUiMediaScope
+import androidx.compose.ui.UiMediaScope
+import androidx.compose.ui.UiMediaScope.ViewingDistance
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.mediaQuery
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
+
+fun StyleScope.adaptiveFontSize(fontSize: TextUnit) {
+    var scaleFactor = when (LocalUiMediaScope.currentValue.viewingDistance) {
+        ViewingDistance.Near -> 1f
+        ViewingDistance.Medium -> 1.72f
+        ViewingDistance.Far -> 1.5f
+        else -> 1f
+    }
+    scaleFactor = when (LocalUiMediaScope.currentValue.pointerPrecision) {
+        UiMediaScope.PointerPrecision.Coarse -> scaleFactor * 1f
+        UiMediaScope.PointerPrecision.Blunt -> scaleFactor * 0.66f
+        UiMediaScope.PointerPrecision.Fine -> scaleFactor * 1f
+        UiMediaScope.PointerPrecision.None -> scaleFactor
+        else -> {
+            scaleFactor
+        }
+    }
+    fontSize(fontSize * scaleFactor)
+}
 
 @Immutable
 data class Styles(
@@ -43,6 +71,7 @@ data class Styles(
         contentColor(colors.textInteractive)
         contentPaddingVertical(8.dp)
         contentPaddingHorizontal(24.dp)
+        minSize(58.dp, 48.dp)
         textStyleWithFontFamilyFix(typography.labelLarge)
         disabled {
             animate {

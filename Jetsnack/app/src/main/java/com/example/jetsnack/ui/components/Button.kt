@@ -27,6 +27,7 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -61,7 +62,7 @@ fun Button(
                 enabled = enabled,
                 onClick = onClick,
                 interactionSource = interactionSource,
-                indication = null,
+                indication = ripple(),
             )
             .styleable(styleState, JetsnackTheme.styles.buttonStyle, style),
         content = content,
