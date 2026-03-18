@@ -15,7 +15,6 @@
  */
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias libs.plugins.roborazzi
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -23,7 +22,7 @@ plugins {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
 
     namespace "com.example.jetcaster"
 
@@ -55,10 +54,14 @@ android {
         }
     }
     
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.majorVersion
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=com.google.android.horologist.annotations.ExperimentalHorologistApi"
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=com.google.android.horologist.annotations.ExperimentalHorologistApi"
+            )
+        }
     }
     buildFeatures {
         compose true
@@ -86,14 +89,6 @@ dependencies {
     implementation composeBom
     implementation libs.androidx.activity.compose
     implementation libs.androidx.core.splashscreen
-
-    // Compose for Wear OS Dependencies
-    // NOTE: DO NOT INCLUDE a dependency on androidx.compose.material:material.
-    // androidx.wear.compose:compose-material is designed as a replacement not an addition to
-    // androidx.compose.material:material. If there are features from that you feel are missing from
-    // androidx.wear.compose:compose-material please raise a bug to let us know:
-    // https://issuetracker.google.com/issues/new?component=1077552&template=1598429&pli=1
-    implementation libs.androidx.wear.compose.material
 
     // For using the phone Typography
     implementation libs.androidx.compose.material3
