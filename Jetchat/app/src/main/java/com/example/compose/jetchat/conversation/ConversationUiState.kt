@@ -27,6 +27,13 @@ class ConversationUiState(val channelName: String, val channelMembers: Int, init
     fun addMessage(msg: Message) {
         _messages.add(0, msg) // Add to the beginning of the list
     }
+
+    fun addReaction(messageIndex: Int, emoji: String){
+        val msg = _messages.getOrNull(messageIndex) ?: return
+        val updatedReactions = msg.reactions.toMutableMap()
+        updatedReactions[emoji] = (updatedReactions[emoji] ?: 0) + 1
+        _messages[messageIndex] = msg.copy(reactions = updatedReactions)
+    }
 }
 
 @Immutable
@@ -36,4 +43,5 @@ data class Message(
     val timestamp: String,
     val image: Int? = null,
     val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else,
+    val reactions: Map<String, Int> = emptyMap(),
 )
