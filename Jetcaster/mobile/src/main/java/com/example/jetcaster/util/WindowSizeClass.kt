@@ -16,13 +16,11 @@
 
 package com.example.jetcaster.util
 
-import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
 
 /**
  * Returns true if the width or height size classes are compact.
  */
 val WindowSizeClass.isCompact: Boolean
-    get() = windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
-        windowHeightSizeClass == WindowHeightSizeClass.COMPACT
+    get() = !isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) ||
+        !isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)

@@ -83,9 +83,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.computeWindowSizeClass
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import com.example.jetcaster.R
@@ -256,7 +256,7 @@ fun PlayerContent(
     // Use a two pane layout if there is a fold impacting layout (meaning it is separating
     // or non-flat) or if we have a large enough width to show both.
     if (
-        windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED ||
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) ||
         isBookPosture(foldingFeature) ||
         isTableTopPosture(foldingFeature) ||
         isSeparatingPosture(foldingFeature)
@@ -926,7 +926,7 @@ fun PlayerScreenPreview() {
                     ),
                 ),
                 displayFeatures = emptyList(),
-                windowSizeClass = WindowSizeClass.compute(maxWidth.value, maxHeight.value),
+                windowSizeClass = WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(maxWidth.value, maxHeight.value),
                 onBackPress = { },
                 onAddToQueue = {},
                 onStop = {},

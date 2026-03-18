@@ -154,11 +154,11 @@ private fun PodcastRow(
         modifier = modifier
             .focusRequester(focusRequester)
             .focusProperties {
-                exit = {
+                onExit = {
                     focusRequester.saveFocusedChild()
                     FocusRequester.Default
                 }
-                enter = {
+                onEnter = {
                     if (focusRequester.restoreFocusedChild()) {
                         FocusRequester.Cancel
                     } else {

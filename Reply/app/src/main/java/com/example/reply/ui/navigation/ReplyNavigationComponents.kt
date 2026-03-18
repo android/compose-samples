@@ -69,15 +69,13 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.reply.R
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 import kotlinx.coroutines.launch
 
-private fun WindowSizeClass.isCompact() = windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
-    windowHeightSizeClass == WindowHeightSizeClass.COMPACT
+private fun WindowSizeClass.isCompact() = !isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) ||
+    !isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
 
 class ReplyNavSuiteScope(val navSuiteType: NavigationSuiteType)
 
@@ -97,19 +95,15 @@ fun ReplyNavigationWrapper(
 
         adaptiveInfo.windowSizeClass.isCompact() -> NavigationSuiteType.NavigationBar
 
-        adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED &&
+        adaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
             windowSize.width >= 1200.dp -> NavigationSuiteType.NavigationDrawer
 
         else -> NavigationSuiteType.NavigationRail
     }
-    val navContentPosition = when (adaptiveInfo.windowSizeClass.windowHeightSizeClass) {
-        WindowHeightSizeClass.COMPACT -> ReplyNavigationContentPosition.TOP
-
-        WindowHeightSizeClass.MEDIUM,
-        WindowHeightSizeClass.EXPANDED,
-        -> ReplyNavigationContentPosition.CENTER
-
-        else -> ReplyNavigationContentPosition.TOP
+    val navContentPosition = if (adaptiveInfo.windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)) {
+        ReplyNavigationContentPosition.CENTER
+    } else {
+        ReplyNavigationContentPosition.TOP
     }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)

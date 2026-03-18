@@ -224,18 +224,11 @@ private fun SelectorExpanded(currentSelector: InputSelector, onCloseRequested: (
     Surface(tonalElevation = 8.dp) {
         when (currentSelector) {
             InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester)
-
             InputSelector.DM -> NotAvailablePopup(onCloseRequested)
-
             InputSelector.PICTURE -> FunctionalityNotAvailablePanel()
-
             InputSelector.MAP -> FunctionalityNotAvailablePanel()
-
             InputSelector.PHONE -> FunctionalityNotAvailablePanel()
-
-            else -> {
-                throw NotImplementedError()
-            }
+            InputSelector.NONE -> Unit
         }
     }
 }

@@ -47,7 +47,7 @@ class ProfileViewModel : ViewModel() {
 @Immutable
 data class ProfileScreenState(
     val userId: String,
-    @DrawableRes val photo: Int?,
+    @param:DrawableRes val photo: Int?,
     val name: String,
     val status: String,
     val displayName: String,

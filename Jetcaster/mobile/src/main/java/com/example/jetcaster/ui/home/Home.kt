@@ -90,10 +90,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.jetcaster.R
 import com.example.jetcaster.core.domain.testing.PreviewCategories
 import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
@@ -141,21 +140,12 @@ fun calculateScaffoldDirective(
         maxHorizontalPartitions = 1
         verticalSpacerSize = 0.dp
     } else {
-        when (windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass) {
-            WindowWidthSizeClass.COMPACT -> {
-                maxHorizontalPartitions = 1
-                verticalSpacerSize = 0.dp
-            }
-
-            WindowWidthSizeClass.MEDIUM -> {
-                maxHorizontalPartitions = 1
-                verticalSpacerSize = 0.dp
-            }
-
-            else -> {
-                maxHorizontalPartitions = 2
-                verticalSpacerSize = 24.dp
-            }
+        if (windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) {
+            maxHorizontalPartitions = 2
+            verticalSpacerSize = 24.dp
+        } else {
+            maxHorizontalPartitions = 1
+            verticalSpacerSize = 0.dp
         }
     }
     val maxVerticalPartitions: Int
@@ -261,7 +251,7 @@ private fun HomeScreenReady(
             directive = navigator.scaffoldDirective,
             mainPane = {
                 HomeScreen(
-                    windowSizeClass = windowSizeClass,
+                    isHomeAppBarExpanded = windowSizeClass.isCompact,
                     isLoading = uiState.isLoading,
                     featuredPodcasts = uiState.featuredPodcasts,
                     homeCategories = uiState.homeCategories,
@@ -371,7 +361,7 @@ private fun HomeScreenBackground(modifier: Modifier = Modifier, content: @Compos
 
 @Composable
 private fun HomeScreen(
-    windowSizeClass: WindowSizeClass,
+    isHomeAppBarExpanded: Boolean,
     isLoading: Boolean,
     featuredPodcasts: ImmutableList<PodcastInfo>,
     selectedHomeCategory: HomeCategory,
@@ -400,7 +390,7 @@ private fun HomeScreen(
             topBar = {
                 Column {
                     HomeAppBar(
-                        isExpanded = windowSizeClass.isCompact,
+                        isExpanded = isHomeAppBarExpanded,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     if (isLoading) {
@@ -758,14 +748,12 @@ private fun HomeAppBarPreview() {
     }
 }
 
-private val CompactWindowSizeClass = WindowSizeClass.compute(360f, 780f)
-
 @DevicePreviews
 @Composable
 private fun PreviewHome() {
     JetcasterTheme {
         HomeScreen(
-            windowSizeClass = CompactWindowSizeClass,
+            isHomeAppBarExpanded = true,
             isLoading = true,
             featuredPodcasts = PreviewPodcasts.toImmutableList(),
             homeCategories = HomeCategory.entries,
