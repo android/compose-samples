@@ -45,9 +45,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -56,7 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -71,17 +69,20 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
-import com.example.jetsnack.ui.components.JetsnackButton
+import com.example.jetsnack.ui.components.Button
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.roundToInt
 
@@ -114,7 +115,7 @@ fun Cart(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    JetsnackSurface(modifier = modifier.fillMaxSize()) {
+    com.example.jetsnack.ui.components.Surface(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize()) {
             CartContent(
                 orderLines = orderLines,
@@ -141,7 +142,7 @@ private fun CartContent(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
     val snackCountFormattedString = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,
@@ -159,8 +160,10 @@ private fun CartContent(
             )
             Text(
                 text = stringResource(R.string.cart_order_header, snackCountFormattedString),
-                style = MaterialTheme.typography.titleLarge,
-                color = JetsnackTheme.colors.brand,
+                style = {
+                    textStyleWithFontFamilyFix(typography.titleLarge)
+                    contentColor(colors.brand)
+                },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -264,16 +267,18 @@ private fun SwipeDismissItemBackground(progress: Float) {
                         )
                     }
                     /*Text opacity increases as the text is supposed to appear in
-                                    the screen*/
+                                            the screen*/
                     val textAlpha by animateFloatAsState(
                         if (progress > 0.5f) 1f else 0.5f, label = "text alpha",
                     )
                     if (progress > 0.5f) {
                         Text(
                             text = stringResource(id = R.string.remove_item),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = JetsnackTheme.colors.uiBackground,
-                            textAlign = TextAlign.Center,
+                            style = {
+                                textStyleWithFontFamilyFix(typography.titleMedium)
+                                contentColor(colors.uiBackground)
+                                textAlign(TextAlign.Center)
+                            },
                             modifier = Modifier
                                 .graphicsLayer(
                                     alpha = textAlpha,
@@ -321,8 +326,10 @@ fun CartItem(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = snack.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = JetsnackTheme.colors.textSecondary,
+                        style = {
+                            textStyleWithFontFamilyFix(typography.titleMedium)
+                            contentColor(colors.textSecondary)
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .padding(top = 16.dp, end = 16.dp),
@@ -340,8 +347,10 @@ fun CartItem(
                 }
                 Text(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = JetsnackTheme.colors.textHelp,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.bodyLarge)
+                        contentColor(colors.textHelp)
+                    },
                     modifier = Modifier.padding(end = 16.dp),
                 )
                 Spacer(Modifier.height(8.dp))
@@ -350,8 +359,10 @@ fun CartItem(
                 ) {
                     Text(
                         text = formatPrice(snack.price),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = JetsnackTheme.colors.textPrimary,
+                        style = {
+                            textStyleWithFontFamilyFix(typography.titleMedium)
+                            contentColor(colors.textPrimary)
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = 16.dp)
@@ -375,8 +386,10 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
     Column(modifier) {
         Text(
             text = stringResource(R.string.cart_summary_header),
-            style = MaterialTheme.typography.titleLarge,
-            color = JetsnackTheme.colors.brand,
+            style = {
+                textStyleWithFontFamilyFix(typography.titleLarge)
+                contentColor(colors.brand)
+            },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
@@ -387,7 +400,9 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(
                 text = stringResource(R.string.cart_subtotal_label),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
@@ -395,14 +410,18 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             )
             Text(
                 text = formatPrice(subtotal),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                },
                 modifier = Modifier.alignBy(LastBaseline),
             )
         }
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
                 text = stringResource(R.string.cart_shipping_label),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .wrapContentWidth(Alignment.Start)
@@ -410,7 +429,9 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             )
             Text(
                 text = formatPrice(shippingCosts),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                },
                 modifier = Modifier.alignBy(LastBaseline),
             )
         }
@@ -419,7 +440,9 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
                 text = stringResource(R.string.cart_total_label),
-                style = MaterialTheme.typography.bodyLarge,
+                style = {
+                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 16.dp)
@@ -428,7 +451,9 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             )
             Text(
                 text = formatPrice(subtotal + shippingCosts),
-                style = MaterialTheme.typography.titleMedium,
+                style = {
+                    textStyleWithFontFamilyFix(typography.titleMedium)
+                },
                 modifier = Modifier.alignBy(LastBaseline),
             )
         }
@@ -447,9 +472,11 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
         JetsnackDivider()
         Row {
             Spacer(Modifier.weight(1f))
-            JetsnackButton(
+            Button(
                 onClick = { /* todo */ },
-                shape = RectangleShape,
+                style = {
+                    shape(RectangleShape)
+                },
                 modifier = Modifier
                     .padding(horizontal = 12.dp, vertical = 8.dp)
                     .weight(1f),
@@ -457,7 +484,9 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(id = R.string.cart_checkout),
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Left,
+                    style = {
+                        textAlign(TextAlign.Left)
+                    },
                     maxLines = 1,
                 )
             }

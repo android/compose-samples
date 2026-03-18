@@ -49,7 +49,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -71,7 +70,11 @@ import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.components.FilterChip
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilityScope: AnimatedVisibilityScope, onDismiss: () -> Unit) {
@@ -139,8 +142,10 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .padding(top = 8.dp, end = 48.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = {
+                            textAlign(TextAlign.Center)
+                            textStyleWithFontFamilyFix(typography.titleLarge)
+                        },
                     )
                     val resetEnabled = sortState != defaultFilter
 
@@ -156,10 +161,14 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
 
                         Text(
                             text = stringResource(id = R.string.reset),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = fontWeight,
-                            color = JetsnackTheme.colors.uiBackground
-                                .copy(alpha = if (!resetEnabled) 0.38f else 1f),
+                            style = {
+                                textStyleWithFontFamilyFix(typography.bodyMedium)
+                                fontWeight(fontWeight)
+                                contentColor(
+                                    colors.uiBackground
+                                        .copy(alpha = if (!resetEnabled) 0.38f else 1f),
+                                )
+                            },
                         )
                     }
                 }
@@ -245,8 +254,10 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
         FilterTitle(text = stringResource(id = R.string.max_calories))
         Text(
             text = stringResource(id = R.string.per_serving),
-            style = MaterialTheme.typography.bodyMedium,
-            color = JetsnackTheme.colors.brand,
+            style = {
+                textStyleWithFontFamilyFix(typography.bodyMedium)
+                contentColor(colors.brand)
+            },
             modifier = Modifier.padding(top = 5.dp, start = 10.dp),
         )
     }
@@ -271,8 +282,10 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
 fun FilterTitle(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.titleLarge,
-        color = JetsnackTheme.colors.brand,
+        style = {
+            textStyleWithFontFamilyFix(typography.titleLarge)
+            contentColor(colors.brand)
+        },
         modifier = Modifier.padding(bottom = 8.dp),
     )
 }
@@ -289,7 +302,9 @@ fun SortOption(text: String, @DrawableRes icon: Int?, onClickOption: () -> Unit,
         }
         Text(
             text = text,
-            style = MaterialTheme.typography.titleMedium,
+            style = {
+                textStyleWithFontFamilyFix(typography.titleMedium)
+            },
             modifier = Modifier
                 .padding(start = 10.dp)
                 .weight(1f),

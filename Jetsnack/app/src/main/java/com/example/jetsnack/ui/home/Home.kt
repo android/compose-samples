@@ -41,8 +41,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -60,6 +58,7 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,12 +74,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
-import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.Surface
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.typography
 import java.util.Locale
 
 fun NavGraphBuilder.composableWithCompositionLocal(
@@ -172,10 +174,12 @@ fun JetsnackBottomBar(
     val routes = remember { tabs.map { it.route } }
     val currentSection = tabs.first { it.route == currentRoute }
 
-    JetsnackSurface(
+    Surface(
         modifier = modifier,
-        color = color,
-        contentColor = contentColor,
+        style = {
+            background(color)
+            contentColor(contentColor)
+        },
     ) {
         val springSpec = spatialExpressiveSpring<Float>()
         JetsnackBottomNavLayout(
@@ -187,7 +191,7 @@ fun JetsnackBottomBar(
         ) {
             val configuration = LocalConfiguration.current
             val currentLocale: Locale =
-                ConfigurationCompat.getLocales(configuration).get(0) ?: Locale.getDefault()
+                ConfigurationCompat.getLocales(configuration).get(0) ?: LocalLocale.current.platformLocale
 
             tabs.forEach { section ->
                 val selected = section == currentSection
@@ -213,8 +217,10 @@ fun JetsnackBottomBar(
                     text = {
                         Text(
                             text = text,
-                            color = tint,
-                            style = MaterialTheme.typography.labelLarge,
+                            style = {
+                                contentColor(tint)
+                                textStyleWithFontFamilyFix(typography.labelLarge)
+                            },
                             maxLines = 1,
                         )
                     },

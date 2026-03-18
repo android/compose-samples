@@ -21,7 +21,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,8 +33,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,11 +44,15 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.snacks
-import com.example.jetsnack.ui.components.JetsnackButton
+import com.example.jetsnack.ui.components.Button
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.Surface
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
@@ -59,8 +60,10 @@ fun SearchResults(searchResults: List<Snack>, onSnackClick: (Long, String) -> Un
     Column {
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
-            style = MaterialTheme.typography.titleLarge,
-            color = JetsnackTheme.colors.textPrimary,
+            style = {
+                textStyleWithFontFamilyFix(typography.titleLarge)
+                contentColor(colors.textPrimary)
+            },
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
         )
         LazyColumn {
@@ -100,25 +103,33 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
             ) {
                 Text(
                     text = snack.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.titleMedium)
+                        contentColor(colors.textSecondary)
+                    },
                 )
                 Text(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = JetsnackTheme.colors.textHelp,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.bodyLarge)
+                        contentColor(colors.textHelp)
+                    },
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = formatPrice(snack.price),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = JetsnackTheme.colors.textPrimary,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.titleMedium)
+                        contentColor(colors.textPrimary)
+                    },
                 )
             }
-            JetsnackButton(
+            Button(
                 onClick = { /* todo */ },
-                shape = CircleShape,
-                contentPadding = PaddingValues(0.dp),
+                style = {
+                    shape(CircleShape)
+                    contentPadding(0.dp)
+                },
                 modifier = Modifier.size(36.dp),
             ) {
                 Icon(
@@ -146,15 +157,19 @@ fun NoResults(query: String, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                textStyleWithFontFamilyFix(typography.titleMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.search_no_matches_retry),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                textStyleWithFontFamilyFix(typography.bodyMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -166,7 +181,7 @@ fun NoResults(query: String, modifier: Modifier = Modifier) {
 @Composable
 private fun SearchResultPreview() {
     JetsnackTheme {
-        JetsnackSurface {
+        Surface {
             SearchResult(
                 snack = snacks[0],
                 onSnackClick = { _, _ -> },

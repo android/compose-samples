@@ -14,94 +14,60 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalFoundationStyleApi::class)
+
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.rememberUpdatedStyleState
+import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun JetsnackButton(
+fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    style: Style = Style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = ButtonShape,
-    border: BorderStroke? = null,
-    backgroundGradient: List<Color> = JetsnackTheme.colors.interactivePrimary,
-    disabledBackgroundGradient: List<Color> = JetsnackTheme.colors.interactiveSecondary,
-    contentColor: Color = JetsnackTheme.colors.textInteractive,
-    disabledContentColor: Color = JetsnackTheme.colors.textHelp,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit,
 ) {
-    JetsnackSurface(
-        shape = shape,
-        color = Color.Transparent,
-        contentColor = if (enabled) contentColor else disabledContentColor,
-        border = border,
+    val styleState = rememberUpdatedStyleState(interactionSource) {
+        it.isEnabled = enabled
+    }
+    Row(
         modifier = modifier
-            .clip(shape)
-            .background(
-                Brush.horizontalGradient(
-                    colors = if (enabled) backgroundGradient else disabledBackgroundGradient,
-                ),
+            .semantics(
+                properties = {
+                    role = Role.Button
+                },
             )
             .clickable(
-                onClick = onClick,
                 enabled = enabled,
-                role = Role.Button,
+                onClick = onClick,
                 interactionSource = interactionSource,
                 indication = null,
-            ),
-    ) {
-        ProvideTextStyle(
-            value = MaterialTheme.typography.labelLarge,
-        ) {
-            Row(
-                Modifier
-                    .defaultMinSize(
-                        minWidth = ButtonDefaults.MinWidth,
-                        minHeight = ButtonDefaults.MinHeight,
-                    )
-                    .indication(interactionSource, ripple())
-                    .padding(contentPadding),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                content = content,
             )
-        }
-    }
+            .styleable(styleState, JetsnackTheme.styles.buttonStyle, style),
+        content = content,
+        verticalAlignment = Alignment.CenterVertically,
+    )
 }
-
-private val ButtonShape = RoundedCornerShape(percent = 50)
 
 @Preview("default", "round")
 @Preview("dark theme", "round", uiMode = UI_MODE_NIGHT_YES)
@@ -109,7 +75,7 @@ private val ButtonShape = RoundedCornerShape(percent = 50)
 @Composable
 private fun ButtonPreview() {
     JetsnackTheme {
-        JetsnackButton(onClick = {}) {
+        Button(onClick = {}) {
             Text(text = "Demo")
         }
     }
@@ -121,8 +87,11 @@ private fun ButtonPreview() {
 @Composable
 private fun RectangleButtonPreview() {
     JetsnackTheme {
-        JetsnackButton(
-            onClick = {}, shape = RectangleShape,
+        Button(
+            onClick = {},
+            style = {
+                shape(RectangleShape)
+            },
         ) {
             Text(text = "Demo")
         }

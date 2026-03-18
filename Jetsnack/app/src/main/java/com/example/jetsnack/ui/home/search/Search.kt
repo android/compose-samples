@@ -34,8 +34,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -59,12 +57,15 @@ import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.Surface
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.shapes
 
 @Composable
 fun Search(onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier, state: SearchState = rememberSearchState()) {
-    JetsnackSurface(modifier = modifier.fillMaxSize()) {
+    Surface(modifier = modifier.fillMaxSize()) {
         Column {
             Spacer(modifier = Modifier.statusBarsPadding())
             SearchBar(
@@ -169,10 +170,12 @@ private fun SearchBar(
     searching: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    JetsnackSurface(
-        color = JetsnackTheme.colors.uiFloated,
-        contentColor = JetsnackTheme.colors.textSecondary,
-        shape = MaterialTheme.shapes.small,
+    Surface(
+        style = {
+            background(colors.uiFloated)
+            contentColor(colors.textSecondary)
+            shape(shapes.small)
+        },
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
@@ -239,7 +242,9 @@ private fun SearchHint() {
         Spacer(Modifier.width(8.dp))
         Text(
             text = stringResource(R.string.search_jetsnack),
-            color = JetsnackTheme.colors.textHelp,
+            style = {
+                contentColor(colors.textHelp)
+            },
         )
     }
 }
@@ -250,7 +255,7 @@ private fun SearchHint() {
 @Composable
 private fun SearchBarPreview() {
     JetsnackTheme {
-        JetsnackSurface {
+        Surface {
             SearchBar(
                 query = TextFieldValue(""),
                 onQueryChange = { },

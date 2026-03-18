@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalFoundationStyleApi::class)
+
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -21,8 +23,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -37,15 +38,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCount: () -> Unit, modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Text(
             text = stringResource(R.string.quantity),
-            style = MaterialTheme.typography.titleMedium,
-            color = JetsnackTheme.colors.textSecondary,
-            fontWeight = FontWeight.Normal,
+            style = {
+                textStyleWithFontFamilyFix(typography.titleMedium)
+                contentColor(colors.textSecondary)
+                fontWeight(FontWeight.Normal)
+            },
             modifier = Modifier
                 .padding(end = 18.dp)
                 .align(Alignment.CenterVertically),
@@ -63,10 +68,12 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
         ) {
             Text(
                 text = "$it",
-                style = MaterialTheme.typography.titleSmall,
-                fontSize = 18.sp,
-                color = JetsnackTheme.colors.textPrimary,
-                textAlign = TextAlign.Center,
+                style = {
+                    textStyleWithFontFamilyFix(typography.titleSmall)
+                    fontSize(18.sp)
+                    contentColor(colors.textPrimary)
+                    textAlign(TextAlign.Center)
+                },
                 modifier = Modifier.widthIn(min = 24.dp),
             )
         }
@@ -85,7 +92,7 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
 @Composable
 fun QuantitySelectorPreview() {
     JetsnackTheme {
-        JetsnackSurface {
+        Surface {
             QuantitySelector(1, {}, {})
         }
     }
@@ -95,7 +102,7 @@ fun QuantitySelectorPreview() {
 @Composable
 fun QuantitySelectorPreviewRtl() {
     JetsnackTheme {
-        JetsnackSurface {
+        Surface {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 QuantitySelector(1, {}, {})
             }

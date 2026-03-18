@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +34,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.shapes
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun Profile(modifier: Modifier = Modifier) {
@@ -54,15 +57,19 @@ fun Profile(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.work_in_progress),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                textStyleWithFontFamilyFix(typography.titleMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.grab_beverage),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
+            style = {
+                textStyleWithFontFamilyFix(typography.bodyMedium)
+                textAlign(TextAlign.Center)
+            },
             modifier = Modifier.fillMaxWidth(),
         )
     }

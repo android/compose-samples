@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class)
 
 package com.example.jetsnack.ui.components
 
@@ -49,16 +49,20 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -83,6 +87,9 @@ import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.snackDetailBoundsTransform
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.shapes
+import com.example.jetsnack.ui.theme.typography
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -106,8 +113,10 @@ fun SnackCollection(
         ) {
             Text(
                 text = snackCollection.name,
-                style = MaterialTheme.typography.titleLarge,
-                color = JetsnackTheme.colors.brand,
+                style = {
+                    textStyleWithFontFamilyFix(typography.titleLarge)
+                    contentColor(colors.brand)
+                },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -188,8 +197,10 @@ private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (
 
 @Composable
 fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
-    JetsnackSurface(
-        shape = MaterialTheme.shapes.medium,
+    Surface(
+        style = {
+            shape(shapes.medium)
+        },
         modifier = modifier.padding(
             start = 4.dp,
             end = 4.dp,
@@ -213,7 +224,6 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
             ) {
                 SnackImage(
                     imageRes = snack.imageRes,
-                    elevation = 1.dp,
                     contentDescription = null,
                     modifier = Modifier
                         .size(120.dp)
@@ -231,8 +241,10 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                 )
                 Text(
                     text = snack.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.titleMedium)
+                        contentColor(colors.textSecondary)
+                    },
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .wrapContentWidth()
@@ -280,8 +292,12 @@ private fun HighlightSnackItem(
                 }
             }
         JetsnackCard(
-            elevation = 0.dp,
-            shape = RoundedCornerShape(roundedCornerAnimation),
+            style = Style {
+                shape(RoundedCornerShape(roundedCornerAnimation))
+                clip(true)
+                border(1.dp, colors.uiBorder)
+                size(width = HighlightCardWidth, height = 250.dp)
+            },
             modifier = modifier
                 .padding(bottom = 16.dp)
                 .sharedBounds(
@@ -302,16 +318,6 @@ private fun HighlightSnackItem(
                     enter = fadeIn(),
                     exit = fadeOut(),
                 )
-                .size(
-                    width = HighlightCardWidth,
-                    height = 250.dp,
-                )
-                .border(
-                    1.dp,
-                    JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
-                    RoundedCornerShape(roundedCornerAnimation),
-                ),
-
         ) {
             Column(
                 modifier = Modifier
@@ -329,6 +335,20 @@ private fun HighlightSnackItem(
                         .height(160.dp)
                         .fillMaxWidth(),
                 ) {
+                    // todo investigate this is not clipping properly to the container
+                    val spannedBackgroundGradient = Style {
+                        val left = index * cardWidthWithPaddingPx
+                        val gradientOffset = left - (scrollProvider() / 3f)
+
+                        val brush =
+                            Brush.horizontalGradient(
+                                colors = gradient,
+                                startX = -gradientOffset,
+                                endX = (6 * cardWidthWithPaddingPx) - gradientOffset,
+                                tileMode = TileMode.Mirror,
+                            )
+                        background(brush)
+                    }
                     Box(
                         modifier = Modifier
                             .sharedBounds(
@@ -345,21 +365,9 @@ private fun HighlightSnackItem(
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
                                 resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
                             )
+                            .styleable(null, spannedBackgroundGradient)
                             .height(100.dp)
                             .fillMaxWidth()
-                            .offsetGradientBackground(
-                                colors = gradient,
-                                width = {
-                                    // The Cards show a gradient which spans 6 cards and
-                                    // scrolls with parallax.
-                                    6 * cardWidthWithPaddingPx
-                                },
-                                offset = {
-                                    val left = index * cardWidthWithPaddingPx
-                                    val gradientOffset = left - (scrollProvider() / 3f)
-                                    gradientOffset
-                                },
-                            ),
                     )
 
                     SnackImage(
@@ -385,12 +393,15 @@ private fun HighlightSnackItem(
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = snack.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.titleLarge)
+                        contentColor(colors.textSecondary)
+                    },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .sharedBounds(
@@ -413,8 +424,10 @@ private fun HighlightSnackItem(
 
                 Text(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = JetsnackTheme.colors.textHelp,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.bodyLarge)
+                        contentColor(colors.textHelp)
+                    },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .sharedBounds(
@@ -450,15 +463,14 @@ fun SnackImage(
     @DrawableRes
     imageRes: Int,
     contentDescription: String?,
-    modifier: Modifier = Modifier,
-    elevation: Dp = 0.dp,
+    modifier: Modifier = Modifier
 ) {
-    JetsnackSurface(
-        elevation = elevation,
-        shape = CircleShape,
+    Surface(
+        style = {
+            shape(CircleShape)
+        },
         modifier = modifier,
     ) {
-
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageRes)

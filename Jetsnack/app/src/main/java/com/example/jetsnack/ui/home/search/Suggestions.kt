@@ -26,8 +26,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +33,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.model.SearchRepo
 import com.example.jetsnack.model.SearchSuggestionGroup
-import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.Surface
+import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun SearchSuggestions(suggestions: List<SearchSuggestionGroup>, onSuggestionSelect: (String) -> Unit) {
@@ -63,8 +65,10 @@ fun SearchSuggestions(suggestions: List<SearchSuggestionGroup>, onSuggestionSele
 private fun SuggestionHeader(name: String, modifier: Modifier = Modifier) {
     Text(
         text = name,
-        style = MaterialTheme.typography.titleLarge,
-        color = JetsnackTheme.colors.textPrimary,
+        style = {
+            textStyleWithFontFamilyFix(typography.titleLarge)
+            contentColor(colors.textPrimary)
+        },
         modifier = modifier
             .heightIn(min = 56.dp)
             .padding(horizontal = 24.dp, vertical = 4.dp)
@@ -76,7 +80,9 @@ private fun SuggestionHeader(name: String, modifier: Modifier = Modifier) {
 private fun Suggestion(suggestion: String, onSuggestionSelect: (String) -> Unit, modifier: Modifier = Modifier) {
     Text(
         text = suggestion,
-        style = MaterialTheme.typography.titleMedium,
+        style = {
+            textStyleWithFontFamilyFix(typography.titleMedium)
+        },
         modifier = modifier
             .heightIn(min = 48.dp)
             .clickable { onSuggestionSelect(suggestion) }
@@ -91,7 +97,7 @@ private fun Suggestion(suggestion: String, onSuggestionSelect: (String) -> Unit,
 @Composable
 fun PreviewSuggestions() {
     JetsnackTheme {
-        JetsnackSurface {
+        Surface {
             SearchSuggestions(
                 suggestions = SearchRepo.getSuggestions(),
                 onSuggestionSelect = { },
