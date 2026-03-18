@@ -21,18 +21,12 @@ package com.example.jetsnack.ui.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
-import androidx.compose.foundation.style.then
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -58,9 +52,11 @@ fun Button(
     }
     Row(
         modifier = modifier
-            .semantics(properties = {
-                role = Role.Button
-            })
+            .semantics(
+                properties = {
+                    role = Role.Button
+                },
+            )
             .clickable(
                 enabled = enabled,
                 onClick = onClick,
@@ -69,7 +65,7 @@ fun Button(
             )
             .styleable(styleState, JetsnackTheme.styles.buttonStyle, style),
         content = content,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     )
 }
 
@@ -92,7 +88,8 @@ private fun ButtonPreview() {
 private fun RectangleButtonPreview() {
     JetsnackTheme {
         Button(
-            onClick = {}, style = {
+            onClick = {},
+            style = {
                 shape(RectangleShape)
             },
         ) {
