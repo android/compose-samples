@@ -1,5 +1,4 @@
-name: GitHub Release with APKs
-
+name: Build all projects on new version tag
 on:
   workflow_dispatch:
   push:
@@ -29,54 +28,3 @@ jobs:
 
       - name: Build all projects
         run: ./scripts/gradlew_recursive.sh assembleDebug
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: true
-          prerelease: false
-
-      - name: Upload Jetcaster
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Jetcaster/mobile/build/outputs/apk/debug/app-debug.apk
-          asset_name: jetcaster-debug.apk
-          asset_content_type: application/vnd.android.package-archive          
-
-      - name: Upload Jetchat
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Jetchat/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: jetchat-debug.apk
-          asset_content_type: application/vnd.android.package-archive          
-
-      - name: Upload Jetnews
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: JetNews/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: jetnews-debug.apk
-          asset_content_type: application/vnd.android.package-archive
-
-      - name: Upload Jetsnack
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Jetsnack/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: jetsnack-debug.apk
-          asset_content_type: application/vnd.android.package-archive
