@@ -81,7 +81,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -96,6 +99,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
@@ -399,10 +403,48 @@ private fun LoadingContent(
         emptyContent()
     } else {
         val refreshState = rememberPullToRefreshState()
+        // Block pull-to-refresh when the current drag gesture scrolled the
+        // list before reaching the top. Only a fresh pull-down that begins
+        // while already at the top of the list should activate refresh.
+        val guardConnection = remember {
+            object : NestedScrollConnection {
+                var scrolledInCurrentGesture = false
+
+                override fun onPostScroll(
+                    consumed: Offset,
+                    available: Offset,
+                    source: NestedScrollSource,
+                ): Offset {
+                    if (source != NestedScrollSource.UserInput) return Offset.Zero
+
+                    // The child consumed a downward scroll — the list
+                    // was not yet at the top when the gesture started.
+                    if (consumed.y > 0f) {
+                        scrolledInCurrentGesture = true
+                    }
+                    // Consume overscroll so PullToRefreshBox never sees
+                    // it when the gesture didn't start at the top.
+                    if (scrolledInCurrentGesture && available.y > 0f) {
+                        return available
+                    }
+                    return Offset.Zero
+                }
+
+                override suspend fun onPreFling(available: Velocity): Velocity {
+                    // Finger lifted — reset for the next gesture.
+                    scrolledInCurrentGesture = false
+                    return Velocity.Zero
+                }
+            }
+        }
         PullToRefreshBox(
             isRefreshing = loading,
             onRefresh = onRefresh,
-            content = { content() },
+            content = {
+                Box(Modifier.fillMaxSize().nestedScroll(guardConnection)) {
+                    content()
+                }
+            },
             state = refreshState,
             indicator = {
                 Indicator(
