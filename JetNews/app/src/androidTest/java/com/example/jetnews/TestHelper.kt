@@ -17,8 +17,9 @@
 package com.example.jetnews
 
 import android.content.Context
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import android.content.Intent
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.window.core.layout.WindowSizeClass
 import com.example.jetnews.ui.JetnewsApp
 
 /**
@@ -28,7 +29,8 @@ fun ComposeContentTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsApp(
             appContainer = TestAppContainer(context),
-            widthSizeClass = WindowWidthSizeClass.Compact,
+            intent = Intent(),
+            windowSizeClass = WindowSizeClass(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND, WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND),
         )
     }
 }
