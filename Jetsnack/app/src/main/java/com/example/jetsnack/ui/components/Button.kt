@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiMediaScope
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -43,6 +44,7 @@ import com.example.jetsnack.ui.theme.LoadingState
 import com.example.jetsnack.ui.theme.loadingState
 import com.example.jetsnack.ui.utils.DesktopPreviewWrapper
 import com.example.jetsnack.ui.utils.PhoneUiMediaScopeWrapper
+import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 
 @Composable
 fun Button(
@@ -81,7 +83,7 @@ fun Button(
 @Preview
 @Composable
 private fun ButtonPreview() {
-    JetsnackTheme {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt)  {
         Button(onClick = {}) {
             Text(text = "Demo")
         }
@@ -92,7 +94,7 @@ private fun ButtonPreview() {
 @Preview
 @Composable
 private fun ButtonPreviewLoading() {
-    JetsnackTheme {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt)  {
         Button(
             onClick = {},
             enabled = true,
@@ -107,10 +109,36 @@ private fun ButtonPreviewLoading() {
 @Preview
 @Composable
 private fun ButtonPreviewDisabled() {
-    JetsnackTheme {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt)  {
         Button(
             onClick = {},
             enabled = false,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@PreviewWrapperProvider(DesktopPreviewWrapper::class)
+@Preview
+@Composable
+private fun ButtonDesktopPreview() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Physical, UiMediaScope.PointerPrecision.Fine) {
+        Button(
+            onClick = {},
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+@PreviewWrapperProvider(DesktopPreviewWrapper::class)
+@Preview
+@Composable
+private fun ButtonDesktopPreviewDisabled() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Physical, UiMediaScope.PointerPrecision.Fine) {
+        Button(
+            onClick = {},
+            enabled = false
         ) {
             Text(text = "Demo")
         }
@@ -123,7 +151,7 @@ private fun ButtonPreviewDisabled() {
 @Preview("large font", "rectangle", fontScale = 2f)
 @Composable
 private fun RectangleButtonPreview() {
-    JetsnackTheme {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
         Button(
             onClick = {},
             style = {
@@ -135,19 +163,7 @@ private fun RectangleButtonPreview() {
     }
 }
 
-@PreviewWrapperProvider(DesktopPreviewWrapper::class)
-@Preview("default", "rectangle")
-@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun ButtonDesktopPreview() {
-    JetsnackTheme {
-        Button(
-            onClick = {},
-        ) {
-            Text(text = "Demo")
-        }
-    }
-}
+
 
 
 

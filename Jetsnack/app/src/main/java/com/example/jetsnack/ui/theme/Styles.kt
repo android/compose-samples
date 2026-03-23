@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.mediaQuery
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -119,6 +120,7 @@ data class Styles(
         val schemePrimary = Color(0xFF9685FF)
         val schemeInversePrimary = Color(0xFF9D8EFA)
         val schemeTertiary = Color(0xFFFFC8A4)
+        val contentColor = Color(0xff0E0066)
         background(
             ellipticalGradient(
                 colors = listOf(schemePrimary, schemeTertiary),
@@ -129,14 +131,16 @@ data class Styles(
             ),
         )
 
-        contentColor(Color(0xff0E0066))
-        /* if (mediaQuery { keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
-             contentPaddingVertical(4.dp)
-             contentPaddingHorizontal(8.dp)
-         } else {*/
-        contentPaddingVertical(8.dp)
-        contentPaddingHorizontal(24.dp)
-        /* }*/
+        contentColor(contentColor)
+        if (mediaQuery { keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
+            contentPaddingVertical(4.dp)
+            contentPaddingHorizontal(8.dp)
+            shape(shapes.medium)
+        } else {
+            contentPaddingVertical(8.dp)
+            contentPaddingHorizontal(24.dp)
+            shape(shapes.small)
+        }
         minSize(58.dp, 48.dp)
         textStyleWithFontFamilyFix(typography.labelLarge)
 

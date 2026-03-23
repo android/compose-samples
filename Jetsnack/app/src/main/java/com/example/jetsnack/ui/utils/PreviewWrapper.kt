@@ -1,8 +1,6 @@
 
-@file:OptIn(ExperimentalMediaQueryApi::class)
+@file:OptIn(ExperimentalMediaQueryApi::class, ExperimentalComposeUiApi::class)
 package com.example.jetsnack.ui.utils
-
-
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
@@ -12,13 +10,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.LocalUiMediaScope
 import androidx.compose.ui.UiMediaScope
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.tooling.preview.PreviewWrapper
-
+import com.example.jetsnack.ui.theme.JetsnackTheme
 
 class DesktopPreviewWrapper : PreviewWrapper {
     private val themeWrapper = ThemeWrapper()
-    private val desktopPreviewWrapper = DesktopUiMediaScopeWrapper()
-
     private val lookaheadScopeWrapper = LookaheadScopeWrapper()
 
     @Composable
@@ -27,71 +26,57 @@ class DesktopPreviewWrapper : PreviewWrapper {
         // followed by the environment/container wrapper.
         themeWrapper.Wrap {
             lookaheadScopeWrapper.Wrap {
-                desktopPreviewWrapper.Wrap {
-                    content()
-                }
-            }
-        }
-    }
-}
-
-/**
- * This class is a workaround for UiMediaQuery not exposing previews just yet.
- *
- */
-@OptIn(ExperimentalComposeUiApi::class)
-class DesktopUiMediaScopeWrapper: PreviewWrapper {
-    @Composable
-    override fun Wrap(content: @Composable (() -> Unit)) {
-        // Step 1: Enable the mediaQuery function
-        ComposeUiFlags.isMediaQueryIntegrationEnabled = true
-        BoxWithConstraints {
-            // Step 2: Define a custom object implementing the UiMediaScope interface.
-            val uiMediaScope = object : UiMediaScope {
-                override val keyboardKind: UiMediaScope.KeyboardKind
-                    get() = UiMediaScope.KeyboardKind.Physical
-                override val windowPosture: UiMediaScope.Posture
-                    get() = UiMediaScope.Posture.Flat
-                override val windowWidth = maxWidth // faking the width and height for previews
-                override val windowHeight = maxHeight
-                override val pointerPrecision = UiMediaScope.PointerPrecision.Fine
-                override val hasMicrophone = true
-                override val hasCamera = true
-                override val viewingDistance = UiMediaScope.ViewingDistance.Near
-            }
-
-            // Step 3: Set the object to the LocalUiMediaScope.
-            CompositionLocalProvider(LocalUiMediaScope provides uiMediaScope) {
                 content()
             }
         }
     }
 }
-@OptIn(ExperimentalComposeUiApi::class)
-class PhoneUiMediaScopeWrapper: PreviewWrapper {
-    @Composable
-    override fun Wrap(content: @Composable (() -> Unit)) {
-        // Step 1: Enable the mediaQuery function
-        ComposeUiFlags.isMediaQueryIntegrationEnabled = true
-        BoxWithConstraints {
-            // Step 2: Define a custom object implementing the UiMediaScope interface.
-            val uiMediaScope = object : UiMediaScope {
-                override val keyboardKind: UiMediaScope.KeyboardKind
-                    get() = UiMediaScope.KeyboardKind.Virtual
-                override val windowPosture: UiMediaScope.Posture
-                    get() = UiMediaScope.Posture.Flat
-                override val windowWidth = maxWidth // faking the width and height for previews
-                override val windowHeight = maxHeight
-                override val pointerPrecision = UiMediaScope.PointerPrecision.Blunt
-                override val hasMicrophone = true
-                override val hasCamera = true
-                override val viewingDistance = UiMediaScope.ViewingDistance.Near
-            }
 
-            // Step 3: Set the object to the LocalUiMediaScope.
+@Composable
+fun UiMediaScopeWrapper(
+    keyboardKind: UiMediaScope.KeyboardKind,
+    pointerPrecision: UiMediaScope.PointerPrecision,
+    content: @Composable () -> Unit) {
+
+    ComposeUiFlags.isMediaQueryIntegrationEnabled = true
+    BoxWithConstraints {
+        val uiMediaScope = object : UiMediaScope {
+            override val keyboardKind: UiMediaScope.KeyboardKind
+                get() = keyboardKind
+            override val windowPosture: UiMediaScope.Posture
+                get() = UiMediaScope.Posture.Flat
+            override val windowWidth = maxWidth // faking the width and height for previews
+            override val windowHeight = maxHeight
+            override val pointerPrecision = pointerPrecision
+            override val hasMicrophone = true
+            override val hasCamera = true
+            override val viewingDistance = UiMediaScope.ViewingDistance.Near
+        }
+
+        JetsnackTheme {
             CompositionLocalProvider(LocalUiMediaScope provides uiMediaScope) {
                 content()
             }
         }
+
     }
+}
+
+
+// Assuming KeyboardKind is your enum/class
+@OptIn(ExperimentalMediaQueryApi::class)
+class KeyboardKindProvider : PreviewParameterProvider<UiMediaScope.KeyboardKind> {
+    override val values: Sequence<UiMediaScope.KeyboardKind> = sequenceOf(
+        UiMediaScope.KeyboardKind.Physical,
+        UiMediaScope.KeyboardKind.Virtual,
+    )
+}
+@OptIn(ExperimentalMediaQueryApi::class)
+class PointerPrecisionProvider : PreviewParameterProvider<UiMediaScope.PointerPrecision> {
+    override val values: Sequence<UiMediaScope.PointerPrecision> = sequenceOf(
+        UiMediaScope.PointerPrecision.Fine,
+        UiMediaScope.PointerPrecision.Blunt,
+        UiMediaScope.PointerPrecision.Coarse,
+        UiMediaScope.PointerPrecision.None
+    )
 }
