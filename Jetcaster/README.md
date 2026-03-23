@@ -2,15 +2,17 @@
 
 # Jetcaster sample 🎙️
 
-Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The goal of the sample is to
-showcase building with Compose across multiple form factors (mobile, TV, and Wear) and full featured architecture. This sample also showcases Material Expressive elements.
+Jetcaster is a sample podcast app, built with [Jetpack Compose][compose]. The goal of the sample is
+to showcase building with Compose across multiple form factors (mobile, TV, and Wear) and
+full-featured architecture. This sample also showcases Material Expressive elements.
 
-Set your device to dark theme when trying out Jetcaster. This app features a dark theme as the primary theme of the app, since contextually media apps benefit greatly from dark themes. It also shows that contrast and expressive design can still be honored with dark themes.
+Set your device to dark theme when trying out Jetcaster. This app features a dark theme as the
+primary theme of the app, since contextually media apps benefit greatly from dark themes. It also
+shows that contrast and expressive design can still be honored with dark themes.
 
-To try out this sample app, use the latest stable version
-of [Android Studio](https://developer.android.com/studio).
-You can clone this repository or import the
-project from Android Studio following the steps
+To try out this sample app, use the latest stable version of
+[Android Studio](https://developer.android.com/studio).
+You can clone this repository or import the project from Android Studio following the steps
 [here](https://developer.android.com/jetpack/compose/setup#sample).
 
 ## Screenshots
