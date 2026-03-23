@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationStyleApi::class)
+@file:OptIn(ExperimentalFoundationStyleApi::class, ExperimentalMediaQueryApi::class)
 
 package com.example.jetsnack.ui.components
 
@@ -27,10 +27,10 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.semantics.Role
@@ -39,6 +39,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LoadingState
+import com.example.jetsnack.ui.theme.loadingState
 import com.example.jetsnack.ui.utils.DesktopPreviewWrapper
 import com.example.jetsnack.ui.utils.PhoneUiMediaScopeWrapper
 
@@ -48,11 +50,13 @@ fun Button(
     modifier: Modifier = Modifier,
     style: Style = Style,
     enabled: Boolean = true,
+    loadingState: LoadingState = LoadingState.Loaded,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit,
 ) {
     val styleState = rememberUpdatedStyleState(interactionSource) {
         it.isEnabled = enabled
+        it.loadingState = loadingState
     }
     Row(
         modifier = modifier
@@ -65,7 +69,7 @@ fun Button(
                 enabled = enabled,
                 onClick = onClick,
                 interactionSource = interactionSource,
-                indication = ripple(),
+                indication = null,
             )
             .styleable(styleState, JetsnackTheme.styles.buttonStyle, style),
         content = content,
@@ -75,13 +79,39 @@ fun Button(
 
 @PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
 @Preview
-@Preview("default", "round")
-@Preview("dark theme", "round", uiMode = UI_MODE_NIGHT_YES)
-@Preview("large font", "round", fontScale = 2f)
 @Composable
 private fun ButtonPreview() {
     JetsnackTheme {
         Button(onClick = {}) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
+@Preview
+@Composable
+private fun ButtonPreviewLoading() {
+    JetsnackTheme {
+        Button(
+            onClick = {},
+            enabled = true,
+            loadingState = LoadingState.Loading,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
+@Preview
+@Composable
+private fun ButtonPreviewDisabled() {
+    JetsnackTheme {
+        Button(
+            onClick = {},
+            enabled = false,
+        ) {
             Text(text = "Demo")
         }
     }
@@ -118,5 +148,6 @@ private fun ButtonDesktopPreview() {
         }
     }
 }
+
 
 
