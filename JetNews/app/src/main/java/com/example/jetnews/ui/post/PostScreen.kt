@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui.article
+package com.example.jetnews.ui.post
 
 import android.content.Context
 import android.content.Intent
@@ -77,18 +77,19 @@ import com.example.jetnews.ui.utils.TextSettingsButton
 import kotlinx.coroutines.runBlocking
 
 /**
- * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
+ * Stateless Post Screen that displays a single post adapting the UI to different screen sizes.
  *
  * @param post (state) item to display
- * @param showNavigationIcon (state) if the navigation icon should be shown
+ * @param isExpandedScreen (state) whether the screen is expanded
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle its favorite state
- * @param lazyListState (state) the [LazyListState] for the article content
+ * @param modifier modifier for the root element
+ * @param lazyListState (state) the [LazyListState] for the post content
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArticleScreen(
+fun PostScreen(
     post: Post,
     isExpandedScreen: Boolean,
     onBack: () -> Unit,
@@ -103,8 +104,8 @@ fun ArticleScreen(
     }
 
     val context = LocalContext.current
-    Box {
-        ArticleScreenContent(
+    Box(modifier) {
+        PostScreenContent(
             post = post,
             // Allow opening the Drawer if the screen is not expanded
             navigationIconContent = {
@@ -155,15 +156,17 @@ fun ArticleScreen(
 }
 
 /**
- * Stateless Article Screen that displays a single post.
+ * Stateless Post Screen that displays a single post.
  *
  * @param post (state) item to display
  * @param navigationIconContent (UI) content to show for the navigation icon
  * @param bottomBarContent (UI) content to show for the bottom bar
+ * @param lazyListState (state) the [LazyListState] for the post content
+ * @param showTopAppBar (state) if the top app bar should be shown
  */
 @ExperimentalMaterial3Api
 @Composable
-private fun ArticleScreenContent(
+private fun PostScreenContent(
     post: Post,
     navigationIconContent: @Composable () -> Unit = { },
     bottomBarContent: @Composable () -> Unit = { },
@@ -208,7 +211,7 @@ private fun TopAppBar(
         title = {
             Row {
                 Image(
-                    painter = painterResource(id = R.drawable.icon_article_background),
+                    painter = painterResource(id = R.drawable.icon_post_background),
                     contentDescription = null,
                     modifier = Modifier
                         .clip(CircleShape)
@@ -229,6 +232,11 @@ private fun TopAppBar(
 
 /**
  * Top bar for a Post when displayed next to the Home feed
+ *
+ * @param isFavorite (state) is this item currently a favorite
+ * @param onToggleFavorite (event) request that this post toggle its favorite state
+ * @param onSharePost (event) request sharing the post
+ * @param modifier modifier for the root element
  */
 @Composable
 private fun PostTopBar(isFavorite: Boolean, onToggleFavorite: () -> Unit, onSharePost: () -> Unit, modifier: Modifier = Modifier) {
@@ -257,7 +265,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         text = {
             Text(
-                text = stringResource(id = R.string.article_functionality_not_available),
+                text = stringResource(id = R.string.post_functionality_not_available),
                 style = MaterialTheme.typography.bodyLarge,
             )
         },
@@ -284,37 +292,37 @@ fun sharePost(post: Post, context: Context) {
     context.startActivity(
         Intent.createChooser(
             intent,
-            context.getString(R.string.article_share_post),
+            context.getString(R.string.post_share_post),
         ),
     )
 }
 
-@Preview("Article screen")
-@Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Preview("Article screen (big font)", fontScale = 1.5f)
+@Preview("Post screen")
+@Preview("Post screen (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Post screen (big font)", fontScale = 1.5f)
 @Composable
-fun PreviewArticleDrawer() {
+fun PreviewPostDrawer() {
     JetnewsTheme {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, false, {}, false, {})
+        PostScreen(post, false, {}, false, {})
     }
 }
 
-@Preview("Article screen navrail", device = Devices.PIXEL_C)
+@Preview("Post screen navrail", device = Devices.PIXEL_C)
 @Preview(
-    "Article screen navrail (dark)",
+    "Post screen navrail (dark)",
     uiMode = UI_MODE_NIGHT_YES,
     device = Devices.PIXEL_C,
 )
-@Preview("Article screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
+@Preview("Post screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
 @Composable
-fun PreviewArticleNavRail() {
+fun PreviewPostNavRail() {
     JetnewsTheme {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, true, {}, false, {})
+        PostScreen(post, true, {}, false, {})
     }
 }

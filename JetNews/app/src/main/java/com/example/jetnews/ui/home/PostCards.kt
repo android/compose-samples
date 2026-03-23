@@ -87,11 +87,11 @@ fun PostTitle(post: Post) {
 }
 
 @Composable
-fun PostCardSimple(post: Post, navigateToArticle: (String) -> Unit, isFavorite: Boolean, onToggleFavorite: () -> Unit) {
+fun PostCardSimple(post: Post, navigateToPost: (String) -> Unit, isFavorite: Boolean, onToggleFavorite: () -> Unit) {
     val bookmarkAction = stringResource(if (isFavorite) R.string.unbookmark else R.string.bookmark)
     Row(
         modifier = Modifier
-            .clickable(onClick = { navigateToArticle(post.id) })
+            .clickable(onClick = { navigateToPost(post.id) })
             .semantics {
                 // By defining a custom action, we tell accessibility services that this whole
                 // composable has an action attached to it. The accessibility service can choose
@@ -128,12 +128,12 @@ fun PostCardSimple(post: Post, navigateToArticle: (String) -> Unit, isFavorite: 
 }
 
 @Composable
-fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
+fun PostCardHistory(post: Post, navigateToPost: (String) -> Unit) {
     var openDialog by remember { mutableStateOf(false) }
 
     Row(
         Modifier
-            .clickable(onClick = { navigateToArticle(post.id) }),
+            .clickable(onClick = { navigateToPost(post.id) }),
     ) {
         PostImage(
             post = post,

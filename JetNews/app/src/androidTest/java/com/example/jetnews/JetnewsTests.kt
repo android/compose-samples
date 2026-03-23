@@ -53,7 +53,7 @@ class JetnewsTests {
     }
 
     @Test
-    fun app_opensArticle() {
+    fun app_opensPost() {
         composeTestRule.onAllNodes(hasText(manuel.name, substring = true))[0]
             .performScrollTo()
             .performClick()

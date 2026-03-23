@@ -30,11 +30,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.navigation.ListDetailScene
 import kotlinx.serialization.Serializable
@@ -56,7 +58,7 @@ fun EntryProviderScope<NavKey>.homeEntry(
                     Surface(modifier = Modifier.fillMaxSize()) {
                         Box(contentAlignment = Alignment.Center) {
                             Text(
-                                "Select an article",
+                                stringResource(R.string.home_detail_placeholder),
                                 style = MaterialTheme.typography.labelLarge,
                             )
                         }
@@ -85,6 +87,7 @@ fun EntryProviderScope<NavKey>.homeEntry(
  * @param homeViewModel ViewModel that handles the business logic of this screen
  * @param isExpandedScreen (state) whether the screen is expanded
  * @param openDrawer (event) request opening the app drawer
+ * @param navigateToPost (event) request navigation to Post screen
  * @param snackbarHostState (state) state for the [Scaffold] component on this screen
  */
 @Composable

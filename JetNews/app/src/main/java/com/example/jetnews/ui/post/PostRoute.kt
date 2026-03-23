@@ -35,7 +35,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeKey
 import com.example.jetnews.ui.navigation.DeepLinkKey
 import com.example.jetnews.ui.navigation.ListDetailScene
@@ -106,7 +105,7 @@ fun PostRoute(
                     }
             }
 
-            ArticleScreen(
+            PostScreen(
                 post = post,
                 isExpandedScreen = isExpandedScreen,
                 onBack = onBack,
