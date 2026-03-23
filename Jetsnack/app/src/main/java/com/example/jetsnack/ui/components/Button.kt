@@ -37,7 +37,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.utils.DesktopPreviewWrapper
+import com.example.jetsnack.ui.utils.PhoneUiMediaScopeWrapper
 
 @Composable
 fun Button(
@@ -70,6 +73,8 @@ fun Button(
     )
 }
 
+@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
+@Preview
 @Preview("default", "round")
 @Preview("dark theme", "round", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", "round", fontScale = 2f)
@@ -82,6 +87,7 @@ private fun ButtonPreview() {
     }
 }
 
+@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
 @Preview("default", "rectangle")
 @Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", "rectangle", fontScale = 2f)
@@ -98,3 +104,19 @@ private fun RectangleButtonPreview() {
         }
     }
 }
+
+@PreviewWrapperProvider(DesktopPreviewWrapper::class)
+@Preview("default", "rectangle")
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonDesktopPreview() {
+    JetsnackTheme {
+        Button(
+            onClick = {},
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+

@@ -69,8 +69,13 @@ data class Styles(
         shape(shapes.small)
         background(Brush.linearGradient(colors.interactivePrimary))
         contentColor(colors.textInteractive)
-        contentPaddingVertical(8.dp)
-        contentPaddingHorizontal(24.dp)
+        if (mediaQuery { keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
+            contentPaddingVertical(4.dp)
+            contentPaddingHorizontal(8.dp)
+        } else {
+            contentPaddingVertical(8.dp)
+            contentPaddingHorizontal(24.dp)
+        }
         minSize(58.dp, 48.dp)
         textStyleWithFontFamilyFix(typography.labelLarge)
         disabled {
