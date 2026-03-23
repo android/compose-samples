@@ -22,9 +22,8 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.printToString
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.jetnews.data.posts.impl.manuel
@@ -55,17 +54,10 @@ class JetnewsTests {
 
     @Test
     fun app_opensArticle() {
-
-        println(composeTestRule.onRoot().printToString())
-        composeTestRule.onAllNodes(hasText(manuel.name, substring = true))[0].performClick()
-
-        println(composeTestRule.onRoot().printToString())
-        try {
-            composeTestRule.onAllNodes(hasText("Use Dagger in Kotlin!", substring = true))[0].assertExists()
-        } catch (e: AssertionError) {
-            println(composeTestRule.onRoot().printToString())
-            throw e
-        }
+        composeTestRule.onAllNodes(hasText(manuel.name, substring = true))[0]
+            .performScrollTo()
+            .performClick()
+        composeTestRule.waitUntilExactlyOneExists(hasText("Use Dagger in Kotlin!", substring = true), 5000L)
     }
 
     @Test
