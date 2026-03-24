@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.example.jetsnack.ui.components
 
@@ -25,7 +25,10 @@ import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
@@ -50,11 +53,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.then
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,6 +72,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.graphics.shapes.Morph
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetsnack.R
@@ -84,7 +90,10 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.shapes
 import com.example.jetsnack.ui.theme.typography
+import com.example.jetsnack.ui.utils.SnackPolygons
+import com.example.jetsnack.ui.utils.asShape
 import com.example.jetsnack.ui.utils.formatPrice
+import com.example.jetsnack.ui.utils.sharedBoundsRevealWithShapeMorph
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -216,24 +225,46 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                     })
                     .padding(8.dp),
             ) {
+                val sharedContentState = rememberSharedContentState(
+                    key = SnackSharedElementKey(
+                        snackId = snack.id,
+                        origin = snackCollectionId.toString(),
+                        type = SnackSharedElementType.Image,
+                    ),
+                )
+                val restingRoundedPolygon = SnackPolygons.snackItemPolygon
+                val targetRoundedPolygon = SnackPolygons.pillIntermediatePolygon
+                val morph = remember { Morph(restingRoundedPolygon, targetRoundedPolygon) }
+                val progress = animatedVisibilityScope.transition.animateFloat(transitionSpec = {
+                    tween(300, easing = LinearEasing)
+                }) {
+                    when (it) {
+                        EnterExitState.PreEnter -> 1f
+                        EnterExitState.Visible -> 0f
+                        EnterExitState.PostExit -> 1f
+                    }
+                }.value
+
                 SnackImage(
                     imageRes = snack.imageRes,
                     contentDescription = null,
                     style = {
-                        shape(RoundedCornerShape(percent = 50))
+                        val shape = if (sharedContentState.isMatchFound) {
+                            morph.asShape(progress)
+                        } else {
+                            restingRoundedPolygon.asShape()
+                        }
+                        shape(shape)
                     },
                     modifier = Modifier
-                        .size(width = 100.dp, height = 80.dp)
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Image,
-                                ),
-                            ),
+                        .size(width = 110.dp, height = 80.dp)
+                        .sharedBoundsRevealWithShapeMorph(
+                            sharedContentState = sharedContentState,
+                            sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = snackDetailBoundsTransform,
+                            targetShape = targetRoundedPolygon,
+                            restingShape = restingRoundedPolygon
                         ),
                 )
                 Text(
@@ -327,25 +358,45 @@ private fun HighlightSnackItem(
                     })
                     .fillMaxSize(),
             ) {
+                val sharedContentState = rememberSharedContentState(
+                    key = SnackSharedElementKey(
+                        snackId = snack.id,
+                        origin = snackCollectionId.toString(),
+                        type = SnackSharedElementType.Image,
+                    ),
+                )
+                val restingRoundedPolygon = SnackPolygons.snackDetailPolygon
+                val targetRoundedPolygon = SnackPolygons.pillIntermediatePolygon
+                val morph = remember { Morph(restingRoundedPolygon, targetRoundedPolygon) }
+                val progress = animatedVisibilityScope.transition.animateFloat(transitionSpec = {
+                    tween(300, easing = LinearEasing)
+                }) {
+                    when (it) {
+                        EnterExitState.PreEnter -> 1f
+                        EnterExitState.Visible -> 0f
+                        EnterExitState.PostExit -> 1f
+                    }
+                }.value
+
                 SnackImage(
                     imageRes = snack.imageRes,
                     contentDescription = null,
                     style = {
-                        shape(RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp))
+                        val shape = if (sharedContentState.isMatchFound) {
+                            morph.asShape(progress)
+                        } else {
+                            restingRoundedPolygon.asShape()
+                        }
+                        shape(shape)
                     },
                     modifier = Modifier
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Image,
-                                ),
-                            ),
+                        .sharedBoundsRevealWithShapeMorph(
+                            sharedContentState = sharedContentState,
+                            sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope,
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
+                            targetShape = targetRoundedPolygon,
+                            restingShape = restingRoundedPolygon
                         )
                         .fillMaxWidth()
                         .size(120.dp),

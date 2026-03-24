@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class, ExperimentalMediaQueryApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class, ExperimentalMediaQueryApi::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 
 package com.example.jetsnack.ui.snackdetail
 
@@ -25,7 +27,9 @@ import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -59,6 +63,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.fillWidth
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -72,6 +77,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -82,10 +92,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import androidx.graphics.shapes.Morph
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -105,9 +117,12 @@ import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
+import com.example.jetsnack.ui.utils.SnackPolygons
 import com.example.jetsnack.ui.utils.SharedElementPreviewWrapper
 import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
+import com.example.jetsnack.ui.utils.asShape
 import com.example.jetsnack.ui.utils.formatPrice
+import com.example.jetsnack.ui.utils.sharedBoundsRevealWithShapeMorph
 import kotlin.math.max
 import kotlin.math.min
 
@@ -442,29 +457,51 @@ private fun Image(
             ?: throw IllegalStateException("No animatedVisibilityScope found")
 
         with(sharedTransitionScope) {
+            val targetRoundedPolygon = SnackPolygons.snackDetailPolygon
+            val restingRoundedPolygon = SnackPolygons.pillIntermediatePolygon
+            val morph = remember {
+                Morph(restingRoundedPolygon, targetRoundedPolygon)
+            }
+            val progress = LocalNavAnimatedVisibilityScope.current?.transition?.animateFloat(transitionSpec = {
+                tween(300, easing = LinearEasing)
+            }) {
+                when (it) {
+                    EnterExitState.PreEnter -> 1f
+                    EnterExitState.Visible -> 0f
+                    EnterExitState.PostExit -> 1f
+                }
+            }?.value ?: 0f
+
+            val sharedContentState = rememberSharedContentState(
+                key = SnackSharedElementKey(
+                    snackId = snackId,
+                    origin = origin,
+                    type = SnackSharedElementType.Image,
+                ),
+            )
+
             SnackImage(
                 imageRes = imageRes,
                 contentDescription = null,
                 style = {
-                    shape(RoundedCornerShape(percent = 50))
+                    val shape = if (sharedContentState.isMatchFound) {
+                        morph.asShape(progress)
+                    } else {
+                        restingRoundedPolygon.asShape()
+                    }
+                    shape(shape)
                 },
                 modifier = Modifier
                     .aspectRatio(1.3f)
-                    .sharedBounds(
-                        rememberSharedContentState(
-                            key = SnackSharedElementKey(
-                                snackId = snackId,
-                                origin = origin,
-                                type = SnackSharedElementType.Image,
-                            ),
-                        ),
+                    .fillMaxSize()
+                    .sharedBoundsRevealWithShapeMorph(
+                        sharedContentState = sharedContentState,
+                        sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
-                        exit = fadeOut(),
-                        enter = fadeIn(),
                         boundsTransform = snackDetailBoundsTransform,
+                        restingShape = restingRoundedPolygon,
+                        targetShape = targetRoundedPolygon
                     )
-                    .fillMaxSize(),
-
             )
         }
     }

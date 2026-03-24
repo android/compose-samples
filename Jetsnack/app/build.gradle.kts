@@ -108,6 +108,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation(libs.androidx.graphics.shapes)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)

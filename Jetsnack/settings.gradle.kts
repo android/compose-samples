@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-val snapshotVersion : String? = System.getenv("COMPOSE_SNAPSHOT_ID")
 
 pluginManagement {
     repositories {
+        google()
         gradlePluginPortal()
-        google()
         mavenCentral()
-        maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/org/jetbrains/kotlin/kotlin-compose-compiler-plugin/2.0.0-RC2-200/") }
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        snapshotVersion?.let {
-            println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") 
-            maven { url = uri("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") }
-            maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/org/jetbrains/kotlin/kotlin-compose-compiler-plugin/2.0.0-RC2-200/") }
-        }
 
-        google()
-        mavenCentral()
+        maven {
+            // You can find the maven URL for other artifacts (e.g. KMP, METALAVA) on their
+            // build pages.
+            url = uri("https://androidx.dev/snapshots/builds/15080370/artifacts/repository")
+        }
     }
 }
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            // You can find the maven URL for other artifacts (e.g. KMP, METALAVA) on their
+            // build pages.
+            url = uri("https://androidx.dev/snapshots/builds/15080370/artifacts/repository")
+        }
+    }
+}
+
 rootProject.name = "Jetsnack"
 include(":app")
