@@ -40,6 +40,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -48,6 +50,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
@@ -82,6 +85,7 @@ import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
 import java.util.Locale
 
@@ -168,8 +172,8 @@ fun JetsnackBottomBar(
     currentRoute: String,
     navigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = JetsnackTheme.colors.iconPrimary,
-    contentColor: Color = JetsnackTheme.colors.iconInteractive,
+    color: Color = JetsnackTheme.colors.brandLight,
+    contentColor: Color = JetsnackTheme.colors.iconPrimary,
 ) {
     val routes = remember { tabs.map { it.route } }
     val currentSection = tabs.first { it.route == currentRoute }
@@ -197,9 +201,9 @@ fun JetsnackBottomBar(
                 val selected = section == currentSection
                 val tint by animateColorAsState(
                     if (selected) {
-                        JetsnackTheme.colors.iconInteractive
-                    } else {
                         JetsnackTheme.colors.iconInteractiveInactive
+                    } else {
+                        JetsnackTheme.colors.iconInteractiveInactive.copy(alpha = 0.9f)
                     },
                     label = "tint",
                 )
@@ -227,7 +231,7 @@ fun JetsnackBottomBar(
                     selected = selected,
                     onSelected = { navigateToRoute(section.route) },
                     animSpec = springSpec,
-                    modifier = BottomNavigationItemPadding
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         .clip(BottomNavIndicatorShape),
                 )
             }
@@ -403,16 +407,15 @@ private fun MeasureScope.placeTextAndIcon(
 }
 
 @Composable
-private fun JetsnackBottomNavIndicator(
-    strokeWidth: Dp = 2.dp,
-    color: Color = JetsnackTheme.colors.iconInteractive,
-    shape: Shape = BottomNavIndicatorShape,
-) {
+private fun JetsnackBottomNavIndicator() {
     Spacer(
         modifier = Modifier
             .fillMaxSize()
-            .then(BottomNavigationItemPadding)
-            .border(strokeWidth, color, shape),
+            .styleable(null) {
+                shape(BottomNavIndicatorShape)
+                border(3.dp, Brush.linearGradient(colors.interactiveMask))
+                externalPadding(horizontal = 16.dp, vertical = 8.dp)
+            }
     )
 }
 
@@ -420,8 +423,6 @@ private val TextIconSpacing = 2.dp
 private val BottomNavHeight = 56.dp
 private val BottomNavLabelTransformOrigin = TransformOrigin(0f, 0.5f)
 private val BottomNavIndicatorShape = RoundedCornerShape(percent = 50)
-private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-
 @Preview
 @Composable
 private fun JetsnackBottomNavPreview() {

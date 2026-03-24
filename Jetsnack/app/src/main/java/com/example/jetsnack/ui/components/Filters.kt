@@ -24,17 +24,15 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.style.then
@@ -45,8 +43,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,13 +61,14 @@ fun FilterBar(
     onShowFilters: () -> Unit,
     filterScreenVisible: Boolean,
     sharedTransitionScope: SharedTransitionScope,
+    modifier: Modifier = Modifier,
 ) {
     with(sharedTransitionScope) {
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
-            modifier = Modifier.heightIn(min = 56.dp),
+            modifier = modifier.heightIn(min = 56.dp),
         ) {
             item {
                 AnimatedVisibility(visible = !filterScreenVisible) {
@@ -86,12 +83,15 @@ fun FilterBar(
                     ) {
                         Icon(
                             painterResource(R.drawable.ic_filter_list),
-                            tint = JetsnackTheme.colors.brand,
+                            tint = JetsnackTheme.colors.iconPrimary,
                             contentDescription = stringResource(R.string.label_filters),
-                            modifier = Modifier.diagonalGradientBorder(
-                                colors = JetsnackTheme.colors.interactiveSecondary,
-                                shape = CircleShape,
-                            ),
+                            modifier = Modifier
+                                .styleable(null) {
+                                    contentPaddingHorizontal(2.dp)
+                                    minHeight(32.dp)
+                                    border(3.dp, Brush.linearGradient(colors.interactiveSecondary))
+                                    shape(RoundedCornerShape(50))
+                                }
                         )
                     }
                 }
@@ -131,37 +131,17 @@ fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Sty
         style = JetsnackTheme.styles.filterChipStyle then style,
         styleState = styleState,
     ) {
-        val innerBackgroundStyle = Style {
-            background(Color.Transparent)
-            pressed {
-                animate {
-                    background(
-                        Brush.horizontalGradient(
-                            colors = colors.interactiveSecondary,
-                            startX = 0f,
-                            endX = 200f,
-                            tileMode = TileMode.Mirror,
-                        ),
-                    )
-                }
-            }
-        }
-        Box(
-            modifier = Modifier
-                .styleable(styleState, innerBackgroundStyle),
-        ) {
-            Text(
-                text = filter.name,
-                style = {
-                    textStyleWithFontFamilyFix(typography.bodySmall)
-                },
-                maxLines = 1,
-                modifier = Modifier.padding(
-                    horizontal = 20.dp,
-                    vertical = 6.dp,
-                ),
-            )
-        }
+        Text(
+            text = filter.name,
+            style = {
+                textStyleWithFontFamilyFix(typography.labelSmall)
+            },
+            maxLines = 1,
+            modifier = Modifier.padding(
+                horizontal = 20.dp,
+                vertical = 6.dp,
+            ),
+        )
     }
 }
 

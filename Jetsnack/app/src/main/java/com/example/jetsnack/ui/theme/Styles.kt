@@ -116,14 +116,9 @@ fun ellipticalGradient(
 data class Styles(
     val buttonStyle: Style = Style {
         shape(shapes.small)
-        // todo extract colors from theme
-        val schemePrimary = Color(0xFF9685FF)
-        val schemeInversePrimary = Color(0xFF9D8EFA)
-        val schemeTertiary = Color(0xFFFFC8A4)
-        val contentColor = Color(0xff0E0066)
         background(
             ellipticalGradient(
-                colors = listOf(schemePrimary, schemeTertiary),
+                colors = colors.interactivePrimary,
                 radiusXPercent = 1.3f,
                 radiusYPercent = 0.7232f,
                 centerXPercent = 0.4f,
@@ -131,7 +126,8 @@ data class Styles(
             ),
         )
 
-        contentColor(contentColor)
+        contentColor(colors.textInteractive)
+        minSize(58.dp, 48.dp)
         if (mediaQuery { keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
             contentPaddingVertical(4.dp)
             contentPaddingHorizontal(8.dp)
@@ -141,37 +137,37 @@ data class Styles(
             contentPaddingHorizontal(24.dp)
             shape(shapes.small)
         }
-        minSize(58.dp, 48.dp)
         textStyleWithFontFamilyFix(typography.labelLarge)
 
-        dropShadow(Shadow(color = schemePrimary, offset = DpOffset(x = 2.dp, y = 4.dp), radius = 12.dp))
-        innerShadow(Shadow(color = schemeInversePrimary, offset = DpOffset(x = (-6).dp, (-4).dp), radius = 4.dp))
+        dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 2.dp, y = 4.dp), radius = 12.dp))
+        innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (-6).dp, (-4).dp), radius = 4.dp))
+
         pressed {
             animate {
-                background(Brush.radialGradient(listOf(schemePrimary, schemePrimary)))
-                dropShadow(Shadow(color = schemePrimary, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
-                innerShadow(Shadow(color = schemeInversePrimary, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
+                background(Brush.radialGradient(listOf(colors.brand, colors.brand)))
+                dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
+                innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
             }
         }
         loading {
             animate {
                 background(
                     ellipticalGradient(
-                        colors = listOf(schemeTertiary, schemePrimary),
+                        colors = colors.interactivePrimary.reversed(),
                         radiusXPercent = 1.3f,
                         radiusYPercent = 0.7232f,
                         centerXPercent = 0.4f,
                         centerYPercent = 0.55f,
                     ),
                 )
-                dropShadow(Shadow(color = schemePrimary, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
-                innerShadow(Shadow(color = schemeInversePrimary, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
+                dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
+                innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
             }
         }
         disabled {
             animate {
-                background(Color(0xffDDD9D9))
-                contentColor(Color(0xFF939090))
+                background(colors.interactiveDisabled)
+                contentColor(colors.interactiveDisabledText)
                 // reset shadow
                 dropShadow(Shadow(color = Color.Transparent, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
                 innerShadow(Shadow(color = Color.Transparent, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
@@ -213,14 +209,30 @@ data class Styles(
     val filterChipStyle: Style = Style {
         shape(shapes.small)
         background(colors.uiBackground)
-        contentColor(colors.textSecondary)
-        border(1.dp, Brush.linearGradient(colors.interactiveSecondary))
-        // todo elevation = 2.dp,
+        contentColor(colors.textInteractive)
+        border(2.dp, Brush.linearGradient(colors.interactiveSecondary))
+        minHeight(32.dp)
+        textStyleWithFontFamilyFix(typography.labelSmall)
+        pressed {
+            animate {
+                val gradient = ellipticalGradient(
+                    colors = colors.interactivePrimary,
+                    radiusXPercent = 1.3f,
+                    radiusYPercent = 0.7232f,
+                    centerXPercent = 0.4f,
+                    centerYPercent = 0.55f,
+                )
+                border(2.dp, gradient)
+                background(gradient)
+            }
+        }
         selected {
             animate {
-                background(colors.brandSecondary)
-                contentColor(Color.Black)
-                border(1.dp, Color.Transparent)
+                background(colors.brand)
+                contentColor(colors.textSecondary)
+                border(2.dp, colors.brand)
+                dropShadow(Shadow(color = colors.brand, radius = 6.dp, offset = DpOffset(0.dp, 2.dp) ))
+                innerShadow(Shadow(color = colors.brand, offset = DpOffset((-6).dp, (-8).dp), radius = 8.dp))
             }
         }
     },

@@ -25,6 +25,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
@@ -70,14 +72,13 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     ),
             ) {
                 TopAppBar(
-                    windowInsets = WindowInsets(0, 0, 0, 0),
                     title = {
                         Row {
                             Text(
                                 text = "Delivery to 1600 Amphitheater Way",
                                 style = {
-                                    textStyleWithFontFamilyFix(typography.titleMedium)
-                                    contentColor(colors.textSecondary)
+                                    textStyleWithFontFamilyFix(typography.titleSmall)
+                                    contentColor(colors.textPrimary)
                                     textAlign(TextAlign.Center)
                                 },
                                 maxLines = 1,
@@ -92,7 +93,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_expand_more),
-                                    tint = JetsnackTheme.colors.brand,
+                                    tint = JetsnackTheme.colors.brandSecondary,
                                     contentDescription =
                                         stringResource(R.string.label_select_delivery),
                                 )
@@ -104,6 +105,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                             .copy(alpha = AlphaNearOpaque),
                         titleContentColor = JetsnackTheme.colors.textSecondary,
                     ),
+                    modifier = Modifier.height(48.dp)
                 )
                 JetsnackDivider()
             }

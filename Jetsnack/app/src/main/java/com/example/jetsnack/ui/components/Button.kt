@@ -38,12 +38,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.LoadingState
 import com.example.jetsnack.ui.theme.loadingState
-import com.example.jetsnack.ui.utils.DesktopPreviewWrapper
-import com.example.jetsnack.ui.utils.PhoneUiMediaScopeWrapper
 import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 
 @Composable
@@ -67,20 +64,21 @@ fun Button(
                     role = Role.Button
                 },
             )
+            .styleable(styleState, JetsnackTheme.styles.buttonStyle, style)
             .clickable(
                 enabled = enabled,
                 onClick = onClick,
                 interactionSource = interactionSource,
                 indication = null,
-            )
-            .styleable(styleState, JetsnackTheme.styles.buttonStyle, style),
+            ),
         content = content,
         verticalAlignment = Alignment.CenterVertically,
     )
 }
 
-@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
 @Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Preview("large font", "rectangle", fontScale = 2f)
 @Composable
 private fun ButtonPreview() {
     UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt)  {
@@ -90,7 +88,6 @@ private fun ButtonPreview() {
     }
 }
 
-@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
 @Preview
 @Composable
 private fun ButtonPreviewLoading() {
@@ -105,7 +102,6 @@ private fun ButtonPreviewLoading() {
     }
 }
 
-@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
 @Preview
 @Composable
 private fun ButtonPreviewDisabled() {
@@ -119,7 +115,6 @@ private fun ButtonPreviewDisabled() {
     }
 }
 
-@PreviewWrapperProvider(DesktopPreviewWrapper::class)
 @Preview
 @Composable
 private fun ButtonDesktopPreview() {
@@ -131,7 +126,6 @@ private fun ButtonDesktopPreview() {
         }
     }
 }
-@PreviewWrapperProvider(DesktopPreviewWrapper::class)
 @Preview
 @Composable
 private fun ButtonDesktopPreviewDisabled() {
@@ -145,7 +139,6 @@ private fun ButtonDesktopPreviewDisabled() {
     }
 }
 
-@PreviewWrapperProvider(PhoneUiMediaScopeWrapper::class)
 @Preview("default", "rectangle")
 @Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", "rectangle", fontScale = 2f)

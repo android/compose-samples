@@ -2,6 +2,8 @@
 @file:OptIn(ExperimentalMediaQueryApi::class, ExperimentalComposeUiApi::class)
 package com.example.jetsnack.ui.utils
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -14,19 +16,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.tooling.preview.PreviewWrapper
+import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
+import com.example.jetsnack.ui.LocalSharedTransitionScope
+import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
-class DesktopPreviewWrapper : PreviewWrapper {
-    private val themeWrapper = ThemeWrapper()
-    private val lookaheadScopeWrapper = LookaheadScopeWrapper()
-
-    @Composable
-    override fun Wrap(content: @Composable () -> Unit) {
-        // Nest the wrappers: Theme is usually the outermost layer,
-        // followed by the environment/container wrapper.
-        themeWrapper.Wrap {
-            lookaheadScopeWrapper.Wrap {
-                content()
+@Composable
+fun SharedElementPreviewWrapper(content: @Composable () -> Unit) {
+    SharedTransitionLayout {
+        AnimatedVisibility(true) {
+            CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
+                CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this@AnimatedVisibility) {
+                    content()
+                }
             }
         }
     }
@@ -34,8 +37,8 @@ class DesktopPreviewWrapper : PreviewWrapper {
 
 @Composable
 fun UiMediaScopeWrapper(
-    keyboardKind: UiMediaScope.KeyboardKind,
-    pointerPrecision: UiMediaScope.PointerPrecision,
+    keyboardKind: UiMediaScope.KeyboardKind = UiMediaScope.KeyboardKind.Virtual,
+    pointerPrecision: UiMediaScope.PointerPrecision = UiMediaScope.PointerPrecision.Blunt,
     content: @Composable () -> Unit) {
 
     ComposeUiFlags.isMediaQueryIntegrationEnabled = true

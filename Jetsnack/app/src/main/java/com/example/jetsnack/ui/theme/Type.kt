@@ -38,11 +38,6 @@ val instrumentSansFontFamily = FontFamily(
     Font(googleFont = instrumentSansFontName, fontProvider = provider),
 )
 
-private val Karla = FontFamily(
-    Font(R.font.karla_regular, FontWeight.Normal),
-    Font(R.font.karla_bold, FontWeight.Bold),
-)
-
 val Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = instrumentSansFontFamily,
@@ -66,9 +61,9 @@ val Typography = Typography(
     ),
     headlineMedium = TextStyle(
         fontFamily = instrumentSansFontFamily,
-        fontSize = 30.sp,
-        fontWeight = FontWeight.SemiBold,
-        lineHeight = 37.sp,
+        fontSize = 26.sp,
+        fontWeight = FontWeight(500),
+        lineHeight = 36.sp,
     ),
     headlineSmall = TextStyle(
         fontFamily = instrumentSansFontFamily,
@@ -90,14 +85,14 @@ val Typography = Typography(
         letterSpacing = 0.15.sp,
     ),
     titleSmall = TextStyle(
-        fontFamily = Karla,
+        fontFamily = instrumentSansFontFamily,
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
         lineHeight = 24.sp,
         letterSpacing = 0.1.sp,
     ),
     bodyLarge = TextStyle(
-        fontFamily = Karla,
+        fontFamily = instrumentSansFontFamily,
         fontSize = 16.sp,
         fontWeight = FontWeight.Normal,
         lineHeight = 28.sp,
@@ -118,7 +113,7 @@ val Typography = Typography(
         fontSize = 14.sp,
     ),
     bodySmall = TextStyle(
-        fontFamily = Karla,
+        fontFamily = instrumentSansFontFamily,
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold,
         lineHeight = 16.sp,

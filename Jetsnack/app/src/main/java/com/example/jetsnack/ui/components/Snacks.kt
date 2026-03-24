@@ -28,10 +28,8 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -51,7 +49,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.styleable
+import androidx.compose.foundation.style.then
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -59,10 +57,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -71,7 +66,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -90,6 +84,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.shapes
 import com.example.jetsnack.ui.theme.typography
+import com.example.jetsnack.ui.utils.formatPrice
 
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
@@ -114,8 +109,8 @@ fun SnackCollection(
             Text(
                 text = snackCollection.name,
                 style = {
-                    textStyleWithFontFamilyFix(typography.titleLarge)
-                    contentColor(colors.brand)
+                    textStyleWithFontFamilyFix(typography.headlineSmall)
+                    contentColor(colors.textPrimary)
                 },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -129,7 +124,7 @@ fun SnackCollection(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_back),
-                    tint = JetsnackTheme.colors.brand,
+                    tint = JetsnackTheme.colors.textPrimary,
                     contentDescription = null,
                 )
             }
@@ -160,8 +155,8 @@ private fun HighlightedSnacks(
     }
 
     val gradient = when ((index / 2) % 2) {
-        0 -> JetsnackTheme.colors.gradient6_1
-        else -> JetsnackTheme.colors.gradient6_2
+        0 -> JetsnackTheme.colors.gradient1
+        else -> JetsnackTheme.colors.gradient2
     }
 
     LazyRow(
@@ -205,8 +200,7 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
             start = 4.dp,
             end = 4.dp,
             bottom = 8.dp,
-        ),
-
+        )
     ) {
         val sharedTransitionScope = LocalSharedTransitionScope.current
             ?: throw IllegalStateException("No sharedTransitionScope found")
@@ -225,8 +219,11 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                 SnackImage(
                     imageRes = snack.imageRes,
                     contentDescription = null,
+                    style = {
+                        shape(RoundedCornerShape(percent = 50))
+                    },
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(width = 100.dp, height = 80.dp)
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
@@ -293,10 +290,11 @@ private fun HighlightSnackItem(
             }
         JetsnackCard(
             style = Style {
+                background(colors.cardHighlightBackground)
                 shape(RoundedCornerShape(roundedCornerAnimation))
                 clip(true)
-                border(1.dp, colors.uiBorder)
-                size(width = HighlightCardWidth, height = 250.dp)
+                border(1.dp, colors.cardHighlightBorder)
+                size(width = HighlightCardWidth, height = 200.dp)
             },
             modifier = modifier
                 .padding(bottom = 16.dp)
@@ -328,69 +326,30 @@ private fun HighlightSnackItem(
                         )
                     })
                     .fillMaxSize(),
-
             ) {
-                Box(
+                SnackImage(
+                    imageRes = snack.imageRes,
+                    contentDescription = null,
+                    style = {
+                        shape(RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp))
+                    },
                     modifier = Modifier
-                        .height(160.dp)
-                        .fillMaxWidth(),
-                ) {
-                    // todo investigate this is not clipping properly to the container
-                    val spannedBackgroundGradient = Style {
-                        val left = index * cardWidthWithPaddingPx
-                        val gradientOffset = left - (scrollProvider() / 3f)
-
-                        val brush =
-                            Brush.horizontalGradient(
-                                colors = gradient,
-                                startX = -gradientOffset,
-                                endX = (6 * cardWidthWithPaddingPx) - gradientOffset,
-                                tileMode = TileMode.Mirror,
-                            )
-                        background(brush)
-                    }
-                    Box(
-                        modifier = Modifier
-                            .sharedBounds(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Background,
-                                    ),
+                        .sharedBounds(
+                            rememberSharedContentState(
+                                key = SnackSharedElementKey(
+                                    snackId = snack.id,
+                                    origin = snackCollectionId.toString(),
+                                    type = SnackSharedElementType.Image,
                                 ),
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                boundsTransform = snackDetailBoundsTransform,
-                                enter = fadeIn(nonSpatialExpressiveSpring()),
-                                exit = fadeOut(nonSpatialExpressiveSpring()),
-                                resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
-                            )
-                            .styleable(null, spannedBackgroundGradient)
-                            .height(100.dp)
-                            .fillMaxWidth()
-                    )
-
-                    SnackImage(
-                        imageRes = snack.imageRes,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .sharedBounds(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Image,
-                                    ),
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                exit = fadeOut(nonSpatialExpressiveSpring()),
-                                enter = fadeIn(nonSpatialExpressiveSpring()),
-                                boundsTransform = snackDetailBoundsTransform,
-                            )
-                            .align(Alignment.BottomCenter)
-                            .size(120.dp),
-                    )
-                }
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            enter = fadeIn(nonSpatialExpressiveSpring()),
+                            boundsTransform = snackDetailBoundsTransform,
+                        )
+                        .fillMaxWidth()
+                        .size(120.dp),
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -423,7 +382,7 @@ private fun HighlightSnackItem(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = snack.tagline,
+                    text = formatPrice(snack.price),
                     style = {
                         textStyleWithFontFamilyFix(typography.bodyLarge)
                         contentColor(colors.textHelp)
@@ -435,7 +394,7 @@ private fun HighlightSnackItem(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
                                     origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Tagline,
+                                    type = SnackSharedElementType.Price,
                                 ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
@@ -463,12 +422,13 @@ fun SnackImage(
     @DrawableRes
     imageRes: Int,
     contentDescription: String?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    style: Style = Style
 ) {
     Surface(
-        style = {
+        style = Style {
             shape(CircleShape)
-        },
+        } then style,
         modifier = modifier,
     ) {
         AsyncImage(
@@ -496,7 +456,7 @@ fun SnackCardPreview() {
             snack = snack,
             onSnackClick = { _, _ -> },
             index = 0,
-            gradient = JetsnackTheme.colors.gradient6_1,
+            gradient = JetsnackTheme.colors.gradient1,
             scrollProvider = { 0f },
         )
     }
