@@ -91,7 +91,7 @@ fun FilterBar(
                                     minHeight(32.dp)
                                     border(3.dp, Brush.linearGradient(colors.interactiveSecondary))
                                     shape(RoundedCornerShape(50))
-                                }
+                                },
                         )
                     }
                 }

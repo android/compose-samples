@@ -84,10 +84,10 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.components.Button
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
@@ -332,7 +332,7 @@ fun CartItem(
                     shape(shapes.small)
                     externalPaddingVertical(8.dp)
                     size(100.dp)
-                }
+                },
             )
             Column(
                 modifier = Modifier
@@ -351,7 +351,7 @@ fun CartItem(
                     )
                     IconButton(
                         onClick = { removeSnack(snack.id) },
-                        modifier = Modifier.offset(x = 12.dp)
+                        modifier = Modifier.offset(x = 12.dp),
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close),
@@ -387,12 +387,12 @@ fun CartItem(
                         count = orderLine.count,
                         decreaseItemCount = { decreaseItemCount(snack.id) },
                         increaseItemCount = { increaseItemCount(snack.id) },
-                        modifier = Modifier.alignBy(LastBaseline)
+                        modifier = Modifier.alignBy(LastBaseline),
                     )
                 }
             }
         }
-        JetsnackDivider(/*modifier = Modifier.padding(top = 8.dp)*/)
+        JetsnackDivider()
     }
 }
 
@@ -529,4 +529,3 @@ private fun CartPreview() {
         }
     }
 }
-

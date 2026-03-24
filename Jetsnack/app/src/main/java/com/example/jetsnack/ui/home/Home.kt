@@ -415,7 +415,7 @@ private fun JetsnackBottomNavIndicator() {
                 shape(BottomNavIndicatorShape)
                 border(3.dp, Brush.linearGradient(colors.interactiveMask))
                 externalPadding(horizontal = 16.dp, vertical = 8.dp)
-            }
+            },
     )
 }
 

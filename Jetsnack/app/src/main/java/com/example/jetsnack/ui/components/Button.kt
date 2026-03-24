@@ -81,7 +81,7 @@ fun Button(
 @Preview("large font", "rectangle", fontScale = 2f)
 @Composable
 private fun ButtonPreview() {
-    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt)  {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
         Button(onClick = {}) {
             Text(text = "Demo")
         }
@@ -91,7 +91,7 @@ private fun ButtonPreview() {
 @Preview
 @Composable
 private fun ButtonPreviewLoading() {
-    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt)  {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
         Button(
             onClick = {},
             enabled = true,
@@ -105,7 +105,7 @@ private fun ButtonPreviewLoading() {
 @Preview
 @Composable
 private fun ButtonPreviewDisabled() {
-    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt)  {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
         Button(
             onClick = {},
             enabled = false,
@@ -132,7 +132,7 @@ private fun ButtonDesktopPreviewDisabled() {
     UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Physical, UiMediaScope.PointerPrecision.Fine) {
         Button(
             onClick = {},
-            enabled = false
+            enabled = false,
         ) {
             Text(text = "Demo")
         }
@@ -155,8 +155,3 @@ private fun RectangleButtonPreview() {
         }
     }
 }
-
-
-
-
-

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 
 package com.example.jetsnack.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -43,11 +44,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,6 +63,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -134,6 +140,7 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close),
                             contentDescription = stringResource(id = R.string.close),
+                            tint = JetsnackTheme.colors.textInteractive,
                         )
                     }
                     Text(
@@ -256,25 +263,35 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
             text = stringResource(id = R.string.per_serving),
             style = {
                 textStyleWithFontFamilyFix(typography.bodyMedium)
-                contentColor(colors.brand)
+                contentColor(colors.textSecondary)
             },
             modifier = Modifier.padding(top = 5.dp, start = 10.dp),
         )
     }
+    val interactionSource = remember { MutableInteractionSource() }
     Slider(
         value = sliderPosition,
         onValueChange = { newValue ->
             onValueChanged(newValue)
         },
+        thumb = {
+            SliderDefaults.Thumb(
+                interactionSource = interactionSource,
+                colors = SliderDefaults.colors(thumbColor = JetsnackTheme.colors.brand),
+                enabled = true,
+            )
+        },
+        track = {
+            Box(
+                modifier = Modifier.fillMaxWidth().height(4.dp).styleable(null) {
+                    background(Brush.horizontalGradient(colors.gradient1))
+                },
+            )
+        },
         valueRange = 0f..300f,
         steps = 5,
         modifier = Modifier
             .fillMaxWidth(),
-        colors = SliderDefaults.colors(
-            thumbColor = JetsnackTheme.colors.brand,
-            activeTrackColor = JetsnackTheme.colors.brand,
-            inactiveTrackColor = JetsnackTheme.colors.iconInteractive,
-        ),
     )
 }
 
@@ -284,7 +301,7 @@ fun FilterTitle(text: String) {
         text = text,
         style = {
             textStyleWithFontFamilyFix(typography.titleLarge)
-            contentColor(colors.brand)
+            contentColor(colors.textPrimary)
         },
         modifier = Modifier.padding(bottom = 8.dp),
     )
@@ -298,11 +315,16 @@ fun SortOption(text: String, @DrawableRes icon: Int?, onClickOption: () -> Unit,
             .selectable(selected) { onClickOption() },
     ) {
         if (icon != null) {
-            Icon(painter = painterResource(id = icon), contentDescription = null)
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                tint = JetsnackTheme.colors.textInteractive,
+            )
         }
         Text(
             text = text,
             style = {
+                contentColor(colors.textInteractive)
                 textStyleWithFontFamilyFix(typography.titleMedium)
             },
             modifier = Modifier
@@ -313,13 +335,14 @@ fun SortOption(text: String, @DrawableRes icon: Int?, onClickOption: () -> Unit,
             Icon(
                 painter = painterResource(id = R.drawable.ic_check),
                 contentDescription = null,
-                tint = JetsnackTheme.colors.brand,
+                tint = JetsnackTheme.colors.textInteractive,
             )
         }
     }
 }
 
 @Preview("filter screen")
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun FilterScreenPreview() {
     JetsnackTheme {

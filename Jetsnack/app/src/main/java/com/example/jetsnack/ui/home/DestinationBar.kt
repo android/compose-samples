@@ -105,7 +105,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                             .copy(alpha = AlphaNearOpaque),
                         titleContentColor = JetsnackTheme.colors.textSecondary,
                     ),
-                    modifier = Modifier.height(48.dp)
+                    modifier = Modifier.height(48.dp),
                 )
                 JetsnackDivider()
             }

@@ -47,8 +47,8 @@ import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.components.SnackCollection
+import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
@@ -112,7 +112,7 @@ private fun SnackCollectionList(
         item {
             Spacer(
                 Modifier.windowInsetsTopHeight(
-                    WindowInsets.systemBars
+                    WindowInsets.systemBars,
                 ),
             )
             FilterBar(
@@ -120,7 +120,7 @@ private fun SnackCollectionList(
                 sharedTransitionScope = sharedTransitionScope,
                 filterScreenVisible = filtersVisible,
                 onShowFilters = onFiltersSelected,
-                modifier = Modifier.padding(top = 48.dp)
+                modifier = Modifier.padding(top = 48.dp),
             )
         }
         itemsIndexed(snackCollections) { index, snackCollection ->

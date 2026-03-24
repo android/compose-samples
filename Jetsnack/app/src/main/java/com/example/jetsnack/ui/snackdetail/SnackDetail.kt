@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class, ExperimentalMediaQueryApi::class,
-    ExperimentalMaterial3ExpressiveApi::class
+@file:OptIn(
+    ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class, ExperimentalMediaQueryApi::class,
+    ExperimentalMaterial3ExpressiveApi::class,
 )
 
 package com.example.jetsnack.ui.snackdetail
@@ -108,17 +109,17 @@ import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
 import com.example.jetsnack.ui.components.Button
 import com.example.jetsnack.ui.components.JetsnackDivider
-import com.example.jetsnack.ui.components.Surface
-import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.Surface
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
-import com.example.jetsnack.ui.utils.SnackPolygons
 import com.example.jetsnack.ui.utils.SharedElementPreviewWrapper
+import com.example.jetsnack.ui.utils.SnackPolygons
 import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 import com.example.jetsnack.ui.utils.asShape
 import com.example.jetsnack.ui.utils.formatPrice
@@ -500,8 +501,8 @@ private fun Image(
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = snackDetailBoundsTransform,
                         restingShape = restingRoundedPolygon,
-                        targetShape = targetRoundedPolygon
-                    )
+                        targetShape = targetRoundedPolygon,
+                    ),
             )
         }
     }
@@ -580,7 +581,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                             modifier = Modifier.weight(1f),
                             style = {
                                 externalPadding(4.dp)
-                            }
+                            },
                         ) {
                             Text(
                                 text = stringResource(R.string.add_to_cart),
@@ -603,7 +604,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun SnackDetailPreview() {
-    JetsnackTheme{
+    JetsnackTheme {
         SharedElementPreviewWrapper {
             UiMediaScopeWrapper {
                 SnackDetail(

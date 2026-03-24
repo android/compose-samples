@@ -60,9 +60,13 @@ fun StyleScope.adaptiveFontSize(fontSize: TextUnit) {
     }
     scaleFactor = when (LocalUiMediaScope.currentValue.pointerPrecision) {
         UiMediaScope.PointerPrecision.Coarse -> scaleFactor * 1f
+
         UiMediaScope.PointerPrecision.Blunt -> scaleFactor * 0.66f
+
         UiMediaScope.PointerPrecision.Fine -> scaleFactor * 1f
+
         UiMediaScope.PointerPrecision.None -> scaleFactor
+
         else -> {
             scaleFactor
         }
@@ -120,9 +124,9 @@ data class Styles(
             ellipticalGradient(
                 colors = colors.interactivePrimary,
                 radiusXPercent = 1.3f,
-                radiusYPercent = 0.7232f,
+                radiusYPercent = 0.7f,
                 centerXPercent = 0.4f,
-                centerYPercent = 0.55f,
+                centerYPercent = 0.5f,
             ),
         )
 
@@ -155,9 +159,9 @@ data class Styles(
                     ellipticalGradient(
                         colors = colors.interactivePrimary.reversed(),
                         radiusXPercent = 1.3f,
-                        radiusYPercent = 0.7232f,
+                        radiusYPercent = 0.7f,
                         centerXPercent = 0.4f,
-                        centerYPercent = 0.55f,
+                        centerYPercent = 0.5f,
                     ),
                 )
                 dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
@@ -178,9 +182,6 @@ data class Styles(
         shape(shapes.medium)
         background(colors.uiBackground)
         contentColor(colors.textPrimary)
-        /*
-        todo elevation
-        elevation: Dp = 4.dp,*/
     },
     val dividerStyle: Style = Style {
         background(colors.uiBorder.copy(alpha = 0.12f))
@@ -192,11 +193,11 @@ data class Styles(
         clip(true)
         border(2.dp, Brush.linearGradient(colors.interactiveSecondary))
         background(colors.uiBackground)
+        contentColor(colors.textPrimary)
         pressed {
             animate {
                 background(
                     Brush.horizontalGradient(
-                        // this was a parameter input into the function? might want to make helper function for it
                         colors = colors.interactiveSecondary,
                         startX = 0f,
                         endX = 200f,
@@ -231,12 +232,13 @@ data class Styles(
                 background(colors.brand)
                 contentColor(colors.textSecondary)
                 border(2.dp, colors.brand)
-                dropShadow(Shadow(color = colors.brand, radius = 6.dp, offset = DpOffset(0.dp, 2.dp) ))
+                dropShadow(Shadow(color = colors.brand, radius = 6.dp, offset = DpOffset(0.dp, 2.dp)))
                 innerShadow(Shadow(color = colors.brand, offset = DpOffset((-6).dp, (-8).dp), radius = 8.dp))
             }
         }
     },
     val defaultTextStyle: Style = Style {
+        contentColor(colors.textPrimary)
         textStyleWithFontFamilyFix(LocalTextStyle.currentValue)
     },
     val surfaceStyle: Style = Style {
@@ -250,7 +252,7 @@ data class Styles(
 enum class LoadingState {
     Loading,
     Loaded,
-    Error
+    Error,
 }
 
 val loadingStateKey = StyleStateKey(LoadingState.Loaded)

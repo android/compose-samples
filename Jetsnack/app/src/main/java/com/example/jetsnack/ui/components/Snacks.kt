@@ -209,7 +209,7 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
             start = 4.dp,
             end = 4.dp,
             bottom = 8.dp,
-        )
+        ),
     ) {
         val sharedTransitionScope = LocalSharedTransitionScope.current
             ?: throw IllegalStateException("No sharedTransitionScope found")
@@ -264,7 +264,7 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = snackDetailBoundsTransform,
                             targetShape = targetRoundedPolygon,
-                            restingShape = restingRoundedPolygon
+                            restingShape = restingRoundedPolygon,
                         ),
                 )
                 Text(
@@ -346,7 +346,7 @@ private fun HighlightSnackItem(
                     ),
                     enter = fadeIn(),
                     exit = fadeOut(),
-                )
+                ),
         ) {
             Column(
                 modifier = Modifier
@@ -396,7 +396,7 @@ private fun HighlightSnackItem(
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = snackDetailBoundsTransform,
                             targetShape = targetRoundedPolygon,
-                            restingShape = restingRoundedPolygon
+                            restingShape = restingRoundedPolygon,
                         )
                         .fillMaxWidth()
                         .size(120.dp),
@@ -474,7 +474,7 @@ fun SnackImage(
     imageRes: Int,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    style: Style = Style
+    style: Style = Style,
 ) {
     Surface(
         style = Style {

@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
-import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.components.Text
 import com.example.jetsnack.ui.components.VerticalGrid
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
@@ -94,10 +94,10 @@ private fun SearchCategoryCollection(collection: SearchCategoryCollection, index
             collection.categories.forEach { category ->
                 SearchCategory(
                     category = category,
-                    modifier = Modifier.padding( 4.dp),
+                    modifier = Modifier.padding(4.dp),
                     style = {
                         border(1.dp, borderColor)
-                    }
+                    },
                 )
             }
         }
@@ -110,24 +110,26 @@ private val CategoryShape = RoundedCornerShape(24.dp)
 private const val CategoryTextProportion = 0.55f
 
 @Composable
-private fun SearchCategory(category: SearchCategory,
-                           modifier: Modifier = Modifier,
-                           style: Style = Style) {
+private fun SearchCategory(category: SearchCategory, modifier: Modifier = Modifier, style: Style = Style) {
     val interactionSource = remember { MutableInteractionSource() }
     val styleState = rememberUpdatedStyleState(interactionSource)
     Layout(
         modifier = modifier
             .aspectRatio(1.85f)
-            .styleable(styleState, Style {
-                shape(CategoryShape)
-                clip(true)
-                background(colors.uiBackground)
-                dropShadow(Shadow(color = Color(0xffE5E1E2), radius = 8.dp))
-                textStyleWithFontFamilyFix(typography.titleMedium)
-                contentColor(Color(0xff005C5E))
-            } then style)
-            .clickable(interactionSource = interactionSource,
-                indication = ripple()
+            .styleable(
+                styleState,
+                Style {
+                    shape(CategoryShape)
+                    clip(true)
+                    background(colors.uiBackground)
+                    dropShadow(Shadow(color = Color(0xffE5E1E2), radius = 8.dp))
+                    textStyleWithFontFamilyFix(typography.titleSmall)
+                    contentColor(colors.textPrimary)
+                } then style,
+            )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = ripple(),
             ) { /* todo */ },
         content = {
             Text(
@@ -184,7 +186,7 @@ private fun SearchCategoryPreview() {
             ),
             style = {
                 border(1.dp, Color(0xFF8BDEBE))
-            }
+            },
         )
     }
 }

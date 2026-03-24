@@ -37,14 +37,14 @@ fun Surface(
     modifier: Modifier = Modifier,
     style: Style = Style,
     // todo confirm patten is acceptable
-    styleState: StyleState =  rememberUpdatedStyleState(null),
+    styleState: StyleState = rememberUpdatedStyleState(null),
     content: @Composable () -> Unit,
 ) {
     Box(
         modifier = modifier
-            .styleable(styleState, JetsnackTheme.styles.surfaceStyle, style)
+            .styleable(styleState, JetsnackTheme.styles.surfaceStyle, style),
     ) {
-        //todo double check CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
+        // todo double check CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
         content()
     }
 }
