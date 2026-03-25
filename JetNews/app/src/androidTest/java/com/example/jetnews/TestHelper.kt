@@ -28,7 +28,7 @@ fun ComposeContentTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsApp(
             appContainer = TestAppContainer(context),
-            isOpenedByDeepLink = false,
+            isBackEnabled = true,
             initialBackStack = listOf(HomeKey),
         )
     }
