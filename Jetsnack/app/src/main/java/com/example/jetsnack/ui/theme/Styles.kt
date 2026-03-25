@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationStyleApi::class, ExperimentalMediaQueryApi::class)
+@file:OptIn(ExperimentalFoundationStyleApi::class, ExperimentalMediaQueryApi::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.example.jetsnack.ui.theme
 
@@ -132,8 +132,9 @@ data class Styles(
             ),
         )
         contentColor(colors.textSecondary)
-        minSize(58.dp, 48.dp)
-        if (mediaQuery { keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
+        minWidth(58.dp)
+        if (mediaQuery { pointerPrecision == UiMediaScope.PointerPrecision.Fine
+                    && keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
             contentPaddingVertical(4.dp)
             contentPaddingHorizontal(8.dp)
             shape(shapes.medium)
