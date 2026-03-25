@@ -52,7 +52,7 @@ fun JetnewsNavDisplay(
     appContainer: AppContainer,
     onBack: () -> Unit,
     isExpandedScreen: Boolean,
-    isOpenedByDeepLink: Boolean,
+    isBackEnabled: Boolean,
     openDrawer: () -> Unit,
 ) {
     // Because the entryProvider is used within a `remember` block during NavEntry decoration,
@@ -103,7 +103,7 @@ fun JetnewsNavDisplay(
 
             NavigationBackHandler(
                 state = navigationEventState,
-                isBackEnabled = !isOpenedByDeepLink && scene.previousEntries.isNotEmpty(),
+                isBackEnabled = isBackEnabled && scene.previousEntries.isNotEmpty(),
                 onBackCompleted = {
                     repeat(navEntries.size - scene.previousEntries.size) { onBack() }
                 },

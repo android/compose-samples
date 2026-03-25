@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
 
             JetnewsApp(
                 appContainer,
-                isOpenedByDeepLink,
+                isBackEnabled = !isOpenedByDeepLink || isTaskRoot,
                 initialBackStack,
             )
         }

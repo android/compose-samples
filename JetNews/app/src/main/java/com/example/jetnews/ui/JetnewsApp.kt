@@ -37,7 +37,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun JetnewsApp(appContainer: AppContainer, isOpenedByDeepLink: Boolean, initialBackStack: List<NavKey>) {
+fun JetnewsApp(appContainer: AppContainer, isBackEnabled: Boolean, initialBackStack: List<NavKey>) {
 
     val navigationState = rememberNavigationState(
         mainTopLevelRoute = HomeKey,
@@ -85,7 +85,7 @@ fun JetnewsApp(appContainer: AppContainer, isOpenedByDeepLink: Boolean, initialB
                     appContainer = appContainer,
                     onBack = navigator::goBack,
                     isExpandedScreen = isExpandedScreen,
-                    isOpenedByDeepLink = isOpenedByDeepLink,
+                    isBackEnabled = isBackEnabled,
                     openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
                 )
             }
