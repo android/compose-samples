@@ -115,7 +115,7 @@ import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
-import com.example.jetsnack.ui.utils.SharedElementPreviewWrapper
+import com.example.jetsnack.ui.utils.JetsnackThemeWrapper
 import com.example.jetsnack.ui.utils.SnackPolygons
 import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 import com.example.jetsnack.ui.utils.asShape
@@ -327,7 +327,6 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                                 SnackCollection(
                                     snackCollection = snackCollection,
                                     onSnackClick = { _, _ -> },
-                                    highlight = false,
                                 )
                             }
                         }
@@ -607,15 +606,13 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun SnackDetailPreview() {
-    JetsnackTheme {
-        SharedElementPreviewWrapper {
-            UiMediaScopeWrapper {
-                SnackDetail(
-                    snackId = 1L,
-                    origin = "details",
-                    upPress = { },
-                )
-            }
+    JetsnackThemeWrapper {
+        UiMediaScopeWrapper {
+            SnackDetail(
+                snackId = 1L,
+                origin = "details",
+                upPress = { },
+            )
         }
     }
 }

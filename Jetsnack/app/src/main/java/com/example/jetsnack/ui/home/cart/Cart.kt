@@ -86,7 +86,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.shapes
 import com.example.jetsnack.ui.theme.typography
-import com.example.jetsnack.ui.utils.SharedElementPreviewWrapper
+import com.example.jetsnack.ui.utils.JetsnackThemeWrapper
 import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.roundToInt
@@ -218,8 +218,7 @@ private fun CartContent(
                     placementSpec = itemPlacementSpec,
                 ),
                 snackCollection = inspiredByCart,
-                onSnackClick = onSnackClick,
-                highlight = false,
+                onSnackClick = onSnackClick
             )
             Spacer(Modifier.height(56.dp))
         }
@@ -505,9 +504,8 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun CartPreview() {
-    JetsnackTheme {
+    JetsnackThemeWrapper {
         UiMediaScopeWrapper {
-            SharedElementPreviewWrapper {
                 Cart(
                     orderLines = SnackRepo.getCart(),
                     removeSnack = {},
@@ -516,7 +514,6 @@ private fun CartPreview() {
                     inspiredByCart = SnackRepo.getInspiredByCart(),
                     onSnackClick = { _, _ -> },
                 )
-            }
         }
     }
 }

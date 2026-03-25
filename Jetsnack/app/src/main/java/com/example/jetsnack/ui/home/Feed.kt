@@ -132,8 +132,7 @@ private fun SnackCollectionList(
 
             SnackCollection(
                 snackCollection = snackCollection,
-                onSnackClick = onSnackClick,
-                index = index,
+                onSnackClick = onSnackClick
             )
         }
     }

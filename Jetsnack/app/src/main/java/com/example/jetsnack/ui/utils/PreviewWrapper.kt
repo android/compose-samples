@@ -39,12 +39,14 @@ import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun SharedElementPreviewWrapper(content: @Composable () -> Unit) {
-    SharedTransitionLayout {
-        AnimatedVisibility(true) {
-            CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
-                CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this@AnimatedVisibility) {
-                    content()
+fun JetsnackThemeWrapper(content: @Composable () -> Unit) {
+    JetsnackTheme {
+        SharedTransitionLayout {
+            AnimatedVisibility(true) {
+                CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
+                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this@AnimatedVisibility) {
+                        content()
+                    }
                 }
             }
         }

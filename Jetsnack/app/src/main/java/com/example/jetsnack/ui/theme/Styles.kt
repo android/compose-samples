@@ -53,29 +53,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 
-fun StyleScope.adaptiveFontSize(fontSize: TextUnit) {
-    var scaleFactor = when (LocalUiMediaScope.currentValue.viewingDistance) {
-        ViewingDistance.Near -> 1f
-        ViewingDistance.Medium -> 1.72f
-        ViewingDistance.Far -> 1.5f
-        else -> 1f
-    }
-    scaleFactor = when (LocalUiMediaScope.currentValue.pointerPrecision) {
-        UiMediaScope.PointerPrecision.Coarse -> scaleFactor * 1f
-
-        UiMediaScope.PointerPrecision.Blunt -> scaleFactor * 0.66f
-
-        UiMediaScope.PointerPrecision.Fine -> scaleFactor * 1f
-
-        UiMediaScope.PointerPrecision.None -> scaleFactor
-
-        else -> {
-            scaleFactor
-        }
-    }
-    fontSize(fontSize * scaleFactor)
-}
-
 /**
  * Creates an elliptical radial gradient brush that emulates the CSS radial-gradient spec.
  *
@@ -175,7 +152,7 @@ data class Styles(
                 }
             }
             hovered {
-                // this state is broken >>
+                // TODO this state is broken - await API changes on animation changes
                 // we don't want to combine these two
                 // so set the properties to the same
                 animate {

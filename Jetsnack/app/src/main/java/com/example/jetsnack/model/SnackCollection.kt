@@ -22,7 +22,7 @@ import kotlin.random.Random
 @Immutable
 data class SnackCollection(val id: Long, val name: String, val snacks: List<Snack>, val type: CollectionType = CollectionType.Normal)
 
-enum class CollectionType { Normal, Highlight }
+enum class CollectionType { Normal, Highlight, Card }
 
 /**
  * A fake repo
@@ -61,6 +61,7 @@ private val popular = SnackCollection(
 private val wfhFavs = tastyTreats.copy(
     id = Random.nextLong(),
     name = "WFH favourites",
+    type = CollectionType.Card
 )
 
 private val newlyAdded = popular.copy(
