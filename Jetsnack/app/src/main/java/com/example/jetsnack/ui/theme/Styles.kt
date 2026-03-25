@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationStyleApi::class, ExperimentalMediaQueryApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalFoundationStyleApi::class, ExperimentalMediaQueryApi::class)
 
 package com.example.jetsnack.ui.theme
 

@@ -77,7 +77,6 @@ fun Search(onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier, 
                 searching = state.searching,
             )
             JetsnackDivider()
-
             LaunchedEffect(state.query.text) {
                 state.searching = true
                 state.searchResults = SearchRepo.search(state.query.text)
@@ -178,7 +177,7 @@ private fun SearchBar(
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(72.dp)
             .padding(horizontal = 24.dp, vertical = 8.dp),
     ) {
         Box(Modifier.fillMaxSize()) {

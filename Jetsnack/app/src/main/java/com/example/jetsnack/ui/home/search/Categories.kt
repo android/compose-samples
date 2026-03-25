@@ -20,7 +20,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +28,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
@@ -55,7 +57,6 @@ import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.VerticalGrid
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
@@ -64,34 +65,31 @@ import kotlin.math.max
 
 @Composable
 fun SearchCategories(categories: List<SearchCategoryCollection>) {
-    LazyColumn {
-        itemsIndexed(categories) { index, collection ->
-            SearchCategoryCollection(collection, index)
-        }
-    }
-    Spacer(Modifier.height(8.dp))
-}
-
-@Composable
-private fun SearchCategoryCollection(collection: SearchCategoryCollection, index: Int, modifier: Modifier = Modifier) {
-    Column(modifier) {
-        Text(
-            text = collection.name,
-            style = {
-                textStyleWithFontFamilyFix(typography.titleLarge)
-                contentColor(colors.textSecondary)
-            },
-            modifier = Modifier
-                .heightIn(min = 56.dp)
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-                .wrapContentHeight(),
-        )
-        VerticalGrid(Modifier.padding(horizontal = 8.dp)) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(200.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+    ) {
+        categories.forEachIndexed { index, collection ->
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Text(
+                    text = collection.name,
+                    style = {
+                        textStyleWithFontFamilyFix(typography.titleLarge)
+                        contentColor(colors.textSecondary)
+                    },
+                    modifier = Modifier
+                        .heightIn(min = 56.dp)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .wrapContentHeight(),
+                )
+            }
             val borderColor = when (index % 2) {
                 0 -> Color(0xFF8BDEBE)
                 else -> Color(0xffFFC8A4)
             }
-            collection.categories.forEach { category ->
+            items(collection.categories, key = {
+                it.name
+            }) { category ->
                 SearchCategory(
                     category = category,
                     modifier = Modifier.padding(4.dp),
@@ -101,7 +99,6 @@ private fun SearchCategoryCollection(collection: SearchCategoryCollection, index
                 )
             }
         }
-        Spacer(Modifier.height(4.dp))
     }
 }
 
