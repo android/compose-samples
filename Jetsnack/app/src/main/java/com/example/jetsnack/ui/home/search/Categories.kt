@@ -21,8 +21,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -41,6 +43,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -49,6 +52,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -66,7 +70,7 @@ import kotlin.math.max
 @Composable
 fun SearchCategories(categories: List<SearchCategoryCollection>) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(200.dp),
+        columns = GridCells.Adaptive(150.dp),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
     ) {
         categories.forEachIndexed { index, collection ->
@@ -110,7 +114,8 @@ private const val CategoryTextProportion = 0.55f
 private fun SearchCategory(category: SearchCategory, modifier: Modifier = Modifier, style: Style = Style) {
     val interactionSource = remember { MutableInteractionSource() }
     val styleState = rememberUpdatedStyleState(interactionSource)
-    Layout(
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .aspectRatio(1.85f)
             .styleable(
@@ -120,20 +125,22 @@ private fun SearchCategory(category: SearchCategory, modifier: Modifier = Modifi
                     clip(true)
                     background(colors.uiBackground)
                     dropShadow(Shadow(color = Color(0xffE5E1E2), radius = 8.dp))
-                    textStyleWithFontFamilyFix(typography.titleSmall)
-                    contentColor(colors.textPrimary)
                 } then style,
             )
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(),
-            ) { /* todo */ },
-        content = {
+            ) { /* todo */ } ){
             Text(
                 text = category.name,
+                style = {
+                    textStyleWithFontFamilyFix(typography.titleSmall)
+                    contentColor(colors.textPrimary)
+                },
                 modifier = Modifier
                     .padding(4.dp)
-                    .padding(start = 8.dp),
+                    .padding(start = 8.dp)
+                    .weight(1f, fill = true)
             )
             SnackImage(
                 imageRes = category.imageRes,
@@ -141,33 +148,11 @@ private fun SearchCategory(category: SearchCategory, modifier: Modifier = Modifi
                 style = {
                     shape(RoundedCornerShape(topStartPercent = 48))
                 },
-                modifier = Modifier.fillMaxSize(),
-            )
-        },
-    ) { measurables, constraints ->
-        // Text given a set proportion of width (which is determined by the aspect ratio)
-        val textWidth = (constraints.maxWidth * CategoryTextProportion).toInt()
-        val textPlaceable = measurables[0].measure(Constraints.fixedWidth(textWidth))
-
-        // Image is sized to the larger of height of item, or a minimum value
-        // i.e. may appear larger than item (but clipped to the item bounds)
-        val imageSize = max(MinImageSize.roundToPx(), constraints.maxHeight)
-        val imagePlaceable = measurables[1].measure(Constraints.fixed(imageSize, imageSize))
-        layout(
-            width = constraints.maxWidth,
-            height = constraints.minHeight,
-        ) {
-            textPlaceable.placeRelative(
-                x = 0,
-                y = (constraints.maxHeight - textPlaceable.height) / 2, // centered
-            )
-            imagePlaceable.placeRelative(
-                // image is placed to end of text i.e. will overflow to the end (but be clipped)
-                x = textWidth,
-                y = (constraints.maxHeight - imagePlaceable.height) / 2, // centered
+                modifier = Modifier.fillMaxSize()
+                    .weight(1f)
+                    .defaultMinSize(minWidth = MinImageSize),
             )
         }
-    }
 }
 
 @Preview("default")

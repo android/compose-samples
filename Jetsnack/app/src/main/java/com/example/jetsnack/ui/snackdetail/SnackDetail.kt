@@ -456,8 +456,8 @@ private fun Image(
             ?: throw IllegalStateException("No animatedVisibilityScope found")
 
         with(sharedTransitionScope) {
-            val targetRoundedPolygon = SnackPolygons.snackDetailPolygon
-            val restingRoundedPolygon = SnackPolygons.pillIntermediatePolygon
+            val targetRoundedPolygon = SnackPolygons.snackItemPolygon
+            val restingRoundedPolygon = SnackPolygons.snackDetailPolygon
             val morph = remember {
                 Morph(restingRoundedPolygon, targetRoundedPolygon)
             }

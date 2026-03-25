@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class, ExperimentalMaterial3ExpressiveApi::class,
-    ExperimentalMediaQueryApi::class
+@file:OptIn(
+    ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class, ExperimentalMaterial3ExpressiveApi::class,
+    ExperimentalMediaQueryApi::class,
 )
 
 package com.example.jetsnack.ui.components
@@ -40,6 +41,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,10 +49,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -59,11 +59,11 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
+import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.then
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -72,17 +72,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.Morph
+import androidx.graphics.shapes.RoundedPolygon
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetsnack.R
@@ -128,6 +131,9 @@ private val highlightGlowCardStyle = Style {
 }
 private val normalCardStyle = Style {
     background(Color.Transparent)
+    width(100.dp)
+    contentPadding(2.dp)
+    textAlign(TextAlign.Center)
     hovered {
         animate {
             scale(1.05f)
@@ -138,12 +144,20 @@ private val normalCardStyle = Style {
             scale(1.05f)
         }
     }
+    pressed {
+        background(colors.uiFloated.copy(alpha = 0.5f))
+    }
+}
+private val normalTextStyle = Style {
+    textStyleWithFontFamilyFix(typography.titleSmall)
+    textAlign(TextAlign.Center)
 }
 
 private val plainCardStyle = Style {
     background(colors.cardHighlightBackground)
     clip(true)
     border(1.dp, colors.cardHighlightBorder)
+    textAlign(TextAlign.Center)
     hovered {
         animate {
             scale(1.05f)
@@ -172,7 +186,7 @@ fun SnackCollection(
             Text(
                 text = snackCollection.name,
                 style = {
-                    textStyleWithFontFamilyFix(typography.headlineSmall)
+                    textStyleWithFontFamilyFix(typography.bodyLarge)
                     contentColor(colors.textPrimary)
                 },
                 maxLines = 1,
@@ -198,7 +212,7 @@ fun SnackCollection(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(start = 24.dp, end = 24.dp),
         ) {
-            itemsIndexed(snacks) { _, snack ->
+            itemsIndexed(snacks, key = { _, item -> item.id }) { _, snack ->
                 when (snackCollection.type) {
                     CollectionType.Normal ->
                         SnackItem(
@@ -206,7 +220,10 @@ fun SnackCollection(
                             snack = snack,
                             onSnackClick = onSnackClick,
                             showTagLine = false,
+                            imageShape = SnackPolygons.snackItemPolygonRounded,
                             style = normalCardStyle,
+                            snackTextStyle = normalTextStyle,
+                            imageAspectRatio = 4f / 3f,
                         )
 
                     CollectionType.Highlight ->
@@ -214,6 +231,7 @@ fun SnackCollection(
                             snackCollectionId = snackCollection.id,
                             snack = snack,
                             onSnackClick = onSnackClick,
+                            showAddButton = true,
                             style = highlightGlowCardStyle,
                         )
 
@@ -223,6 +241,7 @@ fun SnackCollection(
                             snack = snack,
                             onSnackClick = onSnackClick,
                             style = plainCardStyle,
+                            imageAspectRatio = 16 / 9f,
                         )
                 }
             }
@@ -236,6 +255,9 @@ private fun SnackItem(
     snack: Snack,
     modifier: Modifier = Modifier,
     style: Style = Style,
+    snackTextStyle: Style = Style,
+    imageShape: RoundedPolygon = SnackPolygons.snackItemPolygon,
+    imageAspectRatio: Float = 1f,
     showTagLine: Boolean = true,
     showAddButton: Boolean = false,
     onSnackClick: (Long, String) -> Unit,
@@ -292,7 +314,9 @@ private fun SnackItem(
                 ),
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
             ) {
                 val sharedContentState = rememberSharedContentState(
                     key = SnackSharedElementKey(
@@ -301,9 +325,8 @@ private fun SnackItem(
                         type = SnackSharedElementType.Image,
                     ),
                 )
-                val restingRoundedPolygon = SnackPolygons.snackDetailPolygon
-                val targetRoundedPolygon = SnackPolygons.pillIntermediatePolygon
-                val morph = remember { Morph(restingRoundedPolygon, targetRoundedPolygon) }
+                val targetRoundedPolygon = SnackPolygons.snackDetailPolygon
+                val morph = remember { Morph(imageShape, targetRoundedPolygon) }
                 val progress = animatedVisibilityScope.transition.animateFloat(
                     transitionSpec = {
                         tween(300, easing = LinearEasing)
@@ -319,11 +342,11 @@ private fun SnackItem(
                 SnackImage(
                     imageRes = snack.imageRes,
                     contentDescription = null,
-                    style = {
+                    style = Style {
                         val shape = if (sharedContentState.isMatchFound) {
                             morph.asShape(progress)
                         } else {
-                            restingRoundedPolygon.asShape()
+                            imageShape.asShape()
                         }
                         shape(shape)
                     },
@@ -334,10 +357,10 @@ private fun SnackItem(
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = snackDetailBoundsTransform,
                             targetShape = targetRoundedPolygon,
-                            restingShape = restingRoundedPolygon,
+                            restingShape = imageShape,
                         )
                         .fillMaxWidth()
-                        .size(120.dp),
+                        .aspectRatio(imageAspectRatio),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
@@ -349,12 +372,13 @@ private fun SnackItem(
                             text = snack.name,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = {
+                            style = Style {
                                 textStyleWithFontFamilyFix(typography.titleLarge)
                                 contentColor(colors.textSecondary)
-                            },
+                                textAlign(TextAlign.Start)
+                            } then snackTextStyle,
                             modifier = Modifier
-                                .padding(start = 16.dp, end = 2.dp)
+                                .padding(horizontal = 16.dp)
                                 .sharedBounds(
                                     rememberSharedContentState(
                                         key = SnackSharedElementKey(
@@ -369,7 +393,7 @@ private fun SnackItem(
                                     boundsTransform = snackDetailBoundsTransform,
                                     resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
                                 )
-                                .wrapContentWidth(),
+                                .fillMaxWidth(),
                         )
                         if (showTagLine) {
                             Spacer(modifier = Modifier.height(4.dp))
@@ -411,7 +435,7 @@ private fun SnackItem(
                                 contentPadding(8.dp)
                                 externalPadding(8.dp)
                             },
-                            modifier = Modifier
+                            modifier = Modifier,
                         ) {
                             Icon(
                                 painterResource(R.drawable.ic_add),
@@ -473,6 +497,7 @@ fun SnackCardPreviewCard() {
                 snackCollectionId = 1,
                 snack = snack,
                 style = normalCardStyle,
+                showTagLine = false,
                 onSnackClick = { _, _ -> },
             )
         }
