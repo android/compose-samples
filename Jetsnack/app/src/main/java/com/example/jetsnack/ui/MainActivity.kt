@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
         val installedProviders = getSystemService(AppWidgetManager::class.java).installedProviders
         val providerInfo = installedProviders.firstOrNull {
             it.provider.className ==
-                receiver.qualifiedName
+                    receiver.qualifiedName
         }
         providerInfo?.generatedPreviewCategories.takeIf { it == 0 }?.let {
             // Set previews if this provider if unset

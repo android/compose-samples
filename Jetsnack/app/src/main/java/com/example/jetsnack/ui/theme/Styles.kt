@@ -26,6 +26,8 @@ import androidx.compose.foundation.style.StyleScope
 import androidx.compose.foundation.style.StyleStateKey
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.fillWidth
+import androidx.compose.foundation.style.focused
+import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.selected
 import androidx.compose.material3.LocalTextStyle
@@ -129,30 +131,60 @@ data class Styles(
                 centerYPercent = 0.5f,
             ),
         )
-
-        contentColor(colors.textInteractive)
+        contentColor(colors.textSecondary)
         minSize(58.dp, 48.dp)
         if (mediaQuery { keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
             contentPaddingVertical(4.dp)
             contentPaddingHorizontal(8.dp)
             shape(shapes.medium)
+            minHeight(32.dp)
+            textStyleWithFontFamilyFix(typography.labelMedium)
         } else {
             contentPaddingVertical(8.dp)
             contentPaddingHorizontal(24.dp)
+            minHeight(40.dp)
             shape(shapes.small)
+            textStyleWithFontFamilyFix(typography.labelLarge)
         }
-        textStyleWithFontFamilyFix(typography.labelLarge)
 
-        dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 2.dp, y = 4.dp), radius = 12.dp))
-        innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (-6).dp, (-4).dp), radius = 4.dp))
+        dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 2.dp), radius = 6.dp))
+        innerShadow(Shadow(color = colors.brand.copy(alpha = 0.5f), offset = DpOffset(x = (-6).dp, (-4).dp), radius = 8.dp))
 
+        hovered {
+            animate {
+                background(colors.brandLight)
+                dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 2.dp), radius = 6.dp))
+                innerShadow(Shadow(color = colors.brand.copy(alpha = 0.5f), offset = DpOffset(x = (-6).dp, (-2).dp), radius = 8.dp))
+            }
+        }
+        focused {
+            animate {
+                border(4.dp, colors.brand)
+            }
+        }
         pressed {
             animate {
                 background(Brush.radialGradient(listOf(colors.brand, colors.brand)))
                 dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
                 innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
             }
+            focused {
+                animate {
+                    border(4.dp, colors.brand)
+                }
+            }
+            hovered {
+                // this state is broken >>
+                // we don't want to combine these two
+                // so set the properties to the same
+                animate {
+                    background(Brush.radialGradient(listOf(colors.brand, colors.brand)))
+                    dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
+                    innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
+                }
+            }
         }
+
         loading {
             animate {
                 background(
@@ -238,7 +270,6 @@ data class Styles(
         }
     },
     val defaultTextStyle: Style = Style {
-        contentColor(colors.textPrimary)
         textStyleWithFontFamilyFix(LocalTextStyle.currentValue)
     },
     val surfaceStyle: Style = Style {

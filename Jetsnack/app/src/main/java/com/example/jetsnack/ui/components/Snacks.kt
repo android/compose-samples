@@ -62,15 +62,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.Morph
 import coil.compose.AsyncImage
@@ -96,9 +93,6 @@ import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.sharedBoundsRevealWithShapeMorph
 
 private val HighlightCardWidth = 170.dp
-private val HighlightCardPadding = 16.dp
-private val Density.cardWidthWithPaddingPx
-    get() = (HighlightCardWidth + HighlightCardPadding).toPx()
 
 @Composable
 fun SnackCollection(
@@ -139,7 +133,7 @@ fun SnackCollection(
             }
         }
         if (highlight && snackCollection.type == CollectionType.Highlight) {
-            HighlightedSnacks(snackCollection.id, index, snackCollection.snacks, onSnackClick)
+            HighlightedSnacks(snackCollection.id, snackCollection.snacks, onSnackClick)
         } else {
             Snacks(snackCollection.id, snackCollection.snacks, onSnackClick)
         }
@@ -149,39 +143,22 @@ fun SnackCollection(
 @Composable
 private fun HighlightedSnacks(
     snackCollectionId: Long,
-    index: Int,
     snacks: List<Snack>,
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val rowState = rememberLazyListState()
-    val cardWidthWithPaddingPx = with(LocalDensity.current) { cardWidthWithPaddingPx }
-
-    val scrollProvider = {
-        // Simple calculation of scroll distance for homogenous item types with the same width.
-        val offsetFromStart = cardWidthWithPaddingPx * rowState.firstVisibleItemIndex
-        offsetFromStart + rowState.firstVisibleItemScrollOffset
-    }
-
-    val gradient = when ((index / 2) % 2) {
-        0 -> JetsnackTheme.colors.gradient1
-        else -> JetsnackTheme.colors.gradient2
-    }
-
     LazyRow(
         state = rowState,
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(start = 24.dp, end = 24.dp),
     ) {
-        itemsIndexed(snacks) { index, snack ->
+        itemsIndexed(snacks) { _, snack ->
             HighlightSnackItem(
                 snackCollectionId = snackCollectionId,
                 snack = snack,
                 onSnackClick = onSnackClick,
-                index = index,
-                gradient = gradient,
-                scrollProvider = scrollProvider,
             )
         }
     }
@@ -220,9 +197,11 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .clickable(onClick = {
-                        onSnackClick(snack.id, snackCollectionId.toString())
-                    })
+                    .clickable(
+                        onClick = {
+                            onSnackClick(snack.id, snackCollectionId.toString())
+                        },
+                    )
                     .padding(8.dp),
             ) {
                 val sharedContentState = rememberSharedContentState(
@@ -235,9 +214,11 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                 val restingRoundedPolygon = SnackPolygons.snackItemPolygon
                 val targetRoundedPolygon = SnackPolygons.pillIntermediatePolygon
                 val morph = remember { Morph(restingRoundedPolygon, targetRoundedPolygon) }
-                val progress = animatedVisibilityScope.transition.animateFloat(transitionSpec = {
-                    tween(300, easing = LinearEasing)
-                }) {
+                val progress = animatedVisibilityScope.transition.animateFloat(
+                    transitionSpec = {
+                        tween(300, easing = LinearEasing)
+                    },
+                ) {
                     when (it) {
                         EnterExitState.PreEnter -> 1f
                         EnterExitState.Visible -> 0f
@@ -301,9 +282,6 @@ private fun HighlightSnackItem(
     snackCollectionId: Long,
     snack: Snack,
     onSnackClick: (Long, String) -> Unit,
-    index: Int,
-    gradient: List<Color>,
-    scrollProvider: () -> Float,
     modifier: Modifier = Modifier,
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
@@ -350,12 +328,14 @@ private fun HighlightSnackItem(
         ) {
             Column(
                 modifier = Modifier
-                    .clickable(onClick = {
-                        onSnackClick(
-                            snack.id,
-                            snackCollectionId.toString(),
-                        )
-                    })
+                    .clickable(
+                        onClick = {
+                            onSnackClick(
+                                snack.id,
+                                snackCollectionId.toString(),
+                            )
+                        },
+                    )
                     .fillMaxSize(),
             ) {
                 val sharedContentState = rememberSharedContentState(
@@ -368,9 +348,11 @@ private fun HighlightSnackItem(
                 val restingRoundedPolygon = SnackPolygons.snackDetailPolygon
                 val targetRoundedPolygon = SnackPolygons.pillIntermediatePolygon
                 val morph = remember { Morph(restingRoundedPolygon, targetRoundedPolygon) }
-                val progress = animatedVisibilityScope.transition.animateFloat(transitionSpec = {
-                    tween(300, easing = LinearEasing)
-                }) {
+                val progress = animatedVisibilityScope.transition.animateFloat(
+                    transitionSpec = {
+                        tween(300, easing = LinearEasing)
+                    },
+                ) {
                     when (it) {
                         EnterExitState.PreEnter -> 1f
                         EnterExitState.Visible -> 0f
@@ -506,9 +488,6 @@ fun SnackCardPreview() {
             snackCollectionId = 1,
             snack = snack,
             onSnackClick = { _, _ -> },
-            index = 0,
-            gradient = JetsnackTheme.colors.gradient1,
-            scrollProvider = { 0f },
         )
     }
 }

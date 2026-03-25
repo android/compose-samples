@@ -19,23 +19,17 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,7 +37,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -54,17 +49,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.UiMediaScope.KeyboardKind
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
-import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -80,8 +71,6 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
-import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
-import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.components.Button
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.QuantitySelector
@@ -131,7 +120,9 @@ fun Cart(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    com.example.jetsnack.ui.components.Surface(modifier = modifier.fillMaxSize()) {
+    com.example.jetsnack.ui.components.Surface(
+        modifier = modifier.fillMaxSize(),
+    ) {
         Box(modifier = Modifier.fillMaxSize()) {
             CartContent(
                 orderLines = orderLines,
@@ -171,7 +162,7 @@ private fun CartContent(
         item(key = "title") {
             Spacer(
                 Modifier.windowInsetsTopHeight(
-                    WindowInsets.statusBars.add(WindowInsets(top = 56.dp)),
+                    WindowInsets.systemBars.add(WindowInsets(top = 56.dp)),
                 ),
             )
             Text(
@@ -490,11 +481,11 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
             Button(
                 onClick = { /* todo */ },
                 style = {
-                    shape(RectangleShape)
+                    shape(RoundedCornerShape(4.dp))
                 },
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                    .weight(1f),
+                    .widthIn(max = 200.dp)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
             ) {
                 Text(
                     text = stringResource(id = R.string.cart_checkout),

@@ -47,6 +47,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,12 +58,14 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.style.fillWidth
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -78,11 +81,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -93,7 +91,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
@@ -172,6 +169,7 @@ fun SnackDetail(snackId: Long, origin: String, upPress: () -> Unit) {
         Box(
             Modifier
                 .clip(RoundedCornerShape(roundedCornerAnim))
+                .windowInsetsPadding(WindowInsets.systemBars)
                 .sharedBounds(
                     rememberSharedContentState(
                         key = SnackSharedElementKey(
@@ -290,14 +288,15 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                                 textStyleWithFontFamilyFix(typography.labelLarge)
                                 contentColor(colors.textLink)
                                 textAlign(TextAlign.Center)
-                                contentPaddingTop(15.dp)
-                                fillWidth()
+                                contentPadding(16.dp)
                             },
                             modifier = Modifier
                                 .heightIn(20.dp)
                                 .clickable {
                                     seeMore = !seeMore
                                 }
+                                .align(Alignment.CenterHorizontally)
+                                .wrapContentSize()
                                 .skipToLookaheadSize(),
                         )
 
@@ -463,9 +462,11 @@ private fun Image(
             val morph = remember {
                 Morph(restingRoundedPolygon, targetRoundedPolygon)
             }
-            val progress = LocalNavAnimatedVisibilityScope.current?.transition?.animateFloat(transitionSpec = {
-                tween(300, easing = LinearEasing)
-            }) {
+            val progress = LocalNavAnimatedVisibilityScope.current?.transition?.animateFloat(
+                transitionSpec = {
+                    tween(300, easing = LinearEasing)
+                },
+            ) {
                 when (it) {
                     EnterExitState.PreEnter -> 1f
                     EnterExitState.Visible -> 0f
@@ -495,6 +496,7 @@ private fun Image(
                 modifier = Modifier
                     .aspectRatio(1.3f)
                     .fillMaxSize()
+                    .padding(4.dp)
                     .sharedBoundsRevealWithShapeMorph(
                         sharedContentState = sharedContentState,
                         sharedTransitionScope = sharedTransitionScope,
@@ -558,7 +560,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                             ),
                         ) { it } + fadeIn(tween(300, delayMillis = 300)),
                         exit = slideOutVertically(tween(50)) { it } +
-                            fadeOut(tween(50)),
+                                fadeOut(tween(50)),
                     ),
             ) {
                 Column {
@@ -575,10 +577,11 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                             decreaseItemCount = { if (count > 0) updateCount(count - 1) },
                             increaseItemCount = { updateCount(count + 1) },
                         )
-                        Spacer(Modifier.width(16.dp))
+                        Spacer(Modifier.weight(1f))
                         Button(
                             onClick = { /* todo */ },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .widthIn(max = 200.dp),
                             style = {
                                 externalPadding(4.dp)
                             },
