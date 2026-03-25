@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalMediaQueryApi::class)
+
 package com.example.jetsnack.ui.home.search
 
 import android.content.res.Configuration
@@ -44,6 +46,8 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalMediaQueryApi
+import androidx.compose.ui.LocalUiMediaScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -53,6 +57,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.mediaQuery
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -69,8 +74,14 @@ import kotlin.math.max
 
 @Composable
 fun SearchCategories(categories: List<SearchCategoryCollection>) {
+    val itemSize = if (mediaQuery { windowWidth > 600.dp }) {
+        250.dp
+    } else {
+        150.dp
+    }
+
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
+        columns = GridCells.Adaptive(itemSize),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
     ) {
         categories.forEachIndexed { index, collection ->
