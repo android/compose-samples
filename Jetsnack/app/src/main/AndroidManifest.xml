@@ -25,6 +25,10 @@
         android:theme="@style/Theme.Jetsnack"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="33">
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
         <receiver
             android:name=".widget.RecentOrdersWidgetReceiver"
             android:label="@string/snack_order_widget_name"
