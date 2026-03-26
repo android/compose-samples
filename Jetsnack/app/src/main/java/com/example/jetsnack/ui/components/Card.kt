@@ -21,6 +21,7 @@ package com.example.jetsnack.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
@@ -40,7 +41,7 @@ fun JetsnackCard(
     style: Style = Style,
     interactionSource: InteractionSource = remember { MutableInteractionSource() },
     styleState: StyleState = rememberUpdatedStyleState(interactionSource),
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Surface(
         modifier = modifier,

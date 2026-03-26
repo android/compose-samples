@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class)
+@file:OptIn(
+    ExperimentalSharedTransitionApi::class,
+    ExperimentalFoundationStyleApi::class,
+    ExperimentalMediaQueryApi::class
+)
 
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.interaction.FocusInteraction
+import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -39,9 +48,12 @@ import androidx.compose.foundation.style.then
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiMediaScope
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +67,7 @@ import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.shapes
 import com.example.jetsnack.ui.theme.typography
 import com.example.jetsnack.ui.utils.JetsnackThemeWrapper
+import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 
 @Composable
 fun FilterBar(
@@ -110,10 +123,14 @@ fun FilterBar(
 }
 
 @Composable
-fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Style) {
+fun FilterChip(
+    filter: Filter,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    style: Style = Style,
+) {
 
     val (selected, setSelected) = filter.enabled
-    val interactionSource = remember { MutableInteractionSource() }
     val styleState = rememberUpdatedStyleState(
         interactionSource,
         {
@@ -163,5 +180,80 @@ private fun FilterDisabledPreview() {
 private fun FilterEnabledPreview() {
     JetsnackThemeWrapper {
         FilterChip(Filter(name = "Demo", enabled = true))
+    }
+}
+
+@Preview("hovered focused")
+@Preview("dark theme hovered focused", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewHoveredFocused() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(HoverInteraction.Enter())
+            interactionSource.emit(FocusInteraction.Focus())
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
+    }
+}
+
+@Preview("pressed focused")
+@Preview("dark theme pressed focused", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewPressedFocused() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(FocusInteraction.Focus())
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
+    }
+}
+
+@Preview("pressed hovered")
+@Preview("dark theme pressed hovered", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewPressedHovered() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+            interactionSource.emit(HoverInteraction.Enter())
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
+    }
+}
+
+@Preview("pressed")
+@Preview("dark theme pressed", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewPressed() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
     }
 }

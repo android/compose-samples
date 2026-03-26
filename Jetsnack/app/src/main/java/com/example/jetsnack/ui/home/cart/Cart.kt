@@ -19,6 +19,7 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,7 +51,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -90,7 +95,9 @@ import com.example.jetsnack.ui.theme.typography
 import com.example.jetsnack.ui.utils.JetsnackThemeWrapper
 import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 import com.example.jetsnack.ui.utils.formatPrice
+import kotlin.math.abs
 import kotlin.math.roundToInt
+import androidx.compose.foundation.layout.BoxWithConstraints
 
 @Composable
 fun Cart(
@@ -124,19 +131,17 @@ fun Cart(
     com.example.jetsnack.ui.components.Surface(
         modifier = modifier.fillMaxSize(),
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CartContent(
-                orderLines = orderLines,
-                removeSnack = removeSnack,
-                increaseItemCount = increaseItemCount,
-                decreaseItemCount = decreaseItemCount,
-                inspiredByCart = inspiredByCart,
-                onSnackClick = onSnackClick,
-                modifier = Modifier.align(Alignment.TopCenter),
-            )
-            DestinationBar(modifier = Modifier.align(Alignment.TopCenter))
-            CheckoutBar(modifier = Modifier.align(Alignment.BottomCenter))
-        }
+        CartContent(
+            orderLines = orderLines,
+            removeSnack = removeSnack,
+            increaseItemCount = increaseItemCount,
+            decreaseItemCount = decreaseItemCount,
+            inspiredByCart = inspiredByCart,
+            onSnackClick = onSnackClick,
+            modifier = Modifier.align(Alignment.TopCenter),
+        )
+        DestinationBar(modifier = Modifier.align(Alignment.TopCenter))
+        CheckoutBar(modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
 
@@ -181,14 +186,16 @@ private fun CartContent(
             )
         }
         items(orderLines, key = { it.snack.id }) { orderLine ->
+            val swipeDismissState = rememberSwipeToDismissBoxState()
             SwipeDismissItem(
+                dismissState = swipeDismissState,
                 modifier = Modifier.animateItem(
                     fadeInSpec = itemAnimationSpecFade,
                     fadeOutSpec = itemAnimationSpecFade,
                     placementSpec = itemPlacementSpec,
                 ),
-                background = { progress ->
-                    SwipeDismissItemBackground(progress)
+                background = {
+                    SwipeDismissItemBackground(swipeDismissState)
                 },
             ) {
                 CartItem(
@@ -227,27 +234,42 @@ private fun CartContent(
 }
 
 @Composable
-private fun SwipeDismissItemBackground(progress: Float) {
-    Column(
+private fun SwipeDismissItemBackground(swipeDismissState: SwipeToDismissBoxState) {
+    BoxWithConstraints(
         modifier = Modifier
             .background(JetsnackTheme.colors.uiBackground)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Center,
+            .fillMaxSize(),
     ) {
-        // Set 4.dp padding only if progress is less than halfway
-        val padding: Dp by animateDpAsState(
-            if (progress < 0.5f) 4.dp else 0.dp, label = "padding",
-        )
-        Box(
-            Modifier
-                .fillMaxWidth(progress),
+        val progress = remember(swipeDismissState, constraints.maxWidth) {
+            derivedStateOf {
+                if (constraints.maxWidth > 0) {
+                    val offset = try {
+                        swipeDismissState.requireOffset()
+                    } catch ( _ : IllegalStateException) {
+                        0f
+                    }
+                    (abs(offset) / constraints.maxWidth).coerceIn(0f, 1f)
+                } else {
+                    0f
+                }
+            }
+        }.value
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Center,
         ) {
+            // Set 4.dp padding only if progress is less than halfway
+            val padding: Dp by animateDpAsState(
+                if (progress < 0.5f) 4.dp else 0.dp, label = "padding",
+            )
+
             Surface(
                 modifier = Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
+                    .fillMaxHeight()
+                    .fillMaxWidth(progress)
+                    .padding(padding),
                 shape = RoundedCornerShape(percent = ((1 - progress) * 100).roundToInt()),
                 color = JetsnackTheme.colors.error,
             ) {
@@ -256,7 +278,7 @@ private fun SwipeDismissItemBackground(progress: Float) {
                     contentAlignment = Alignment.Center,
                 ) {
                     // Icon must be visible while in this width range
-                    if (progress in 0.125f..0.475f) {
+                    if (progress in 0.125f..0.4f) {
                         // Icon alpha decreases as it is about to disappear
                         val iconAlpha: Float by animateFloatAsState(
                             if (progress > 0.4f) 0.5f else 1f, label = "icon alpha",
@@ -265,7 +287,7 @@ private fun SwipeDismissItemBackground(progress: Float) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_delete_forever),
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(28.dp)
                                 .graphicsLayer(alpha = iconAlpha),
                             tint = JetsnackTheme.colors.uiBackground,
                             contentDescription = null,
@@ -274,9 +296,9 @@ private fun SwipeDismissItemBackground(progress: Float) {
                     /*Text opacity increases as the text is supposed to appear in
                                             the screen*/
                     val textAlpha by animateFloatAsState(
-                        if (progress > 0.5f) 1f else 0.5f, label = "text alpha",
+                        if (progress > 0.4f) 1f else 0.5f, label = "text alpha",
                     )
-                    if (progress > 0.5f) {
+                    if (progress > 0.40f) {
                         Text(
                             text = stringResource(id = R.string.remove_item),
                             style = {
@@ -477,7 +499,7 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = { }
+                onClick = { },
             ),
     ) {
 

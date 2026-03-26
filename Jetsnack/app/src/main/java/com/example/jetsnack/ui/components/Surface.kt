@@ -19,6 +19,7 @@
 package com.example.jetsnack.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.StyleState
@@ -36,15 +37,13 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 fun Surface(
     modifier: Modifier = Modifier,
     style: Style = Style,
-    // todo confirm patten is acceptable
     styleState: StyleState = rememberUpdatedStyleState(null),
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
         modifier = modifier
             .styleable(styleState, JetsnackTheme.styles.surfaceStyle, style),
     ) {
-        // todo double check CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
         content()
     }
 }
