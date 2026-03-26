@@ -23,6 +23,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -469,9 +470,15 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
 @Composable
 private fun CheckoutBar(modifier: Modifier = Modifier) {
     Column(
-        modifier.background(
-            JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
-        ),
+        modifier
+            .background(
+                JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque),
+            )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = { }
+            ),
     ) {
 
         JetsnackDivider()

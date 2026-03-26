@@ -110,7 +110,6 @@ import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.sharedBoundsRevealWithShapeMorph
 
 private val HighlightCardWidth = 170.dp
-
 private val highlightGlowCardStyle = Style {
     background(colors.brandLight)
     border(0.dp, colors.brandLight)
@@ -119,6 +118,11 @@ private val highlightGlowCardStyle = Style {
             scale(1.05f)
             dropShadow(Shadow(offset = DpOffset(0.dp, 2.dp), radius = 6.dp, color = colors.brand))
             innerShadow(Shadow(offset = DpOffset((-6).dp, (-2).dp), radius = 8.dp, color = colors.brand.copy(alpha = 0.5f)))
+        }
+    }
+    pressed {
+        animate {
+            scale(1.05f)
         }
     }
     focused {
@@ -164,6 +168,11 @@ private val plainCardStyle = Style {
         }
     }
     focused {
+        animate {
+            scale(1.05f)
+        }
+    }
+    pressed {
         animate {
             scale(1.05f)
         }
