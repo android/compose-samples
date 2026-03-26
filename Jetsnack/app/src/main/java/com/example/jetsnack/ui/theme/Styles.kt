@@ -35,7 +35,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.LocalUiMediaScope
 import androidx.compose.ui.UiMediaScope
-import androidx.compose.ui.UiMediaScope.ViewingDistance
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -49,7 +48,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.mediaQuery
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 
@@ -110,8 +108,11 @@ data class Styles(
         )
         contentColor(colors.textSecondary)
         minWidth(58.dp)
-        if (mediaQuery { pointerPrecision == UiMediaScope.PointerPrecision.Fine
-                    && keyboardKind == UiMediaScope.KeyboardKind.Physical }) {
+        if (mediaQuery {
+                pointerPrecision == UiMediaScope.PointerPrecision.Fine &&
+                    keyboardKind == UiMediaScope.KeyboardKind.Physical
+            }
+        ) {
             contentPaddingVertical(4.dp)
             contentPaddingHorizontal(8.dp)
             shape(shapes.medium)
@@ -266,7 +267,7 @@ enum class LoadingState {
 
 val loadingStateKey = StyleStateKey(LoadingState.Loaded)
 
-// Extension Function on MutableStyleState to query and set the current playState
+// Extension Function on MutableStyleState to query and set the current loadingState
 var MutableStyleState.loadingState
     get() = this[loadingStateKey]
     set(value) {

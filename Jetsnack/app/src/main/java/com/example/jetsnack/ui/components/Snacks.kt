@@ -171,11 +171,7 @@ private val plainCardStyle = Style {
 }
 
 @Composable
-fun SnackCollection(
-    snackCollection: SnackCollection,
-    onSnackClick: (Long, String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun SnackCollection(snackCollection: SnackCollection, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -541,7 +537,6 @@ fun SnackCardPreviewPlain() {
         }
     }
 }
-
 
 @Composable
 fun JetsnackPreviewWrapper(content: @Composable () -> Unit) {

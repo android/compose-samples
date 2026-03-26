@@ -61,7 +61,7 @@ private val popular = SnackCollection(
 private val wfhFavs = tastyTreats.copy(
     id = Random.nextLong(),
     name = "WFH favourites",
-    type = CollectionType.Card
+    type = CollectionType.Card,
 )
 
 private val newlyAdded = popular.copy(

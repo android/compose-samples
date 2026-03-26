@@ -35,11 +35,13 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun JetsnackCard(modifier: Modifier = Modifier,
-                 style: Style = Style,
-                 interactionSource: InteractionSource = remember { MutableInteractionSource() },
-                 styleState: StyleState = rememberUpdatedStyleState(interactionSource),
-                 content: @Composable () -> Unit) {
+fun JetsnackCard(
+    modifier: Modifier = Modifier,
+    style: Style = Style,
+    interactionSource: InteractionSource = remember { MutableInteractionSource() },
+    styleState: StyleState = rememberUpdatedStyleState(interactionSource),
+    content: @Composable () -> Unit,
+) {
     Surface(
         modifier = modifier,
         style = JetsnackTheme.styles.cardStyle then style,

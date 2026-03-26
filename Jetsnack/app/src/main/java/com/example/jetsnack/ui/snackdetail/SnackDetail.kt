@@ -559,7 +559,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                             ),
                         ) { it } + fadeIn(tween(300, delayMillis = 300)),
                         exit = slideOutVertically(tween(50)) { it } +
-                                fadeOut(tween(50)),
+                            fadeOut(tween(50)),
                     ),
             ) {
                 Column {

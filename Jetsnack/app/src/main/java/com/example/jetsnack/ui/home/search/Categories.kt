@@ -141,29 +141,30 @@ private fun SearchCategory(category: SearchCategory, modifier: Modifier = Modifi
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(),
-            ) { /* todo */ } ){
-            Text(
-                text = category.name,
-                style = {
-                    textStyleWithFontFamilyFix(typography.titleSmall)
-                    contentColor(colors.textPrimary)
-                },
-                modifier = Modifier
-                    .padding(4.dp)
-                    .padding(start = 8.dp)
-                    .weight(1f, fill = true)
-            )
-            SnackImage(
-                imageRes = category.imageRes,
-                contentDescription = null,
-                style = {
-                    shape(RoundedCornerShape(topStartPercent = 48))
-                },
-                modifier = Modifier.fillMaxSize()
-                    .weight(1f)
-                    .defaultMinSize(minWidth = MinImageSize),
-            )
-        }
+            ) { /* todo */ },
+    ) {
+        Text(
+            text = category.name,
+            style = {
+                textStyleWithFontFamilyFix(typography.titleSmall)
+                contentColor(colors.textPrimary)
+            },
+            modifier = Modifier
+                .padding(4.dp)
+                .padding(start = 8.dp)
+                .weight(1f, fill = true),
+        )
+        SnackImage(
+            imageRes = category.imageRes,
+            contentDescription = null,
+            style = {
+                shape(RoundedCornerShape(topStartPercent = 48))
+            },
+            modifier = Modifier.fillMaxSize()
+                .weight(1f)
+                .defaultMinSize(minWidth = MinImageSize),
+        )
+    }
 }
 
 @Preview("default")

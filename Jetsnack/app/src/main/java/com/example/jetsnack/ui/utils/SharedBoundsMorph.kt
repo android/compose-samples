@@ -135,7 +135,7 @@ fun Morph.asShape(progress: Float): Shape = GenericShape { size: Size, _ ->
 object SnackPolygons {
     val snackDetailPolygon = RoundedPolygon.pill(height = 1.85f).normalized()
 
-    val snackItemPolygon =  RoundedPolygon.rectangle(
+    val snackItemPolygon = RoundedPolygon.rectangle(
         perVertexRounding = listOf(
             CornerRounding(0.25f), CornerRounding(0.25f),
             CornerRounding(0.25f), CornerRounding(0.25f),
@@ -143,5 +143,4 @@ object SnackPolygons {
     ).normalized()
 
     val snackItemPolygonRounded = RoundedPolygon.pill(height = 1.80f).normalized()
-
 }

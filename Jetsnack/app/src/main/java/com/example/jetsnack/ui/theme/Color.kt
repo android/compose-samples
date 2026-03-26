@@ -18,7 +18,6 @@ package com.example.jetsnack.ui.theme
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 

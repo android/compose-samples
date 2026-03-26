@@ -28,14 +28,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.LocalUiMediaScope
 import androidx.compose.ui.UiMediaScope
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.tooling.preview.PreviewWrapper
-import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
-import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable

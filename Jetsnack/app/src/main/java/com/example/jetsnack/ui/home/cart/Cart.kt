@@ -218,7 +218,7 @@ private fun CartContent(
                     placementSpec = itemPlacementSpec,
                 ),
                 snackCollection = inspiredByCart,
-                onSnackClick = onSnackClick
+                onSnackClick = onSnackClick,
             )
             Spacer(Modifier.height(56.dp))
         }
@@ -506,14 +506,14 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
 private fun CartPreview() {
     JetsnackThemeWrapper {
         UiMediaScopeWrapper {
-                Cart(
-                    orderLines = SnackRepo.getCart(),
-                    removeSnack = {},
-                    increaseItemCount = {},
-                    decreaseItemCount = {},
-                    inspiredByCart = SnackRepo.getInspiredByCart(),
-                    onSnackClick = { _, _ -> },
-                )
+            Cart(
+                orderLines = SnackRepo.getCart(),
+                removeSnack = {},
+                increaseItemCount = {},
+                decreaseItemCount = {},
+                inspiredByCart = SnackRepo.getInspiredByCart(),
+                onSnackClick = { _, _ -> },
+            )
         }
     }
 }
