@@ -57,9 +57,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.focused
-import androidx.compose.foundation.style.hovered
-import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.then
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -71,8 +68,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -82,7 +77,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
@@ -109,74 +103,9 @@ import com.example.jetsnack.ui.utils.asShape
 import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.sharedBoundsRevealWithShapeMorph
 
-private val HighlightCardWidth = 170.dp
-private val highlightGlowCardStyle = Style {
-    background(colors.brandLight)
-    border(0.dp, colors.brandLight)
-    hovered {
-        animate {
-            scale(1.05f)
-            dropShadow(Shadow(offset = DpOffset(0.dp, 2.dp), radius = 6.dp, color = colors.brand))
-            innerShadow(Shadow(offset = DpOffset((-6).dp, (-2).dp), radius = 8.dp, color = colors.brand.copy(alpha = 0.5f)))
-        }
-    }
-    pressed {
-        animate {
-            scale(1.05f)
-        }
-    }
-    focused {
-        animate {
-            scale(1.05f)
-            dropShadow(Shadow(offset = DpOffset(0.dp, 2.dp), radius = 6.dp, color = colors.brand))
-            innerShadow(Shadow(offset = DpOffset((-6).dp, (-2).dp), radius = 8.dp, color = colors.brand.copy(alpha = 0.5f)))
-        }
-    }
-}
-private val normalCardStyle = Style {
-    background(Color.Transparent)
-    width(100.dp)
-    contentPadding(2.dp)
-    textAlign(TextAlign.Center)
-    hovered {
-        animate {
-            scale(1.05f)
-        }
-    }
-    focused {
-        animate {
-            scale(1.05f)
-        }
-    }
-    pressed {
-        background(colors.uiFloated.copy(alpha = 0.5f))
-    }
-}
 private val normalTextStyle = Style {
     textStyleWithFontFamilyFix(typography.titleSmall)
     textAlign(TextAlign.Center)
-}
-
-private val plainCardStyle = Style {
-    background(colors.cardHighlightBackground)
-    clip(true)
-    border(1.dp, colors.cardHighlightBorder)
-    textAlign(TextAlign.Center)
-    hovered {
-        animate {
-            scale(1.05f)
-        }
-    }
-    focused {
-        animate {
-            scale(1.05f)
-        }
-    }
-    pressed {
-        animate {
-            scale(1.05f)
-        }
-    }
 }
 
 @Composable
@@ -226,26 +155,24 @@ fun SnackCollection(snackCollection: SnackCollection, onSnackClick: (Long, Strin
                             onSnackClick = onSnackClick,
                             showTagLine = false,
                             imageShape = SnackPolygons.snackItemPolygonRounded,
-                            style = normalCardStyle,
+                            style = JetsnackTheme.styles.normalCardStyle,
                             snackTextStyle = normalTextStyle,
                             imageAspectRatio = 4f / 3f,
                         )
-
                     CollectionType.Highlight ->
                         SnackItem(
                             snackCollectionId = snackCollection.id,
                             snack = snack,
                             onSnackClick = onSnackClick,
                             showAddButton = true,
-                            style = highlightGlowCardStyle,
+                            style = JetsnackTheme.styles.highlightGlowCardStyle,
                         )
-
                     CollectionType.Card ->
                         SnackItem(
                             snackCollectionId = snackCollection.id,
                             snack = snack,
                             onSnackClick = onSnackClick,
-                            style = plainCardStyle,
+                            style = JetsnackTheme.styles.plainCardStyle,
                             imageAspectRatio = 16 / 9f,
                         )
                 }
@@ -284,7 +211,6 @@ private fun SnackItem(
         JetsnackCard(
             style = Style {
                 shape(RoundedCornerShape(roundedCornerAnimation))
-                width(HighlightCardWidth)
             } then style,
             interactionSource = interactionSource,
             modifier = modifier
@@ -501,7 +427,7 @@ fun SnackCardPreviewCard() {
             SnackItem(
                 snackCollectionId = 1,
                 snack = snack,
-                style = normalCardStyle,
+                style = JetsnackTheme.styles.normalCardStyle,
                 showTagLine = false,
                 onSnackClick = { _, _ -> },
             )
@@ -520,7 +446,7 @@ fun SnackCardPreviewHighlight() {
             SnackItem(
                 snackCollectionId = 1,
                 snack = snack,
-                style = highlightGlowCardStyle,
+                style = JetsnackTheme.styles.highlightGlowCardStyle,
                 showAddButton = true,
                 onSnackClick = { _, _ -> },
             )
@@ -540,7 +466,7 @@ fun SnackCardPreviewPlain() {
                 snackCollectionId = 1,
                 snack = snack,
                 showTagLine = false,
-                style = normalCardStyle,
+                style = JetsnackTheme.styles.normalCardStyle,
                 onSnackClick = { _, _ -> },
             )
         }

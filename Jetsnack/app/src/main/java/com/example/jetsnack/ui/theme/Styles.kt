@@ -30,6 +30,7 @@ import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.selected
+import androidx.compose.foundation.style.then
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.ExperimentalMediaQueryApi
@@ -38,12 +39,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
-import com.example.jetsnack.ui.utils.ellipticalGradient
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.mediaQuery
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
+import com.example.jetsnack.ui.utils.ellipticalGradient
 
 @Immutable
 data class Styles(
@@ -209,6 +211,56 @@ data class Styles(
         contentColor(colors.textSecondary)
         clip(true)
     },
+    val baseSnackCardStyle : Style = Style {
+        textAlign(TextAlign.Center)
+        width(170.dp)
+
+        hovered {
+            animate {
+                scale(1.05f)
+            }
+        }
+        focused {
+            animate {
+                scale(1.05f)
+            }
+        }
+        pressed {
+            animate {
+                scale(1.05f)
+            }
+        }
+    },
+    val highlightGlowCardStyle : Style = baseSnackCardStyle then Style {
+        background(colors.brandLight)
+        border(0.dp, colors.brandLight)
+        hovered {
+            animate {
+                dropShadow(Shadow(offset = DpOffset(0.dp, 2.dp), radius = 6.dp, color = colors.brand))
+                innerShadow(Shadow(offset = DpOffset((-6).dp, (-2).dp), radius = 8.dp, color = colors.brand.copy(alpha = 0.5f)))
+            }
+        }
+        focused {
+            animate {
+                dropShadow(Shadow(offset = DpOffset(0.dp, 2.dp), radius = 6.dp, color = colors.brand))
+                innerShadow(Shadow(offset = DpOffset((-6).dp, (-2).dp), radius = 8.dp, color = colors.brand.copy(alpha = 0.5f)))
+            }
+        }
+    },
+    val normalCardStyle : Style = baseSnackCardStyle then Style {
+        background(Color.Transparent)
+        width(100.dp)
+        contentPadding(2.dp)
+        textAlign(TextAlign.Center)
+        pressed {
+            background(colors.uiFloated.copy(alpha = 0.5f))
+        }
+    },
+    val plainCardStyle : Style = baseSnackCardStyle then Style {
+        background(colors.cardHighlightBackground)
+        clip(true)
+        border(1.dp, colors.cardHighlightBorder)
+    }
 )
 
 enum class LoadingState {
