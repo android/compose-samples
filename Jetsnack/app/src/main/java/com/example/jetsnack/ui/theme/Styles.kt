@@ -33,72 +33,24 @@ import androidx.compose.foundation.style.selected
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.ExperimentalMediaQueryApi
-import androidx.compose.ui.LocalUiMediaScope
 import androidx.compose.ui.UiMediaScope
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Matrix
-import androidx.compose.ui.graphics.RadialGradientShader
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shader
-import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
+import com.example.jetsnack.ui.utils.ellipticalGradient
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.mediaQuery
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 
-/**
- * Creates an elliptical radial gradient brush that emulates the CSS radial-gradient spec.
- *
- * @param colors The colors to be distributed along the gradient.
- * @param stops Optional color stops (0.0 to 1.0).
- * @param radiusXPercent The horizontal radius as a percentage of the width (1.0 = 100%).
- * @param radiusYPercent The vertical radius as a percentage of the height (1.0 = 100%).
- * @param centerXPercent The horizontal center position as a percentage of the width.
- * @param centerYPercent The vertical center position as a percentage of the height.
- * @param tileMode The tile mode for the gradient.
- */
-fun ellipticalGradient(
-    colors: List<Color>,
-    stops: List<Float>? = null,
-    radiusXPercent: Float,
-    radiusYPercent: Float,
-    centerXPercent: Float = 0.5f,
-    centerYPercent: Float = 0.5f,
-    tileMode: TileMode = TileMode.Clamp,
-): ShaderBrush = object : ShaderBrush() {
-    override fun createShader(size: Size): Shader {
-        val rX = size.width * radiusXPercent
-        val rY = size.height * radiusYPercent
-        val cX = size.width * centerXPercent
-        val cY = size.height * centerYPercent
-
-        this.transform = Matrix().apply {
-            reset()
-            translate(cX, cY)
-            scale(rX, rY)
-        }
-
-        return RadialGradientShader(
-            colors = colors,
-            colorStops = stops,
-            center = Offset.Zero,
-            radius = 1f,
-            tileMode = tileMode,
-        )
-    }
-}
-
 @Immutable
 data class Styles(
     val buttonStyle: Style = Style {
         shape(shapes.small)
         background(
-            ellipticalGradient(
+            Brush.ellipticalGradient(
                 colors = colors.interactivePrimary,
                 radiusXPercent = 1.3f,
                 radiusYPercent = 0.7f,
@@ -110,7 +62,7 @@ data class Styles(
         minWidth(58.dp)
         if (mediaQuery {
                 pointerPrecision == UiMediaScope.PointerPrecision.Fine &&
-                    keyboardKind == UiMediaScope.KeyboardKind.Physical
+                        keyboardKind == UiMediaScope.KeyboardKind.Physical
             }
         ) {
             contentPaddingVertical(4.dp)
@@ -167,7 +119,7 @@ data class Styles(
         loading {
             animate {
                 background(
-                    ellipticalGradient(
+                    Brush.ellipticalGradient(
                         colors = colors.interactivePrimary.reversed(),
                         radiusXPercent = 1.3f,
                         radiusYPercent = 0.7f,
@@ -227,7 +179,7 @@ data class Styles(
         textStyleWithFontFamilyFix(typography.labelSmall)
         pressed {
             animate {
-                val gradient = ellipticalGradient(
+                val gradient = Brush.ellipticalGradient(
                     colors = colors.interactivePrimary,
                     radiusXPercent = 1.3f,
                     radiusYPercent = 0.7232f,
@@ -267,7 +219,6 @@ enum class LoadingState {
 
 val loadingStateKey = StyleStateKey(LoadingState.Loaded)
 
-// Extension Function on MutableStyleState to query and set the current loadingState
 var MutableStyleState.loadingState
     get() = this[loadingStateKey]
     set(value) {
