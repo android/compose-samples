@@ -19,12 +19,14 @@
 package com.example.jetsnack.ui.theme
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.StyleScope
 import androidx.compose.foundation.style.StyleStateKey
 import androidx.compose.foundation.style.disabled
+import androidx.compose.foundation.style.fillHeight
 import androidx.compose.foundation.style.fillWidth
 import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
@@ -34,18 +36,21 @@ import androidx.compose.foundation.style.then
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.ExperimentalMediaQueryApi
+import androidx.compose.ui.LocalUiMediaScope
 import androidx.compose.ui.UiMediaScope
+import androidx.compose.ui.UiMediaScope.ViewingDistance
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
+import com.example.jetsnack.ui.utils.ellipticalGradient
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.mediaQuery
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
-import com.example.jetsnack.ui.utils.ellipticalGradient
 
 @Immutable
 data class Styles(
@@ -213,8 +218,17 @@ data class Styles(
     },
     val baseSnackCardStyle : Style = Style {
         textAlign(TextAlign.Center)
-        width(170.dp)
 
+        // todo this animation doesn't seem to play nice
+        if (mediaQuery { windowWidth > 500.dp }) {
+            animate {
+                width(200.dp)
+            }
+        } else {
+            animate {
+                width(170.dp)
+            }
+        }
         hovered {
             animate {
                 scale(1.05f)
@@ -262,6 +276,25 @@ data class Styles(
         border(1.dp, colors.cardHighlightBorder)
     }
 )
+
+fun StyleScope.adaptiveFontSize(fontSize: TextUnit) {
+    var scaleFactor = when (LocalUiMediaScope.currentValue.viewingDistance) {
+        ViewingDistance.Near -> 1f
+        ViewingDistance.Medium -> 1.72f
+        ViewingDistance.Far -> 1.5f
+        else -> 1f
+    }
+    scaleFactor = when (LocalUiMediaScope.currentValue.pointerPrecision) {
+        UiMediaScope.PointerPrecision.Coarse -> scaleFactor * 1f
+        UiMediaScope.PointerPrecision.Blunt -> scaleFactor * 0.66f
+        UiMediaScope.PointerPrecision.Fine -> scaleFactor * 1f
+        UiMediaScope.PointerPrecision.None -> scaleFactor
+        else -> {
+            scaleFactor
+        }
+    }
+    fontSize(fontSize * scaleFactor)
+}
 
 enum class LoadingState {
     Loading,

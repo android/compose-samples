@@ -38,6 +38,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -184,7 +185,7 @@ fun JetsnackBottomBar(
             background(color)
             contentColor(contentColor)
             if (mediaQuery { windowWidth > 600.dp }) {
-                contentPaddingHorizontal(200.dp)
+                contentPaddingHorizontal(100.dp)
             }
         },
     ) {
