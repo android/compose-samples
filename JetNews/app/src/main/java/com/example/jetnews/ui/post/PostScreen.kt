@@ -24,10 +24,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
@@ -37,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,10 +52,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,17 +69,116 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.deeplink.util.DeepLinkPattern
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.home.HomeKey
+import com.example.jetnews.ui.navigation.DeepLinkKey
+import com.example.jetnews.ui.navigation.ListDetailScene
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class PostKey(val postId: String) : DeepLinkKey {
+    override val parent = HomeKey
+}
+
+val PostDeepLinkPattern = DeepLinkPattern(
+    PostKey.serializer(),
+    uriPattern = "https://developer.android.com/jetnews/posts/{postId}".toUri(),
+)
+
+fun EntryProviderScope<NavKey>.postEntry(postsRepository: PostsRepository, isExpandedScreen: () -> Boolean, onBack: () -> Unit) {
+    entry<PostKey>(
+        metadata = ListDetailScene.detail(),
+    ) {
+        val postViewModel: PostViewModel =
+            viewModel(factory = PostViewModel.provideFactory(postsRepository, it.postId), key = it.postId)
+
+        val uiState by postViewModel.uiState.collectAsStateWithLifecycle()
+
+        PostScreen(
+            uiState = uiState,
+            isExpandedScreen = isExpandedScreen(),
+            onBack = onBack,
+            onToggleFavorite = postViewModel::toggleFavorite,
+            onScroll = postViewModel::onScroll,
+        )
+    }
+}
+
+@OptIn(FlowPreview::class)
+@Composable
+fun PostScreen(
+    uiState: PostUiState,
+    isExpandedScreen: Boolean,
+    onBack: () -> Unit,
+    onToggleFavorite: () -> Unit,
+    onScroll: (index: Int, offset: Int) -> Unit,
+) {
+    if (uiState.loading) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Box(contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(64.dp),
+                )
+            }
+        }
+    } else {
+        val post = uiState.post
+        if (post != null) {
+            val lazyListState = rememberLazyListState(
+                initialFirstVisibleItemIndex = uiState.initialFirstVisibleItemIndex,
+                initialFirstVisibleItemScrollOffset = uiState.initialFirstVisibleItemScrollOffset,
+            )
+
+            LaunchedEffect(lazyListState) {
+                snapshotFlow {
+                    Pair(
+                        lazyListState.firstVisibleItemIndex,
+                        lazyListState.firstVisibleItemScrollOffset,
+                    )
+                }
+                    .debounce(50)
+                    .collectLatest { (index, offset) ->
+                        onScroll(index, offset)
+                    }
+            }
+
+            PostScreen(
+                post = post,
+                isExpandedScreen = isExpandedScreen,
+                onBack = onBack,
+                isFavorite = uiState.isFavorite,
+                onToggleFavorite = onToggleFavorite,
+                lazyListState = lazyListState,
+            )
+        } else {
+            Surface(modifier = Modifier.fillMaxSize()) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(text = "Post not found")
+                }
+            }
+        }
+    }
+}
 
 /**
  * Stateless Post Screen that displays a single post adapting the UI to different screen sizes.

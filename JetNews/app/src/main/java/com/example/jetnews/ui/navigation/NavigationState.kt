@@ -70,14 +70,15 @@ fun rememberNavigationState(mainTopLevelRoute: NavKey, topLevelRoutes: Set<NavKe
         }
     }
 
-    return remember(mainTopLevelRoute, topLevelRoute, backStacks) {
-        NavigationState(mainTopLevelRoute, topLevelRoute, backStacks)
+    return remember(mainTopLevelRoute, topLevelRoute, topLevelRoutes, backStacks) {
+        NavigationState(mainTopLevelRoute, topLevelRoute, topLevelRoutes, backStacks)
     }
 }
 
 class NavigationState(
     val mainTopLevelRoute: NavKey,
     topLevelRoute: MutableState<NavKey>,
+    val topLevelRoutes: Set<NavKey>,
     val backStacks: Map<NavKey, NavBackStack<NavKey>>,
 ) {
     var topLevelRoute: NavKey by topLevelRoute

@@ -16,35 +16,43 @@
 
 package com.example.jetnews.ui.navigation
 
-import com.example.jetnews.ui.home.HomeKey
-import com.example.jetnews.ui.interests.InterestsKey
-import com.example.jetnews.ui.post.PostKey
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+
+data class PopUpTo(val navKey: NavKey, val inclusive: Boolean = false)
 
 class Navigator(val state: NavigationState) {
-    fun toHome() {
-        if (state.topLevelRoute == HomeKey) return
-        state.topLevelRoute = HomeKey
-    }
+    val currentStack: NavBackStack<NavKey>
+        get() = state.backStacks[state.topLevelRoute] ?: error("Stack for ${state.topLevelRoute} not found")
 
-    fun toPost(postId: String) {
-        val postKey = PostKey(postId)
-        if (state.topLevelRoute == HomeKey && state.backStacks[HomeKey]?.lastOrNull()?.equals(postKey) == true) return
-        state.topLevelRoute = HomeKey
-        state.backStacks[HomeKey]?.apply {
-            if (getOrNull(1) == null) add(postKey) else set(1, postKey)
+    val currentRoute: NavKey
+        get() = currentStack.last()
+
+    fun navigate(navKey: NavKey, popUpTo: PopUpTo? = null) {
+        if (navKey in state.topLevelRoutes) {
+            state.topLevelRoute = navKey
+        }
+
+        if (currentRoute == navKey && popUpTo == null) return
+
+        if (popUpTo != null) {
+            val index = currentStack.indexOfLast { it == popUpTo.navKey }
+
+            if (index != -1) {
+                val fromIndex = if (popUpTo.inclusive) index else index + 1
+                if (fromIndex < currentStack.size) {
+                    currentStack.subList(fromIndex, currentStack.size).clear()
+                }
+            }
+        }
+
+        if (navKey !in state.topLevelRoutes && currentRoute != navKey) {
+            currentStack.add(navKey)
         }
     }
 
-    fun toInterests() {
-        if (state.topLevelRoute == InterestsKey) return
-        state.topLevelRoute = InterestsKey
-    }
-
-    fun goBack() {
-        val currentStack = state.backStacks[state.topLevelRoute] ?: error("Stack for ${state.topLevelRoute} not found")
-        val currentRoute = currentStack.last()
-
-        // If we're at the base of the current route, go back to the start route stack.
+    fun goUp() {
+        // If we're at the base of the current route's stack, go back to the main route stack.
         if (currentRoute == state.topLevelRoute) {
             state.topLevelRoute = state.mainTopLevelRoute
         } else {

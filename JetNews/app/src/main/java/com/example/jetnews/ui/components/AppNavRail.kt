@@ -25,6 +25,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,11 +34,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeKey
-import com.example.jetnews.ui.interests.InterestsKey
+import com.example.jetnews.ui.navigation.NavigationItem
+import com.example.jetnews.ui.navigation.TOP_LEVEL_ROUTES
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
-fun AppNavRail(currentRoute: NavKey, navigateToHome: () -> Unit, navigateToInterests: () -> Unit, modifier: Modifier = Modifier) {
+fun AppNavRail(
+    currentTopLevelRoute: NavKey,
+    navigate: (NavKey) -> Unit,
+    navigationItems: List<NavigationItem>,
+    modifier: Modifier = Modifier,
+) {
     NavigationRail(
         header = {
             Icon(
@@ -50,20 +57,23 @@ fun AppNavRail(currentRoute: NavKey, navigateToHome: () -> Unit, navigateToInter
         modifier = modifier,
     ) {
         Spacer(Modifier.weight(1f))
-        NavigationRailItem(
-            selected = currentRoute is HomeKey,
-            onClick = navigateToHome,
-            icon = { Icon(painterResource(id = R.drawable.ic_home), stringResource(R.string.home_title)) },
-            label = { Text(stringResource(R.string.home_title)) },
-            alwaysShowLabel = false,
-        )
-        NavigationRailItem(
-            selected = currentRoute is InterestsKey,
-            onClick = navigateToInterests,
-            icon = { Icon(painterResource(id = R.drawable.ic_list_alt), stringResource(R.string.interests_title)) },
-            label = { Text(stringResource(R.string.interests_title)) },
-            alwaysShowLabel = false,
-        )
+
+        navigationItems.forEach { topLevelRoute ->
+            key(topLevelRoute.navKey) {
+                NavigationRailItem(
+                    selected = currentTopLevelRoute == topLevelRoute.navKey,
+                    onClick = { navigate(topLevelRoute.navKey) },
+                    icon = {
+                        Icon(
+                            painterResource(id = topLevelRoute.iconResourceId),
+                            stringResource(topLevelRoute.iconContentDescriptionResourceId),
+                        )
+                    },
+                    label = { Text(stringResource(topLevelRoute.labelResourceId)) },
+                    alwaysShowLabel = false,
+                )
+            }
+        }
         Spacer(Modifier.weight(1f))
     }
 }
@@ -74,9 +84,9 @@ fun AppNavRail(currentRoute: NavKey, navigateToHome: () -> Unit, navigateToInter
 fun PreviewAppNavRail() {
     JetnewsTheme {
         AppNavRail(
-            currentRoute = HomeKey,
-            navigateToHome = {},
-            navigateToInterests = {},
+            currentTopLevelRoute = HomeKey,
+            navigationItems = TOP_LEVEL_ROUTES,
+            navigate = {},
         )
     }
 }

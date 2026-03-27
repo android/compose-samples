@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -51,6 +52,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -82,15 +84,104 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
+import com.example.jetnews.deeplink.util.DeepLinkPattern
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
 import com.example.jetnews.ui.modifiers.interceptKey
+import com.example.jetnews.ui.navigation.ListDetailScene
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object HomeKey : NavKey
+
+val HomeDeepLinkPattern = DeepLinkPattern(
+    HomeKey.serializer(),
+    uriPattern = "https://developer.android.com/jetnews".toUri(),
+)
+
+fun EntryProviderScope<NavKey>.homeEntry(
+    postsRepository: PostsRepository,
+    isExpandedScreen: () -> Boolean,
+    openDrawer: () -> Unit,
+    navigateToPost: (String) -> Unit,
+) {
+    entry<HomeKey>(
+        metadata = ListDetailScene.list(
+            ListDetailScene.ListConfiguration(
+                modifier = Modifier.width(334.dp),
+                detailPlaceholder = {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                stringResource(R.string.home_detail_placeholder),
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                        }
+                    }
+                },
+            ),
+        ),
+    ) {
+        val homeViewModel: HomeViewModel =
+            viewModel(factory = HomeViewModel.provideFactory(postsRepository))
+
+        HomeScreen(
+            homeViewModel = homeViewModel,
+            isExpandedScreen = isExpandedScreen(),
+            openDrawer = openDrawer,
+            navigateToPost = navigateToPost,
+        )
+    }
+}
+
+/**
+ * Displays the Home route.
+ *
+ * Note: AAC ViewModels don't work with Compose Previews currently.
+ *
+ * @param homeViewModel ViewModel that handles the business logic of this screen
+ * @param isExpandedScreen (state) whether the screen is expanded
+ * @param openDrawer (event) request opening the app drawer
+ * @param navigateToPost (event) request navigation to Post screen
+ * @param snackbarHostState (state) state for the [Scaffold] component on this screen
+ */
+@Composable
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+    isExpandedScreen: Boolean,
+    openDrawer: () -> Unit,
+    navigateToPost: (String) -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+) {
+    // UiState of the HomeScreen
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    HomeFeedScreen(
+        uiState = uiState,
+        showTopAppBar = !isExpandedScreen,
+        onToggleFavorite = { homeViewModel.toggleFavourite(it) },
+        onSelectPost = { navigateToPost(it) },
+        onRefreshPosts = { homeViewModel.refreshPosts() },
+        onErrorDismiss = { homeViewModel.errorShown(it) },
+        openDrawer = openDrawer,
+        homeListLazyListState = rememberLazyListState(),
+        snackbarHostState = snackbarHostState,
+        onSearchInputChanged = { homeViewModel.onSearchInputChanged(it) },
+        searchInput = uiState.searchInput,
+    )
+}
 
 /**
  * The home screen displaying just the post feed.

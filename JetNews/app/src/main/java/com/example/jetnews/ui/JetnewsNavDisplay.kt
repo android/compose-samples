@@ -35,11 +35,14 @@ import androidx.navigationevent.NavigationEvent
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.ui.home.HomeKey
 import com.example.jetnews.ui.home.homeEntry
 import com.example.jetnews.ui.interests.interestsEntry
 import com.example.jetnews.ui.navigation.NavigationState
 import com.example.jetnews.ui.navigation.Navigator
+import com.example.jetnews.ui.navigation.PopUpTo
 import com.example.jetnews.ui.navigation.rememberListDetailSceneStrategy
+import com.example.jetnews.ui.post.PostKey
 import com.example.jetnews.ui.post.postEntry
 
 const val PIVOT_FRACTION_OFFSET = .2f
@@ -65,12 +68,12 @@ fun JetnewsNavDisplay(
             postsRepository = appContainer.postsRepository,
             isExpandedScreen = { currentIsExpandedScreen },
             openDrawer = openDrawer,
-            navigateToPost = { navigator.toPost(it) },
+            navigateToPost = { navigator.navigate(PostKey(it), popUpTo = PopUpTo(HomeKey)) },
         )
         postEntry(
             postsRepository = appContainer.postsRepository,
             isExpandedScreen = { currentIsExpandedScreen },
-            onBack = navigator::goBack,
+            onBack = navigator::goUp,
         )
         interestsEntry(
             interestsRepository = appContainer.interestsRepository,

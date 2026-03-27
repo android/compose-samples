@@ -17,31 +17,14 @@
 package com.example.jetnews.deeplink
 
 import android.net.Uri
-import androidx.core.net.toUri
 import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.deeplink.util.DeepLinkMatcher
-import com.example.jetnews.deeplink.util.DeepLinkPattern
 import com.example.jetnews.deeplink.util.DeepLinkRequest
 import com.example.jetnews.deeplink.util.KeyDecoder
-import com.example.jetnews.ui.home.HomeKey
-import com.example.jetnews.ui.interests.InterestsKey
+import com.example.jetnews.ui.home.HomeDeepLinkPattern
+import com.example.jetnews.ui.interests.InterestsDeepLinkPattern
 import com.example.jetnews.ui.navigation.DeepLinkKey
-import com.example.jetnews.ui.post.PostKey
-
-val HomeDeepLinkPattern = DeepLinkPattern(
-    HomeKey.serializer(),
-    uriPattern = "https://developer.android.com/jetnews".toUri(),
-)
-
-val PostDeepLinkPattern = DeepLinkPattern(
-    PostKey.serializer(),
-    uriPattern = "https://developer.android.com/jetnews/posts/{postId}".toUri(),
-)
-
-val InterestsDeepLinkPattern = DeepLinkPattern(
-    InterestsKey.serializer(),
-    uriPattern = "https://developer.android.com/jetnews/interests".toUri(),
-)
+import com.example.jetnews.ui.post.PostDeepLinkPattern
 
 val JetnewsDeepLinkPatterns = listOf(HomeDeepLinkPattern, PostDeepLinkPattern, InterestsDeepLinkPattern)
 

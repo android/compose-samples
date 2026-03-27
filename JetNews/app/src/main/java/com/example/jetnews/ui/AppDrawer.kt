@@ -31,6 +31,7 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,15 +40,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeKey
-import com.example.jetnews.ui.interests.InterestsKey
+import com.example.jetnews.ui.navigation.NavigationItem
+import com.example.jetnews.ui.navigation.TOP_LEVEL_ROUTES
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
-    currentRoute: NavKey,
-    navigateToHome: () -> Unit,
-    navigateToInterests: () -> Unit,
+    currentTopLevelRoute: NavKey,
+    navigate: (NavKey) -> Unit,
+    navigationItems: List<NavigationItem>,
     closeDrawer: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -58,26 +60,20 @@ fun AppDrawer(
         JetNewsLogo(
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp),
         )
-        NavigationDrawerItem(
-            label = { Text(stringResource(id = R.string.home_title)) },
-            icon = { Icon(painterResource(R.drawable.ic_home), null) },
-            selected = currentRoute is HomeKey,
-            onClick = {
-                navigateToHome()
-                closeDrawer()
-            },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-        )
-        NavigationDrawerItem(
-            label = { Text(stringResource(id = R.string.interests_title)) },
-            icon = { Icon(painterResource(R.drawable.ic_list_alt), null) },
-            selected = currentRoute is InterestsKey,
-            onClick = {
-                navigateToInterests()
-                closeDrawer()
-            },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-        )
+        navigationItems.forEach { navigationItem ->
+            key(navigationItem.navKey) {
+                NavigationDrawerItem(
+                    label = { Text(stringResource(id = navigationItem.labelResourceId)) },
+                    icon = { Icon(painterResource(navigationItem.iconResourceId), null) },
+                    selected = currentTopLevelRoute == navigationItem.navKey,
+                    onClick = {
+                        navigate(navigationItem.navKey)
+                        closeDrawer()
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                )
+            }
+        }
     }
 }
 
@@ -105,9 +101,9 @@ fun PreviewAppDrawer() {
     JetnewsTheme {
         AppDrawer(
             drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
-            currentRoute = HomeKey,
-            navigateToHome = {},
-            navigateToInterests = {},
+            currentTopLevelRoute = HomeKey,
+            navigate = {},
+            navigationItems = TOP_LEVEL_ROUTES,
             closeDrawer = { },
         )
     }

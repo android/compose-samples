@@ -44,9 +44,9 @@ class MainActivity : ComponentActivity() {
             var initialBackStack by rememberInitialBackStack(initialDeepLinkBackStack ?: listOf(HomeKey))
 
             NewIntentEffect { newIntent ->
-                newIntent.data?.handleDeepLink()?.let {
+                newIntent.data?.handleDeepLink()?.let { deepLinkBackStack ->
                     isOpenedByDeepLink = true
-                    initialBackStack = it
+                    initialBackStack = deepLinkBackStack
                 }
             }
 

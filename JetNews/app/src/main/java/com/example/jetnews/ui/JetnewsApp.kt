@@ -32,6 +32,8 @@ import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.home.HomeKey
 import com.example.jetnews.ui.interests.InterestsKey
 import com.example.jetnews.ui.navigation.Navigator
+import com.example.jetnews.ui.navigation.PopUpTo
+import com.example.jetnews.ui.navigation.TOP_LEVEL_ROUTES
 import com.example.jetnews.ui.navigation.rememberNavigationState
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
@@ -61,9 +63,9 @@ fun JetnewsApp(appContainer: AppContainer, isBackEnabled: Boolean, initialBackSt
             drawerContent = {
                 AppDrawer(
                     drawerState = sizeAwareDrawerState,
-                    currentRoute = navigationState.topLevelRoute,
-                    navigateToHome = navigator::toHome,
-                    navigateToInterests = navigator::toInterests,
+                    currentTopLevelRoute = navigationState.topLevelRoute,
+                    navigate = { navKey -> navigator.navigate(navKey, PopUpTo(navKey)) },
+                    navigationItems = TOP_LEVEL_ROUTES,
                     closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
                 )
             },
@@ -74,16 +76,16 @@ fun JetnewsApp(appContainer: AppContainer, isBackEnabled: Boolean, initialBackSt
             Row {
                 if (isExpandedScreen) {
                     AppNavRail(
-                        currentRoute = navigationState.topLevelRoute,
-                        navigateToHome = navigator::toHome,
-                        navigateToInterests = navigator::toInterests,
+                        currentTopLevelRoute = navigationState.topLevelRoute,
+                        navigationItems = TOP_LEVEL_ROUTES,
+                        navigate = { navKey -> navigator.navigate(navKey) },
                     )
                 }
                 JetnewsNavDisplay(
                     navigationState = navigationState,
                     navigator = navigator,
                     appContainer = appContainer,
-                    onBack = navigator::goBack,
+                    onBack = navigator::goUp,
                     isExpandedScreen = isExpandedScreen,
                     isBackEnabled = isBackEnabled,
                     openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
