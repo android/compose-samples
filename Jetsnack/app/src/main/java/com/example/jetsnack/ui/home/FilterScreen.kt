@@ -204,7 +204,6 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
     }
 }
 
-@OptIn(ExperimentalFlexBoxApi::class)
 @Composable
 fun FilterChipSection(title: String, filters: List<Filter>) {
     FilterTitle(text = title)
