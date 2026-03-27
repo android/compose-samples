@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.ui.article
+package com.example.jetnews.ui.post
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
@@ -146,7 +146,7 @@ private fun PostMetadata(metadata: Metadata, modifier: Modifier = Modifier) {
 
             Text(
                 text = stringResource(
-                    id = R.string.article_post_min_read,
+                    id = R.string.post_min_read,
                     metadata.date, metadata.readTimeMinutes,
                 ),
                 style = MaterialTheme.typography.bodySmall,

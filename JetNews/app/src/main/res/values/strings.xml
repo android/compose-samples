@@ -38,12 +38,13 @@
     <string name="home_popular_section_title">Popular on Jetnews</string>
     <string name="home_post_min_read">%1$s - %2$d min read</string>
     <string name="home_post_based_on_history">BASED ON YOUR HISTORY</string>
-    <string name="home_search">Search articles</string>
+    <string name="home_search">Search posts</string>
+    <string name="home_detail_placeholder">Select a post</string>
 
-    <!-- Article Screen -->
-    <string name="article_functionality_not_available">Functionality not available \uD83D\uDE48</string>
-    <string name="article_share_post">Share post</string>
-    <string name="article_post_min_read">%1$s • %2$d min read</string>
+    <!-- Post Screen -->
+    <string name="post_functionality_not_available">Functionality not available \uD83D\uDE48</string>
+    <string name="post_share_post">Share post</string>
+    <string name="post_min_read">%1$s • %2$d min read</string>
 
     <!-- Interests Screen -->
     <string name="interests_title">Interests</string>

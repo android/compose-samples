@@ -15,23 +15,28 @@ project from Android Studio following the steps
 
 ## Features
 
-This sample contains three screens: a list of articles, a detail page for articles, and a page to
-subscribe to topics of interest. The navigation from the the list of articles to the interests
+This sample contains three screens: a list of posts, a detail page for a post, and a page to
+subscribe to topics of interest. The navigation from the list of posts to the interests
 screen uses a navigation drawer.
 
 ### App scaffolding
 
 Package [`com.example.jetnews.ui`][1]
 
-[`JetnewsApp.kt`][2] arranges the different screens in the `NavDrawerLayout`. 
+[`JetnewsApp.kt`][2] sets up the app's navigation state and the modal drawer used for navigation
+on smaller windows.
 
-[`JetnewsNavGraph.kt`][3] configures the navigation routes and actions in the app. 
+[`JetnewsNavDisplay.kt`][3] displays the primary content of the app: the list of posts, the
+posts themselves, and the interests page. It uses a list-detail scene strategy to adaptively
+display more or less content depending on the window size.
+
+<img src="screenshots/jetnews_all_screens.png" alt="Screenshot">
 
 [1]: app/src/main/java/com/example/jetnews/ui
 [2]: app/src/main/java/com/example/jetnews/ui/JetnewsApp.kt
-[3]: app/src/main/java/com/example/jetnews/ui/JetnewsNavGraph.kt
+[3]: app/src/main/java/com/example/jetnews/ui/JetnewsNavDisplay.kt
 
-### Main article list
+### Main post list
 
 Package [`com.example.jetnews.ui.home`][4]
 
@@ -47,14 +52,14 @@ See how to:
 
 [4]: app/src/main/java/com/example/jetnews/ui/home
 
-### Article detail
+### Post detail
 
-Package [`com.example.jetnews.ui.article`][5]
+Package [`com.example.jetnews.ui.post`][5]
 
 This screen dives into the Text API, showing how to use different fonts than the ones defined in
 [`Typography`][6]. It also adds a bottom app bar, with custom actions.
 
-[5]: app/src/main/java/com/example/jetnews/ui/article
+[5]: app/src/main/java/com/example/jetnews/ui/post
 [6]: app/src/main/java/com/example/jetnews/ui/theme/Type.kt
 
 ### Interests screen
@@ -98,20 +103,6 @@ UI tests can be run on device/emulators or on JVM with Robolectric.
 
 * To run Instrumented tests use the "Instrumented tests" run configuration or run the `./gradlew connectedCheck` command.
 * To run tests with Robolectric use the "Robolectric tests" run configuration or run the `./gradlew testDebug` command.
-
-## Jetnews for every screen
-
-<img src="screenshots/jetnews_all_screens.png" alt="Screenshot">
-
-We recently updated Jetnews to enhance its behavior across all mobile devices, both big and small.
-Jetnews already had support for “traditional” mobile screens, so it was tempting to describe all of
-our changes as “adding large screen support.” While that is true, it misses the point of having
-adaptive UI. For example, if your app is running in split screen mode on a tablet, it shouldn't try
-to display “tablet UI” unless it actually has enough space for it. With all of these changes,
-Jetnews is working better than ever on large screens, but also on small screens too.
-
-Check out the blog post that explains all the changes in more details:
-https://medium.com/androiddevelopers/jetnews-for-every-screen-4d8e7927752
 
 ## License
 
