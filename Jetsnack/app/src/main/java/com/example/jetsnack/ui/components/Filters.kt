@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationStyleApi::class)
+@file:OptIn(
+    ExperimentalSharedTransitionApi::class,
+    ExperimentalFoundationStyleApi::class,
+    ExperimentalMediaQueryApi::class
+)
 
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.interaction.FocusInteraction
+import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,22 +39,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.style.then
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiMediaScope
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +66,8 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.shapes
 import com.example.jetsnack.ui.theme.typography
+import com.example.jetsnack.ui.utils.JetsnackThemeWrapper
+import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 
 @Composable
 fun FilterBar(
@@ -65,13 +75,14 @@ fun FilterBar(
     onShowFilters: () -> Unit,
     filterScreenVisible: Boolean,
     sharedTransitionScope: SharedTransitionScope,
+    modifier: Modifier = Modifier,
 ) {
     with(sharedTransitionScope) {
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
-            modifier = Modifier.heightIn(min = 56.dp),
+            modifier = modifier.heightIn(min = 56.dp),
         ) {
             item {
                 AnimatedVisibility(visible = !filterScreenVisible) {
@@ -86,12 +97,15 @@ fun FilterBar(
                     ) {
                         Icon(
                             painterResource(R.drawable.ic_filter_list),
-                            tint = JetsnackTheme.colors.brand,
+                            tint = JetsnackTheme.colors.iconPrimary,
                             contentDescription = stringResource(R.string.label_filters),
-                            modifier = Modifier.diagonalGradientBorder(
-                                colors = JetsnackTheme.colors.interactiveSecondary,
-                                shape = CircleShape,
-                            ),
+                            modifier = Modifier
+                                .styleable(null) {
+                                    contentPaddingHorizontal(2.dp)
+                                    minHeight(32.dp)
+                                    border(3.dp, Brush.linearGradient(colors.interactiveSecondary))
+                                    shape(RoundedCornerShape(50))
+                                },
                         )
                     }
                 }
@@ -109,10 +123,14 @@ fun FilterBar(
 }
 
 @Composable
-fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Style) {
+fun FilterChip(
+    filter: Filter,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    style: Style = Style,
+) {
 
     val (selected, setSelected) = filter.enabled
-    val interactionSource = remember { MutableInteractionSource() }
     val styleState = rememberUpdatedStyleState(
         interactionSource,
         {
@@ -131,37 +149,17 @@ fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Sty
         style = JetsnackTheme.styles.filterChipStyle then style,
         styleState = styleState,
     ) {
-        val innerBackgroundStyle = Style {
-            background(Color.Transparent)
-            pressed {
-                animate {
-                    background(
-                        Brush.horizontalGradient(
-                            colors = colors.interactiveSecondary,
-                            startX = 0f,
-                            endX = 200f,
-                            tileMode = TileMode.Mirror,
-                        ),
-                    )
-                }
-            }
-        }
-        Box(
-            modifier = Modifier
-                .styleable(styleState, innerBackgroundStyle),
-        ) {
-            Text(
-                text = filter.name,
-                style = {
-                    textStyleWithFontFamilyFix(typography.bodySmall)
-                },
-                maxLines = 1,
-                modifier = Modifier.padding(
-                    horizontal = 20.dp,
-                    vertical = 6.dp,
-                ),
-            )
-        }
+        Text(
+            text = filter.name,
+            style = {
+                textStyleWithFontFamilyFix(typography.labelSmall)
+            },
+            maxLines = 1,
+            modifier = Modifier.padding(
+                horizontal = 20.dp,
+                vertical = 6.dp,
+            ),
+        )
     }
 }
 
@@ -170,7 +168,7 @@ fun FilterChip(filter: Filter, modifier: Modifier = Modifier, style: Style = Sty
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun FilterDisabledPreview() {
-    JetsnackTheme {
+    JetsnackThemeWrapper {
         FilterChip(Filter(name = "Demo", enabled = false), Modifier.padding(4.dp))
     }
 }
@@ -180,7 +178,82 @@ private fun FilterDisabledPreview() {
 @Preview("large font", fontScale = 2f)
 @Composable
 private fun FilterEnabledPreview() {
-    JetsnackTheme {
+    JetsnackThemeWrapper {
         FilterChip(Filter(name = "Demo", enabled = true))
+    }
+}
+
+@Preview("hovered focused")
+@Preview("dark theme hovered focused", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewHoveredFocused() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(HoverInteraction.Enter())
+            interactionSource.emit(FocusInteraction.Focus())
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
+    }
+}
+
+@Preview("pressed focused")
+@Preview("dark theme pressed focused", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewPressedFocused() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(FocusInteraction.Focus())
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
+    }
+}
+
+@Preview("pressed hovered")
+@Preview("dark theme pressed hovered", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewPressedHovered() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+            interactionSource.emit(HoverInteraction.Enter())
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
+    }
+}
+
+@Preview("pressed")
+@Preview("dark theme pressed", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterPreviewPressed() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, pointerPrecision = UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+        }
+        JetsnackThemeWrapper {
+            FilterChip(
+                filter = Filter(name = "Demo"),
+                interactionSource = interactionSource,
+            )
+        }
     }
 }

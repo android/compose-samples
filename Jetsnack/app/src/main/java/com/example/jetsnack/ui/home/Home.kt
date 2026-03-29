@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalMediaQueryApi::class)
+
 package com.example.jetsnack.ui.home
 
 import androidx.annotation.DrawableRes
@@ -29,7 +31,6 @@ import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
@@ -37,19 +38,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
@@ -57,12 +61,12 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.mediaQuery
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.os.ConfigurationCompat
@@ -82,6 +86,7 @@ import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
 import java.util.Locale
 
@@ -168,8 +173,8 @@ fun JetsnackBottomBar(
     currentRoute: String,
     navigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = JetsnackTheme.colors.iconPrimary,
-    contentColor: Color = JetsnackTheme.colors.iconInteractive,
+    color: Color = JetsnackTheme.colors.brandLight,
+    contentColor: Color = JetsnackTheme.colors.iconPrimary,
 ) {
     val routes = remember { tabs.map { it.route } }
     val currentSection = tabs.first { it.route == currentRoute }
@@ -179,6 +184,9 @@ fun JetsnackBottomBar(
         style = {
             background(color)
             contentColor(contentColor)
+            if (mediaQuery { windowWidth > 600.dp }) {
+                contentPaddingHorizontal(100.dp)
+            }
         },
     ) {
         val springSpec = spatialExpressiveSpring<Float>()
@@ -197,9 +205,9 @@ fun JetsnackBottomBar(
                 val selected = section == currentSection
                 val tint by animateColorAsState(
                     if (selected) {
-                        JetsnackTheme.colors.iconInteractive
-                    } else {
                         JetsnackTheme.colors.iconInteractiveInactive
+                    } else {
+                        JetsnackTheme.colors.iconInteractiveInactive.copy(alpha = 0.9f)
                     },
                     label = "tint",
                 )
@@ -227,7 +235,8 @@ fun JetsnackBottomBar(
                     selected = selected,
                     onSelected = { navigateToRoute(section.route) },
                     animSpec = springSpec,
-                    modifier = BottomNavigationItemPadding
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                         .clip(BottomNavIndicatorShape),
                 )
             }
@@ -403,16 +412,15 @@ private fun MeasureScope.placeTextAndIcon(
 }
 
 @Composable
-private fun JetsnackBottomNavIndicator(
-    strokeWidth: Dp = 2.dp,
-    color: Color = JetsnackTheme.colors.iconInteractive,
-    shape: Shape = BottomNavIndicatorShape,
-) {
+private fun JetsnackBottomNavIndicator() {
     Spacer(
         modifier = Modifier
             .fillMaxSize()
-            .then(BottomNavigationItemPadding)
-            .border(strokeWidth, color, shape),
+            .styleable(null) {
+                shape(BottomNavIndicatorShape)
+                border(3.dp, Brush.linearGradient(colors.interactiveMask))
+                externalPadding(horizontal = 16.dp, vertical = 8.dp)
+            },
     )
 }
 
@@ -420,7 +428,6 @@ private val TextIconSpacing = 2.dp
 private val BottomNavHeight = 56.dp
 private val BottomNavLabelTransformOrigin = TransformOrigin(0f, 0.5f)
 private val BottomNavIndicatorShape = RoundedCornerShape(percent = 50)
-private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
 
 @Preview
 @Composable

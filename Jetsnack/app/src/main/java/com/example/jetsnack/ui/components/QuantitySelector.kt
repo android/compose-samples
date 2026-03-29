@@ -47,7 +47,7 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
         Text(
             text = stringResource(R.string.quantity),
             style = {
-                textStyleWithFontFamilyFix(typography.titleMedium)
+                textStyleWithFontFamilyFix(typography.labelLarge)
                 contentColor(colors.textSecondary)
                 fontWeight(FontWeight.Normal)
             },
@@ -69,7 +69,7 @@ fun QuantitySelector(count: Int, decreaseItemCount: () -> Unit, increaseItemCoun
             Text(
                 text = "$it",
                 style = {
-                    textStyleWithFontFamilyFix(typography.titleSmall)
+                    textStyleWithFontFamilyFix(typography.labelLarge)
                     fontSize(18.sp)
                     contentColor(colors.textPrimary)
                     textAlign(TextAlign.Center)

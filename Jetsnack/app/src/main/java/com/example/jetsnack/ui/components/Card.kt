@@ -19,21 +19,34 @@
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.StyleState
+import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.then
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
-fun JetsnackCard(modifier: Modifier = Modifier, style: Style = Style, content: @Composable () -> Unit) {
+fun JetsnackCard(
+    modifier: Modifier = Modifier,
+    style: Style = Style,
+    interactionSource: InteractionSource = remember { MutableInteractionSource() },
+    styleState: StyleState = rememberUpdatedStyleState(interactionSource),
+    content: @Composable BoxScope.() -> Unit,
+) {
     Surface(
         modifier = modifier,
         style = JetsnackTheme.styles.cardStyle then style,
+        styleState = styleState,
         content = content,
     )
 }

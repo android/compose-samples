@@ -59,9 +59,11 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.components.Text
+import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.shapes
+import com.example.jetsnack.ui.theme.typography
 
 @Composable
 fun Search(onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier, state: SearchState = rememberSearchState()) {
@@ -77,7 +79,6 @@ fun Search(onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier, 
                 searching = state.searching,
             )
             JetsnackDivider()
-
             LaunchedEffect(state.query.text) {
                 state.searching = true
                 state.searchResults = SearchRepo.search(state.query.text)
@@ -178,7 +179,7 @@ private fun SearchBar(
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(72.dp)
             .padding(horizontal = 24.dp, vertical = 8.dp),
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -243,6 +244,7 @@ private fun SearchHint() {
         Text(
             text = stringResource(R.string.search_jetsnack),
             style = {
+                textStyleWithFontFamilyFix(typography.bodyLarge)
                 contentColor(colors.textHelp)
             },
         )

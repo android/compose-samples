@@ -14,30 +14,40 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationStyleApi::class)
+@file:OptIn(ExperimentalFoundationStyleApi::class, ExperimentalMediaQueryApi::class)
 
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.FocusInteraction
+import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.UiMediaScope
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import com.example.jetsnack.ui.theme.LoadingState
+import com.example.jetsnack.ui.theme.loadingState
+import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 
 @Composable
 fun Button(
@@ -45,11 +55,13 @@ fun Button(
     modifier: Modifier = Modifier,
     style: Style = Style,
     enabled: Boolean = true,
+    loadingState: LoadingState = LoadingState.Loaded,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit,
 ) {
     val styleState = rememberUpdatedStyleState(interactionSource) {
         it.isEnabled = enabled
+        it.loadingState = loadingState
     }
     Row(
         modifier = modifier
@@ -58,25 +70,190 @@ fun Button(
                     role = Role.Button
                 },
             )
+            .styleable(styleState, JetsnackTheme.styles.buttonStyle, style)
             .clickable(
                 enabled = enabled,
                 onClick = onClick,
                 interactionSource = interactionSource,
-                indication = ripple(),
-            )
-            .styleable(styleState, JetsnackTheme.styles.buttonStyle, style),
+                indication = null,
+            ),
         content = content,
         verticalAlignment = Alignment.CenterVertically,
     )
 }
 
-@Preview("default", "round")
-@Preview("dark theme", "round", uiMode = UI_MODE_NIGHT_YES)
-@Preview("large font", "round", fontScale = 2f)
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun ButtonPreview() {
-    JetsnackTheme {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
         Button(onClick = {}) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewLoading() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        Button(
+            onClick = {},
+            enabled = true,
+            loadingState = LoadingState.Loading,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewDisabled() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        Button(
+            onClick = {},
+            enabled = false,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewPressed() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+        }
+        Button(
+            onClick = {},
+            interactionSource = interactionSource,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewHovered() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(HoverInteraction.Enter())
+        }
+        Button(
+            onClick = {},
+            interactionSource = interactionSource,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewFocused() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(FocusInteraction.Focus())
+        }
+        Button(
+            onClick = {},
+            interactionSource = interactionSource,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewHoveredFocused() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(HoverInteraction.Enter())
+            interactionSource.emit(FocusInteraction.Focus())
+        }
+        Button(
+            onClick = {},
+            interactionSource = interactionSource,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewPressedFocused() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(FocusInteraction.Focus())
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+        }
+        Button(
+            onClick = {},
+            interactionSource = interactionSource,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+// TODO this state is broken visually
+@Preview
+@Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewPressedHovered() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.emit(PressInteraction.Press(Offset.Zero))
+            interactionSource.emit(HoverInteraction.Enter())
+        }
+        Button(
+            onClick = {},
+            interactionSource = interactionSource,
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ButtonDesktopPreview() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Physical, UiMediaScope.PointerPrecision.Fine) {
+        Button(
+            onClick = {},
+        ) {
+            Text(text = "Demo")
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ButtonDesktopPreviewDisabled() {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Physical, UiMediaScope.PointerPrecision.Fine) {
+        Button(
+            onClick = {},
+            enabled = false,
+        ) {
             Text(text = "Demo")
         }
     }
@@ -87,11 +264,11 @@ private fun ButtonPreview() {
 @Preview("large font", "rectangle", fontScale = 2f)
 @Composable
 private fun RectangleButtonPreview() {
-    JetsnackTheme {
+    UiMediaScopeWrapper(keyboardKind = UiMediaScope.KeyboardKind.Virtual, UiMediaScope.PointerPrecision.Blunt) {
         Button(
             onClick = {},
             style = {
-                shape(RectangleShape)
+                shape(RoundedCornerShape(4.dp))
             },
         ) {
             Text(text = "Demo")

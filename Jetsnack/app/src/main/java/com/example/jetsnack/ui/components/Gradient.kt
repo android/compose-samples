@@ -36,22 +36,3 @@ fun Modifier.contentTintDiagonalGradient(colors: List<Color>, blendMode: BlendMo
         blendMode = blendMode,
     )
 }
-
-fun Modifier.offsetGradientBackground(colors: List<Color>, width: Density.() -> Float, offset: Density.() -> Float = { 0f }) = drawBehind {
-    val actualOffset = offset()
-
-    drawRect(
-        Brush.horizontalGradient(
-            colors = colors,
-            startX = -actualOffset,
-            endX = width() - actualOffset,
-            tileMode = TileMode.Mirror,
-        ),
-    )
-}
-
-fun Modifier.diagonalGradientBorder(colors: List<Color>, borderSize: Dp = 2.dp, shape: Shape) = border(
-    width = borderSize,
-    brush = Brush.linearGradient(colors),
-    shape = shape,
-)

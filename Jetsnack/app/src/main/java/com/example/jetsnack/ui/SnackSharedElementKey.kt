@@ -22,8 +22,7 @@ enum class SnackSharedElementType {
     Bounds,
     Image,
     Title,
-    Tagline,
-    Background,
+    Price,
 }
 
 object FilterSharedElementKey
