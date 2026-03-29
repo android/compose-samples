@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalFlexBoxApi::class, ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 
 package com.example.jetsnack.ui.home
 
@@ -30,8 +30,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.ExperimentalFlexBoxApi
+import androidx.compose.foundation.layout.FlexBox
+import androidx.compose.foundation.layout.FlexWrap
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -210,15 +211,15 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilterChipSection(title: String, filters: List<Filter>) {
     FilterTitle(text = title)
-    FlowRow(
+    FlexBox(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp, bottom = 16.dp)
             .padding(horizontal = 4.dp),
+        config = { wrap(FlexWrap.Wrap) }
     ) {
         filters.forEach { filter ->
             FilterChip(
@@ -257,7 +258,7 @@ fun SortFilters(sortFilters: List<Filter> = SnackRepo.getSortFilters(), sortStat
 
 @Composable
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
-    FlowRow {
+    FlexBox(config = { wrap(FlexWrap.Wrap) }) {
         FilterTitle(text = stringResource(id = R.string.max_calories))
         Text(
             text = stringResource(id = R.string.per_serving),
