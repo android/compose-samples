@@ -102,7 +102,7 @@ data class Styles(
         }
         pressed {
             animate {
-                background(Brush.radialGradient(listOf(colors.brand, colors.brand)))
+                background(colors.brand)
                 dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
                 innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
             }
@@ -116,7 +116,7 @@ data class Styles(
                 // we don't want to combine these two
                 // so set the properties to the same
                 animate {
-                    background(Brush.radialGradient(listOf(colors.brand, colors.brand)))
+                    background(colors.brand)
                     dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
                     innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
                 }

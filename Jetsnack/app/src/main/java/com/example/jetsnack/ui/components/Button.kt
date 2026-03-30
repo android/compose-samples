@@ -48,6 +48,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.LoadingState
 import com.example.jetsnack.ui.theme.loadingState
 import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
+import androidx.compose.material3.Button
 
 @Composable
 fun Button(
