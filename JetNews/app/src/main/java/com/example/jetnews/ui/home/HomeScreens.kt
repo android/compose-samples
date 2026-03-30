@@ -147,7 +147,7 @@ fun EntryProviderScope<NavKey>.homeEntry(
 }
 
 /**
- * Displays the Home route.
+ * Displays the Home screen.
  *
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *

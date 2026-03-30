@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * UI state for the Home route.
+ * UI state for the Home screen.
  *
  * This is derived from [HomeViewModelState], but split into two possible subclasses to more
  * precisely represent the state available to render the UI.
@@ -66,7 +66,7 @@ sealed interface HomeUiState {
 }
 
 /**
- * An internal representation of the Home route state, in a raw form
+ * An internal representation of the Home screen state, in a raw form
  */
 private data class HomeViewModelState(
     val postsFeed: PostsFeed? = null,

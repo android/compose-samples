@@ -130,7 +130,7 @@ fun EntryProviderScope<NavKey>.interestsEntry(
 }
 
 /**
- * Stateful composable that displays the Navigation route for the Interests screen.
+ * Stateful composable that displays the Interests screen.
  *
  * @param interestsViewModel ViewModel that handles the business logic of this screen
  * @param isExpandedScreen (state) true if the screen is expanded
