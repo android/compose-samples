@@ -40,14 +40,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeKey
+import com.example.jetnews.ui.navigation.NAVIGATION_ITEMS
 import com.example.jetnews.ui.navigation.NavigationItem
-import com.example.jetnews.ui.navigation.TOP_LEVEL_ROUTES
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
-    currentTopLevelRoute: NavKey,
+    currentTopLevelKey: NavKey,
     navigate: (NavKey) -> Unit,
     navigationItems: List<NavigationItem>,
     closeDrawer: () -> Unit,
@@ -65,7 +65,7 @@ fun AppDrawer(
                 NavigationDrawerItem(
                     label = { Text(stringResource(id = navigationItem.labelResourceId)) },
                     icon = { Icon(painterResource(navigationItem.iconResourceId), null) },
-                    selected = currentTopLevelRoute == navigationItem.navKey,
+                    selected = currentTopLevelKey == navigationItem.navKey,
                     onClick = {
                         navigate(navigationItem.navKey)
                         closeDrawer()
@@ -101,9 +101,9 @@ fun PreviewAppDrawer() {
     JetnewsTheme {
         AppDrawer(
             drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
-            currentTopLevelRoute = HomeKey,
+            currentTopLevelKey = HomeKey,
             navigate = {},
-            navigationItems = TOP_LEVEL_ROUTES,
+            navigationItems = NAVIGATION_ITEMS,
             closeDrawer = { },
         )
     }

@@ -34,13 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeKey
+import com.example.jetnews.ui.navigation.NAVIGATION_ITEMS
 import com.example.jetnews.ui.navigation.NavigationItem
-import com.example.jetnews.ui.navigation.TOP_LEVEL_ROUTES
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 @Composable
 fun AppNavRail(
-    currentTopLevelRoute: NavKey,
+    currentTopLevelKey: NavKey,
     navigate: (NavKey) -> Unit,
     navigationItems: List<NavigationItem>,
     modifier: Modifier = Modifier,
@@ -58,18 +58,18 @@ fun AppNavRail(
     ) {
         Spacer(Modifier.weight(1f))
 
-        navigationItems.forEach { topLevelRoute ->
-            key(topLevelRoute.navKey) {
+        navigationItems.forEach { navigationItem ->
+            key(navigationItem.navKey) {
                 NavigationRailItem(
-                    selected = currentTopLevelRoute == topLevelRoute.navKey,
-                    onClick = { navigate(topLevelRoute.navKey) },
+                    selected = currentTopLevelKey == navigationItem.navKey,
+                    onClick = { navigate(navigationItem.navKey) },
                     icon = {
                         Icon(
-                            painterResource(id = topLevelRoute.iconResourceId),
-                            stringResource(topLevelRoute.iconContentDescriptionResourceId),
+                            painterResource(id = navigationItem.iconResourceId),
+                            stringResource(navigationItem.iconContentDescriptionResourceId),
                         )
                     },
-                    label = { Text(stringResource(topLevelRoute.labelResourceId)) },
+                    label = { Text(stringResource(navigationItem.labelResourceId)) },
                     alwaysShowLabel = false,
                 )
             }
@@ -84,8 +84,8 @@ fun AppNavRail(
 fun PreviewAppNavRail() {
     JetnewsTheme {
         AppNavRail(
-            currentTopLevelRoute = HomeKey,
-            navigationItems = TOP_LEVEL_ROUTES,
+            currentTopLevelKey = HomeKey,
+            navigationItems = NAVIGATION_ITEMS,
             navigate = {},
         )
     }

@@ -31,9 +31,9 @@ import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.home.HomeKey
 import com.example.jetnews.ui.interests.InterestsKey
+import com.example.jetnews.ui.navigation.NAVIGATION_ITEMS
 import com.example.jetnews.ui.navigation.Navigator
 import com.example.jetnews.ui.navigation.PopUpTo
-import com.example.jetnews.ui.navigation.TOP_LEVEL_ROUTES
 import com.example.jetnews.ui.navigation.rememberNavigationState
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
@@ -42,8 +42,8 @@ import kotlinx.coroutines.launch
 fun JetnewsApp(appContainer: AppContainer, isBackEnabled: Boolean, initialBackStack: List<NavKey>) {
 
     val navigationState = rememberNavigationState(
-        mainTopLevelRoute = HomeKey,
-        topLevelRoutes = setOf(HomeKey, InterestsKey),
+        primaryTopLevelKey = HomeKey,
+        topLevelKeys = setOf(HomeKey, InterestsKey),
         initialBackStack = initialBackStack,
     )
 
@@ -63,9 +63,9 @@ fun JetnewsApp(appContainer: AppContainer, isBackEnabled: Boolean, initialBackSt
             drawerContent = {
                 AppDrawer(
                     drawerState = sizeAwareDrawerState,
-                    currentTopLevelRoute = navigationState.topLevelRoute,
+                    currentTopLevelKey = navigationState.topLevelKey,
                     navigate = { navKey -> navigator.navigate(navKey, PopUpTo(navKey)) },
-                    navigationItems = TOP_LEVEL_ROUTES,
+                    navigationItems = NAVIGATION_ITEMS,
                     closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
                 )
             },
@@ -76,8 +76,8 @@ fun JetnewsApp(appContainer: AppContainer, isBackEnabled: Boolean, initialBackSt
             Row {
                 if (isExpandedScreen) {
                     AppNavRail(
-                        currentTopLevelRoute = navigationState.topLevelRoute,
-                        navigationItems = TOP_LEVEL_ROUTES,
+                        currentTopLevelKey = navigationState.topLevelKey,
+                        navigationItems = NAVIGATION_ITEMS,
                         navigate = { navKey -> navigator.navigate(navKey) },
                     )
                 }

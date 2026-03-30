@@ -23,17 +23,17 @@ data class PopUpTo(val navKey: NavKey, val inclusive: Boolean = false)
 
 class Navigator(val state: NavigationState) {
     val currentStack: NavBackStack<NavKey>
-        get() = state.backStacks[state.topLevelRoute] ?: error("Stack for ${state.topLevelRoute} not found")
+        get() = state.backStacks[state.topLevelKey] ?: error("Stack for ${state.topLevelKey} not found")
 
-    val currentRoute: NavKey
+    val currentKey: NavKey
         get() = currentStack.last()
 
     fun navigate(navKey: NavKey, popUpTo: PopUpTo? = null) {
-        if (navKey in state.topLevelRoutes) {
-            state.topLevelRoute = navKey
+        if (navKey in state.topLevelKeys) {
+            state.topLevelKey = navKey
         }
 
-        if (currentRoute == navKey && popUpTo == null) return
+        if (currentKey == navKey && popUpTo == null) return
 
         if (popUpTo != null) {
             val index = currentStack.indexOfLast { it == popUpTo.navKey }
@@ -46,15 +46,15 @@ class Navigator(val state: NavigationState) {
             }
         }
 
-        if (navKey !in state.topLevelRoutes && currentRoute != navKey) {
+        if (navKey !in state.topLevelKeys && currentKey != navKey) {
             currentStack.add(navKey)
         }
     }
 
     fun goUp() {
-        // If we're at the base of the current route's stack, go back to the main route stack.
-        if (currentRoute == state.topLevelRoute) {
-            state.topLevelRoute = state.mainTopLevelRoute
+        // If we're at the base of the current top level key's stack, go back to the primary top-level key's stack.
+        if (currentKey == state.topLevelKey) {
+            state.topLevelKey = state.primaryTopLevelKey
         } else {
             currentStack.removeLastOrNull()
         }

@@ -30,7 +30,7 @@ data class NavigationItem(
     @StringRes val labelResourceId: Int,
 )
 
-val TOP_LEVEL_ROUTES = listOf(
+val NAVIGATION_ITEMS = listOf(
     NavigationItem(
         HomeKey,
         R.drawable.ic_home,

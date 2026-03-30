@@ -45,43 +45,59 @@ fun rememberInitialBackStack(backStack: List<NavKey>): MutableState<List<NavKey>
 }
 
 @Composable
-fun rememberNavigationState(mainTopLevelRoute: NavKey, topLevelRoutes: Set<NavKey>, initialBackStack: List<NavKey>): NavigationState {
+fun rememberNavigationState(primaryTopLevelKey: NavKey, topLevelKeys: Set<NavKey>, initialBackStack: List<NavKey>): NavigationState {
 
-    val initialTopLevelRoute = initialBackStack.first()
+    val initialTopLevelKey = initialBackStack.first()
 
-    val topLevelRoute = rememberSerializable(
+    val topLevelKey = rememberSerializable(
         serializer = MutableStateSerializer(NavKeySerializer()),
     ) {
-        mutableStateOf(initialTopLevelRoute)
+        mutableStateOf(initialTopLevelKey)
     }.apply {
         // If a new intent comes in while the activity is already running, the value for
-        // topLevelRoute needs to be updated to reflect it
-        value = initialTopLevelRoute
+        // topLevelKey needs to be updated to reflect it
+        value = initialTopLevelKey
     }
 
-    val backStacks = remember(topLevelRoutes, initialBackStack) {
+    val backStacks = remember(topLevelKeys, initialBackStack) {
         mutableMapOf<NavKey, NavBackStack<NavKey>>()
     }
 
-    topLevelRoutes.forEach { route ->
-        val backStack = if (route == initialTopLevelRoute) initialBackStack else listOf(route)
-        backStacks[route] = key(backStack) {
+    topLevelKeys.forEach { key ->
+        val backStack = if (key == initialTopLevelKey) initialBackStack else listOf(key)
+        backStacks[key] = key(backStack) {
             rememberNavBackStack(*backStack.toTypedArray())
         }
     }
 
-    return remember(mainTopLevelRoute, topLevelRoute, topLevelRoutes, backStacks) {
-        NavigationState(mainTopLevelRoute, topLevelRoute, topLevelRoutes, backStacks)
+    return remember(primaryTopLevelKey, topLevelKey, topLevelKeys, backStacks) {
+        NavigationState(primaryTopLevelKey, topLevelKey, topLevelKeys, backStacks)
     }
 }
 
+/**
+ * State holder for the app's navigation.
+ *
+ * @param primaryTopLevelKey The top-level key of the stack that the app should go back to when navigating up from the base of another
+ * top-level key's stack.
+ * @param topLevelKey A [MutableState] holding the currently selected top-level key.
+ * @param topLevelKeys A set of all available top-level keys in the app.
+ * @param backStacks A map containing the [NavBackStack] for each top-level key.
+ */
 class NavigationState(
-    val mainTopLevelRoute: NavKey,
-    topLevelRoute: MutableState<NavKey>,
-    val topLevelRoutes: Set<NavKey>,
+    val primaryTopLevelKey: NavKey,
+    topLevelKey: MutableState<NavKey>,
+    val topLevelKeys: Set<NavKey>,
     val backStacks: Map<NavKey, NavBackStack<NavKey>>,
 ) {
-    var topLevelRoute: NavKey by topLevelRoute
+    var topLevelKey: NavKey by topLevelKey
+
+    private val currentTopLevelKeys: List<NavKey>
+        get() = if (topLevelKey == primaryTopLevelKey) {
+            listOf(primaryTopLevelKey)
+        } else {
+            listOf(primaryTopLevelKey, topLevelKey)
+        }
 
     @Composable
     fun toDecoratedEntries(
@@ -96,13 +112,7 @@ class NavigationState(
             )
         }
 
-        return getTopLevelRoutesInUse()
+        return currentTopLevelKeys
             .flatMap { decoratedEntries[it] ?: emptyList() }
-    }
-
-    private fun getTopLevelRoutesInUse(): List<NavKey> = if (topLevelRoute == mainTopLevelRoute) {
-        listOf(mainTopLevelRoute)
-    } else {
-        listOf(mainTopLevelRoute, topLevelRoute)
     }
 }
