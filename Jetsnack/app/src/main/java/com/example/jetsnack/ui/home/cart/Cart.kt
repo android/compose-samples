@@ -27,6 +27,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -97,7 +98,6 @@ import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.abs
 import kotlin.math.roundToInt
-import androidx.compose.foundation.layout.BoxWithConstraints
 
 @Composable
 fun Cart(
@@ -245,7 +245,7 @@ private fun SwipeDismissItemBackground(swipeDismissState: SwipeToDismissBoxState
                 if (constraints.maxWidth > 0) {
                     val offset = try {
                         swipeDismissState.requireOffset()
-                    } catch ( _ : IllegalStateException) {
+                    } catch (_: IllegalStateException) {
                         0f
                     }
                     (abs(offset) / constraints.maxWidth).coerceIn(0f, 1f)

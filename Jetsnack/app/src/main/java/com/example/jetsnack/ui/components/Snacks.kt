@@ -159,6 +159,7 @@ fun SnackCollection(snackCollection: SnackCollection, onSnackClick: (Long, Strin
                             snackTextStyle = normalTextStyle,
                             imageAspectRatio = 4f / 3f,
                         )
+
                     CollectionType.Highlight ->
                         SnackItem(
                             snackCollectionId = snackCollection.id,
@@ -167,6 +168,7 @@ fun SnackCollection(snackCollection: SnackCollection, onSnackClick: (Long, Strin
                             showAddButton = true,
                             style = JetsnackTheme.styles.highlightGlowCardStyle,
                         )
+
                     CollectionType.Card ->
                         SnackItem(
                             snackCollectionId = snackCollection.id,
