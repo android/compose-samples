@@ -219,7 +219,7 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
             .fillMaxWidth()
             .padding(top = 12.dp, bottom = 16.dp)
             .padding(horizontal = 4.dp),
-        config = { wrap(FlexWrap.Wrap) }
+        config = { wrap(FlexWrap.Wrap) },
     ) {
         filters.forEach { filter ->
             FilterChip(

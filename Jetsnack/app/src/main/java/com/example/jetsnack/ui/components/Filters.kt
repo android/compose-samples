@@ -17,13 +17,12 @@
 @file:OptIn(
     ExperimentalSharedTransitionApi::class,
     ExperimentalFoundationStyleApi::class,
-    ExperimentalMediaQueryApi::class
+    ExperimentalMediaQueryApi::class,
 )
 
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -51,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiMediaScope
 import androidx.compose.ui.geometry.Offset
