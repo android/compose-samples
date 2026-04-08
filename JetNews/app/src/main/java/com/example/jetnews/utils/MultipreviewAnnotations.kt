@@ -46,17 +46,17 @@ annotation class FontScalePreviews
 @Preview(
     name = "phone",
     group = "devices",
-    device = "spec:shape=Normal,width=360,height=640,unit=dp,dpi=480",
+    device = "spec:width=360dp,height=640dp,dpi=480",
 )
 @Preview(
     name = "foldable",
     group = "devices",
-    device = "spec:shape=Normal,width=673,height=841,unit=dp,dpi=480",
+    device = "spec:width=673dp,height=841dp,dpi=480",
 )
 @Preview(
     name = "tablet",
     group = "devices",
-    device = "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480",
+    device = "spec:width=1280dp,height=800dp,dpi=480",
 )
 annotation class DevicePreviews
 
