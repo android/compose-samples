@@ -18,6 +18,7 @@
 
 package com.example.jetsnack.ui.theme
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
@@ -219,16 +220,6 @@ data class Styles(
     val baseSnackCardStyle : Style = Style {
         textAlign(TextAlign.Center)
 
-        // todo this animation doesn't seem to play nice
-        if (mediaQuery { windowWidth > 500.dp }) {
-            animate {
-                width(200.dp)
-            }
-        } else {
-            animate {
-                width(170.dp)
-            }
-        }
         hovered {
             animate {
                 scale(1.05f)
@@ -245,7 +236,14 @@ data class Styles(
             }
         }
     },
-    val highlightGlowCardStyle : Style = baseSnackCardStyle then Style {
+    val responsiveSnackCardStyle : Style = baseSnackCardStyle then Style {
+        width(170.dp)
+
+        if (mediaQuery { windowWidth > 500.dp }) {
+            width(200.dp)
+        }
+    },
+    val highlightGlowCardStyle : Style = responsiveSnackCardStyle then Style {
         background(colors.brandLight)
         border(0.dp, colors.brandLight)
         hovered {
@@ -270,7 +268,7 @@ data class Styles(
             background(colors.uiFloated.copy(alpha = 0.5f))
         }
     },
-    val plainCardStyle : Style = baseSnackCardStyle then Style {
+    val plainCardStyle : Style = responsiveSnackCardStyle then Style {
         background(colors.cardHighlightBackground)
         clip(true)
         border(1.dp, colors.cardHighlightBorder)
