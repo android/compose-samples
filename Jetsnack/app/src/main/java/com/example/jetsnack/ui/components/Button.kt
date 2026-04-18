@@ -101,12 +101,6 @@ private fun ButtonPreview() {
                 var loadingState by remember {
                     mutableStateOf(LoadingState.Loaded)
                 }
-                val style = remember {
-                   Style {
-                        width(130.dp)
-                        textAlign(TextAlign.Center)
-                    }
-                }
                 Button(
                     onClick = {
                         loadingState = when (loadingState) {
@@ -117,7 +111,10 @@ private fun ButtonPreview() {
                     },
                     enabled = true,
                     loadingState = loadingState,
-                    style = style
+                    style =  {
+                        width(130.dp)
+                        textAlign(TextAlign.Center)
+                    }
                 ) {
                     val text = when (loadingState) {
                         LoadingState.Loading -> "Loading..."
