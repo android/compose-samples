@@ -24,7 +24,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,7 +46,6 @@ import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackPreviewWrapper
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
@@ -77,7 +75,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                             Text(
                                 text = "Delivery to 1600 Amphitheater Way",
                                 style = {
-                                    textStyleWithFontFamilyFix(typography.titleSmall)
+                                    textStyle(typography.titleSmall)
                                     contentColor(colors.textPrimary)
                                     textAlign(TextAlign.Center)
                                 },

@@ -19,7 +19,6 @@
 package com.example.jetsnack.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -27,6 +26,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -83,7 +83,6 @@ import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
@@ -97,7 +96,6 @@ import com.example.jetsnack.ui.utils.UiMediaScopeWrapper
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.abs
 import kotlin.math.roundToInt
-import androidx.compose.foundation.layout.BoxWithConstraints
 
 @Composable
 fun Cart(
@@ -174,7 +172,7 @@ private fun CartContent(
             Text(
                 text = stringResource(R.string.cart_order_header, snackCountFormattedString),
                 style = {
-                    textStyleWithFontFamilyFix(typography.titleLarge)
+                    textStyle(typography.titleLarge)
                     contentColor(colors.textPrimary)
                 },
                 maxLines = 1,
@@ -302,7 +300,7 @@ private fun SwipeDismissItemBackground(swipeDismissState: SwipeToDismissBoxState
                         Text(
                             text = stringResource(id = R.string.remove_item),
                             style = {
-                                textStyleWithFontFamilyFix(typography.titleMedium)
+                                textStyle(typography.titleMedium)
                                 contentColor(colors.uiBackground)
                                 textAlign(TextAlign.Center)
                             },
@@ -355,7 +353,7 @@ fun CartItem(
                     Text(
                         text = snack.name,
                         style = {
-                            textStyleWithFontFamilyFix(typography.bodyLarge)
+                            textStyle(typography.bodyLarge)
                             contentColor(colors.textSecondary)
                         },
                         modifier = Modifier
@@ -376,7 +374,7 @@ fun CartItem(
                 Text(
                     text = snack.tagline,
                     style = {
-                        textStyleWithFontFamilyFix(typography.bodySmall)
+                        textStyle(typography.bodySmall)
                         contentColor(colors.textHelp)
                     },
                     modifier = Modifier.padding(end = 16.dp),
@@ -388,7 +386,7 @@ fun CartItem(
                     Text(
                         text = formatPrice(snack.price),
                         style = {
-                            textStyleWithFontFamilyFix(typography.titleMedium)
+                            textStyle(typography.titleMedium)
                             contentColor(colors.textPrimary)
                         },
                         modifier = Modifier
@@ -415,7 +413,7 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
         Text(
             text = stringResource(R.string.cart_summary_header),
             style = {
-                textStyleWithFontFamilyFix(typography.titleLarge)
+                textStyle(typography.titleLarge)
                 contentColor(colors.textPrimary)
             },
             maxLines = 1,
@@ -429,7 +427,7 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             Text(
                 text = stringResource(R.string.cart_subtotal_label),
                 style = {
-                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                    textStyle(typography.bodyLarge)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -439,7 +437,7 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             Text(
                 text = formatPrice(subtotal),
                 style = {
-                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                    textStyle(typography.bodyLarge)
                 },
                 modifier = Modifier.alignBy(LastBaseline),
             )
@@ -448,7 +446,7 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             Text(
                 text = stringResource(R.string.cart_shipping_label),
                 style = {
-                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                    textStyle(typography.bodyLarge)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -458,7 +456,7 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             Text(
                 text = formatPrice(shippingCosts),
                 style = {
-                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                    textStyle(typography.bodyLarge)
                 },
                 modifier = Modifier.alignBy(LastBaseline),
             )
@@ -469,7 +467,7 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             Text(
                 text = stringResource(R.string.cart_total_label),
                 style = {
-                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                    textStyle(typography.bodyLarge)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -480,7 +478,7 @@ fun SummaryItem(subtotal: Long, shippingCosts: Long, modifier: Modifier = Modifi
             Text(
                 text = formatPrice(subtotal + shippingCosts),
                 style = {
-                    textStyleWithFontFamilyFix(typography.titleMedium)
+                    textStyle(typography.titleMedium)
                 },
                 modifier = Modifier.alignBy(LastBaseline),
             )

@@ -59,7 +59,6 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.shapes
@@ -244,7 +243,7 @@ private fun SearchHint() {
         Text(
             text = stringResource(R.string.search_jetsnack),
             style = {
-                textStyleWithFontFamilyFix(typography.bodyLarge)
+                textStyle(typography.bodyLarge)
                 contentColor(colors.textHelp)
             },
         )

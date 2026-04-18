@@ -111,7 +111,6 @@ import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
@@ -256,7 +255,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         Text(
                             text = stringResource(R.string.detail_header),
                             style = {
-                                textStyleWithFontFamilyFix(typography.headlineMedium)
+                                textStyle(typography.headlineMedium)
                                 contentColor(colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             },
@@ -267,7 +266,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                             Text(
                                 text = stringResource(R.string.detail_placeholder),
                                 style = {
-                                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                                    textStyle(typography.bodyLarge)
                                     contentColor(colors.textHelp)
                                     contentPaddingHorizontal(24.dp)
                                 },
@@ -285,7 +284,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         Text(
                             text = textButton,
                             style = {
-                                textStyleWithFontFamilyFix(typography.labelLarge)
+                                textStyle(typography.labelLarge)
                                 contentColor(colors.textLink)
                                 textAlign(TextAlign.Center)
                                 contentPadding(16.dp)
@@ -304,7 +303,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         Text(
                             text = stringResource(R.string.ingredients),
                             style = {
-                                textStyleWithFontFamilyFix(typography.labelSmall)
+                                textStyle(typography.labelSmall)
                                 contentColor(colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             },
@@ -313,7 +312,7 @@ private fun Body(related: List<SnackCollection>, scroll: ScrollState) {
                         Text(
                             text = stringResource(R.string.ingredients_list),
                             style = {
-                                textStyleWithFontFamilyFix(typography.bodyLarge)
+                                textStyle(typography.bodyLarge)
                                 contentColor(colors.textHelp)
                                 contentPaddingHorizontal(24.dp)
                             },
@@ -371,7 +370,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             Text(
                 text = snack.name,
                 style = {
-                    textStyleWithFontFamilyFix(typography.headlineMedium)
+                    textStyle(typography.headlineMedium)
                     contentColor(colors.textSecondary)
                     fontStyle(FontStyle.Italic)
                 },
@@ -392,7 +391,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
             Text(
                 text = snack.tagline,
                 style = {
-                    textStyleWithFontFamilyFix(typography.titleSmall)
+                    textStyle(typography.titleSmall)
                     fontStyle(FontStyle.Italic)
                     contentColor(colors.textHelp)
                     fontSize(20.sp)
@@ -405,7 +404,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                 Text(
                     text = formatPrice(snack.price),
                     style = {
-                        textStyleWithFontFamilyFix(typography.titleLarge)
+                        textStyle(typography.titleLarge)
                         contentColor(colors.textPrimary)
                     },
                     modifier = HzPadding

@@ -35,10 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
-import com.example.jetsnack.ui.theme.colors
-import com.example.jetsnack.ui.theme.shapes
 import com.example.jetsnack.ui.theme.typography
 
 @Composable
@@ -58,7 +55,7 @@ fun Profile(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.work_in_progress),
             style = {
-                textStyleWithFontFamilyFix(typography.titleMedium)
+                textStyle(typography.titleMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),
@@ -67,7 +64,7 @@ fun Profile(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.grab_beverage),
             style = {
-                textStyleWithFontFamilyFix(typography.bodyMedium)
+                textStyle(typography.bodyMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),

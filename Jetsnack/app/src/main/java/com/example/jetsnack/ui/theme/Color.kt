@@ -53,6 +53,7 @@ data class JetsnackColors(
     val notificationBadge: Color = error,
     val cardHighlightBackground: Color,
     val cardHighlightBorder: Color,
+    val loadingBackground: Color,
     val isDark: Boolean,
 )
 /**
@@ -164,7 +165,7 @@ val WarpDark = Color(0xFF2A2A2A)
 
 val gradient1Light = listOf(NebulaLight, ScienceLight, DeepSpaceLight)
 val gradient1Dark = listOf(NebulaDark, ScienceDark, DeepSpaceDark)
-val gradient2Light = listOf(WarpCoreLight, StarburstLight)
+val gradient2Light = listOf(StarburstLight, WarpCoreLight, StarburstLight)
 val gradient2Dark = listOf(WarpCoreDark, StarburstDark)
 val gradient3Light = listOf(NebulaLight, WarpCoreLight, VastOfNightLight)
 val gradient3Dark = listOf(NebulaDark, WarpCoreDark, VastOfNightDark)
@@ -193,6 +194,7 @@ internal val LightColorPalette = JetsnackColors(
     gradient3 = gradient3Light,
     cardHighlightBackground = TeleportLight,
     cardHighlightBorder = StarburstLight,
+    loadingBackground = StarburstLight,
     isDark = false,
 )
 
@@ -220,5 +222,6 @@ internal val DarkColorPalette = JetsnackColors(
     gradient3 = gradient3Dark,
     cardHighlightBackground = TeleportDark,
     cardHighlightBorder = StarburstDark,
+    loadingBackground = StarburstDark,
     isDark = true,
 )

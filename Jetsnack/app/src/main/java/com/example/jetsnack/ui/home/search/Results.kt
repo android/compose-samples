@@ -49,7 +49,6 @@ import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
@@ -61,7 +60,7 @@ fun SearchResults(searchResults: List<Snack>, onSnackClick: (Long, String) -> Un
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
             style = {
-                textStyleWithFontFamilyFix(typography.titleLarge)
+                textStyle(typography.titleLarge)
                 contentColor(colors.textPrimary)
             },
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
@@ -104,14 +103,14 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
                 Text(
                     text = snack.name,
                     style = {
-                        textStyleWithFontFamilyFix(typography.titleMedium)
+                        textStyle(typography.titleMedium)
                         contentColor(colors.textSecondary)
                     },
                 )
                 Text(
                     text = snack.tagline,
                     style = {
-                        textStyleWithFontFamilyFix(typography.bodyLarge)
+                        textStyle(typography.bodyLarge)
                         contentColor(colors.textHelp)
                     },
                 )
@@ -119,7 +118,7 @@ private fun SearchResult(snack: Snack, onSnackClick: (Long, String) -> Unit, sho
                 Text(
                     text = formatPrice(snack.price),
                     style = {
-                        textStyleWithFontFamilyFix(typography.titleMedium)
+                        textStyle(typography.titleMedium)
                         contentColor(colors.textPrimary)
                     },
                 )
@@ -158,7 +157,7 @@ fun NoResults(query: String, modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.search_no_matches, query),
             style = {
-                textStyleWithFontFamilyFix(typography.titleMedium)
+                textStyle(typography.titleMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),
@@ -167,7 +166,7 @@ fun NoResults(query: String, modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.search_no_matches_retry),
             style = {
-                textStyleWithFontFamilyFix(typography.bodyMedium)
+                textStyle(typography.bodyMedium)
                 textAlign(TextAlign.Center)
             },
             modifier = Modifier.fillMaxWidth(),

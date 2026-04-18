@@ -35,7 +35,6 @@ import com.example.jetsnack.model.SearchRepo
 import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.ui.components.Surface
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
@@ -66,7 +65,7 @@ private fun SuggestionHeader(name: String, modifier: Modifier = Modifier) {
     Text(
         text = name,
         style = {
-            textStyleWithFontFamilyFix(typography.titleLarge)
+            textStyle(typography.titleLarge)
             contentColor(colors.textPrimary)
         },
         modifier = modifier
@@ -81,7 +80,7 @@ private fun Suggestion(suggestion: String, onSuggestionSelect: (String) -> Unit,
     Text(
         text = suggestion,
         style = {
-            textStyleWithFontFamilyFix(typography.titleMedium)
+            textStyle(typography.titleMedium)
         },
         modifier = modifier
             .heightIn(min = 48.dp)

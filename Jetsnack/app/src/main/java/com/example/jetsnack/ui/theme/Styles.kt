@@ -20,21 +20,18 @@ package com.example.jetsnack.ui.theme
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.StyleScope
 import androidx.compose.foundation.style.StyleStateKey
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.fillHeight
 import androidx.compose.foundation.style.fillWidth
 import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.selected
 import androidx.compose.foundation.style.then
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.LocalUiMediaScope
@@ -44,30 +41,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
-import com.example.jetsnack.ui.utils.ellipticalGradient
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.mediaQuery
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
+import com.example.jetsnack.ui.utils.ellipticalGradient
 
 @Immutable
 data class Styles(
     val buttonStyle: Style = Style {
         shape(shapes.small)
-        background(
-            Brush.ellipticalGradient(
-                colors = colors.interactivePrimary,
-                radiusXPercent = 1.3f,
-                radiusYPercent = 0.7f,
-                centerXPercent = 0.4f,
-                centerYPercent = 0.5f,
-            ),
-        )
+        background(Brush.linearGradient(colors = colors.interactivePrimary))
         contentColor(colors.textSecondary)
         minWidth(58.dp)
+        textMotion(TextMotion.Animated)
         if (mediaQuery {
                 pointerPrecision == UiMediaScope.PointerPrecision.Fine &&
                         keyboardKind == UiMediaScope.KeyboardKind.Physical
@@ -77,70 +68,64 @@ data class Styles(
             contentPaddingHorizontal(8.dp)
             shape(shapes.medium)
             minHeight(32.dp)
-            textStyleWithFontFamilyFix(typography.labelMedium)
+            textStyle(typography.labelMedium)
         } else {
             contentPaddingVertical(8.dp)
             contentPaddingHorizontal(24.dp)
             minHeight(40.dp)
             shape(shapes.small)
-            textStyleWithFontFamilyFix(typography.labelLarge)
+            textStyle(typography.labelLarge)
         }
-
+        fontWeight(FontWeight.Bold)
         dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 2.dp), radius = 6.dp))
-        innerShadow(Shadow(color = colors.brand.copy(alpha = 0.5f), offset = DpOffset(x = (-6).dp, (-4).dp), radius = 8.dp))
-
+        innerShadow(Shadow(color = colors.brand.copy(alpha = 0.5f), offset = DpOffset(x = (0).dp, (0).dp), radius = 8.dp))
+        border(4.dp, Color.Transparent)
         hovered {
-            animate {
+            animate(tween(1000)) {
                 background(colors.brandLight)
                 dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 2.dp), radius = 6.dp))
                 innerShadow(Shadow(color = colors.brand.copy(alpha = 0.5f), offset = DpOffset(x = (-6).dp, (-2).dp), radius = 8.dp))
             }
         }
         focused {
-            animate {
+            animate(tween(1000)) {
                 border(4.dp, colors.brand)
             }
         }
         pressed {
-            animate {
+            animate(tween(1000)) {
+                scale(1.1f)
                 background(colors.brand)
                 dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
                 innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
             }
             focused {
-                animate {
+                animate(tween(1000)) {
                     border(4.dp, colors.brand)
-                }
-            }
-            hovered {
-                // TODO this state is broken - await API changes on animation changes
-                // we don't want to combine these two
-                // so set the properties to the same
-                animate {
-                    background(colors.brand)
-                    dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
-                    innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
                 }
             }
         }
 
         loading {
-            animate {
-                background(
-                    Brush.ellipticalGradient(
-                        colors = colors.interactivePrimary.reversed(),
-                        radiusXPercent = 1.3f,
-                        radiusYPercent = 0.7f,
-                        centerXPercent = 0.4f,
-                        centerYPercent = 0.5f,
-                    ),
-                )
+            animate(tween(1000)) {
+                background(colors.loadingBackground)
+                // reset shadow
                 dropShadow(Shadow(color = colors.brand, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
-                innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
+                // apply purple inner shadow
+                innerShadow(Shadow(color = colors.brand, offset = DpOffset(x = (-6).dp, (-2).dp), radius = 8.dp))
+            }
+        }
+        error {
+            animate(tween(1000)) {
+                background(colors.error)
+                contentColor(colors.interactiveDisabled)
+                // reset shadow
+                dropShadow(Shadow(color = Color.Transparent, offset = DpOffset(x = 0.dp, y = 0.dp), radius = 0.dp))
+                innerShadow(Shadow(color = Color.Transparent, offset = DpOffset(x = (0).dp, (0).dp), radius = 0.dp))
             }
         }
         disabled {
-            animate {
+            animate(tween(1000)) {
                 background(colors.interactiveDisabled)
                 contentColor(colors.interactiveDisabledText)
                 // reset shadow
@@ -184,7 +169,7 @@ data class Styles(
         contentColor(colors.textInteractive)
         border(2.dp, Brush.linearGradient(colors.interactiveSecondary))
         minHeight(32.dp)
-        textStyleWithFontFamilyFix(typography.labelSmall)
+        textStyle(typography.labelSmall)
         pressed {
             animate {
                 val gradient = Brush.ellipticalGradient(
@@ -209,7 +194,8 @@ data class Styles(
         }
     },
     val defaultTextStyle: Style = Style {
-        textStyleWithFontFamilyFix(LocalTextStyle.currentValue)
+        // Left empty to allow inherited text properties (like from Button) to cascade.
+        // The base material typography fallback is now handled by BasicText's `style` parameter.
     },
     val surfaceStyle: Style = Style {
         shape(RectangleShape)

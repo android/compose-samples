@@ -44,7 +44,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +51,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -77,7 +75,6 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.components.FilterChip
 import com.example.jetsnack.ui.components.Text
-import com.example.jetsnack.ui.components.textStyleWithFontFamilyFix
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.colors
 import com.example.jetsnack.ui.theme.typography
@@ -151,7 +148,7 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                             .padding(top = 8.dp, end = 48.dp),
                         style = {
                             textAlign(TextAlign.Center)
-                            textStyleWithFontFamilyFix(typography.titleLarge)
+                            textStyle(typography.titleLarge)
                         },
                     )
                     val resetEnabled = sortState != defaultFilter
@@ -169,7 +166,7 @@ fun FilterScreen(sharedTransitionScope: SharedTransitionScope, animatedVisibilit
                         Text(
                             text = stringResource(id = R.string.reset),
                             style = {
-                                textStyleWithFontFamilyFix(typography.bodyMedium)
+                                textStyle(typography.bodyMedium)
                                 fontWeight(fontWeight)
                                 contentColor(
                                     colors.uiBackground
@@ -262,7 +259,7 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
         Text(
             text = stringResource(id = R.string.per_serving),
             style = {
-                textStyleWithFontFamilyFix(typography.bodyMedium)
+                textStyle(typography.bodyMedium)
                 contentColor(colors.textSecondary)
             },
             modifier = Modifier.padding(top = 5.dp, start = 10.dp),
@@ -300,7 +297,7 @@ fun FilterTitle(text: String) {
     Text(
         text = text,
         style = {
-            textStyleWithFontFamilyFix(typography.titleLarge)
+            textStyle(typography.titleLarge)
             contentColor(colors.textPrimary)
         },
         modifier = Modifier.padding(bottom = 8.dp),
@@ -325,7 +322,7 @@ fun SortOption(text: String, @DrawableRes icon: Int?, onClickOption: () -> Unit,
             text = text,
             style = {
                 contentColor(colors.textInteractive)
-                textStyleWithFontFamilyFix(typography.titleMedium)
+                textStyle(typography.titleMedium)
             },
             modifier = Modifier
                 .padding(start = 10.dp)

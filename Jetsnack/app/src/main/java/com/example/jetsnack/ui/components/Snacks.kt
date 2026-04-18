@@ -104,7 +104,7 @@ import com.example.jetsnack.ui.utils.formatPrice
 import com.example.jetsnack.ui.utils.sharedBoundsRevealWithShapeMorph
 
 private val normalTextStyle = Style {
-    textStyleWithFontFamilyFix(typography.titleSmall)
+    textStyle(typography.titleSmall)
     textAlign(TextAlign.Center)
 }
 
@@ -120,7 +120,7 @@ fun SnackCollection(snackCollection: SnackCollection, onSnackClick: (Long, Strin
             Text(
                 text = snackCollection.name,
                 style = {
-                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                    textStyle(typography.bodyLarge)
                     contentColor(colors.textPrimary)
                 },
                 maxLines = 1,
@@ -304,7 +304,7 @@ private fun SnackItem(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = Style {
-                                textStyleWithFontFamilyFix(typography.titleLarge)
+                                textStyle(typography.titleLarge)
                                 contentColor(colors.textSecondary)
                                 textAlign(TextAlign.Start)
                             } then snackTextStyle,
@@ -331,7 +331,7 @@ private fun SnackItem(
                             Text(
                                 text = formatPrice(snack.price),
                                 style = {
-                                    textStyleWithFontFamilyFix(typography.bodyLarge)
+                                    textStyle(typography.bodyLarge)
                                     contentColor(colors.textHelp)
                                 },
                                 modifier = Modifier

@@ -23,7 +23,6 @@
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -32,7 +31,6 @@ import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -51,6 +49,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalMediaQueryApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiMediaScope
 import androidx.compose.ui.geometry.Offset
@@ -152,7 +151,7 @@ fun FilterChip(
         Text(
             text = filter.name,
             style = {
-                textStyleWithFontFamilyFix(typography.labelSmall)
+                textStyle(typography.labelSmall)
             },
             maxLines = 1,
             modifier = Modifier.padding(
