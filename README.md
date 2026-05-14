@@ -58,7 +58,7 @@ Looking for a sample that has the following features?
 ### Animations
 * [Jetsurvey: AnimatedContent](https://github.com/android/compose-samples/pull/842)
 * [Jetcaster: Animated theme colors](https://github.com/android/compose-samples/blob/69e9d862b5ffb321064364d7883e859db6daeccd/Jetcaster/app/src/main/java/com/example/jetcaster/util/DynamicTheming.kt)
-* [Jetsnack: Animating Bottom Barl](https://github.com/android/compose-samples/blob/main/Jetsnack/app/src/main/java/com/example/jetsnack/ui/home/Home.kt)
+* [Jetsnack: Animating Bottom Bar](https://github.com/android/compose-samples/blob/main/Jetsnack/app/src/main/java/com/example/jetsnack/ui/home/Home.kt)
 
 ### Text
 * [Jetchat: Downloadable Fonts](https://github.com/android/compose-samples/pull/787)
