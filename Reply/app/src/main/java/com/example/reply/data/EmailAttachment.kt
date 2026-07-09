@@ -21,4 +21,7 @@ import androidx.annotation.DrawableRes
 /**
  * An object class to define an attachment to email object.
  */
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class EmailAttachment(@DrawableRes val resId: Int, val contentDesc: String)

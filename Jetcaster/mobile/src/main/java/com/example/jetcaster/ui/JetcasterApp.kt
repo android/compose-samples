@@ -36,6 +36,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.window.layout.DisplayFeature
 import com.example.jetcaster.R
+import com.example.jetcaster.core.model.EpisodeInfo
+import androidx.compose.runtime.remember
 import com.example.jetcaster.ui.home.MainScreen
 import com.example.jetcaster.ui.player.PlayerScreen
 
@@ -58,11 +60,14 @@ fun JetcasterApp(displayFeatures: List<DisplayFeature>, appState: JetcasterAppSt
                         CompositionLocalProvider(
                             LocalAnimatedVisibilityScope provides this,
                         ) {
+                            val navigateToPlayer = remember(appState, backStackEntry) {
+                                { episode: EpisodeInfo ->
+                                    appState.navigateToPlayer(episode.uri, backStackEntry)
+                                }
+                            }
                             MainScreen(
                                 windowSizeClass = adaptiveInfo.windowSizeClass,
-                                navigateToPlayer = { episode ->
-                                    appState.navigateToPlayer(episode.uri, backStackEntry)
-                                },
+                                navigateToPlayer = navigateToPlayer,
                             )
                         }
                     }

@@ -94,48 +94,45 @@ fun EpisodeListItem(
             }
         },
     ) {
-        Box(
+        Surface(
+            shape = MaterialTheme.shapes.large,
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            onClick = { onClick(episode) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp, horizontal = 16.dp),
         ) {
-            Surface(
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                onClick = { onClick(episode) },
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                ) {
-                    // Top Part
-                    EpisodeListItemHeader(
-                        episode = episode,
-                        podcast = podcast,
-                        showPodcastImage = showPodcastImage,
-                        showSummary = showSummary,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        imageModifier = imageModifier,
-                    )
+                // Top Part
+                EpisodeListItemHeader(
+                    episode = episode,
+                    podcast = podcast,
+                    showPodcastImage = showPodcastImage,
+                    showSummary = showSummary,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    imageModifier = imageModifier,
+                )
 
-                    // Bottom Part
-                    EpisodeListItemFooter(
-                        episode = episode,
-                        podcast = podcast,
-                        onQueueEpisode = onQueueEpisode,
-                    )
-                }
+                // Bottom Part
+                EpisodeListItemFooter(
+                    episode = episode,
+                    podcast = podcast,
+                    onQueueEpisode = onQueueEpisode,
+                )
             }
         }
-        when (dismissState.currentValue) {
-            SwipeToDismissBoxValue.EndToStart -> {
-                removeFromQueue(episode)
-            }
+    }
+    when (dismissState.currentValue) {
+        SwipeToDismissBoxValue.EndToStart -> {
+            removeFromQueue(episode)
+        }
 
-            SwipeToDismissBoxValue.StartToEnd -> {
-            }
+        SwipeToDismissBoxValue.StartToEnd -> {
+        }
 
-            SwipeToDismissBoxValue.Settled -> {
-            }
+        SwipeToDismissBoxValue.Settled -> {
         }
     }
 }

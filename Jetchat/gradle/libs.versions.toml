@@ -57,6 +57,7 @@ spotless = "8.7.0"
 # @keep
 targetSdk = "33"
 version-catalog-update = "1.1.0"
+androidx-benchmark = "1.3.3"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -117,6 +118,7 @@ androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "a
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
+androidx-benchmark-macro-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark" }
 androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv-foundation" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv-material" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-wear-compose" }
@@ -175,3 +177,4 @@ roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
+androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-benchmark" }

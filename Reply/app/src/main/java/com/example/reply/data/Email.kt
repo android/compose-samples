@@ -16,9 +16,12 @@
 
 package com.example.reply.data
 
+import androidx.compose.runtime.Immutable
+
 /**
  * A simple data class to represent an Email.
  */
+@Immutable
 data class Email(
     val id: Long,
     val sender: Account,
@@ -26,9 +29,9 @@ data class Email(
     val subject: String,
     val body: String,
     val attachments: List<EmailAttachment> = emptyList(),
-    var isImportant: Boolean = false,
-    var isStarred: Boolean = false,
-    var mailbox: MailboxType = MailboxType.INBOX,
+    val isImportant: Boolean = false,
+    val isStarred: Boolean = false,
+    val mailbox: MailboxType = MailboxType.INBOX,
     val createdAt: String,
     val threads: List<Email> = emptyList(),
 )

@@ -37,6 +37,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -168,17 +170,33 @@ fun HomeScreen(
     // UiState of the HomeScreen
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
+    val onToggleFavorite = remember(homeViewModel) {
+        { postId: String -> homeViewModel.toggleFavourite(postId) }
+    }
+    val onSelectPost = remember(navigateToPost) {
+        { postId: String -> navigateToPost(postId) }
+    }
+    val onRefreshPosts = remember(homeViewModel) {
+        { homeViewModel.refreshPosts() }
+    }
+    val onErrorDismiss = remember(homeViewModel) {
+        { errorId: Long -> homeViewModel.errorShown(errorId) }
+    }
+    val onSearchInputChanged = remember(homeViewModel) {
+        { searchInput: String -> homeViewModel.onSearchInputChanged(searchInput) }
+    }
+
     HomeFeedScreen(
         uiState = uiState,
         showTopAppBar = !isExpandedScreen,
-        onToggleFavorite = { homeViewModel.toggleFavourite(it) },
-        onSelectPost = { navigateToPost(it) },
-        onRefreshPosts = { homeViewModel.refreshPosts() },
-        onErrorDismiss = { homeViewModel.errorShown(it) },
+        onToggleFavorite = onToggleFavorite,
+        onSelectPost = onSelectPost,
+        onRefreshPosts = onRefreshPosts,
+        onErrorDismiss = onErrorDismiss,
         openDrawer = openDrawer,
         homeListLazyListState = rememberLazyListState(),
         snackbarHostState = snackbarHostState,
-        onSearchInputChanged = { homeViewModel.onSearchInputChanged(it) },
+        onSearchInputChanged = onSearchInputChanged,
         searchInput = uiState.searchInput,
     )
 }
@@ -422,13 +440,14 @@ private fun PostList(
         }
         item { PostListTopSection(postsFeed.highlightedPost, onPostTapped) }
         if (postsFeed.recommendedPosts.isNotEmpty()) {
-            item {
-                PostListSimpleSection(
-                    postsFeed.recommendedPosts,
-                    onPostTapped,
-                    favorites,
-                    onToggleFavorite,
+            items(postsFeed.recommendedPosts) { post ->
+                PostCardSimple(
+                    post = post,
+                    navigateToPost = onPostTapped,
+                    isFavorite = favorites.contains(post.id),
+                    onToggleFavorite = { onToggleFavorite(post.id) }
                 )
+                PostListDivider()
             }
         }
         if (postsFeed.popularPosts.isNotEmpty() && !showExpandedSearch) {
@@ -439,7 +458,10 @@ private fun PostList(
             }
         }
         if (postsFeed.recentPosts.isNotEmpty()) {
-            item { PostListHistorySection(postsFeed.recentPosts, onPostTapped) }
+            items(postsFeed.recentPosts) { post ->
+                PostCardHistory(post, onPostTapped)
+                PostListDivider()
+            }
         }
     }
 }
@@ -478,33 +500,7 @@ private fun PostListTopSection(post: Post, navigateToPost: (String) -> Unit) {
     PostListDivider()
 }
 
-/**
- * Full-width list items for [PostList]
- *
- * @param posts (state) to display
- * @param navigateToPost (event) request navigation to Post screen
- * @param favorites (state) a set of favorite posts
- * @param onToggleFavorite (event) request that this post toggle its favorite state
- */
-@Composable
-private fun PostListSimpleSection(
-    posts: List<Post>,
-    navigateToPost: (String) -> Unit,
-    favorites: Set<String>,
-    onToggleFavorite: (String) -> Unit,
-) {
-    Column {
-        posts.forEach { post ->
-            PostCardSimple(
-                post = post,
-                navigateToPost = navigateToPost,
-                isFavorite = favorites.contains(post.id),
-                onToggleFavorite = { onToggleFavorite(post.id) },
-            )
-            PostListDivider()
-        }
-    }
-}
+
 
 /**
  * Horizontal scrolling cards for [PostList]
@@ -520,14 +516,13 @@ private fun PostListPopularSection(posts: List<Post>, navigateToPost: (String) -
             text = stringResource(id = R.string.home_popular_section_title),
             style = MaterialTheme.typography.titleLarge,
         )
-        Row(
+        LazyRow(
             modifier = Modifier
-                .horizontalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max)
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            for (post in posts) {
+            items(posts) { post ->
                 PostCardPopular(
                     post,
                     navigateToPost,
@@ -539,21 +534,7 @@ private fun PostListPopularSection(posts: List<Post>, navigateToPost: (String) -
     }
 }
 
-/**
- * Full-width list items that display "based on your history" for [PostList]
- *
- * @param posts (state) to display
- * @param navigateToPost (event) request navigation to Post screen
- */
-@Composable
-private fun PostListHistorySection(posts: List<Post>, navigateToPost: (String) -> Unit) {
-    Column {
-        posts.forEach { post ->
-            PostCardHistory(post, navigateToPost)
-            PostListDivider()
-        }
-    }
-}
+
 
 /**
  * Full-width divider with padding for [PostList]

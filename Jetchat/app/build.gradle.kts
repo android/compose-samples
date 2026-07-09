@@ -62,6 +62,12 @@ android {
                 "proguard-rules.pro",
             )
         }
+
+        create("benchmark") {
+            initWith(getByName("debug"))
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
 
     kotlin {

@@ -298,16 +298,16 @@ fun Messages(messages: List<Message>, navigateToProfile: (String) -> Unit, scrol
 
                 // Hardcode day dividers for simplicity
                 if (index == messages.size - 1) {
-                    item {
+                    item(key = "20 Aug") {
                         DayHeader("20 Aug")
                     }
                 } else if (index == 2) {
-                    item {
+                    item(key = "Today") {
                         DayHeader("Today")
                     }
                 }
 
-                item {
+                item(key = "${content.author}_${content.timestamp}_${content.content}") {
                     Message(
                         onAuthorClick = { name -> navigateToProfile(name) },
                         msg = content,

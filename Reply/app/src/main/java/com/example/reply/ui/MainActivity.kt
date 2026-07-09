@@ -26,6 +26,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -49,19 +50,27 @@ class MainActivity : ComponentActivity() {
                 val displayFeatures = calculateDisplayFeatures(this)
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+                val closeDetailScreen = remember(viewModel) {
+                    { viewModel.closeDetailScreen() }
+                }
+                val navigateToDetail = remember(viewModel) {
+                    { emailId: Long, pane: com.example.reply.ui.utils.ReplyContentType ->
+                        viewModel.setOpenedEmail(emailId, pane)
+                    }
+                }
+                val toggleSelectedEmail = remember(viewModel) {
+                    { emailId: Long ->
+                        viewModel.toggleSelectedEmail(emailId)
+                    }
+                }
+
                 ReplyApp(
                     windowSize = windowSize,
                     displayFeatures = displayFeatures,
                     replyHomeUIState = uiState,
-                    closeDetailScreen = {
-                        viewModel.closeDetailScreen()
-                    },
-                    navigateToDetail = { emailId, pane ->
-                        viewModel.setOpenedEmail(emailId, pane)
-                    },
-                    toggleSelectedEmail = { emailId ->
-                        viewModel.toggleSelectedEmail(emailId)
-                    },
+                    closeDetailScreen = closeDetailScreen,
+                    navigateToDetail = navigateToDetail,
+                    toggleSelectedEmail = toggleSelectedEmail,
                 )
             }
         }

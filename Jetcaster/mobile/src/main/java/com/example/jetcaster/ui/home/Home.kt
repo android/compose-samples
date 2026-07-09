@@ -250,6 +250,14 @@ private fun HomeScreenReady(
             value = navigator.scaffoldValue,
             directive = navigator.scaffoldDirective,
             mainPane = {
+                val navigateToPodcastDetails = remember(navigator, scope) {
+                    { podcast: PodcastInfo ->
+                        scope.launch {
+                            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, podcast.uri)
+                        }
+                        Unit
+                    }
+                }
                 HomeScreen(
                     isHomeAppBarExpanded = windowSizeClass.isCompact,
                     isLoading = uiState.isLoading,
@@ -260,11 +268,7 @@ private fun HomeScreenReady(
                     podcastCategoryFilterResult = uiState.podcastCategoryFilterResult,
                     library = uiState.library,
                     onHomeAction = viewModel::onHomeAction,
-                    navigateToPodcastDetails = {
-                        scope.launch {
-                            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
-                        }
-                    },
+                    navigateToPodcastDetails = navigateToPodcastDetails,
                     navigateToPlayer = navigateToPlayer,
                     modifier = Modifier.fillMaxSize(),
                 )
@@ -410,6 +414,17 @@ private fun HomeScreen(
             // Main Content
             val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
             val showHomeCategoryTabs = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
+            val onHomeActionRemembered = remember(onHomeAction, snackbarHostState, snackBarText, coroutineScope) {
+                { action: HomeAction ->
+                    if (action is HomeAction.QueueEpisode) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(snackBarText)
+                        }
+                    }
+                    onHomeAction(action)
+                }
+            }
+
             HomeContent(
                 featuredPodcasts = featuredPodcasts,
                 selectedHomeCategory = selectedHomeCategory,
@@ -417,14 +432,7 @@ private fun HomeScreen(
                 podcastCategoryFilterResult = podcastCategoryFilterResult,
                 library = library,
                 modifier = Modifier.padding(contentPadding),
-                onHomeAction = { action ->
-                    if (action is HomeAction.QueueEpisode) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(snackBarText)
-                        }
-                    }
-                    onHomeAction(action)
-                },
+                onHomeAction = onHomeActionRemembered,
                 navigateToPodcastDetails = navigateToPodcastDetails,
                 navigateToPlayer = navigateToPlayer,
             )
@@ -432,7 +440,7 @@ private fun HomeScreen(
             if (showHomeCategoryTabs) {
                 PillToolbar(
                     selectedHomeCategory,
-                    onHomeAction,
+                    onHomeActionRemembered,
                     Modifier.align(Alignment.BottomCenter),
                 )
             }

@@ -17,7 +17,9 @@
 package com.example.jetnews.model
 
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Immutable
 
+@Immutable
 data class Post(
     val id: String,
     val title: String,
@@ -30,14 +32,19 @@ data class Post(
     @DrawableRes val imageThumbId: Int,
 )
 
+@Immutable
 data class Metadata(val author: PostAuthor, val date: String, val readTimeMinutes: Int)
 
+@Immutable
 data class PostAuthor(val name: String, val url: String? = null)
 
+@Immutable
 data class Publication(val name: String, val logoUrl: String)
 
+@Immutable
 data class Paragraph(val type: ParagraphType, val text: String, val markups: List<Markup> = emptyList())
 
+@Immutable
 data class Markup(val type: MarkupType, val start: Int, val end: Int, val href: String? = null)
 
 enum class MarkupType {

@@ -16,4 +16,7 @@
 
 package com.example.jetcaster.core.model
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class LibraryInfo(val episodes: List<PodcastToEpisodeInfo> = emptyList()) : List<PodcastToEpisodeInfo> by episodes

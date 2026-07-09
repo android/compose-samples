@@ -28,6 +28,7 @@
         <item name="colorPrimary">@color/blue500</item>
         <item name="colorPrimaryDark">@color/blue800</item>
         <item name="colorAccent">@color/yellow700</item>
+        <item name="colorOnSurface">@android:color/black</item>
     </style>
 
     <style name="Theme.Jetchat.NoActionBar">

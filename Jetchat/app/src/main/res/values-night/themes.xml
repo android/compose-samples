@@ -21,6 +21,7 @@
         <item name="colorPrimary">@color/blue300</item>
         <item name="colorPrimaryDark">@color/blue400</item>
         <item name="colorAccent">@color/yellow400</item>
+        <item name="colorOnSurface">@android:color/white</item>
     </style>
 
 </resources>

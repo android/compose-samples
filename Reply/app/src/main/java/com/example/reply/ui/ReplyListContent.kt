@@ -38,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -168,6 +169,12 @@ fun ReplyEmailList(
     modifier: Modifier = Modifier,
     navigateToDetail: (Long, ReplyContentType) -> Unit,
 ) {
+    val onNavigateToDetail = remember(navigateToDetail) {
+        { emailId: Long ->
+            navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
+        }
+    }
+
     Box(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
         ReplyDockedSearchBar(
             emails = emails,
@@ -188,9 +195,7 @@ fun ReplyEmailList(
             items(items = emails, key = { it.id }) { email ->
                 ReplyEmailListItem(
                     email = email,
-                    navigateToDetail = { emailId ->
-                        navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
-                    },
+                    navigateToDetail = onNavigateToDetail,
                     toggleSelection = toggleEmailSelection,
                     isOpened = openedEmail?.id == email.id,
                     isSelected = selectedEmailIds.contains(email.id),

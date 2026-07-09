@@ -44,6 +44,7 @@ include(
     ":core:designsystem",
     ":tv",
     ":wear",
-    ":glancewidget"
+    ":glancewidget",
+    ":benchmark"
 )
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

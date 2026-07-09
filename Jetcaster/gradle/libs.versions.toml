@@ -23,6 +23,7 @@ androidx-test = "1.7.0"
 androidx-test-espresso = "3.7.0"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-ext-truth = "1.7.0"
+androidx-benchmark = "1.3.3"
 androidx-tv-foundation = "1.0.0"
 androidx-tv-material = "1.1.0"
 androidx-wear-compose = "1.6.2"
@@ -124,6 +125,7 @@ androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "a
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
+androidx-benchmark-macro-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark" }
 androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv-foundation" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv-material" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-wear-compose" }
