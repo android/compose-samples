@@ -4,6 +4,7 @@ android-material3 = "1.14.0"
 androidGradlePlugin = "9.3.1"
 androidx-activity-compose = "1.13.0"
 androidx-appcompat = "1.8.0"
+androidx-benchmark = "1.3.3"
 androidx-compose-bom = "2026.08.00"
 androidx-core-splashscreen = "1.2.0"
 androidx-corektx = "1.19.0"
@@ -110,6 +111,7 @@ androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "a
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
+androidx-benchmark-macro-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark" }
 androidx-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "androidx-tv-foundation" }
 androidx-tv-material = { module = "androidx.tv:tv-material", version.ref = "androidx-tv-material" }
 androidx-wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-wear-compose" }

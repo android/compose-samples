@@ -38,3 +38,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Jetsnack"
 include(":app")
+include(":benchmark")

@@ -56,10 +56,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onLayoutRectChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -188,13 +192,22 @@ private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (
 
 @Composable
 fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
+    var isVisible by remember { mutableStateOf(false) }
+
     JetsnackSurface(
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier.padding(
-            start = 4.dp,
-            end = 4.dp,
-            bottom = 8.dp,
-        ),
+        modifier = modifier
+            .padding(
+                start = 4.dp,
+                end = 4.dp,
+                bottom = 8.dp,
+            )
+            .onLayoutRectChanged { bounds ->
+                val visible = bounds.fractionVisibleInWindow() > 0f
+                if (visible != isVisible) {
+                    isVisible = visible
+                }
+            },
 
     ) {
         val sharedTransitionScope = LocalSharedTransitionScope.current
@@ -211,24 +224,50 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                     })
                     .padding(8.dp),
             ) {
+                val imageSharedBoundsModifier = if (isVisible) {
+                    Modifier.sharedBounds(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = snackCollectionId.toString(),
+                                type = SnackSharedElementType.Image,
+                            ),
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = snackDetailBoundsTransform,
+                    )
+                } else {
+                    Modifier
+                }
+
                 SnackImage(
                     imageRes = snack.imageRes,
                     elevation = 1.dp,
                     contentDescription = null,
                     modifier = Modifier
                         .size(120.dp)
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Image,
-                                ),
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = snackDetailBoundsTransform,
-                        ),
+                        .then(imageSharedBoundsModifier),
                 )
+
+                val textSharedBoundsModifier = if (isVisible) {
+                    Modifier.sharedBounds(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = snackCollectionId.toString(),
+                                type = SnackSharedElementType.Title,
+                            ),
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        enter = fadeIn(nonSpatialExpressiveSpring()),
+                        exit = fadeOut(nonSpatialExpressiveSpring()),
+                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                        boundsTransform = snackDetailBoundsTransform,
+                    )
+                } else {
+                    Modifier
+                }
+
                 Text(
                     text = snack.name,
                     style = MaterialTheme.typography.titleMedium,
@@ -236,20 +275,7 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .wrapContentWidth()
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Title,
-                                ),
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
-                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
-                            boundsTransform = snackDetailBoundsTransform,
-                        ),
+                        .then(textSharedBoundsModifier),
                 )
             }
         }
@@ -266,6 +292,7 @@ private fun HighlightSnackItem(
     scrollProvider: () -> Float,
     modifier: Modifier = Modifier,
 ) {
+    var isVisible by remember { mutableStateOf(false) }
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
@@ -279,29 +306,42 @@ private fun HighlightSnackItem(
                     EnterExitState.PostExit -> 20.dp
                 }
             }
+
+        val cardSharedBoundsModifier = if (isVisible) {
+            Modifier.sharedBounds(
+                sharedContentState = rememberSharedContentState(
+                    key = SnackSharedElementKey(
+                        snackId = snack.id,
+                        origin = snackCollectionId.toString(),
+                        type = SnackSharedElementType.Bounds,
+                    ),
+                ),
+                animatedVisibilityScope = animatedVisibilityScope,
+                boundsTransform = snackDetailBoundsTransform,
+                clipInOverlayDuringTransition = OverlayClip(
+                    RoundedCornerShape(
+                        roundedCornerAnimation,
+                    ),
+                ),
+                enter = fadeIn(),
+                exit = fadeOut(),
+            )
+        } else {
+            Modifier
+        }
+
         JetsnackCard(
             elevation = 0.dp,
             shape = RoundedCornerShape(roundedCornerAnimation),
             modifier = modifier
                 .padding(bottom = 16.dp)
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(
-                        key = SnackSharedElementKey(
-                            snackId = snack.id,
-                            origin = snackCollectionId.toString(),
-                            type = SnackSharedElementType.Bounds,
-                        ),
-                    ),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    boundsTransform = snackDetailBoundsTransform,
-                    clipInOverlayDuringTransition = OverlayClip(
-                        RoundedCornerShape(
-                            roundedCornerAnimation,
-                        ),
-                    ),
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                )
+                .onLayoutRectChanged { bounds ->
+                    val visible = bounds.fractionVisibleInWindow() > 0f
+                    if (visible != isVisible) {
+                        isVisible = visible
+                    }
+                }
+                .then(cardSharedBoundsModifier)
                 .size(
                     width = HighlightCardWidth,
                     height = 250.dp,
@@ -329,22 +369,28 @@ private fun HighlightSnackItem(
                         .height(160.dp)
                         .fillMaxWidth(),
                 ) {
+                    val bgSharedBoundsModifier = if (isVisible) {
+                        Modifier.sharedBounds(
+                            rememberSharedContentState(
+                                key = SnackSharedElementKey(
+                                    snackId = snack.id,
+                                    origin = snackCollectionId.toString(),
+                                    type = SnackSharedElementType.Background,
+                                ),
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            boundsTransform = snackDetailBoundsTransform,
+                            enter = fadeIn(nonSpatialExpressiveSpring()),
+                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                        )
+                    } else {
+                        Modifier
+                    }
+
                     Box(
                         modifier = Modifier
-                            .sharedBounds(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Background,
-                                    ),
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                boundsTransform = snackDetailBoundsTransform,
-                                enter = fadeIn(nonSpatialExpressiveSpring()),
-                                exit = fadeOut(nonSpatialExpressiveSpring()),
-                                resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
-                            )
+                            .then(bgSharedBoundsModifier)
                             .height(100.dp)
                             .fillMaxWidth()
                             .offsetGradientBackground(
@@ -362,29 +408,55 @@ private fun HighlightSnackItem(
                             ),
                     )
 
+                    val imageSharedBoundsModifier = if (isVisible) {
+                        Modifier.sharedBounds(
+                            rememberSharedContentState(
+                                key = SnackSharedElementKey(
+                                    snackId = snack.id,
+                                    origin = snackCollectionId.toString(),
+                                    type = SnackSharedElementType.Image,
+                                ),
+                            ),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            enter = fadeIn(nonSpatialExpressiveSpring()),
+                            boundsTransform = snackDetailBoundsTransform,
+                        )
+                    } else {
+                        Modifier
+                    }
+
                     SnackImage(
                         imageRes = snack.imageRes,
                         contentDescription = null,
                         modifier = Modifier
-                            .sharedBounds(
-                                rememberSharedContentState(
-                                    key = SnackSharedElementKey(
-                                        snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
-                                        type = SnackSharedElementType.Image,
-                                    ),
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                exit = fadeOut(nonSpatialExpressiveSpring()),
-                                enter = fadeIn(nonSpatialExpressiveSpring()),
-                                boundsTransform = snackDetailBoundsTransform,
-                            )
+                            .then(imageSharedBoundsModifier)
                             .align(Alignment.BottomCenter)
                             .size(120.dp),
                     )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+
+                val titleSharedBoundsModifier = if (isVisible) {
+                    Modifier.sharedBounds(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = snackCollectionId.toString(),
+                                type = SnackSharedElementType.Title,
+                            ),
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        enter = fadeIn(nonSpatialExpressiveSpring()),
+                        exit = fadeOut(nonSpatialExpressiveSpring()),
+                        boundsTransform = snackDetailBoundsTransform,
+                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                    )
+                } else {
+                    Modifier
+                }
+
                 Text(
                     text = snack.name,
                     maxLines = 1,
@@ -393,23 +465,29 @@ private fun HighlightSnackItem(
                     color = JetsnackTheme.colors.textSecondary,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Title,
-                                ),
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
-                            boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
-                        )
+                        .then(titleSharedBoundsModifier)
                         .wrapContentWidth(),
                 )
                 Spacer(modifier = Modifier.height(4.dp))
+
+                val taglineSharedBoundsModifier = if (isVisible) {
+                    Modifier.sharedBounds(
+                        rememberSharedContentState(
+                            key = SnackSharedElementKey(
+                                snackId = snack.id,
+                                origin = snackCollectionId.toString(),
+                                type = SnackSharedElementType.Tagline,
+                            ),
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        enter = fadeIn(nonSpatialExpressiveSpring()),
+                        exit = fadeOut(nonSpatialExpressiveSpring()),
+                        boundsTransform = snackDetailBoundsTransform,
+                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                    )
+                } else {
+                    Modifier
+                }
 
                 Text(
                     text = snack.tagline,
@@ -417,20 +495,7 @@ private fun HighlightSnackItem(
                     color = JetsnackTheme.colors.textHelp,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .sharedBounds(
-                            rememberSharedContentState(
-                                key = SnackSharedElementKey(
-                                    snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
-                                    type = SnackSharedElementType.Tagline,
-                                ),
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
-                            boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
-                        )
+                        .then(taglineSharedBoundsModifier)
                         .wrapContentWidth(),
                 )
             }
