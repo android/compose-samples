@@ -44,32 +44,79 @@ class JetsnackBenchmarks {
         compilationMode = CompilationMode.DEFAULT,
         startupMode = StartupMode.COLD,
         iterations = 10,
+        setupBlock = {
+            pressHome()
+            val context = InstrumentationRegistry.getInstrumentation().context
+            val intent = context.packageManager.getLaunchIntentForPackage(packageName)!!
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            context.startActivity(intent)
+            device.wait(Until.hasObject(By.pkg(packageName).depth(0)), 15000)
+            device.wait(Until.hasObject(By.res("feed_list")), 15000)
+        },
     ) {
-        pressHome()
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val intent = context.packageManager.getLaunchIntentForPackage(packageName)!!
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        context.startActivity(intent)
-        device.wait(Until.hasObject(By.pkg(packageName).depth(0)), 15000)
-
-        // Wait for the feed list
         val listSelector = By.res("feed_list")
-        val list = device.wait(Until.findObject(listSelector), 15000)
-            ?: device.wait(Until.findObject(By.scrollable(true)), 15000)
-        requireNotNull(list) { "Feed list not found!" }
-
-        list.setGestureMargin(device.displayWidth / 5)
 
         // Scroll down through feed
         repeat(3) {
+            val list = device.findObject(listSelector) ?: device.findObject(By.scrollable(true))
+            requireNotNull(list) { "Feed list not found!" }
+            list.setGestureMargin(device.displayWidth / 5)
             list.fling(Direction.DOWN)
             device.waitForIdle()
         }
 
         // Scroll back up
         repeat(3) {
+            val list = device.findObject(listSelector) ?: device.findObject(By.scrollable(true))
+            requireNotNull(list) { "Feed list not found!" }
+            list.setGestureMargin(device.displayWidth / 5)
             list.fling(Direction.UP)
             device.waitForIdle()
         }
+    }
+
+    @Test
+    fun navigateSnackDetailFrameTiming() = benchmarkRule.measureRepeated(
+        packageName = targetPackageName,
+        metrics = listOf(FrameTimingMetric()),
+        compilationMode = CompilationMode.DEFAULT,
+        startupMode = StartupMode.COLD,
+        iterations = 10,
+        setupBlock = {
+            pressHome()
+            val context = InstrumentationRegistry.getInstrumentation().context
+            val intent = context.packageManager.getLaunchIntentForPackage(packageName)!!
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            context.startActivity(intent)
+            device.wait(Until.hasObject(By.pkg(packageName).depth(0)), 15000)
+            device.wait(Until.hasObject(By.res("feed_list")), 15000)
+            device.wait(Until.hasObject(By.res("highlight_snack_item")), 10000)
+            device.waitForIdle()
+        },
+    ) {
+        val listSelector = By.res("feed_list")
+
+        // Find snack item to click and trigger shared element transition
+        val snackItem = device.wait(Until.findObject(By.text("Cupcake")), 10000)
+            ?: device.wait(Until.findObject(By.text("Donut")), 5000)
+            ?: device.wait(Until.findObject(By.res("highlight_snack_item")), 5000)
+            ?: device.findObject(By.res("snack_item"))
+            ?: device.findObject(By.clickable(true))
+        requireNotNull(snackItem) { "Snack item not found on feed!" }
+
+        // Click snack to navigate into detail with shared element transition
+        snackItem.click()
+
+        // Wait for detail screen to appear
+        val detailLoaded = device.wait(Until.hasObject(By.desc("Back")), 10000) ||
+            device.wait(Until.hasObject(By.text("Details")), 5000) ||
+            device.wait(Until.hasObject(By.textContains("CART")), 5000)
+        check(detailLoaded) { "Detail screen not loaded!" }
+        device.waitForIdle()
+
+        // Return to feed with reverse shared transition
+        device.pressBack()
+        device.wait(Until.hasObject(listSelector), 10000)
+        device.waitForIdle()
     }
 }

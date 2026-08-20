@@ -68,6 +68,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
@@ -219,6 +222,10 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
+                    .semantics {
+                        testTag = "snack_item"
+                        testTagsAsResourceId = true
+                    }
                     .clickable(onClick = {
                         onSnackClick(snack.id, snackCollectionId.toString())
                     })
@@ -355,6 +362,10 @@ private fun HighlightSnackItem(
         ) {
             Column(
                 modifier = Modifier
+                    .semantics {
+                        testTag = "highlight_snack_item"
+                        testTagsAsResourceId = true
+                    }
                     .clickable(onClick = {
                         onSnackClick(
                             snack.id,
