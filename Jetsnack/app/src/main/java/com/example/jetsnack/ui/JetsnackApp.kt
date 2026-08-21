@@ -34,8 +34,8 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
@@ -166,5 +166,5 @@ fun MainContainer(modifier: Modifier = Modifier, onSnackSelected: (Long, String,
     }
 }
 
-val LocalNavAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
-val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
+val LocalNavAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
+val LocalSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }

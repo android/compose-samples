@@ -42,8 +42,8 @@ class JetsnackBenchmarks {
         packageName = targetPackageName,
         metrics = listOf(FrameTimingMetric()),
         compilationMode = CompilationMode.DEFAULT,
-        startupMode = StartupMode.COLD,
-        iterations = 10,
+        startupMode = StartupMode.WARM,
+        iterations = 5,
         setupBlock = {
             pressHome()
             val context = InstrumentationRegistry.getInstrumentation().context
@@ -80,8 +80,8 @@ class JetsnackBenchmarks {
         packageName = targetPackageName,
         metrics = listOf(FrameTimingMetric()),
         compilationMode = CompilationMode.DEFAULT,
-        startupMode = StartupMode.COLD,
-        iterations = 10,
+        startupMode = StartupMode.WARM,
+        iterations = 5,
         setupBlock = {
             pressHome()
             val context = InstrumentationRegistry.getInstrumentation().context

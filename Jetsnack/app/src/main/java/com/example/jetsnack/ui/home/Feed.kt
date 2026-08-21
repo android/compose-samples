@@ -139,6 +139,7 @@ private fun SnackCollectionList(
                 snackCollection = snackCollection,
                 onSnackClick = onSnackClick,
                 index = index,
+                sharedTransitionScope = sharedTransitionScope,
             )
         }
     }
