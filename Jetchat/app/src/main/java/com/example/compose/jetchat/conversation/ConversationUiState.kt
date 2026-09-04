@@ -36,4 +36,5 @@ data class Message(
     val timestamp: String,
     val image: Int? = null,
     val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else,
+    val videoUri: String? = null,
 )

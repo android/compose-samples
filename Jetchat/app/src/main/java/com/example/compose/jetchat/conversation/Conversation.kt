@@ -31,9 +31,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
@@ -202,6 +205,16 @@ fun ConversationContent(
                 onMessageSent = { content ->
                     uiState.addMessage(
                         Message(authorMe, content, timeNow),
+                    )
+                },
+                onVideoMessageSent = { videoUri, content ->
+                    uiState.addMessage(
+                        Message(
+                            author = authorMe,
+                            content = content,
+                            timestamp = timeNow,
+                            videoUri = videoUri,
+                        ),
                     )
                 },
                 resetScroll = {
@@ -501,6 +514,24 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.size(160.dp),
                     contentDescription = stringResource(id = R.string.attached_image),
+                )
+            }
+        }
+
+        message.videoUri?.let { videoUri ->
+            Spacer(modifier = Modifier.height(4.dp))
+            Surface(
+                color = backgroundBubbleColor,
+                shape = ChatBubbleShape,
+            ) {
+                VideoPlayer(
+                    videoUri = videoUri,
+                    autoPlay = false,
+                    shape = ChatBubbleShape,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(ChatBubbleShape),
                 )
             }
         }
