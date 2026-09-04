@@ -191,11 +191,11 @@ private fun VideoPlayerCenterPlayButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .size(84.dp)
+            .size(72.dp)
             .registerBlurRegion(
                 id = "center_play",
                 surfaceCoordinates = surfaceCoordinates,
-                cornerRadius = 42.dp,
+                cornerRadius = 36.dp,
                 onUpdateRegion = onUpdateRegion,
                 onRemoveRegion = onRemoveRegion,
             )
@@ -212,7 +212,7 @@ private fun VideoPlayerCenterPlayButton(
             .clickable(
                 enabled = playPauseButtonState.isEnabled,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(bounded = true, radius = 56.dp),
+                indication = ripple(bounded = true, radius = 36.dp),
                 role = Role.Button,
             ) {
                 onUserInteraction()
