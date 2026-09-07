@@ -245,22 +245,13 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
                 val boxRight = box.right.toFloat() - surfacePos.x
                 val boxBottom = box.bottom.toFloat() - surfacePos.y
 
-                val extendsPastBase = boxBottom >= surfaceH - 4f
-                val extendsPastTop = boxTop <= 4f
-                val extendsAcrossWidth = (boxLeft <= 4f || boxLeft <= surfaceW * 0.05f) &&
-                    (boxRight >= surfaceW - 4f || boxRight >= surfaceW * 0.95f)
-
-                // Only treat as full-bleed flat rectangle if it extends across the entire width
-                // AND touches/extends past an edge of the SurfaceView
-                val isFullBleedAtEdge = extendsAcrossWidth && (extendsPastBase || extendsPastTop)
-
-                val left = if (isFullBleedAtEdge) 0f else boxLeft.coerceIn(0f, surfaceW)
+                val left = boxLeft.coerceIn(0f, surfaceW)
                 val top = boxTop.coerceIn(0f, surfaceH)
-                val right = if (isFullBleedAtEdge) surfaceW else boxRight.coerceIn(0f, surfaceW)
-                val bottom = if (extendsPastBase) surfaceH else boxBottom.coerceIn(0f, surfaceH)
+                val right =  boxRight.coerceIn(0f, surfaceW)
+                val bottom = boxBottom.coerceIn(0f, surfaceH)
 
                 if (right > left && bottom > top) {
-                    val cornerRadius = if (isFullBleedAtEdge) 0f else spec.cornerRadiusPx
+                    val cornerRadius =  spec.cornerRadiusPx
                     spec.copy(
                         boundsInSurface = RectF(left, top, right, bottom),
                         cornerRadiusPx = cornerRadius,
