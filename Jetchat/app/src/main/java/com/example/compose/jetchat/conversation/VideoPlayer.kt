@@ -59,6 +59,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -99,6 +101,13 @@ fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boole
         onDispose {
             exoPlayer.release()
         }
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
+        exoPlayer.pause()
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+        exoPlayer.pause()
     }
 
     var isFullscreen by rememberSaveable { mutableStateOf(false) }
