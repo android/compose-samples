@@ -268,7 +268,7 @@ private fun VideoPlayerBottomBar(
             .registerBlurRegion(
                 id = "bottom_bar",
                 surfaceCoordinates = surfaceCoordinates,
-                cornerRadius = 24.dp,
+                cornerRadius = 16.dp,
                 onUpdateRegion = onUpdateRegion,
                 onRemoveRegion = onRemoveRegion,
             )

@@ -37,15 +37,18 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.spatial.RelativeLayoutBounds
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
+import java.util.WeakHashMap
 
 /**
  * Data specification for a blur region placed over a SurfaceView.
  */
 data class BlurRegionSpec(
     val id: String,
-    val boundsInSurface: RectF,
-    val cornerRadiusPx: Float,
+    val boundsInSurface: RectF = RectF(),
+    val boundsInWindow: IntRect = IntRect.Zero,
+    val cornerRadiusPx: Float = 0f,
     val blurRadiusPx: Float = 50f,
     val alpha: Float = 1.0f,
 )
@@ -55,6 +58,7 @@ data class BlurRegionSpec(
  */
 object SurfaceViewBlurHelper {
     private const val TAG = "SurfaceViewBlurHelper"
+    private val lastAppliedRegions = WeakHashMap<SurfaceView, List<BlurRegionSpec>>()
 
     /**
      * Applies a collection of blur regions to the given SurfaceView.
@@ -79,13 +83,19 @@ object SurfaceViewBlurHelper {
 
     @RequiresApi(37)
     private fun applyBlurRegionsInternal(surfaceView: SurfaceView, regions: Collection<BlurRegionSpec>) {
-        if (regions.isEmpty()) {
+        val regionList = if (regions.isEmpty()) emptyList() else regions.toList()
+        if (lastAppliedRegions[surfaceView] == regionList) {
+            return
+        }
+        lastAppliedRegions[surfaceView] = regionList
+
+        if (regionList.isEmpty()) {
             surfaceView.setBlurRegions(emptyList())
             return
         }
 
-        val blurRegions = ArrayList<BlurRegion>(regions.size)
-        for (spec in regions) {
+        val blurRegions = ArrayList<BlurRegion>(regionList.size)
+        for (spec in regionList) {
             if (spec.boundsInSurface.width() <= 0f || spec.boundsInSurface.height() <= 0f) continue
             val roundedRectRegion = RoundedRectBlurRegion().apply {
                 bounds = spec.boundsInSurface
@@ -107,7 +117,7 @@ object SurfaceViewBlurHelper {
 @Composable
 fun Modifier.registerBlurRegion(
     id: String,
-    surfaceCoordinates: LayoutCoordinates?,
+    surfaceCoordinates: LayoutCoordinates? = null,
     cornerRadius: Dp,
     blurRadius: Dp = 20.dp,
     alpha: Float = 1.0f,
@@ -127,35 +137,36 @@ fun Modifier.registerBlurRegion(
         }
     }
 
-    var lastRect by remember(id) { mutableStateOf<RectF?>(null) }
+    var lastBounds by remember(id) { mutableStateOf<IntRect?>(null) }
 
-    return this.onLayoutRectChanged(throttleMillis = 16, debounceMillis = 0) { bounds: RelativeLayoutBounds ->
-        if (surfaceCoordinates != null && surfaceCoordinates.isAttached) {
-            val surfacePosInWindow = surfaceCoordinates.positionInWindow()
-            val surfaceW = surfaceCoordinates.size.width.toFloat()
-            val surfaceH = surfaceCoordinates.size.height.toFloat()
-
-            val boxInWindow = bounds.boundsInWindow
-            val left = (boxInWindow.left - surfacePosInWindow.x).coerceIn(0f, surfaceW)
-            val top = (boxInWindow.top - surfacePosInWindow.y).coerceIn(0f, surfaceH)
-            val right = (boxInWindow.right - surfacePosInWindow.x).coerceIn(0f, surfaceW)
-            val bottom = (boxInWindow.bottom - surfacePosInWindow.y).coerceIn(0f, surfaceH)
-
-            if (right > left && bottom > top) {
-                val prev = lastRect
-                if (prev == null || prev.left != left || prev.top != top || prev.right != right || prev.bottom != bottom) {
-                    val newRect = RectF(left, top, right, bottom)
-                    lastRect = newRect
-                    currentOnUpdateRegion(
-                        BlurRegionSpec(
-                            id = id,
-                            boundsInSurface = newRect,
-                            cornerRadiusPx = cornerRadiusPx,
-                            blurRadiusPx = blurRadiusPx,
-                            alpha = alpha,
-                        ),
-                    )
+    return this.onLayoutRectChanged(throttleMillis = 0, debounceMillis = 0) { bounds: RelativeLayoutBounds ->
+        val boxInWindow = bounds.boundsInWindow
+        if (boxInWindow.width > 0 && boxInWindow.height > 0) {
+            val prev = lastBounds
+            if (prev == null || prev != boxInWindow) {
+                lastBounds = boxInWindow
+                val boundsInSurface = if (surfaceCoordinates != null && surfaceCoordinates.isAttached) {
+                    val surfacePos = surfaceCoordinates.positionInWindow()
+                    val surfaceW = surfaceCoordinates.size.width.toFloat()
+                    val surfaceH = surfaceCoordinates.size.height.toFloat()
+                    val left = (boxInWindow.left.toFloat() - surfacePos.x).coerceIn(0f, surfaceW)
+                    val top = (boxInWindow.top.toFloat() - surfacePos.y).coerceIn(0f, surfaceH)
+                    val right = (boxInWindow.right.toFloat() - surfacePos.x).coerceIn(0f, surfaceW)
+                    val bottom = (boxInWindow.bottom.toFloat() - surfacePos.y).coerceIn(0f, surfaceH)
+                    RectF(left, top, right, bottom)
+                } else {
+                    RectF()
                 }
+                currentOnUpdateRegion(
+                    BlurRegionSpec(
+                        id = id,
+                        boundsInSurface = boundsInSurface,
+                        boundsInWindow = boxInWindow,
+                        cornerRadiusPx = cornerRadiusPx,
+                        blurRadiusPx = blurRadiusPx,
+                        alpha = alpha,
+                    ),
+                )
             }
         }
     }
