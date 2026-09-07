@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -67,9 +68,8 @@ import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import androidx.media3.ui.compose.state.rememberPresentationState
 import androidx.media3.ui.compose.state.rememberProgressStateWithTickInterval
 import com.example.compose.jetchat.R
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
-import androidx.core.net.toUri
+import kotlinx.coroutines.delay
 
 const val DEFAULT_VIDEO_URL =
     "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_5MB.mp4"
@@ -82,12 +82,7 @@ const val DEFAULT_VIDEO_URL =
  * duplication between inline and fullscreen playback.
  */
 @Composable
-fun VideoPlayer(
-    videoUri: String,
-    modifier: Modifier = Modifier,
-    autoPlay: Boolean = false,
-    shape: Shape = RoundedCornerShape(16.dp),
-) {
+fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boolean = false, shape: Shape = RoundedCornerShape(16.dp)) {
     val context = LocalContext.current
     val resolvedUri = remember(videoUri) { resolveVideoUri(videoUri) }
 
@@ -206,14 +201,7 @@ private fun VideoPlayerSurface(
     val videoAspectRatio = remember(presentationState.videoSizeDp) {
         val size = presentationState.videoSizeDp
         if (size != null && size.width > 0f && size.height > 0f) {
-            val rawRatio = size.width / size.height
-            @Suppress("DEPRECATION")
-            val rotation = exoPlayer.videoSize.unappliedRotationDegrees
-            if (rotation == 90 || rotation == 270) {
-                if (rawRatio > 0f) 1f / rawRatio else 16f / 9f
-            } else {
-                rawRatio
-            }
+            size.width / size.height
         } else {
             16f / 9f
         }
