@@ -31,6 +31,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -94,7 +95,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.components.BlurRadiusSpec
 import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.components.backdropRenderEffect
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.launch
@@ -190,7 +193,8 @@ fun ConversationContent(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             Column(
-                Modifier.fillMaxSize().padding(paddingValues)
+                Modifier.fillMaxSize()
+                    .padding(bottom = paddingValues.calculateBottomPadding())
                     .background(color = background)
                     .border(width = 2.dp, color = borderStroke)
                     .dragAndDropTarget(shouldStartDragAndDrop = { event ->
@@ -206,6 +210,7 @@ fun ConversationContent(
                     navigateToProfile = navigateToProfile,
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
+                    contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
                     onVideoClick = { videoUri -> activeVideoUri = videoUri },
                 )
                 UserInput(
@@ -264,8 +269,16 @@ fun ChannelNameBar(
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
+    val density = LocalDensity.current
+    val blurEffect = remember(density) {
+        BlurRadiusSpec.createRenderEffect(radius = 20.dp, density = density)
+    }
     JetchatAppBar(
-        modifier = modifier,
+        modifier = modifier.backdropRenderEffect(
+            renderEffect = blurEffect,
+            tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+            elevation = 2.dp,
+        ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
         title = {
@@ -316,6 +329,7 @@ fun Messages(
     navigateToProfile: (String) -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     onVideoClick: (String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -325,6 +339,7 @@ fun Messages(
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
+            contentPadding = contentPadding,
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize(),
