@@ -221,6 +221,8 @@ private fun VideoPlayerSurface(
                 val bottom = if (extendsPastBase) surfaceH else boxBottom.coerceIn(0f, surfaceH)
 
                 if (right > left && bottom > top) {
+                    // The region overlaps outside the SurfaceView, so the corner radius
+                    // shouldn't be applied in this case
                     val cornerRadius = if (isFullRectangle) 0f else spec.cornerRadiusPx
                     spec.copy(
                         boundsInSurface = RectF(left, top, right, bottom),
@@ -260,7 +262,7 @@ private fun VideoPlayerSurface(
         }
     }
 
-    BoxWithConstraints(
+    Box(
         modifier = modifier
             .clip(shape)
             .background(Color.Black)
@@ -273,19 +275,8 @@ private fun VideoPlayerSurface(
             },
         contentAlignment = Alignment.Center,
     ) {
-        val containerWidth = maxWidth
-        val containerHeight = maxHeight
-        val hasBoundedWidth = containerWidth.isSpecified && containerWidth > 0.dp && containerWidth != Dp.Infinity
-        val hasBoundedHeight = containerHeight.isSpecified && containerHeight > 0.dp && containerHeight != Dp.Infinity
-
-        val matchHeight = if (hasBoundedWidth && hasBoundedHeight) {
-            (containerWidth.value / containerHeight.value) > videoAspectRatio
-        } else {
-            hasBoundedHeight && !hasBoundedWidth
-        }
-
         Box(
-            modifier = Modifier.aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = matchHeight),
+            modifier = Modifier.aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = true),
             contentAlignment = Alignment.Center,
         ) {
             // SurfaceView rendering the video directly from ExoPlayer
