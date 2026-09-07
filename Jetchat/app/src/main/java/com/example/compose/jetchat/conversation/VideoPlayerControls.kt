@@ -266,7 +266,7 @@ private fun VideoPlayerBottomBar(
             .padding(horizontal = 8.dp, vertical = 16.dp)
             .registerBlurRegion(
                 id = "bottom_bar",
-                cornerRadius = 16.dp,
+                cornerRadius = 0.dp,
                 onUpdateRegion = onUpdateRegion,
                 onRemoveRegion = onRemoveRegion,
             )
