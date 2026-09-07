@@ -169,7 +169,7 @@ fun UserInput(
     val sendMessage = {
         val currentVideoUri = attachedVideoUri
         if (currentVideoUri != null) {
-            onVideoMessageSent(currentVideoUri, textState.text)
+            onVideoMessageSent(currentVideoUri, textState.text.trim())
             attachedVideoUri = null
         } else if (textState.text.isNotBlank()) {
             onMessageSent(textState.text)

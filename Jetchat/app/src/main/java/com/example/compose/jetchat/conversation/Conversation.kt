@@ -492,19 +492,24 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
     }
 
     Column {
-        Surface(
-            color = backgroundBubbleColor,
-            shape = ChatBubbleShape,
-        ) {
-            ClickableMessage(
-                message = message,
-                isUserMe = isUserMe,
-                authorClicked = authorClicked,
-            )
+        val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
+        if (hasText) {
+            Surface(
+                color = backgroundBubbleColor,
+                shape = ChatBubbleShape,
+            ) {
+                ClickableMessage(
+                    message = message,
+                    isUserMe = isUserMe,
+                    authorClicked = authorClicked,
+                )
+            }
         }
 
         message.image?.let {
-            Spacer(modifier = Modifier.height(4.dp))
+            if (hasText) {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
             Surface(
                 color = backgroundBubbleColor,
                 shape = ChatBubbleShape,
@@ -519,7 +524,9 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
         }
 
         message.videoUri?.let { videoUri ->
-            Spacer(modifier = Modifier.height(4.dp))
+            if (hasText || message.image != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
             Surface(
                 color = backgroundBubbleColor,
                 shape = ChatBubbleShape,
