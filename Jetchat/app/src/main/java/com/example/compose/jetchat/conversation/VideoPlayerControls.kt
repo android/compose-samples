@@ -24,11 +24,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -44,7 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -67,8 +69,7 @@ fun VideoPlayerOverlayControls(
     playPauseButtonState: PlayPauseButtonState,
     muteButtonState: MuteButtonState,
     progressState: ProgressStateWithTickInterval,
-    isFullscreen: Boolean,
-    surfaceCoordinates: LayoutCoordinates?,
+    isFullscreen: Boolean = true,
     blurRegionSpecs: MutableMap<String, BlurRegionSpec>,
     onUserInteraction: () -> Unit,
     onSeekTo: (Float) -> Unit,
@@ -76,11 +77,12 @@ fun VideoPlayerOverlayControls(
     onUpdateBlurRegions: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+    ) {
         // Top-End Exit Fullscreen Button (fullscreen only)
         if (isFullscreen) {
             VideoPlayerExitFullscreenButton(
-                surfaceCoordinates = surfaceCoordinates,
                 onClick = {
                     onUserInteraction()
                     onToggleFullscreen()
@@ -100,7 +102,6 @@ fun VideoPlayerOverlayControls(
         // Center Play/Pause Floating Circular Button
         VideoPlayerCenterPlayButton(
             playPauseButtonState = playPauseButtonState,
-            surfaceCoordinates = surfaceCoordinates,
             onUserInteraction = onUserInteraction,
             onUpdateRegion = { spec ->
                 blurRegionSpecs[spec.id] = spec
@@ -119,7 +120,6 @@ fun VideoPlayerOverlayControls(
             muteButtonState = muteButtonState,
             progressState = progressState,
             isFullscreen = isFullscreen,
-            surfaceCoordinates = surfaceCoordinates,
             onUserInteraction = onUserInteraction,
             onSeekTo = onSeekTo,
             onToggleFullscreen = onToggleFullscreen,
@@ -131,14 +131,17 @@ fun VideoPlayerOverlayControls(
                 blurRegionSpecs.remove(id)
                 onUpdateBlurRegions()
             },
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier.align(Alignment.BottomCenter).then(
+                if (isFullscreen)
+                    Modifier.windowInsetsPadding(WindowInsets.safeContent)
+                else Modifier,
+            ),
         )
     }
 }
 
 @Composable
 private fun VideoPlayerExitFullscreenButton(
-    surfaceCoordinates: LayoutCoordinates?,
     onClick: () -> Unit,
     onUpdateRegion: (BlurRegionSpec) -> Unit,
     onRemoveRegion: (String) -> Unit,
@@ -152,7 +155,6 @@ private fun VideoPlayerExitFullscreenButton(
             .size(36.dp)
             .registerBlurRegion(
                 id = "top_close",
-                surfaceCoordinates = surfaceCoordinates,
                 cornerRadius = 18.dp,
                 onUpdateRegion = onUpdateRegion,
                 onRemoveRegion = onRemoveRegion,
@@ -180,7 +182,6 @@ private fun VideoPlayerExitFullscreenButton(
 @Composable
 private fun VideoPlayerCenterPlayButton(
     playPauseButtonState: PlayPauseButtonState,
-    surfaceCoordinates: LayoutCoordinates?,
     onUserInteraction: () -> Unit,
     onUpdateRegion: (BlurRegionSpec) -> Unit,
     onRemoveRegion: (String) -> Unit,
@@ -195,7 +196,6 @@ private fun VideoPlayerCenterPlayButton(
             .size(72.dp)
             .registerBlurRegion(
                 id = "center_play",
-                surfaceCoordinates = surfaceCoordinates,
                 cornerRadius = 36.dp,
                 onUpdateRegion = onUpdateRegion,
                 onRemoveRegion = onRemoveRegion,
@@ -243,7 +243,6 @@ private fun VideoPlayerBottomBar(
     muteButtonState: MuteButtonState,
     progressState: ProgressStateWithTickInterval,
     isFullscreen: Boolean,
-    surfaceCoordinates: LayoutCoordinates?,
     onUserInteraction: () -> Unit,
     onSeekTo: (Float) -> Unit,
     onToggleFullscreen: () -> Unit,
@@ -267,7 +266,6 @@ private fun VideoPlayerBottomBar(
             .padding(horizontal = 8.dp, vertical = 16.dp)
             .registerBlurRegion(
                 id = "bottom_bar",
-                surfaceCoordinates = surfaceCoordinates,
                 cornerRadius = 16.dp,
                 onUpdateRegion = onUpdateRegion,
                 onRemoveRegion = onRemoveRegion,
@@ -391,7 +389,7 @@ private fun VideoPlayerProgressSlider(
     )
 }
 
-fun formatTime(millis: Int): String {
+private fun formatTime(millis: Int): String {
     val totalSeconds = millis / 1000
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60

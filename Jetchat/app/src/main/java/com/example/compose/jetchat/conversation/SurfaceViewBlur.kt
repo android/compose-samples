@@ -31,9 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onLayoutRectChanged
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.spatial.RelativeLayoutBounds
 import androidx.compose.ui.unit.Dp
@@ -117,7 +115,6 @@ object SurfaceViewBlurHelper {
 @Composable
 fun Modifier.registerBlurRegion(
     id: String,
-    surfaceCoordinates: LayoutCoordinates? = null,
     cornerRadius: Dp,
     blurRadius: Dp = 20.dp,
     alpha: Float = 1.0f,
@@ -145,22 +142,9 @@ fun Modifier.registerBlurRegion(
             val prev = lastBounds
             if (prev == null || prev != boxInWindow) {
                 lastBounds = boxInWindow
-                val boundsInSurface = if (surfaceCoordinates != null && surfaceCoordinates.isAttached) {
-                    val surfacePos = surfaceCoordinates.positionInWindow()
-                    val surfaceW = surfaceCoordinates.size.width.toFloat()
-                    val surfaceH = surfaceCoordinates.size.height.toFloat()
-                    val left = (boxInWindow.left.toFloat() - surfacePos.x).coerceIn(0f, surfaceW)
-                    val top = (boxInWindow.top.toFloat() - surfacePos.y).coerceIn(0f, surfaceH)
-                    val right = (boxInWindow.right.toFloat() - surfacePos.x).coerceIn(0f, surfaceW)
-                    val bottom = (boxInWindow.bottom.toFloat() - surfacePos.y).coerceIn(0f, surfaceH)
-                    RectF(left, top, right, bottom)
-                } else {
-                    RectF()
-                }
                 currentOnUpdateRegion(
                     BlurRegionSpec(
                         id = id,
-                        boundsInSurface = boundsInSurface,
                         boundsInWindow = boxInWindow,
                         cornerRadiusPx = cornerRadiusPx,
                         blurRadiusPx = blurRadiusPx,

@@ -16,85 +16,179 @@
 
 package com.example.compose.jetchat.conversation
 
+import android.graphics.Bitmap
 import android.graphics.RectF
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.media3.ui.compose.state.rememberMuteButtonState
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import androidx.media3.ui.compose.state.rememberPresentationState
 import androidx.media3.ui.compose.state.rememberProgressStateWithTickInterval
 import com.example.compose.jetchat.R
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 const val DEFAULT_VIDEO_URL =
     "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_5MB.mp4"
 
 /**
- * Composable video player utilizing SurfaceView and the platform setBlurRegions API
- * to blur regions directly underneath the overlay controls.
- *
- * Hoists a single ExoPlayer instance, eliminating redundant boolean flags and state
- * duplication between inline and fullscreen playback.
+ * Lightweight video thumbnail displayed inside scrollable lists (LazyColumn).
+ * Shows an extracted video frame or styled gradient placeholder with a centered play icon.
+ * Clicking triggers [onClick] to navigate to the full-screen video player screen.
  */
 @Composable
-fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boolean = false, shape: Shape = RoundedCornerShape(16.dp)) {
+fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(16.dp)) {
     val context = LocalContext.current
     val resolvedUri = remember(videoUri) { resolveVideoUri(videoUri) }
 
-    // Single ExoPlayer instance shared seamlessly between inline and fullscreen views
+    val thumbnailBitmap by produceState<Bitmap?>(initialValue = null, resolvedUri) {
+        withContext(Dispatchers.IO) {
+            try {
+                val retriever = MediaMetadataRetriever()
+                val uriString = resolvedUri.toString()
+                if (uriString.startsWith("http://") || uriString.startsWith("https://")) {
+                    retriever.setDataSource(uriString, HashMap<String, String>())
+                } else {
+                    retriever.setDataSource(context, resolvedUri)
+                }
+                val bitmap = retriever.getFrameAtTime(1_000_000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                    ?: retriever.frameAtTime
+                retriever.release()
+                value = bitmap
+            } catch (e: Throwable) {
+                // Fallback to stylized dark gradient placeholder on network/codec error
+            }
+        }
+    }
+
+    Box(
+        modifier = modifier
+            .clip(shape)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF262638),
+                        Color(0xFF14141E),
+                    ),
+                ),
+            )
+            .clickable(
+                role = Role.Button,
+                onClickLabel = stringResource(R.string.play_video),
+                onClick = onClick,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (thumbnailBitmap != null) {
+            Image(
+                bitmap = thumbnailBitmap!!.asImageBitmap(),
+                contentDescription = stringResource(R.string.play_video),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.25f)),
+            )
+        }
+
+        // Circular frosted play button
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(56.dp)
+                .background(
+                    color = Color.Black.copy(alpha = 0.55f),
+                    shape = CircleShape,
+                )
+                .border(
+                    width = 1.5.dp,
+                    color = Color.White.copy(alpha = 0.6f),
+                    shape = CircleShape,
+                ),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_play_arrow),
+                contentDescription = stringResource(R.string.play_video),
+                tint = Color.White,
+                modifier = Modifier.size(32.dp),
+            )
+        }
+    }
+}
+
+/**
+ * Fullscreen video player screen where the SurfaceView extends across the whole surface of the screen,
+ * and controls are free to extend across the whole screen.
+ */
+@OptIn(UnstableApi::class)
+@Composable
+fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val resolvedUri = remember(videoUri) { resolveVideoUri(videoUri) }
+
     val exoPlayer = remember(context, resolvedUri) {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(resolvedUri))
             repeatMode = Player.REPEAT_MODE_ALL
-            playWhenReady = autoPlay
+            playWhenReady = true
             prepare()
         }
     }
@@ -111,69 +205,11 @@ fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boole
         exoPlayer.pause()
     }
 
-    var isFullscreen by rememberSaveable { mutableStateOf(false) }
+    BackHandler(onBack = onDismiss)
 
-    if (isFullscreen) {
-        Dialog(
-            onDismissRequest = { isFullscreen = false },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-                decorFitsSystemWindows = false,
-                dismissOnBackPress = true,
-                dismissOnClickOutside = false,
-            ),
-        ) {
-            ImmersiveDialogEffect()
+    // Hide system status and navigation bars for immersive edge-to-edge playback
+    ImmersiveSystemBarsEffect()
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
-                contentAlignment = Alignment.Center,
-            ) {
-                VideoPlayerSurface(
-                    exoPlayer = exoPlayer,
-                    modifier = Modifier.fillMaxSize(),
-                    shape = RoundedCornerShape(0.dp),
-                    isFullscreen = true,
-                    onToggleFullscreen = { isFullscreen = false },
-                )
-            }
-        }
-
-        Box(
-            modifier = modifier
-                .clip(shape)
-                .background(Color.Black),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = stringResource(R.string.fullscreen_video),
-                color = Color.White.copy(alpha = 0.7f),
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
-    } else {
-        VideoPlayerSurface(
-            exoPlayer = exoPlayer,
-            modifier = modifier,
-            shape = shape,
-            isFullscreen = false,
-            onToggleFullscreen = { isFullscreen = true },
-        )
-    }
-}
-
-@OptIn(UnstableApi::class)
-@Composable
-private fun VideoPlayerSurface(
-    exoPlayer: ExoPlayer,
-    modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(16.dp),
-    isFullscreen: Boolean = false,
-    onToggleFullscreen: () -> Unit = {},
-) {
-    // Read state from Media3 UI Compose state holders
     val playPauseButtonState = rememberPlayPauseButtonState(exoPlayer)
     val presentationState = rememberPresentationState(exoPlayer)
     val muteButtonState = rememberMuteButtonState(exoPlayer)
@@ -210,20 +246,21 @@ private fun VideoPlayerSurface(
                 val boxBottom = box.bottom.toFloat() - surfacePos.y
 
                 val extendsPastBase = boxBottom >= surfaceH - 4f
-                val extendsAcrossWidth = (boxLeft <= 24f || boxLeft <= surfaceW * 0.1f) &&
-                    (boxRight >= surfaceW - 24f || boxRight >= surfaceW * 0.9f)
+                val extendsPastTop = boxTop <= 4f
+                val extendsAcrossWidth = (boxLeft <= 4f || boxLeft <= surfaceW * 0.05f) &&
+                    (boxRight >= surfaceW - 4f || boxRight >= surfaceW * 0.95f)
 
-                val isFullRectangle = extendsPastBase || extendsAcrossWidth
+                // Only treat as full-bleed flat rectangle if it extends across the entire width
+                // AND touches/extends past an edge of the SurfaceView
+                val isFullBleedAtEdge = extendsAcrossWidth && (extendsPastBase || extendsPastTop)
 
-                val left = if (extendsAcrossWidth) 0f else boxLeft.coerceIn(0f, surfaceW)
+                val left = if (isFullBleedAtEdge) 0f else boxLeft.coerceIn(0f, surfaceW)
                 val top = boxTop.coerceIn(0f, surfaceH)
-                val right = if (extendsAcrossWidth) surfaceW else boxRight.coerceIn(0f, surfaceW)
+                val right = if (isFullBleedAtEdge) surfaceW else boxRight.coerceIn(0f, surfaceW)
                 val bottom = if (extendsPastBase) surfaceH else boxBottom.coerceIn(0f, surfaceH)
 
                 if (right > left && bottom > top) {
-                    // The region overlaps outside the SurfaceView, so the corner radius
-                    // shouldn't be applied in this case
-                    val cornerRadius = if (isFullRectangle) 0f else spec.cornerRadiusPx
+                    val cornerRadius = if (isFullBleedAtEdge) 0f else spec.cornerRadiusPx
                     spec.copy(
                         boundsInSurface = RectF(left, top, right, bottom),
                         cornerRadiusPx = cornerRadius,
@@ -231,8 +268,6 @@ private fun VideoPlayerSurface(
                 } else {
                     null
                 }
-            } else if (spec.boundsInSurface.width() > 0f && spec.boundsInSurface.height() > 0f) {
-                spec
             } else {
                 null
             }
@@ -240,11 +275,21 @@ private fun VideoPlayerSurface(
         SurfaceViewBlurHelper.applyBlurRegions(sv, resolvedRegions)
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            surfaceViewRef?.let { sv ->
+                exoPlayer.clearVideoSurface()
+                SurfaceViewBlurHelper.clearBlurRegions(sv)
+            }
+            surfaceViewRef = null
+        }
+    }
+
     LaunchedEffect(controlsVisible) {
         updateBlurRegions()
     }
 
-    // Auto-hide controls after a period of playback inactivity
+    // Auto-hide controls after playback inactivity
     val isPlaying = !playPauseButtonState.showPlay
     LaunchedEffect(controlsVisible, isPlaying, userInteractedTime) {
         if (controlsVisible && isPlaying) {
@@ -253,18 +298,9 @@ private fun VideoPlayerSurface(
         }
     }
 
-    val videoAspectRatio = remember(presentationState.videoSizeDp) {
-        val size = presentationState.videoSizeDp
-        if (size != null && size.width > 0f && size.height > 0f) {
-            size.width / size.height
-        } else {
-            16f / 9f
-        }
-    }
-
     Box(
         modifier = modifier
-            .clip(shape)
+            .fillMaxSize()
             .background(Color.Black)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -275,56 +311,56 @@ private fun VideoPlayerSurface(
             },
         contentAlignment = Alignment.Center,
     ) {
-        Box(
-            modifier = Modifier.aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = true),
-            contentAlignment = Alignment.Center,
-        ) {
-            // SurfaceView rendering the video directly from ExoPlayer
-            AndroidView(
-                factory = { ctx ->
-                    SurfaceView(ctx).apply {
-                        surfaceViewRef = this
-                        exoPlayer.setVideoSurfaceView(this)
-                        holder.addCallback(
-                            object : SurfaceHolder.Callback {
-                                override fun surfaceCreated(holder: SurfaceHolder) {
-                                    updateBlurRegions()
-                                }
+        // SurfaceView sized to fit video aspect ratio using Media3's resizeWithContentScale
+        AndroidView(
+            factory = { ctx ->
+                SurfaceView(ctx).apply {
+                    surfaceViewRef = this
+                    exoPlayer.setVideoSurfaceView(this)
+                    holder.addCallback(
+                        object : SurfaceHolder.Callback {
+                            override fun surfaceCreated(holder: SurfaceHolder) {
+                                updateBlurRegions()
+                            }
 
-                                override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-                                    updateBlurRegions()
-                                }
+                            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                                updateBlurRegions()
+                            }
 
-                                override fun surfaceDestroyed(holder: SurfaceHolder) {
-                                    SurfaceViewBlurHelper.clearBlurRegions(this@apply)
-                                }
-                            },
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .onGloballyPositioned { coords ->
-                        surfaceCoordinates = coords
-                        updateBlurRegions()
-                    },
-                update = { sv ->
-                    surfaceViewRef = sv
+                            override fun surfaceDestroyed(holder: SurfaceHolder) {
+                                SurfaceViewBlurHelper.clearBlurRegions(this@apply)
+                            }
+                        },
+                    )
+                }
+            },
+            modifier = Modifier
+                .resizeWithContentScale(ContentScale.Fit, presentationState.videoSizeDp)
+                .onGloballyPositioned { coords ->
+                    surfaceCoordinates = coords
                     updateBlurRegions()
                 },
-            )
+            update = { sv ->
+                surfaceViewRef = sv
+                updateBlurRegions()
+            },
+            onRelease = { sv ->
+                exoPlayer.clearVideoSurfaceView(sv)
+                SurfaceViewBlurHelper.clearBlurRegions(sv)
+                surfaceViewRef = null
+            },
+        )
 
-            // Placeholder shutter while video is loading / resetting
-            if (presentationState.coverSurface) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black),
-                )
-            }
+        // Shutter while video is loading
+        if (presentationState.coverSurface) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black),
+            )
         }
 
-        // Overlay controls that blur the regions underneath using SurfaceView#setBlurRegions
+        // Overlay controls allowed to extend to the whole surface of the screen
         AnimatedVisibility(
             visible = controlsVisible,
             enter = fadeIn(),
@@ -335,8 +371,7 @@ private fun VideoPlayerSurface(
                 playPauseButtonState = playPauseButtonState,
                 muteButtonState = muteButtonState,
                 progressState = progressState,
-                isFullscreen = isFullscreen,
-                surfaceCoordinates = surfaceCoordinates,
+                isFullscreen = true,
                 blurRegionSpecs = blurRegionSpecs,
                 onUserInteraction = {
                     userInteractedTime = System.currentTimeMillis()
@@ -347,10 +382,34 @@ private fun VideoPlayerSurface(
                         exoPlayer.seekTo((progressFraction * duration).toLong())
                     }
                 },
-                onToggleFullscreen = onToggleFullscreen,
+                onToggleFullscreen = onDismiss,
                 onUpdateBlurRegions = { updateBlurRegions() },
+                modifier = Modifier.fillMaxSize(),
             )
         }
+    }
+}
+
+/**
+ * Drop-in backward-compatible composable for displaying video.
+ * Displays a thumbnail in place and launches the fullscreen player screen when tapped.
+ */
+@Composable
+fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boolean = false, shape: Shape = RoundedCornerShape(16.dp)) {
+    var isPlayerOpen by rememberSaveable { mutableStateOf(autoPlay) }
+
+    if (isPlayerOpen) {
+        FullScreenVideoPlayer(
+            videoUri = videoUri,
+            onDismiss = { isPlayerOpen = false },
+        )
+    } else {
+        VideoThumbnail(
+            videoUri = videoUri,
+            onClick = { isPlayerOpen = true },
+            shape = shape,
+            modifier = modifier,
+        )
     }
 }
 
