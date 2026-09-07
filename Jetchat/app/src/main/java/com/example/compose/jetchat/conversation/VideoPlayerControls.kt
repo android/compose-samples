@@ -188,6 +188,7 @@ private fun VideoPlayerCenterPlayButton(
 ) {
     val showPlay = playPauseButtonState.showPlay
     val playDesc = stringResource(if (showPlay) R.string.play_video else R.string.pause_video)
+    val rippleIndication = remember { ripple(bounded = true, radius = 36.dp) }
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -212,7 +213,7 @@ private fun VideoPlayerCenterPlayButton(
             .clickable(
                 enabled = playPauseButtonState.isEnabled,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(bounded = true, radius = 36.dp),
+                indication = rippleIndication,
                 role = Role.Button,
             ) {
                 onUserInteraction()
@@ -232,6 +233,8 @@ private fun VideoPlayerCenterPlayButton(
         )
     }
 }
+
+private val BottomBarShape = RoundedCornerShape(16.dp)
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -271,12 +274,12 @@ private fun VideoPlayerBottomBar(
             )
             .background(
                 color = Color(0x33000000),
-                shape = RoundedCornerShape(16.dp),
+                shape = BottomBarShape,
             )
             .border(
                 width = 1.dp,
                 color = Color(0x33FFFFFF),
-                shape = RoundedCornerShape(16.dp),
+                shape = BottomBarShape,
             )
             .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
@@ -299,40 +302,12 @@ private fun VideoPlayerBottomBar(
             )
         }
 
-        // Timestamp text (e.g. 00:04 / 00:10)
-        val currentPositionMs = progressState.currentPositionMs.coerceAtLeast(0L).toInt()
-        val durationMs = progressState.durationMs.coerceAtLeast(1L).toInt()
-        val formattedTime = remember(currentPositionMs, durationMs) {
-            "${formatTime(currentPositionMs)} / ${formatTime(durationMs)}"
-        }
-        Text(
-            text = formattedTime,
-            color = Color.White,
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(horizontal = 4.dp),
-        )
-
-        // Scrub slider
-        val progressFraction = if (durationMs > 0) {
-            (currentPositionMs.toFloat() / durationMs.toFloat()).coerceIn(0f, 1f)
-        } else {
-            0f
-        }
-        Slider(
-            value = progressFraction,
-            onValueChange = { progress ->
-                onUserInteraction()
-                onSeekTo(progress)
-            },
-            colors = SliderDefaults.colors(
-                thumbColor = Color.White,
-                activeTrackColor = Color.White,
-                inactiveTrackColor = Color.White.copy(alpha = 0.3f),
-            ),
-            modifier = Modifier
-                .weight(1f)
-                .height(24.dp)
-                .padding(horizontal = 6.dp),
+        // Isolated progress slider: reads fast-changing position state without recomposing the entire bottom bar
+        VideoPlayerProgressSlider(
+            progressState = progressState,
+            onUserInteraction = onUserInteraction,
+            onSeekTo = onSeekTo,
+            modifier = Modifier.weight(1f),
         )
 
         // Mute / Unmute icon button
@@ -372,6 +347,48 @@ private fun VideoPlayerBottomBar(
             )
         }
     }
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+private fun VideoPlayerProgressSlider(
+    progressState: ProgressStateWithTickInterval,
+    onUserInteraction: () -> Unit,
+    onSeekTo: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val currentPositionMs = progressState.currentPositionMs.coerceAtLeast(0L).toInt()
+    val durationMs = progressState.durationMs.coerceAtLeast(1L).toInt()
+    val formattedTime = remember(currentPositionMs, durationMs) {
+        "${formatTime(currentPositionMs)} / ${formatTime(durationMs)}"
+    }
+    Text(
+        text = formattedTime,
+        color = Color.White,
+        style = MaterialTheme.typography.labelSmall,
+        modifier = Modifier.padding(horizontal = 4.dp),
+    )
+
+    val progressFraction = if (durationMs > 0) {
+        (currentPositionMs.toFloat() / durationMs.toFloat()).coerceIn(0f, 1f)
+    } else {
+        0f
+    }
+    Slider(
+        value = progressFraction,
+        onValueChange = { progress ->
+            onUserInteraction()
+            onSeekTo(progress)
+        },
+        colors = SliderDefaults.colors(
+            thumbColor = Color.White,
+            activeTrackColor = Color.White,
+            inactiveTrackColor = Color.White.copy(alpha = 0.3f),
+        ),
+        modifier = modifier
+            .height(24.dp)
+            .padding(horizontal = 6.dp),
+    )
 }
 
 fun formatTime(millis: Int): String {

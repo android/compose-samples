@@ -25,6 +25,11 @@ import android.view.SurfaceView
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onLayoutRectChanged
@@ -52,9 +57,9 @@ object SurfaceViewBlurHelper {
     private const val TAG = "SurfaceViewBlurHelper"
 
     /**
-     * Applies a list of blur regions to the given SurfaceView.
+     * Applies a collection of blur regions to the given SurfaceView.
      */
-    fun applyBlurRegions(surfaceView: SurfaceView?, regions: List<BlurRegionSpec>) {
+    fun applyBlurRegions(surfaceView: SurfaceView?, regions: Collection<BlurRegionSpec>) {
         if (surfaceView == null) return
         try {
             if (Build.VERSION.SDK_INT >= 37) {
@@ -73,7 +78,7 @@ object SurfaceViewBlurHelper {
     }
 
     @RequiresApi(37)
-    private fun applyBlurRegionsInternal(surfaceView: SurfaceView, regions: List<BlurRegionSpec>) {
+    private fun applyBlurRegionsInternal(surfaceView: SurfaceView, regions: Collection<BlurRegionSpec>) {
         if (regions.isEmpty()) {
             surfaceView.setBlurRegions(emptyList())
             return
@@ -110,16 +115,21 @@ fun Modifier.registerBlurRegion(
     onRemoveRegion: (String) -> Unit,
 ): Modifier {
     val density = LocalDensity.current
-    val cornerRadiusPx = with(density) { cornerRadius.toPx() }
-    val blurRadiusPx = with(density) { blurRadius.toPx() }
+    val cornerRadiusPx = remember(density, cornerRadius) { with(density) { cornerRadius.toPx() } }
+    val blurRadiusPx = remember(density, blurRadius) { with(density) { blurRadius.toPx() } }
+
+    val currentOnUpdateRegion by rememberUpdatedState(onUpdateRegion)
+    val currentOnRemoveRegion by rememberUpdatedState(onRemoveRegion)
 
     DisposableEffect(id) {
         onDispose {
-            onRemoveRegion(id)
+            currentOnRemoveRegion(id)
         }
     }
 
-    return this.onLayoutRectChanged(throttleMillis = 0, debounceMillis = 0) { bounds: RelativeLayoutBounds ->
+    var lastRect by remember(id) { mutableStateOf<RectF?>(null) }
+
+    return this.onLayoutRectChanged(throttleMillis = 16, debounceMillis = 0) { bounds: RelativeLayoutBounds ->
         if (surfaceCoordinates != null && surfaceCoordinates.isAttached) {
             val surfacePosInWindow = surfaceCoordinates.positionInWindow()
             val surfaceW = surfaceCoordinates.size.width.toFloat()
@@ -132,15 +142,20 @@ fun Modifier.registerBlurRegion(
             val bottom = (boxInWindow.bottom - surfacePosInWindow.y).coerceIn(0f, surfaceH)
 
             if (right > left && bottom > top) {
-                onUpdateRegion(
-                    BlurRegionSpec(
-                        id = id,
-                        boundsInSurface = RectF(left, top, right, bottom),
-                        cornerRadiusPx = cornerRadiusPx,
-                        blurRadiusPx = blurRadiusPx,
-                        alpha = alpha,
-                    ),
-                )
+                val prev = lastRect
+                if (prev == null || prev.left != left || prev.top != top || prev.right != right || prev.bottom != bottom) {
+                    val newRect = RectF(left, top, right, bottom)
+                    lastRect = newRect
+                    currentOnUpdateRegion(
+                        BlurRegionSpec(
+                            id = id,
+                            boundsInSurface = newRect,
+                            cornerRadiusPx = cornerRadiusPx,
+                            blurRadiusPx = blurRadiusPx,
+                            alpha = alpha,
+                        ),
+                    )
+                }
             }
         }
     }

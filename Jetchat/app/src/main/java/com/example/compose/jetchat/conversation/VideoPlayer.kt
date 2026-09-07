@@ -27,8 +27,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +36,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,12 +46,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -70,6 +68,7 @@ import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import androidx.media3.ui.compose.state.rememberPresentationState
 import androidx.media3.ui.compose.state.rememberProgressStateWithTickInterval
 import com.example.compose.jetchat.R
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
@@ -183,18 +182,18 @@ private fun VideoPlayerSurface(
 
     var surfaceViewRef by remember { mutableStateOf<SurfaceView?>(null) }
     var surfaceCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
-    val blurRegionSpecs = remember { mutableStateMapOf<String, BlurRegionSpec>() }
+    val blurRegionSpecs = remember { mutableMapOf<String, BlurRegionSpec>() }
 
     fun updateBlurRegions() {
         val sv = surfaceViewRef ?: return
         if (controlsVisible) {
-            SurfaceViewBlurHelper.applyBlurRegions(sv, blurRegionSpecs.values.toList())
+            SurfaceViewBlurHelper.applyBlurRegions(sv, blurRegionSpecs.values)
         } else {
             SurfaceViewBlurHelper.clearBlurRegions(sv)
         }
     }
 
-    LaunchedEffect(controlsVisible, blurRegionSpecs.size) {
+    LaunchedEffect(controlsVisible) {
         updateBlurRegions()
     }
 
@@ -216,7 +215,7 @@ private fun VideoPlayerSurface(
         }
     }
 
-    BoxWithConstraints(
+    Box(
         modifier = modifier
             .clip(shape)
             .background(Color.Black)
@@ -229,19 +228,8 @@ private fun VideoPlayerSurface(
             },
         contentAlignment = Alignment.Center,
     ) {
-        val containerWidth = maxWidth
-        val containerHeight = maxHeight
-        val hasBoundedWidth = containerWidth.isSpecified && containerWidth > 0.dp && containerWidth != Dp.Infinity
-        val hasBoundedHeight = containerHeight.isSpecified && containerHeight > 0.dp && containerHeight != Dp.Infinity
-
-        val matchHeight = if (hasBoundedWidth && hasBoundedHeight) {
-            (containerWidth.value / containerHeight.value) > videoAspectRatio
-        } else {
-            hasBoundedHeight && !hasBoundedWidth
-        }
-
         Box(
-            modifier = Modifier.aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = matchHeight),
+            modifier = Modifier.aspectRatioFit(videoAspectRatio),
             contentAlignment = Alignment.Center,
         ) {
             // SurfaceView rendering the video directly from ExoPlayer
@@ -270,12 +258,16 @@ private fun VideoPlayerSurface(
                 modifier = Modifier
                     .fillMaxSize()
                     .onGloballyPositioned { coords ->
-                        surfaceCoordinates = coords
-                        updateBlurRegions()
+                        val prev = surfaceCoordinates
+                        if (prev == null || !prev.isAttached || prev.size != coords.size ||
+                            prev.positionInWindow() != coords.positionInWindow()
+                        ) {
+                            surfaceCoordinates = coords
+                            updateBlurRegions()
+                        }
                     },
                 update = { sv ->
                     surfaceViewRef = sv
-                    exoPlayer.setVideoSurfaceView(sv)
                 },
             )
 
@@ -324,5 +316,44 @@ private fun resolveVideoUri(videoUri: String): Uri {
         videoUri.toUri()
     } else {
         DEFAULT_VIDEO_URL.toUri()
+    }
+}
+
+/**
+ * Constrains and sizes the element to maintain the target [aspectRatio] while fitting within
+ * the incoming layout constraints without requiring [BoxWithConstraints] subcomposition.
+ */
+private fun Modifier.aspectRatioFit(aspectRatio: Float): Modifier = this.layout { measurable, constraints ->
+    val hasBoundedWidth = constraints.hasBoundedWidth
+    val hasBoundedHeight = constraints.hasBoundedHeight
+
+    val (targetWidth, targetHeight) = if (hasBoundedWidth && hasBoundedHeight && aspectRatio > 0f) {
+        val containerWidth = constraints.maxWidth
+        val containerHeight = constraints.maxHeight
+        val containerRatio = containerWidth.toFloat() / containerHeight.toFloat()
+        if (containerRatio > aspectRatio) {
+            val height = containerHeight
+            val width = (height * aspectRatio).roundToInt().coerceIn(constraints.minWidth, constraints.maxWidth)
+            width to height
+        } else {
+            val width = containerWidth
+            val height = (width / aspectRatio).roundToInt().coerceIn(constraints.minHeight, constraints.maxHeight)
+            width to height
+        }
+    } else if (hasBoundedWidth && aspectRatio > 0f) {
+        val width = constraints.maxWidth
+        val height = (width / aspectRatio).roundToInt().coerceIn(constraints.minHeight, constraints.maxHeight)
+        width to height
+    } else if (hasBoundedHeight && aspectRatio > 0f) {
+        val height = constraints.maxHeight
+        val width = (height * aspectRatio).roundToInt().coerceIn(constraints.minWidth, constraints.maxWidth)
+        width to height
+    } else {
+        constraints.minWidth to constraints.minHeight
+    }
+
+    val placeable = measurable.measure(Constraints.fixed(targetWidth, targetHeight))
+    layout(placeable.width, placeable.height) {
+        placeable.placeRelative(0, 0)
     }
 }
