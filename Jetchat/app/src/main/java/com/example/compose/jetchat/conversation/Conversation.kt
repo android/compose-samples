@@ -95,9 +95,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.components.BlurRadiusSpec
 import com.example.compose.jetchat.components.JetchatAppBar
-import com.example.compose.jetchat.components.backdropRenderEffect
+import com.example.compose.jetchat.components.backdropFrostedGlass
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.launch
@@ -269,13 +268,11 @@ fun ChannelNameBar(
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
-    val density = LocalDensity.current
-    val blurEffect = remember(density) {
-        BlurRadiusSpec.createRenderEffect(radius = 20.dp, density = density)
-    }
     JetchatAppBar(
-        modifier = modifier.backdropRenderEffect(
-            renderEffect = blurEffect,
+        modifier = modifier.backdropFrostedGlass(
+            blurRadius = 16.dp,
+            noiseFrequency = 0.05f,
+            noiseIntensity = 0.05f,
             tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
             elevation = 2.dp,
         ),
