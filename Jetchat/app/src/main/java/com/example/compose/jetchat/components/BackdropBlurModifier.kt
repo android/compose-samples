@@ -20,6 +20,7 @@ import android.graphics.Outline as AndroidOutline
 import android.graphics.Path as AndroidPath
 import android.graphics.RenderEffect
 import android.graphics.RenderNode
+import android.graphics.RuntimeShader
 import android.graphics.Shader
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -88,6 +89,176 @@ data class BlurRadiusSpec(val radiusX: Dp, val radiusY: Dp = radiusX, val tileMo
         fun createRenderEffect(radius: Dp, density: Density, tileMode: Shader.TileMode = Shader.TileMode.CLAMP): RenderEffect? {
             val px = with(density) { radius.toPx() }
             return createRenderEffect(px, px, tileMode)
+        }
+    }
+}
+
+/**
+ * AGSL shader generating procedural fractal noise (equivalent to SVG feTurbulence type="fractalNoise")
+ * blended over the backdrop content without coordinate displacement.
+ */
+private const val FRACTAL_NOISE_SHADER = """
+    uniform shader content;
+    uniform float frequency;
+    uniform float noiseIntensity;
+
+    float2 mod289(float2 x) {
+        return x - floor(x * (1.0 / 289.0)) * 289.0;
+    }
+
+    float3 mod289(float3 x) {
+        return x - floor(x * (1.0 / 289.0)) * 289.0;
+    }
+
+    float3 permute(float3 x) {
+        return mod289(((x * 34.0) + 1.0) * x);
+    }
+
+    // Stefan Gustavson's deterministic 2D Simplex Noise
+    float simplexNoise2D(float2 v) {
+        const float4 C = float4(
+            0.211324865405187,   // (3.0-sqrt(3.0))/6.0
+            0.366025403784439,   // 0.5*(sqrt(3.0)-1.0)
+            -0.577350269189626,  // -1.0 + 2.0 * C.x
+            0.024390243902439    // 1.0 / 41.0
+        );
+
+        float2 i = floor(v + dot(v, C.yy));
+        float2 x0 = v - i + dot(i, C.xx);
+
+        float2 i1 = (x0.x > x0.y) ? float2(1.0, 0.0) : float2(0.0, 1.0);
+        float4 x12 = x0.xyxy + C.xxzz;
+        x12.xy -= i1;
+
+        i = mod289(i);
+        float3 p = permute(permute(i.y + float3(0.0, i1.y, 1.0)) + i.x + float3(0.0, i1.x, 1.0));
+
+        float3 m = max(0.5 - float3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
+        m = m * m;
+        m = m * m;
+
+        float3 x = 2.0 * fract(p * C.w) - 1.0;
+        float3 h = abs(x) - 0.5;
+        float3 ox = floor(x + 0.5);
+        float3 a0 = x - ox;
+
+        m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
+
+        float3 g;
+        g.x = a0.x * x0.x + h.x * x0.y;
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+        return 130.0 * dot(m, g);
+    }
+
+    float fractalNoise(float2 p) {
+        float n0 = simplexNoise2D(p);
+        float n1 = simplexNoise2D(p * 2.0);
+        float n2 = simplexNoise2D(p * 4.0);
+        return (n0 + n1 * 0.5 + n2 * 0.25) / 1.75;
+    }
+
+    half4 main(float2 fragCoord) {
+        // Snap to pixel center to eliminate sub-pixel floating-point jitter across redraws
+        float2 pixelCoord = floor(fragCoord) + 0.5;
+        float noise = fractalNoise(pixelCoord * frequency);
+        half4 color = content.eval(fragCoord);
+        // Add subtle frosted glass surface grain without displacing backdrop coordinates
+        color.rgb = clamp(color.rgb + noise * (noiseIntensity * color.a), 0.0, color.a);
+        return color;
+    }
+"""
+
+/**
+ * Creates a chained hardware [RenderEffect] combining blur and frosted fractal noise texture.
+ *
+ * Chains:
+ * 1. Inner effect: Hardware blur filter applied first to the backdrop.
+ * 2. Outer effect: [RuntimeShader] applying frosted fractal noise grain on top of the blurred backdrop.
+ */
+fun createFrostedGlassEffect(
+    blurRadiusPx: Float,
+    noiseFrequency: Float = 0.05f,
+    noiseIntensity: Float = 0.05f,
+    tileMode: Shader.TileMode = Shader.TileMode.CLAMP,
+): RenderEffect? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null
+
+    val blurEffect = if (blurRadiusPx > 0f) {
+        RenderEffect.createBlurEffect(
+            blurRadiusPx.coerceAtLeast(0.01f),
+            blurRadiusPx.coerceAtLeast(0.01f),
+            tileMode,
+        )
+    } else null
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && noiseIntensity > 0f) {
+        try {
+            val shader = RuntimeShader(FRACTAL_NOISE_SHADER).apply {
+                setFloatUniform("frequency", noiseFrequency)
+                setFloatUniform("noiseIntensity", noiseIntensity)
+            }
+            val noiseEffect = RenderEffect.createRuntimeShaderEffect(shader, "content")
+
+            return if (blurEffect != null) {
+                // inner = blurEffect (blurs the backdrop first)
+                // outer = noiseEffect (applies frosted noise grain on top of the blurred backdrop)
+                RenderEffect.createChainEffect(noiseEffect, blurEffect)
+            } else {
+                noiseEffect
+            }
+        } catch (t: Throwable) {
+            android.util.Log.w("BackdropBlur", "Failed to create RuntimeShader noise: ${t.message}")
+        }
+    }
+
+    return blurEffect
+}
+
+/**
+ * Specification for a frosted glass backdrop effect chaining hardware blur and fractal noise texture.
+ *
+ * @param blurRadius The radius of the blur applied to the backdrop.
+ * @param noiseFrequency Spatial frequency of the fractal noise (controls grain scale).
+ * @param noiseIntensity Intensity of the frosted glass noise texture blended over the blurred backdrop.
+ * @param tileMode Edge handling mode for the blur effect.
+ */
+data class FrostedGlassSpec(
+    val blurRadius: Dp = 16.dp,
+    val noiseFrequency: Float = 0.05f,
+    val noiseIntensity: Float = 0.05f,
+    val tileMode: Shader.TileMode = Shader.TileMode.CLAMP,
+) {
+    /**
+     * Creates a chained hardware [RenderEffect] applying blur and frosted fractal noise texture.
+     */
+    fun createRenderEffect(density: Density): RenderEffect? {
+        val blurPx = with(density) { blurRadius.toPx() }
+        return createFrostedGlassEffect(
+            blurRadiusPx = blurPx,
+            noiseFrequency = noiseFrequency,
+            noiseIntensity = noiseIntensity,
+            tileMode = tileMode,
+        )
+    }
+
+    companion object {
+        /**
+         * Creates a chained [RenderEffect] combining blur and frosted fractal noise texture.
+         */
+        fun createRenderEffect(
+            blurRadius: Dp,
+            density: Density,
+            noiseFrequency: Float = 0.05f,
+            noiseIntensity: Float = 0.05f,
+            tileMode: Shader.TileMode = Shader.TileMode.CLAMP,
+        ): RenderEffect? {
+            val blurPx = with(density) { blurRadius.toPx() }
+            return createFrostedGlassEffect(
+                blurRadiusPx = blurPx,
+                noiseFrequency = noiseFrequency,
+                noiseIntensity = noiseIntensity,
+                tileMode = tileMode,
+            )
         }
     }
 }
@@ -198,6 +369,99 @@ fun Modifier.backdropBlur(
     fallbackColor = fallbackColor,
 )
 
+/**
+ * Draws the content behind this composable with a frosted glass effect chaining
+ * hardware blur and fractal noise texture, clipped to [shape], beneath this composable's content.
+ *
+ * @param blurRadius The blur radius applied to the backdrop.
+ * @param noiseFrequency Spatial frequency of the fractal noise (controls grain scale).
+ * @param noiseIntensity Intensity of the frosted glass noise texture blended over the blurred backdrop.
+ * @param shape The shape of the frosted-glass region.
+ * @param tint An optional translucent color overlay drawn over the backdrop.
+ * @param elevation Optional elevation shadow cast by this component.
+ * @param outerShadowOnly If true, clips out the shadow cast beneath the outline area.
+ * @param fallbackColor An optional fallback background color for platforms earlier than Android 17.
+ */
+fun Modifier.backdropFrostedGlass(
+    blurRadius: Dp = 16.dp,
+    noiseFrequency: Float = 0.05f,
+    noiseIntensity: Float = 0.05f,
+    shape: Shape = RectangleShape,
+    tint: Color = Color.Unspecified,
+    elevation: Dp = 0.dp,
+    outerShadowOnly: Boolean = true,
+    fallbackColor: Color = if (tint.isSpecified) tint else Color.Transparent,
+): Modifier = backdropFrostedGlass(
+    spec = FrostedGlassSpec(
+        blurRadius = blurRadius,
+        noiseFrequency = noiseFrequency,
+        noiseIntensity = noiseIntensity,
+    ),
+    shape = shape,
+    tint = tint,
+    elevation = elevation,
+    outerShadowOnly = outerShadowOnly,
+    fallbackColor = fallbackColor,
+)
+
+/**
+ * Overload of [backdropFrostedGlass] configured via a [FrostedGlassSpec].
+ */
+fun Modifier.backdropFrostedGlass(
+    spec: FrostedGlassSpec,
+    shape: Shape = RectangleShape,
+    tint: Color = Color.Unspecified,
+    elevation: Dp = 0.dp,
+    outerShadowOnly: Boolean = true,
+    fallbackColor: Color = if (tint.isSpecified) tint else Color.Transparent,
+): Modifier = this then BackdropFrostedGlassElement(
+    spec = spec,
+    shape = shape,
+    tint = tint,
+    elevation = elevation,
+    outerShadowOnly = outerShadowOnly,
+    fallbackColor = fallbackColor,
+)
+
+private data class BackdropFrostedGlassElement(
+    val spec: FrostedGlassSpec,
+    val shape: Shape,
+    val tint: Color,
+    val elevation: Dp,
+    val outerShadowOnly: Boolean,
+    val fallbackColor: Color,
+) : ModifierNodeElement<BackdropFrostedGlassNode>() {
+    override fun create(): BackdropFrostedGlassNode = BackdropFrostedGlassNode(
+        spec = spec,
+        shape = shape,
+        tint = tint,
+        elevation = elevation,
+        outerShadowOnly = outerShadowOnly,
+        fallbackColor = fallbackColor,
+    )
+
+    override fun update(node: BackdropFrostedGlassNode) {
+        node.update(
+            spec = spec,
+            shape = shape,
+            tint = tint,
+            elevation = elevation,
+            outerShadowOnly = outerShadowOnly,
+            fallbackColor = fallbackColor,
+        )
+    }
+
+    override fun InspectorInfo.inspectableProperties() {
+        name = "backdropFrostedGlass"
+        properties["spec"] = spec
+        properties["shape"] = shape
+        properties["tint"] = tint
+        properties["elevation"] = elevation
+        properties["outerShadowOnly"] = outerShadowOnly
+        properties["fallbackColor"] = fallbackColor
+    }
+}
+
 private data class BackdropRenderEffectElement(
     val renderEffect: RenderEffect?,
     val shape: Shape,
@@ -307,7 +571,7 @@ private abstract class BaseBackdropNode(
     }
 
     override fun onDetach() {
-        if (Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.CINNAMON_BUN_2) {
+        if (Build.VERSION.SDK_INT >= 37) {
             renderNode?.discardDisplayList()
         }
         lastWidth = -1
@@ -318,7 +582,7 @@ private abstract class BaseBackdropNode(
 
     override fun ContentDrawScope.draw() {
         val effect = resolveRenderEffect(this)
-        if (Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.CINNAMON_BUN_2 && effect != null) {
+        if (Build.VERSION.SDK_INT >= 37 && effect != null) {
             val widthPx = size.width.roundToInt()
             val heightPx = size.height.roundToInt()
 
@@ -482,6 +746,62 @@ private class BackdropBlurNode(
     }
 
     fun update(spec: BlurRadiusSpec, shape: Shape, tint: Color, elevation: Dp, outerShadowOnly: Boolean, fallbackColor: Color) {
+        var changed = false
+        if (this.spec != spec) {
+            this.spec = spec
+            cachedEffect = null
+            changed = true
+        }
+        if (this.shape != shape) {
+            this.shape = shape
+            changed = true
+        }
+        if (this.tint != tint) {
+            this.tint = tint
+            changed = true
+        }
+        if (this.elevation != elevation) {
+            this.elevation = elevation
+            changed = true
+        }
+        if (this.outerShadowOnly != outerShadowOnly) {
+            this.outerShadowOnly = outerShadowOnly
+            changed = true
+        }
+        if (this.fallbackColor != fallbackColor) {
+            this.fallbackColor = fallbackColor
+            changed = true
+        }
+        if (changed) {
+            markDirty()
+        }
+    }
+}
+
+private class BackdropFrostedGlassNode(
+    var spec: FrostedGlassSpec,
+    shape: Shape,
+    tint: Color,
+    elevation: Dp,
+    outerShadowOnly: Boolean,
+    fallbackColor: Color,
+) : BaseBackdropNode(shape, tint, elevation, outerShadowOnly, fallbackColor) {
+
+    private var cachedEffect: RenderEffect? = null
+    private var cachedDensity: Float = -1f
+    private var cachedSpec: FrostedGlassSpec? = null
+
+    override fun resolveRenderEffect(density: Density): RenderEffect? {
+        val currentDensity = density.density
+        if (cachedEffect == null || cachedDensity != currentDensity || cachedSpec != spec) {
+            cachedEffect = spec.createRenderEffect(density)
+            cachedDensity = currentDensity
+            cachedSpec = spec
+        }
+        return cachedEffect
+    }
+
+    fun update(spec: FrostedGlassSpec, shape: Shape, tint: Color, elevation: Dp, outerShadowOnly: Boolean, fallbackColor: Color) {
         var changed = false
         if (this.spec != spec) {
             this.spec = spec
