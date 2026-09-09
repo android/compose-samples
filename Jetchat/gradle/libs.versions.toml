@@ -8,7 +8,7 @@ android-material3 = "1.14.0"
 androidGradlePlugin = "9.3.1"
 androidx-activity-compose = "1.13.0"
 androidx-appcompat = "1.8.0"
-androidx-compose-bom = "2026.08.00"
+androidx-compose-bom = "2026.08.01"
 androidx-constraintlayout = "1.1.2"
 androidx-core-splashscreen = "1.2.0"
 androidx-corektx = "1.19.0"
@@ -48,7 +48,7 @@ maps-compose = "8.4.0"
 media3Exoplayer = "1.11.0"
 media3ExoplayerHls = "1.11.0"
 media3UiCompose = "1.11.0"
-minSdk = "23"
+minSdk = "24"
 okhttp = "5.4.0"
 play-services-wearable = "20.0.1"
 robolectric = "4.16.1"
@@ -69,7 +69,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation" }
-androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom-alpha", version.ref = "androidx-compose-bom" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended" }
