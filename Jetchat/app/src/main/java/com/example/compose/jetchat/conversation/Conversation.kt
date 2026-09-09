@@ -92,13 +92,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.blur.BlurRadiusSpec
+import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.JetchatAppBar
-import com.example.compose.jetchat.components.backdropFrostedGlass
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.video.FullScreenVideoPlayer
+import com.example.compose.jetchat.video.VideoThumbnail
 import kotlinx.coroutines.launch
 
 /**
@@ -209,7 +213,7 @@ fun ConversationContent(
                     navigateToProfile = navigateToProfile,
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
-                    contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
+                    topPadding = paddingValues.calculateTopPadding(),
                     onVideoClick = { videoUri -> activeVideoUri = videoUri },
                 )
                 UserInput(
@@ -269,12 +273,10 @@ fun ChannelNameBar(
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
     JetchatAppBar(
-        modifier = modifier.backdropFrostedGlass(
-            blurRadius = 16.dp,
-            noiseFrequency = 0.05f,
-            noiseIntensity = 0.05f,
+        modifier = modifier.backdropBlur(
             tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
             elevation = 2.dp,
+            radius = 30.dp,
         ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
@@ -326,7 +328,7 @@ fun Messages(
     navigateToProfile: (String) -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    topPadding: Dp = 0.dp,
     onVideoClick: (String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -336,7 +338,6 @@ fun Messages(
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
-            contentPadding = contentPadding,
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize(),
@@ -352,6 +353,9 @@ fun Messages(
                 if (index == messages.size - 1) {
                     item {
                         DayHeader("20 Aug")
+                    }
+                    item {
+                        Spacer(Modifier.height(topPadding))
                     }
                 } else if (index == 2) {
                     item {
