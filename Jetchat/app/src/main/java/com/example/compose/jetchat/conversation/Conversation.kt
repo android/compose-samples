@@ -275,7 +275,7 @@ fun ChannelNameBar(
     JetchatAppBar(
         modifier = modifier.backdropBlur(
             tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-            elevation = 2.dp,
+            elevation = 0.dp,
             radius = 30.dp,
         ),
         scrollBehavior = scrollBehavior,

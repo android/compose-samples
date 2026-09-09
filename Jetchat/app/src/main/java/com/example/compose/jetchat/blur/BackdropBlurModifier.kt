@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
  * @param radiusY The vertical blur radius (defaults to [radiusX]).
  * @param tileMode The tile mode for handling edges (defaults to [Shader.TileMode.CLAMP]).
  */
-data class BlurRadiusSpec(val radiusX: Dp, val radiusY: Dp = radiusX, val tileMode: Shader.TileMode = Shader.TileMode.DECAL) {
+data class BlurRadiusSpec(val radiusX: Dp, val radiusY: Dp = radiusX, val tileMode: Shader.TileMode = Shader.TileMode.CLAMP) {
     /**
      * Creates an Android [RenderEffect] configured with this specification.
      */
