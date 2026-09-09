@@ -81,6 +81,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -213,7 +214,7 @@ fun ConversationContent(
                     navigateToProfile = navigateToProfile,
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
-                    topPadding = paddingValues.calculateTopPadding(),
+                    contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
                     onVideoClick = { videoUri -> activeVideoUri = videoUri },
                 )
                 UserInput(
@@ -273,11 +274,12 @@ fun ChannelNameBar(
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
     JetchatAppBar(
-        modifier = modifier.backdropBlur(
-            tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-            elevation = 0.dp,
-            radius = 30.dp,
-        ),
+        modifier = modifier
+            .backdropBlur(
+                tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                elevation = 0.dp,
+                radius = 12.dp,
+            ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
         title = {
@@ -328,7 +330,7 @@ fun Messages(
     navigateToProfile: (String) -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
-    topPadding: Dp = 0.dp,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     onVideoClick: (String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -338,6 +340,7 @@ fun Messages(
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
+            contentPadding = contentPadding,
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize(),
@@ -353,9 +356,6 @@ fun Messages(
                 if (index == messages.size - 1) {
                     item {
                         DayHeader("20 Aug")
-                    }
-                    item {
-                        Spacer(Modifier.height(topPadding))
                     }
                 } else if (index == 2) {
                     item {
