@@ -25,6 +25,7 @@ import android.graphics.RenderNode
 import android.os.Build
 import android.util.Log
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
@@ -52,7 +53,9 @@ abstract class BaseBackdropNode(
 ) : Modifier.Node(),
     DrawModifierNode {
 
-    abstract fun resolveRenderEffect(density: Density): RenderEffect?
+    open fun resolveRenderEffect(density: Density, size: Size): RenderEffect? = resolveRenderEffect(density)
+
+    open fun resolveRenderEffect(density: Density): RenderEffect? = null
 
     private var renderNode: RenderNode? = null
     private val androidOutline = AndroidOutline()
@@ -83,7 +86,7 @@ abstract class BaseBackdropNode(
     }
 
     override fun ContentDrawScope.draw() {
-        val effect = resolveRenderEffect(this)
+        val effect = resolveRenderEffect(this, size)
         if (Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.CINNAMON_BUN && effect != null) {
             val widthPx = size.width.roundToInt()
             val heightPx = size.height.roundToInt()

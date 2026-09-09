@@ -20,19 +20,23 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.blur.backdropMagnifier
 
 private enum class Visibility {
     VISIBLE,
@@ -57,6 +61,7 @@ fun JumpToBottom(enabled: Boolean, onClicked: () -> Unit, modifier: Modifier = M
         }
     }
     if (bottomOffset > 0.dp) {
+        val fabShape = CircleShape
         ExtendedFloatingActionButton(
             icon = {
                 Icon(
@@ -68,12 +73,28 @@ fun JumpToBottom(enabled: Boolean, onClicked: () -> Unit, modifier: Modifier = M
             text = {
                 Text(text = stringResource(id = R.string.jumpBottom))
             },
+            shape = fabShape,
             onClick = onClicked,
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.primary,
+            elevation = FloatingActionButtonDefaults.elevation(
+                defaultElevation = 0.dp,
+                pressedElevation = 0.dp,
+                focusedElevation = 0.dp,
+                hoveredElevation = 0.dp,
+            ),
             modifier = modifier
                 .offset { IntOffset(x = 0, y = -bottomOffset.roundToPx()) }
-                .height(36.dp),
+                .height(36.dp)
+                .backdropMagnifier(
+                    zoom = 1.35f,
+                    blurRadius = 2.dp,
+                    lensCurvature = 0.35f,
+                    chromaticAberration = 1.5.dp,
+                    shape = fabShape,
+                    tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.45f),
+                    elevation = 3.dp,
+                ),
         )
     }
 }
