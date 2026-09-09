@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +48,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -419,25 +422,18 @@ fun Message(
     }
 
     val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
-    Row(modifier = spaceBetweenAuthors) {
-        if (isLastMessageByAuthor) {
-            // Avatar
-            Image(
-                modifier = Modifier
-                    .clickable(onClick = { onAuthorClick(msg.author) })
-                    .padding(horizontal = 16.dp)
-                    .size(42.dp)
-                    .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                    .clip(CircleShape)
-                    .align(Alignment.Top),
-                painter = painterResource(id = msg.authorImage),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-            )
-        } else {
-            // Space under avatar
-            Spacer(modifier = Modifier.width(74.dp))
+    Row(modifier = spaceBetweenAuthors.fillMaxWidth()) {
+        if (!isUserMe) {
+            if (isLastMessageByAuthor) {
+                AuthorAvatar(
+                    authorImage = msg.authorImage,
+                    authorName = msg.author,
+                    borderColor = borderColor,
+                    onAuthorClick = onAuthorClick,
+                )
+            } else {
+                Spacer(modifier = Modifier.width(74.dp))
+            }
         }
         AuthorAndTextMessage(
             msg = msg,
@@ -447,10 +443,42 @@ fun Message(
             authorClicked = onAuthorClick,
             onVideoClick = onVideoClick,
             modifier = Modifier
-                .padding(end = 16.dp)
+                .padding(
+                    start = if (isUserMe) 16.dp else 0.dp,
+                    end = if (isUserMe) 0.dp else 16.dp,
+                )
                 .weight(1f),
         )
+        if (isUserMe) {
+            if (isLastMessageByAuthor) {
+                AuthorAvatar(
+                    authorImage = msg.authorImage,
+                    authorName = msg.author,
+                    borderColor = borderColor,
+                    onAuthorClick = onAuthorClick,
+                )
+            } else {
+                Spacer(modifier = Modifier.width(74.dp))
+            }
+        }
     }
+}
+
+@Composable
+private fun RowScope.AuthorAvatar(authorImage: Int, authorName: String, borderColor: Color, onAuthorClick: (String) -> Unit) {
+    Image(
+        modifier = Modifier
+            .clickable(onClick = { onAuthorClick(authorName) })
+            .padding(horizontal = 16.dp)
+            .size(42.dp)
+            .border(1.5.dp, borderColor, CircleShape)
+            .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+            .clip(CircleShape)
+            .align(Alignment.Top),
+        painter = painterResource(id = authorImage),
+        contentScale = ContentScale.Crop,
+        contentDescription = null,
+    )
 }
 
 @Composable
@@ -463,7 +491,10 @@ fun AuthorAndTextMessage(
     modifier: Modifier = Modifier,
     onVideoClick: (String) -> Unit = {},
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
+    ) {
         if (isLastMessageByAuthor) {
             AuthorNameTimestamp(msg)
         }
@@ -504,7 +535,8 @@ private fun AuthorNameTimestamp(msg: Message) {
     }
 }
 
-private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
+private val ChatBubbleShapeOthers = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
+private val ChatBubbleShapeMe = RoundedCornerShape(20.dp, 4.dp, 20.dp, 20.dp)
 
 @Composable
 fun DayHeader(dayString: String) {
@@ -536,19 +568,19 @@ private fun RowScope.DayHeaderLine() {
 
 @Composable
 fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
-
     val backgroundBubbleColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.surfaceVariant
     }
+    val bubbleShape = if (isUserMe) ChatBubbleShapeMe else ChatBubbleShapeOthers
 
-    Column {
+    Column(horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start) {
         val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
         if (hasText) {
             Surface(
                 color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                shape = bubbleShape,
             ) {
                 ClickableMessage(
                     message = message,
@@ -558,18 +590,28 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             }
         }
 
-        message.image?.let {
+        message.image?.let { imageRes ->
             if (hasText) {
                 Spacer(modifier = Modifier.height(4.dp))
             }
+            val painter = painterResource(imageRes)
+            val intrinsicSize = painter.intrinsicSize
+            val aspectRatio = if (intrinsicSize.width > 0f && intrinsicSize.height > 0f) {
+                intrinsicSize.width / intrinsicSize.height
+            } else {
+                1f
+            }
             Surface(
                 color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                shape = bubbleShape,
             ) {
                 Image(
-                    painter = painterResource(it),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
+                    painter = painter,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .sizeIn(maxWidth = 240.dp, maxHeight = 260.dp)
+                        .aspectRatio(aspectRatio, matchHeightConstraintsFirst = aspectRatio < 1f)
+                        .clip(bubbleShape),
                     contentDescription = stringResource(id = R.string.attached_image),
                 )
             }
@@ -581,16 +623,17 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             }
             Surface(
                 color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                shape = bubbleShape,
             ) {
                 VideoThumbnail(
                     videoUri = videoUri,
                     onClick = { onVideoClick(videoUri) },
-                    shape = ChatBubbleShape,
+                    shape = bubbleShape,
                     modifier = Modifier
+                        .widthIn(max = 260.dp)
                         .fillMaxWidth()
                         .height(200.dp)
-                        .clip(ChatBubbleShape),
+                        .clip(bubbleShape),
                 )
             }
         }
