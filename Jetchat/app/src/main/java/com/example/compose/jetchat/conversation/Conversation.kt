@@ -354,16 +354,16 @@ fun Messages(
 
                 // Hardcode day dividers for simplicity
                 if (index == messages.size - 1) {
-                    item {
+                    item(key = "header_20_aug", contentType = "header") {
                         DayHeader("20 Aug")
                     }
                 } else if (index == 2) {
-                    item {
+                    item(key = "header_today", contentType = "header") {
                         DayHeader("Today")
                     }
                 }
 
-                item {
+                item(key = content.id, contentType = "message") {
                     Message(
                         onAuthorClick = { name -> navigateToProfile(name) },
                         msg = content,
