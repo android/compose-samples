@@ -17,21 +17,18 @@
 package com.example.compose.jetchat.profile
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -41,26 +38,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.blur.BlurStop
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
@@ -73,7 +71,6 @@ import com.example.compose.jetchat.theme.JetchatTheme
 @Composable
 fun ProfileScreen(
     userData: ProfileScreenState,
-    nestedScrollInteropConnection: NestedScrollConnection = rememberNestedScrollInteropConnection(),
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -85,41 +82,25 @@ fun ProfileScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollInteropConnection)
-            .systemBarsPadding(),
     ) {
         Surface {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(color = Color(0xFFEAE9FC))
                     .verticalScroll(scrollState),
             ) {
-                ProfileHeader(
-                    scrollState,
-                    userData,
-                    this@BoxWithConstraints.maxHeight,
-                )
+                ProfileHeader(userData)
                 UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
             }
         }
-
-        val fabExtended by remember { derivedStateOf { scrollState.value == 0 } }
-        ProfileFab(
-            extended = fabExtended,
-            userIsMe = userData.isMe(),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                // Offsets the FAB to compensate for CoordinatorLayout collapsing behaviour
-                .offset(y = ((-100).dp)),
-            onFabClicked = { functionalityNotAvailablePopupShown = true },
-        )
     }
 }
 
 @Composable
 private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
     Column {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         NameAndPosition(userData)
 
@@ -160,7 +141,12 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     Text(
         text = userData.name,
         modifier = modifier,
-        style = MaterialTheme.typography.headlineSmall,
+        style = TextStyle(
+            fontSize = 74.sp,
+            lineHeight = 70.82.sp,
+            fontWeight = FontWeight(800),
+            color = Color(0xFF1D1B1F),
+        )
     )
 }
 
@@ -169,28 +155,33 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
     Text(
         text = userData.position,
         modifier = modifier,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontWeight = FontWeight(400),
+            color = Color(0xFF48454F),
+        )
     )
 }
 
 @Composable
-private fun ProfileHeader(scrollState: ScrollState, data: ProfileScreenState, containerHeight: Dp) {
-    val offset = (scrollState.value / 2)
-    val offsetDp = with(LocalDensity.current) { offset.toDp() }
+private fun ProfileHeader(data: ProfileScreenState) {
 
     data.photo?.let {
         Image(
             modifier = Modifier
-                .heightIn(max = containerHeight / 2)
                 .fillMaxWidth()
-                // TODO: Update to use offset to avoid recomposition
-                .padding(
-                    start = 16.dp,
-                    top = offsetDp,
-                    end = 16.dp,
-                )
-                .clip(CircleShape),
+                .aspectRatio(0.96f)
+                .blur {
+                    radius = BlurRadiusSpec.verticalGradient(
+                        listOf(
+                            BlurStop(0.0f, 0.dp),
+                            BlurStop(0.5f, 0.dp),
+                            BlurStop(1.0f, 32.dp),
+                        )
+                    )
+                    edgeTreatment = BlurredEdgeTreatment.Unbounded
+                },
             painter = painterResource(id = it),
             contentScale = ContentScale.Crop,
             contentDescription = null,
@@ -205,8 +196,13 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = label,
             modifier = Modifier.baselineHeight(24.dp),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = TextStyle(
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                fontWeight = FontWeight(700),
+                color = Color(0xFF48454F),
+                letterSpacing = 0.15.sp,
+            )
         )
         val style = if (isLink) {
             MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
@@ -216,7 +212,12 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = value,
             modifier = Modifier.baselineHeight(24.dp),
-            style = style,
+            style = TextStyle(
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontWeight = FontWeight(400),
+                color = Color(0xFF1D1B1F),
+            ),
         )
     }
 }

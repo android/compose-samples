@@ -108,12 +108,12 @@ val colleagueProfile = ProfileScreenState(
  */
 val meProfile = ProfileScreenState(
     userId = "me",
-    photo = R.drawable.ali,
-    name = "Ali Conors",
+    photo = R.drawable.img,
+    name = "Taylor Brooks",
     status = "Online",
-    displayName = "aliconors",
-    position = "Senior Android Dev at Yearin\nGoogle Developer Expert",
-    twitter = "twitter.com/aliconors",
+    displayName = "taylor",
+    position = "Senior Android Dev at Openlane",
+    twitter = "twitter.com/taylor",
     timeZone = "In your timezone",
     commonChannels = null,
 )
