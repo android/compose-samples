@@ -24,6 +24,7 @@ plugins {
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdkMinor = 1
     namespace = "com.example.compose.jetchat"
 
     defaultConfig {
@@ -88,6 +89,9 @@ android {
 }
 
 dependencies {
+
+    implementation("androidx.compose.ui:ui-graphics:1.13.0-alpha03")
+
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
