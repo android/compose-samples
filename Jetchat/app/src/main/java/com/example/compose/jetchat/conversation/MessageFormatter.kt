@@ -19,6 +19,7 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -58,42 +59,43 @@ typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
  */
 @Composable
 fun messageFormatter(text: String, primary: Boolean): AnnotatedString {
-    val tokens = symbolPattern.findAll(text)
+    val colorScheme = MaterialTheme.colorScheme
+    return remember(text, primary, colorScheme) {
+        val tokens = symbolPattern.findAll(text)
+        buildAnnotatedString {
+            var cursorPosition = 0
 
-    return buildAnnotatedString {
+            val codeSnippetBackground =
+                if (primary) {
+                    colorScheme.secondary
+                } else {
+                    colorScheme.surface
+                }
 
-        var cursorPosition = 0
+            for (token in tokens) {
+                append(text.slice(cursorPosition until token.range.first))
 
-        val codeSnippetBackground =
-            if (primary) {
-                MaterialTheme.colorScheme.secondary
+                val (annotatedString, stringAnnotation) = getSymbolAnnotation(
+                    matchResult = token,
+                    colorScheme = colorScheme,
+                    primary = primary,
+                    codeSnippetBackground = codeSnippetBackground,
+                )
+                append(annotatedString)
+
+                if (stringAnnotation != null) {
+                    val (item, start, end, tag) = stringAnnotation
+                    addStringAnnotation(tag = tag, start = start, end = end, annotation = item)
+                }
+
+                cursorPosition = token.range.last + 1
+            }
+
+            if (!tokens.none()) {
+                append(text.slice(cursorPosition..text.lastIndex))
             } else {
-                MaterialTheme.colorScheme.surface
+                append(text)
             }
-
-        for (token in tokens) {
-            append(text.slice(cursorPosition until token.range.first))
-
-            val (annotatedString, stringAnnotation) = getSymbolAnnotation(
-                matchResult = token,
-                colorScheme = MaterialTheme.colorScheme,
-                primary = primary,
-                codeSnippetBackground = codeSnippetBackground,
-            )
-            append(annotatedString)
-
-            if (stringAnnotation != null) {
-                val (item, start, end, tag) = stringAnnotation
-                addStringAnnotation(tag = tag, start = start, end = end, annotation = item)
-            }
-
-            cursorPosition = token.range.last + 1
-        }
-
-        if (!tokens.none()) {
-            append(text.slice(cursorPosition..text.lastIndex))
-        } else {
-            append(text)
         }
     }
 }
