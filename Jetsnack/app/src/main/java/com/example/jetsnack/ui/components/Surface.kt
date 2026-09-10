@@ -61,7 +61,11 @@ fun JetsnackSurface(
             )
             .clip(shape),
     ) {
-        CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
+        if (contentColor != LocalContentColor.current) {
+            CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
+        } else {
+            content()
+        }
     }
 }
 
