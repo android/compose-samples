@@ -69,9 +69,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun ProfileScreen(
-    userData: ProfileScreenState,
-) {
+fun ProfileScreen(userData: ProfileScreenState) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
@@ -81,7 +79,7 @@ fun ProfileScreen(
 
     BoxWithConstraints(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         Surface {
             Column(
@@ -146,7 +144,7 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
             lineHeight = 70.82.sp,
             fontWeight = FontWeight(800),
             color = Color(0xFF1D1B1F),
-        )
+        ),
     )
 }
 
@@ -160,7 +158,7 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
             lineHeight = 24.sp,
             fontWeight = FontWeight(400),
             color = Color(0xFF48454F),
-        )
+        ),
     )
 }
 
@@ -178,7 +176,7 @@ private fun ProfileHeader(data: ProfileScreenState) {
                             BlurStop(0.0f, 0.dp),
                             BlurStop(0.5f, 0.dp),
                             BlurStop(1.0f, 32.dp),
-                        )
+                        ),
                     )
                     edgeTreatment = BlurredEdgeTreatment.Unbounded
                 },
@@ -202,7 +200,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
                 fontWeight = FontWeight(700),
                 color = Color(0xFF48454F),
                 letterSpacing = 0.15.sp,
-            )
+            ),
         )
         val style = if (isLink) {
             MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)

@@ -45,28 +45,25 @@ class ProfileFragment : Fragment() {
     }
 
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = ComposeView(inflater.context).apply {
-        layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        ComposeView(inflater.context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
 
-        setContent {
-            val userData by viewModel.userData.observeAsState()
+            setContent {
+                val userData by viewModel.userData.observeAsState()
 
-            JetchatTheme {
-                if (userData == null) {
-                    ProfileError()
-                } else {
-                    ProfileScreen(
-                        userData = userData!!
-                    )
+                JetchatTheme {
+                    if (userData == null) {
+                        ProfileError()
+                    } else {
+                        ProfileScreen(
+                            userData = userData!!,
+                        )
+                    }
                 }
             }
         }
-    }
 }
