@@ -16,7 +16,10 @@
 
 package com.example.compose.jetchat.conversation
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -27,9 +30,11 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -107,6 +112,7 @@ import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
@@ -132,7 +138,12 @@ fun UserInputPreview() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserInput(onMessageSent: (String) -> Unit, modifier: Modifier = Modifier, resetScroll: () -> Unit = {}) {
+fun UserInput(
+    onMessageSent: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    resetScroll: () -> Unit = {},
+    onVideoMessageSent: (videoUri: String, caption: String) -> Unit = { _, _ -> },
+) {
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
 
@@ -145,11 +156,47 @@ fun UserInput(onMessageSent: (String) -> Unit, modifier: Modifier = Modifier, re
         mutableStateOf(TextFieldValue())
     }
 
+    var attachedVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val videoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+    ) { uri: Uri? ->
+        uri?.let {
+            attachedVideoUri = it.toString()
+        }
+    }
+
+    val sendMessage = {
+        val currentVideoUri = attachedVideoUri
+        if (currentVideoUri != null) {
+            onVideoMessageSent(currentVideoUri, textState.text.trim())
+            attachedVideoUri = null
+        } else if (textState.text.isNotBlank()) {
+            onMessageSent(textState.text)
+        }
+        textState = TextFieldValue()
+        resetScroll()
+        dismissKeyboard()
+    }
+
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
     Surface(tonalElevation = 2.dp, contentColor = MaterialTheme.colorScheme.secondary) {
         Column(modifier = modifier) {
+            AnimatedVisibility(
+                visible = attachedVideoUri != null,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut(),
+            ) {
+                attachedVideoUri?.let { videoUri ->
+                    AttachedVideoPreview(
+                        videoUri = videoUri,
+                        onRemove = { attachedVideoUri = null },
+                    )
+                }
+            }
+
             UserInputText(
                 textFieldValue = textState,
                 onTextChanged = { textState = it },
@@ -163,32 +210,61 @@ fun UserInput(onMessageSent: (String) -> Unit, modifier: Modifier = Modifier, re
                     }
                     textFieldFocusState = focused
                 },
-                onMessageSent = {
-                    onMessageSent(textState.text)
-                    // Reset text field and close keyboard
-                    textState = TextFieldValue()
-                    // Move scroll to bottom
-                    resetScroll()
-                },
+                onMessageSent = { sendMessage() },
                 focusState = textFieldFocusState,
             )
             UserInputSelector(
                 onSelectorChange = { currentInputSelector = it },
-                sendMessageEnabled = textState.text.isNotBlank(),
-                onMessageSent = {
-                    onMessageSent(textState.text)
-                    // Reset text field and close keyboard
-                    textState = TextFieldValue()
-                    // Move scroll to bottom
-                    resetScroll()
-                    dismissKeyboard()
-                },
+                sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null,
+                onMessageSent = sendMessage,
                 currentInputSelector = currentInputSelector,
+                onVideoClick = {
+                    currentInputSelector = InputSelector.NONE
+                    videoPickerLauncher.launch("video/*")
+                },
             )
             SelectorExpanded(
                 onCloseRequested = dismissKeyboard,
                 onTextAdded = { textState = textState.addText(it) },
                 currentSelector = currentInputSelector,
+            )
+        }
+    }
+}
+
+@Composable
+private fun AttachedVideoPreview(videoUri: String, onRemove: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp),
+    ) {
+        VideoPlayer(
+            videoUri = videoUri,
+            autoPlay = false,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(12.dp)),
+        )
+
+        IconButton(
+            onClick = onRemove,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+                .size(32.dp)
+                .background(
+                    color = Color.Black.copy(alpha = 0.65f),
+                    shape = CircleShape,
+                ),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = stringResource(id = R.string.remove_attached_video),
+                tint = Color.White,
+                modifier = Modifier.size(18.dp),
             )
         }
     }
@@ -268,6 +344,7 @@ private fun UserInputSelector(
     onMessageSent: () -> Unit,
     currentInputSelector: InputSelector,
     modifier: Modifier = Modifier,
+    onVideoClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -301,9 +378,9 @@ private fun UserInputSelector(
             description = stringResource(id = R.string.map_selector_desc),
         )
         InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.PHONE) },
+            onClick = onVideoClick,
             icon = painterResource(id = R.drawable.ic_duo),
-            selected = currentInputSelector == InputSelector.PHONE,
+            selected = false,
             description = stringResource(id = R.string.videochat_desc),
         )
 
@@ -506,7 +583,7 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
     var duration by remember { mutableStateOf(Duration.ZERO) }
     LaunchedEffect(Unit) {
         while (true) {
-            delay(1000)
+            delay(1000.milliseconds)
             duration += 1.seconds
         }
     }
