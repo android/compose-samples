@@ -18,6 +18,7 @@ package com.example.compose.jetchat.data
 
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.conversation.ConversationUiState
+import com.example.compose.jetchat.conversation.ImageFilterType
 import com.example.compose.jetchat.conversation.Message
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_CLOUDS
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_FLAMINGO
@@ -86,15 +87,17 @@ val initialMessages = listOf(
     ),
     Message(
         "me",
-        "Speaking of sweets, check out the cupcakes from the Android release party! 🧁",
+        "Speaking of sweets, check out the cupcakes from the Android release party with Duotone filter! 🧁",
         "8:15 PM",
-        R.drawable.cupcake,
+        image = R.drawable.cupcake,
+        filterType = ImageFilterType.Duotone,
     ),
     Message(
         "Taylor Brooks",
-        "Those look amazing! Reminds me of the classic Donut days 🍩",
+        "Those look amazing! Reminds me of the classic Donut days with Sepia 🍩",
         "8:16 PM",
-        R.drawable.donut,
+        image = R.drawable.donut,
+        filterType = ImageFilterType.Sepia,
     ),
     Message(
         "John Glenn",

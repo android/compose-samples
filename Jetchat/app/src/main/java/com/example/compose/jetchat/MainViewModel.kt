@@ -35,4 +35,15 @@ class MainViewModel : ViewModel() {
     fun resetOpenDrawerAction() {
         _drawerShouldBeOpened.value = false
     }
+
+    private val _isCyberpunkMode = MutableStateFlow(false)
+    val isCyberpunkMode = _isCyberpunkMode.asStateFlow()
+
+    fun toggleCyberpunkMode() {
+        _isCyberpunkMode.value = !_isCyberpunkMode.value
+    }
+
+    fun setCyberpunkMode(enabled: Boolean) {
+        _isCyberpunkMode.value = enabled
+    }
 }

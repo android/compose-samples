@@ -98,6 +98,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.blur.BlurRadiusSpec
@@ -181,6 +182,7 @@ fun ConversationContent(
     }
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
+    var photoToFilterUri by rememberSaveable { mutableStateOf<android.net.Uri?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -226,6 +228,7 @@ fun ConversationContent(
                             Message(authorMe, content, timeNow),
                         )
                     },
+                    onPhotoSelected = { uri -> photoToFilterUri = uri },
                     onVideoMessageSent = { videoUri, content ->
                         uiState.addMessage(
                             Message(
@@ -257,6 +260,34 @@ fun ConversationContent(
                 FullScreenVideoPlayer(
                     videoUri = uri,
                     onDismiss = { activeVideoUri = null },
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = photoToFilterUri != null,
+            enter = fadeIn(animationSpec = tween(200)),
+            exit = fadeOut(animationSpec = tween(200)),
+        ) {
+            photoToFilterUri?.let { uri ->
+                PhotoFilterBottomSheet(
+                    imageUri = uri,
+                    onDismiss = { photoToFilterUri = null },
+                    onSend = { sentUri, caption, filterType ->
+                        uiState.addMessage(
+                            Message(
+                                author = authorMe,
+                                content = caption,
+                                timestamp = timeNow,
+                                imageUri = sentUri,
+                                filterType = filterType,
+                            ),
+                        )
+                        photoToFilterUri = null
+                        scope.launch {
+                            scrollState.scrollToItem(0)
+                        }
+                    },
                 )
             }
         }
@@ -576,7 +607,8 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
     val bubbleShape = if (isUserMe) ChatBubbleShapeMe else ChatBubbleShapeOthers
 
     Column(horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start) {
-        val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
+        val hasMedia = message.image != null || message.imageUri != null || message.videoUri != null
+        val hasText = message.content.isNotBlank() || !hasMedia
         if (hasText) {
             Surface(
                 color = backgroundBubbleColor,
@@ -590,8 +622,28 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             }
         }
 
-        message.image?.let { imageRes ->
+        message.imageUri?.let { uri ->
             if (hasText) {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+            Surface(
+                color = backgroundBubbleColor,
+                shape = bubbleShape,
+            ) {
+                AsyncImage(
+                    model = uri,
+                    contentDescription = stringResource(id = R.string.attached_image),
+                    colorFilter = ImageFilters.getColorFilter(message.filterType),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .sizeIn(maxWidth = 260.dp, maxHeight = 300.dp)
+                        .clip(bubbleShape),
+                )
+            }
+        }
+
+        message.image?.let { imageRes ->
+            if (hasText || message.imageUri != null) {
                 Spacer(modifier = Modifier.height(4.dp))
             }
             val painter = painterResource(imageRes)
@@ -607,6 +659,7 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             ) {
                 Image(
                     painter = painter,
+                    colorFilter = ImageFilters.getColorFilter(message.filterType),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .sizeIn(maxWidth = 240.dp, maxHeight = 260.dp)
@@ -618,7 +671,7 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
         }
 
         message.videoUri?.let { videoUri ->
-            if (hasText || message.image != null) {
+            if (hasText || message.image != null || message.imageUri != null) {
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Surface(

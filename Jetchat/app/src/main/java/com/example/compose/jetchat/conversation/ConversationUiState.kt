@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.conversation
 
+import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.toMutableStateList
 import com.example.compose.jetchat.R
@@ -36,6 +37,16 @@ data class Message(
     val content: String,
     val timestamp: String,
     val image: Int? = null,
+    val imageUri: Uri? = null,
+    /**
+     * Note: In a production app, client-side bitmap processing (such as rendering the shader
+     * offscreen to a hardware buffer or Bitmap) would typically be performed before uploading
+     * to cloud storage / CDN.
+     * Here, we attach the [ImageFilterType] directly to the message to demonstrate real-time
+     * hardware-accelerated dynamic filtering in Compose using [android.graphics.ColorMatrixColorFilter]
+     * and [android.graphics.RuntimeColorFilter] (API 36).
+     */
+    val filterType: ImageFilterType = ImageFilterType.None,
     val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else,
     val videoUri: String? = null,
     val id: String = UUID.randomUUID().toString(),

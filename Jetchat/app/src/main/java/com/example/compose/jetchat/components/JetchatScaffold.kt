@@ -31,6 +31,8 @@ fun JetchatDrawer(
     selectedMenu: String,
     onProfileClicked: (String) -> Unit,
     onChatClicked: (String) -> Unit,
+    isCyberpunkMode: Boolean = false,
+    onToggleCyberpunkMode: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     JetchatTheme {
@@ -46,6 +48,8 @@ fun JetchatDrawer(
                         onProfileClicked = onProfileClicked,
                         onChatClicked = onChatClicked,
                         selectedMenu = selectedMenu,
+                        isCyberpunkMode = isCyberpunkMode,
+                        onToggleCyberpunkMode = onToggleCyberpunkMode,
                     )
                 }
             },

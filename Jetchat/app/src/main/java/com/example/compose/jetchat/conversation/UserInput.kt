@@ -144,6 +144,7 @@ fun UserInput(
     modifier: Modifier = Modifier,
     resetScroll: () -> Unit = {},
     onVideoMessageSent: (videoUri: String, caption: String) -> Unit = { _, _ -> },
+    onPhotoSelected: (Uri) -> Unit = {},
 ) {
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
@@ -164,6 +165,14 @@ fun UserInput(
     ) { uri: Uri? ->
         uri?.let {
             attachedVideoUri = it.toString()
+        }
+    }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+    ) { uri: Uri? ->
+        uri?.let {
+            onPhotoSelected(it)
         }
     }
 
@@ -219,6 +228,14 @@ fun UserInput(
                 sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null,
                 onMessageSent = sendMessage,
                 currentInputSelector = currentInputSelector,
+                onPhotoClick = {
+                    currentInputSelector = InputSelector.NONE
+                    photoPickerLauncher.launch(
+                        androidx.activity.result.PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly,
+                        ),
+                    )
+                },
                 onVideoClick = {
                     currentInputSelector = InputSelector.NONE
                     videoPickerLauncher.launch("video/*")
@@ -346,6 +363,7 @@ private fun UserInputSelector(
     currentInputSelector: InputSelector,
     modifier: Modifier = Modifier,
     onVideoClick: () -> Unit = {},
+    onPhotoClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -367,9 +385,9 @@ private fun UserInputSelector(
             description = stringResource(id = R.string.dm_desc),
         )
         InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.PICTURE) },
+            onClick = onPhotoClick,
             icon = painterResource(id = R.drawable.ic_insert_photo),
-            selected = currentInputSelector == InputSelector.PICTURE,
+            selected = false,
             description = stringResource(id = R.string.attach_photo_desc),
         )
         InputSelectorButton(

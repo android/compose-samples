@@ -82,5 +82,7 @@
     <string name="fullscreen_video">Full screen</string>
     <string name="exit_fullscreen_video">Exit full screen</string>
     <string name="remove_attached_video">Remove attached video</string>
-
+    <string name="close">Close</string>
+    <string name="filter_photo">Filter Photo</string>
+    <string name="add_caption">Add a caption…</string>
 </resources>
