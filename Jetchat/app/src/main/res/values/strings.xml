@@ -70,4 +70,17 @@
     <string name="messages_widget_title">JetChat unread messages</string>
     <string name="add_widget_to_home_page">Add Widget to Home Page</string>
 
+    <string name="video_message">Video message</string>
+    <string name="send_video_message">Send video message</string>
+    <string name="choose_video_from_device">Choose from device</string>
+    <string name="sample_video">Sample video</string>
+    <string name="video_caption_hint">Add a caption…</string>
+    <string name="play_video">Play video</string>
+    <string name="pause_video">Pause video</string>
+    <string name="mute_video">Mute video</string>
+    <string name="unmute_video">Unmute video</string>
+    <string name="fullscreen_video">Full screen</string>
+    <string name="exit_fullscreen_video">Exit full screen</string>
+    <string name="remove_attached_video">Remove attached video</string>
+
 </resources>

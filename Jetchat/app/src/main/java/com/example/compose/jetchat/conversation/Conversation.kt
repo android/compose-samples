@@ -19,6 +19,10 @@
 package com.example.compose.jetchat.conversation
 
 import android.content.ClipDescription
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +37,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
@@ -66,6 +71,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -164,55 +170,83 @@ fun ConversationContent(
         }
     }
 
-    Scaffold(
-        topBar = {
-            ChannelNameBar(
-                channelName = uiState.channelName,
-                channelMembers = uiState.channelMembers,
-                onNavIconPressed = onNavIconPressed,
-                scrollBehavior = scrollBehavior,
-            )
-        },
-        // Exclude ime and navigation bar padding so this can be added by the UserInput composable
-        contentWindowInsets = ScaffoldDefaults
-            .contentWindowInsets
-            .exclude(WindowInsets.navigationBars)
-            .exclude(WindowInsets.ime),
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-    ) { paddingValues ->
-        Column(
-            Modifier.fillMaxSize().padding(paddingValues)
-                .background(color = background)
-                .border(width = 2.dp, color = borderStroke)
-                .dragAndDropTarget(shouldStartDragAndDrop = { event ->
-                    event
-                        .mimeTypes()
-                        .contains(
-                            ClipDescription.MIMETYPE_TEXT_PLAIN,
+    var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = {
+                ChannelNameBar(
+                    channelName = uiState.channelName,
+                    channelMembers = uiState.channelMembers,
+                    onNavIconPressed = onNavIconPressed,
+                    scrollBehavior = scrollBehavior,
+                )
+            },
+            // Exclude ime and navigation bar padding so this can be added by the UserInput composable
+            contentWindowInsets = ScaffoldDefaults
+                .contentWindowInsets
+                .exclude(WindowInsets.navigationBars)
+                .exclude(WindowInsets.ime),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        ) { paddingValues ->
+            Column(
+                Modifier.fillMaxSize().padding(paddingValues)
+                    .background(color = background)
+                    .border(width = 2.dp, color = borderStroke)
+                    .dragAndDropTarget(shouldStartDragAndDrop = { event ->
+                        event
+                            .mimeTypes()
+                            .contains(
+                                ClipDescription.MIMETYPE_TEXT_PLAIN,
+                            )
+                    }, target = dragAndDropCallback),
+            ) {
+                Messages(
+                    messages = uiState.messages,
+                    navigateToProfile = navigateToProfile,
+                    modifier = Modifier.weight(1f),
+                    scrollState = scrollState,
+                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
+                )
+                UserInput(
+                    onMessageSent = { content ->
+                        uiState.addMessage(
+                            Message(authorMe, content, timeNow),
                         )
-                }, target = dragAndDropCallback),
+                    },
+                    onVideoMessageSent = { videoUri, content ->
+                        uiState.addMessage(
+                            Message(
+                                author = authorMe,
+                                content = content,
+                                timestamp = timeNow,
+                                videoUri = videoUri,
+                            ),
+                        )
+                    },
+                    resetScroll = {
+                        scope.launch {
+                            scrollState.scrollToItem(0)
+                        }
+                    },
+                    // let this element handle the padding so that the elevation is shown behind the
+                    // navigation bar
+                    modifier = Modifier.navigationBarsPadding().imePadding(),
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = activeVideoUri != null,
+            enter = fadeIn(animationSpec = tween(200)),
+            exit = fadeOut(animationSpec = tween(200)),
         ) {
-            Messages(
-                messages = uiState.messages,
-                navigateToProfile = navigateToProfile,
-                modifier = Modifier.weight(1f),
-                scrollState = scrollState,
-            )
-            UserInput(
-                onMessageSent = { content ->
-                    uiState.addMessage(
-                        Message(authorMe, content, timeNow),
-                    )
-                },
-                resetScroll = {
-                    scope.launch {
-                        scrollState.scrollToItem(0)
-                    }
-                },
-                // let this element handle the padding so that the elevation is shown behind the
-                // navigation bar
-                modifier = Modifier.navigationBarsPadding().imePadding(),
-            )
+            activeVideoUri?.let { uri ->
+                FullScreenVideoPlayer(
+                    videoUri = uri,
+                    onDismiss = { activeVideoUri = null },
+                )
+            }
         }
     }
 }
@@ -277,7 +311,13 @@ fun ChannelNameBar(
 const val ConversationTestTag = "ConversationTestTag"
 
 @Composable
-fun Messages(messages: List<Message>, navigateToProfile: (String) -> Unit, scrollState: LazyListState, modifier: Modifier = Modifier) {
+fun Messages(
+    messages: List<Message>,
+    navigateToProfile: (String) -> Unit,
+    scrollState: LazyListState,
+    modifier: Modifier = Modifier,
+    onVideoClick: (String) -> Unit = {},
+) {
     val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
 
@@ -314,6 +354,7 @@ fun Messages(messages: List<Message>, navigateToProfile: (String) -> Unit, scrol
                         isUserMe = content.author == authorMe,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
                         isLastMessageByAuthor = isLastMessageByAuthor,
+                        onVideoClick = onVideoClick,
                     )
                 }
             }
@@ -353,6 +394,7 @@ fun Message(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
+    onVideoClick: (String) -> Unit = {},
 ) {
     val borderColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
@@ -387,6 +429,7 @@ fun Message(
             isFirstMessageByAuthor = isFirstMessageByAuthor,
             isLastMessageByAuthor = isLastMessageByAuthor,
             authorClicked = onAuthorClick,
+            onVideoClick = onVideoClick,
             modifier = Modifier
                 .padding(end = 16.dp)
                 .weight(1f),
@@ -402,12 +445,18 @@ fun AuthorAndTextMessage(
     isLastMessageByAuthor: Boolean,
     authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onVideoClick: (String) -> Unit = {},
 ) {
     Column(modifier = modifier) {
         if (isLastMessageByAuthor) {
             AuthorNameTimestamp(msg)
         }
-        ChatItemBubble(msg, isUserMe, authorClicked = authorClicked)
+        ChatItemBubble(
+            message = msg,
+            isUserMe = isUserMe,
+            authorClicked = authorClicked,
+            onVideoClick = onVideoClick,
+        )
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
             Spacer(modifier = Modifier.height(8.dp))
@@ -470,7 +519,7 @@ private fun RowScope.DayHeaderLine() {
 }
 
 @Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
+fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
 
     val backgroundBubbleColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
@@ -479,19 +528,24 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
     }
 
     Column {
-        Surface(
-            color = backgroundBubbleColor,
-            shape = ChatBubbleShape,
-        ) {
-            ClickableMessage(
-                message = message,
-                isUserMe = isUserMe,
-                authorClicked = authorClicked,
-            )
+        val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
+        if (hasText) {
+            Surface(
+                color = backgroundBubbleColor,
+                shape = ChatBubbleShape,
+            ) {
+                ClickableMessage(
+                    message = message,
+                    isUserMe = isUserMe,
+                    authorClicked = authorClicked,
+                )
+            }
         }
 
         message.image?.let {
-            Spacer(modifier = Modifier.height(4.dp))
+            if (hasText) {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
             Surface(
                 color = backgroundBubbleColor,
                 shape = ChatBubbleShape,
@@ -501,6 +555,26 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.size(160.dp),
                     contentDescription = stringResource(id = R.string.attached_image),
+                )
+            }
+        }
+
+        message.videoUri?.let { videoUri ->
+            if (hasText || message.image != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+            Surface(
+                color = backgroundBubbleColor,
+                shape = ChatBubbleShape,
+            ) {
+                VideoThumbnail(
+                    videoUri = videoUri,
+                    onClick = { onVideoClick(videoUri) },
+                    shape = ChatBubbleShape,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(ChatBubbleShape),
                 )
             }
         }
