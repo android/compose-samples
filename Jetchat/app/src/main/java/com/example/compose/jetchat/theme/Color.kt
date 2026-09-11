@@ -58,3 +58,12 @@ val BlueGrey50 = Color(0xFF767680)
 val BlueGrey60 = Color(0xFF90909A)
 val BlueGrey80 = Color(0xFFC6C5D0)
 val BlueGrey90 = Color(0xFFE2E1EC)
+
+// Lavender tonal ramp used by the profile screen design. These are neutral tones with a violet
+// tint, as opposed to the teal tinted Grey/BlueGrey ramps above.
+val Lavender10 = Color(0xFF1D1B1F)
+val Lavender20 = Color(0xFF211F26)
+val Lavender30 = Color(0xFF48454F)
+val Lavender80 = Color(0xFFCAC4D0)
+val Lavender90 = Color(0xFFE6E0E9)
+val Lavender95 = Color(0xFFEAE9FC)

@@ -27,6 +27,13 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.unit.sp
+import com.example.compose.jetchat.R
 
 val JetchatDarkColorScheme = darkColorScheme(
     primary = Blue80,
@@ -107,6 +114,58 @@ fun JetchatTheme(isDarkTheme: Boolean = isSystemInDarkTheme(), isDynamicColor: B
     MaterialTheme(
         colorScheme = myColorScheme,
         typography = JetchatTypography,
+        content = content,
+    )
+}
+
+
+/**
+ * Montserrat at the ExtraBold weight, which [MontserratFontFamily] doesn't declare. Falls back to
+ * the bundled SemiBold when the downloadable font provider isn't available.
+ */
+private val MontserratExtraBoldFontFamily = FontFamily(
+    Font(googleFont = MontserratFont, fontProvider = provider, weight = FontWeight.ExtraBold),
+    Font(resId = R.font.montserrat_semibold, weight = FontWeight.ExtraBold),
+)
+
+/**
+ * Oversized display style used for the profile name. It sits well above the Material 3 type scale,
+ * so it overrides `displayLarge` rather than being added to [JetchatTypography].
+ */
+private val ProfileNameTextStyle = TextStyle(
+    fontFamily = MontserratExtraBoldFontFamily,
+    fontWeight = FontWeight.ExtraBold,
+    fontSize = 74.sp,
+    lineHeight = 70.82.sp,
+    letterSpacing = 0.sp,
+)
+
+/**
+ * Layers the profile screen design on top of the ambient [JetchatTheme], overriding only the roles
+ * the design specifies and inheriting everything else. This keeps the design contained to the
+ * profile screen instead of shifting the app wide color scheme and type scale.
+ *
+ * Must be called from inside a [JetchatTheme].
+ */
+@Composable
+fun ProfileTheme(isDarkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    val colorScheme = if (isDarkTheme) {
+        MaterialTheme.colorScheme.copy(
+            surfaceContainer = Lavender20,
+            onSurface = Lavender90,
+            onSurfaceVariant = Lavender80,
+        )
+    } else {
+        MaterialTheme.colorScheme.copy(
+            surfaceContainer = Lavender95,
+            onSurface = Lavender10,
+            onSurfaceVariant = Lavender30,
+        )
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = MaterialTheme.typography.copy(displayLarge = ProfileNameTextStyle),
         content = content,
     )
 }

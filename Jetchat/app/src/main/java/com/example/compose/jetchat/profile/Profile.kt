@@ -47,18 +47,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.blur.BlurRadiusSpec
 import androidx.compose.ui.graphics.blur.BlurStop
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.AnimatingFabContent
@@ -66,6 +62,7 @@ import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.theme.ProfileTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -77,19 +74,21 @@ fun ProfileScreen(userData: ProfileScreenState) {
 
     val scrollState = rememberScrollState()
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        Surface {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color(0xFFEAE9FC))
-                    .verticalScroll(scrollState),
-            ) {
-                ProfileHeader(userData)
-                UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
+    ProfileTheme {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize(),
+        ) {
+            Surface {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                        .verticalScroll(scrollState),
+                ) {
+                    ProfileHeader(userData)
+                    UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
+                }
             }
         }
     }
@@ -139,12 +138,7 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     Text(
         text = userData.name,
         modifier = modifier,
-        style = TextStyle(
-            fontSize = 74.sp,
-            lineHeight = 70.82.sp,
-            fontWeight = FontWeight(800),
-            color = Color(0xFF1D1B1F),
-        ),
+        style = MaterialTheme.typography.displayLarge,
     )
 }
 
@@ -153,12 +147,8 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
     Text(
         text = userData.position,
         modifier = modifier,
-        style = TextStyle(
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            fontWeight = FontWeight(400),
-            color = Color(0xFF48454F),
-        ),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
@@ -194,13 +184,8 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = label,
             modifier = Modifier.baselineHeight(24.dp),
-            style = TextStyle(
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight(700),
-                color = Color(0xFF48454F),
-                letterSpacing = 0.15.sp,
-            ),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         val style = if (isLink) {
             MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
@@ -210,12 +195,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = value,
             modifier = Modifier.baselineHeight(24.dp),
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                fontWeight = FontWeight(400),
-                color = Color(0xFF1D1B1F),
-            ),
+            style = style,
         )
     }
 }
