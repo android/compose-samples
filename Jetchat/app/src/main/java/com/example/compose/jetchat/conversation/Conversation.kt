@@ -32,6 +32,7 @@ import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -81,8 +82,8 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
@@ -92,18 +93,15 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.JetchatIcon
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.example.compose.jetchat.theme.MontserratFontFamily
 import kotlinx.coroutines.launch
 
 /**
@@ -197,8 +195,10 @@ fun ConversationContent(
             containerColor = Color.Transparent,
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
+            val topPadding = paddingValues.calculateTopPadding()
             Column(
-                Modifier.fillMaxSize().padding(paddingValues)
+                Modifier.fillMaxSize()
+                    .padding(bottom = paddingValues.calculateBottomPadding())
                     .background(color = background)
                     .border(width = 2.dp, color = borderStroke)
                     .dragAndDropTarget(shouldStartDragAndDrop = { event ->
@@ -214,6 +214,7 @@ fun ConversationContent(
                     navigateToProfile = navigateToProfile,
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
+                    topPadding = topPadding,
                     onVideoClick = { videoUri -> activeVideoUri = videoUri },
                 )
                 UserInput(
@@ -273,10 +274,18 @@ fun ChannelNameBar(
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
     JetchatAppBar(
-        modifier = modifier,
+        modifier = modifier
+            .background(
+                Brush.verticalGradient(
+                    0.0f to Color.White.copy(alpha = 0.70f),
+                    0.8f to Color.White.copy(alpha = 0.40f),
+                    1.0f to Color.Transparent,
+                ),
+            ),
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
         ),
         navigationIcon = {
             JetchatIcon(
@@ -297,13 +306,13 @@ fun ChannelNameBar(
                 Box(
                     modifier = Modifier
                         .size(44.dp)
-                        .background(color = Color.Transparent, shape = CircleShape)
+                        .background(color = Color(0xFF1E40FF), shape = CircleShape)
                         .clickable { functionalityNotAvailablePopupShown = true },
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = Color.White,
                         modifier = Modifier.size(20.dp),
                         contentDescription = stringResource(id = R.string.search),
                     )
@@ -312,13 +321,13 @@ fun ChannelNameBar(
                 Box(
                     modifier = Modifier
                         .size(44.dp)
-                        .background(color = Color.Transparent, shape = CircleShape)
+                        .background(color = Color(0xFF1E40FF), shape = CircleShape)
                         .clickable { functionalityNotAvailablePopupShown = true },
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_info),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = Color.White,
                         modifier = Modifier.size(20.dp),
                         contentDescription = stringResource(id = R.string.info),
                     )
@@ -336,6 +345,7 @@ fun Messages(
     navigateToProfile: (String) -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
+    topPadding: Dp = 0.dp,
     onVideoClick: (String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -345,6 +355,7 @@ fun Messages(
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
+            contentPadding = PaddingValues(top = topPadding + 16.dp, bottom = 8.dp),
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize(),
