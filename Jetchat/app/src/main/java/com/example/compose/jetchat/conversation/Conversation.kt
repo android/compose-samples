@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -82,8 +83,10 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.MeshGradientPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
@@ -99,7 +102,6 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
-import com.example.compose.jetchat.components.JetchatIcon
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.launch
@@ -177,7 +179,10 @@ fun ConversationContent(
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
 
-    MeshBackground(modifier = modifier) {
+    ChatBackground(
+        backgroundType = uiState.backgroundType,
+        modifier = modifier,
+    ) {
         Scaffold(
             topBar = {
                 ChannelNameBar(
@@ -287,8 +292,7 @@ fun ChannelNameBar(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent,
         ),
-        navigationIcon = {
-        },
+        navigationIcon = {},
         actions = {
             Row(
                 modifier = Modifier.padding(end = 16.dp),

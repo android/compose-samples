@@ -60,8 +60,9 @@ class NavActivity : AppCompatActivity() {
                     val drawerState = rememberDrawerState(initialValue = Closed)
                     val drawerOpen by viewModel.drawerShouldBeOpened
                         .collectAsStateWithLifecycle()
+                    val currentChannel by viewModel.currentChannel
+                        .collectAsStateWithLifecycle()
 
-                    var selectedMenu by remember { mutableStateOf("composers") }
                     if (drawerOpen) {
                         // Open drawer and reset state in VM.
                         LaunchedEffect(Unit) {
@@ -78,13 +79,13 @@ class NavActivity : AppCompatActivity() {
 
                     JetchatDrawer(
                         drawerState = drawerState,
-                        selectedMenu = selectedMenu,
-                        onChatClicked = {
+                        selectedMenu = currentChannel,
+                        onChatClicked = { channel ->
+                            viewModel.selectChannel(channel)
                             findNavController().popBackStack(R.id.nav_home, false)
                             scope.launch {
                                 drawerState.close()
                             }
-                            selectedMenu = it
                         },
                         onProfileClicked = {
                             val bundle = bundleOf("userId" to it)
@@ -92,7 +93,6 @@ class NavActivity : AppCompatActivity() {
                             scope.launch {
                                 drawerState.close()
                             }
-                            selectedMenu = it
                         },
                     ) {
                         AndroidViewBinding(ContentMainBinding::inflate)

@@ -20,7 +20,17 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.toMutableStateList
 import com.example.compose.jetchat.R
 
-class ConversationUiState(val channelName: String, val channelMembers: Int, initialMessages: List<Message>) {
+enum class ChatBackgroundType {
+    MESH_BG,
+    ANIMATED_BG,
+}
+
+class ConversationUiState(
+    val channelName: String,
+    val channelMembers: Int,
+    initialMessages: List<Message>,
+    val backgroundType: ChatBackgroundType = ChatBackgroundType.MESH_BG,
+) {
     private val _messages: MutableList<Message> = initialMessages.toMutableStateList()
     val messages: List<Message> = _messages
 

@@ -17,6 +17,7 @@
 package com.example.compose.jetchat.data
 
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.conversation.ChatBackgroundType
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.Message
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_CLOUDS
@@ -88,11 +89,46 @@ val initialMessages = listOf(
 
 val unreadMessages = initialMessages.filter { it.author != "me" }
 
-val exampleUiState = ConversationUiState(
+val composersUiState = ConversationUiState(
     initialMessages = initialMessages,
     channelName = "#composers",
     channelMembers = 42,
+    backgroundType = ChatBackgroundType.MESH_BG,
 )
+
+val droidconMessages = listOf(
+    Message(
+        "Taylor Brooks",
+        "Who is ready for the Droidcon NYC keynote today?",
+        "9:00 AM",
+    ),
+    Message(
+        "me",
+        "Excited to check out the latest Compose MeshGradient and animated graphics! \uD83D\uDE80",
+        "9:05 AM",
+    ),
+    Message(
+        "John Glenn",
+        "Catch you all in Hall A for the Jetpack showcase! \uD83D\uDC4F",
+        "9:12 AM",
+    ),
+)
+
+val droidconNycUiState = ConversationUiState(
+    initialMessages = droidconMessages,
+    channelName = "#droidcon-nyc",
+    channelMembers = 128,
+    backgroundType = ChatBackgroundType.ANIMATED_BG,
+)
+
+val channelUiStates: Map<String, ConversationUiState> = mapOf(
+    "composers" to composersUiState,
+    "droidcon-nyc" to droidconNycUiState,
+)
+
+fun getChannelUiState(channel: String): ConversationUiState = channelUiStates[channel] ?: composersUiState
+
+val exampleUiState = composersUiState
 
 /**
  * Example colleague profile

@@ -28,6 +28,13 @@ class MainViewModel : ViewModel() {
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
 
+    private val _currentChannel = MutableStateFlow("composers")
+    val currentChannel = _currentChannel.asStateFlow()
+
+    fun selectChannel(channel: String) {
+        _currentChannel.value = channel
+    }
+
     fun openDrawer() {
         _drawerShouldBeOpened.value = true
     }

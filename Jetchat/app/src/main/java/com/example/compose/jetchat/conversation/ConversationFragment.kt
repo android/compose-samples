@@ -22,14 +22,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.data.getChannelUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {
@@ -41,9 +43,12 @@ class ConversationFragment : Fragment() {
             layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
             setContent {
+                val currentChannel by activityViewModel.currentChannel.collectAsStateWithLifecycle()
+                val uiState = getChannelUiState(currentChannel)
+
                 JetchatTheme {
                     ConversationContent(
-                        uiState = exampleUiState,
+                        uiState = uiState,
                         navigateToProfile = { user ->
                             // Click callback
                             val bundle = bundleOf("userId" to user)
