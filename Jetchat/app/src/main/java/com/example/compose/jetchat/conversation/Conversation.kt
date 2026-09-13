@@ -29,6 +29,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -81,6 +82,7 @@ import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
@@ -90,13 +92,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.components.JetchatIcon
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.theme.MontserratFontFamily
 import kotlinx.coroutines.launch
 
 /**
@@ -268,43 +275,84 @@ fun ChannelNameBar(
     JetchatAppBar(
         modifier = modifier,
         scrollBehavior = scrollBehavior,
-        onNavIconPressed = onNavIconPressed,
-        title = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Channel name
-                Text(
-                    text = channelName,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                // Number of members
-                Text(
-                    text = stringResource(R.string.members, channelMembers),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+        ),
+        navigationIcon = {
+            JetchatIcon(
+                contentDescription = stringResource(id = R.string.navigation_drawer_open),
+                modifier = Modifier
+                    .size(64.dp)
+                    .clickable(onClick = onNavIconPressed)
+                    .padding(16.dp),
+            )
+            /*Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFFEAE9FC).copy(alpha = 0.6f),
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 4.dp, bottom = 4.dp)
+                    .clickable(onClick = onNavIconPressed),
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "composers",
+                        fontFamily = MontserratFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF1D1B1F),
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.composers_avatars),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(76.dp)
+                            .height(18.dp),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+            }*/
         },
         actions = {
-            // Search icon
-            Icon(
-                painterResource(id = R.drawable.ic_search),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.search),
-            )
-            // Info icon
-            Icon(
-                painterResource(id = R.drawable.ic_info),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.info),
-            )
+            Row(
+                modifier = Modifier.padding(end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Search icon
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .background(color = Color(0xFF1E40FF), shape = CircleShape)
+                        .clickable { functionalityNotAvailablePopupShown = true },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp),
+                        contentDescription = stringResource(id = R.string.search),
+                    )
+                }
+                // Info icon
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .background(color = Color(0xFF1E40FF), shape = CircleShape)
+                        .clickable { functionalityNotAvailablePopupShown = true },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_info),
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp),
+                        contentDescription = stringResource(id = R.string.info),
+                    )
+                }
+            }
         },
     )
 }
@@ -337,12 +385,8 @@ fun Messages(
                 val isFirstMessageByAuthor = prevAuthor != content.author
                 val isLastMessageByAuthor = nextAuthor != content.author
 
-                // Hardcode day dividers for simplicity
-                if (index == messages.size - 1) {
-                    item {
-                        DayHeader("20 Aug")
-                    }
-                } else if (index == 2) {
+                // Hardcode day divider for Today
+                if (index == 1) {
                     item {
                         DayHeader("Today")
                     }
@@ -397,126 +441,132 @@ fun Message(
     isLastMessageByAuthor: Boolean,
     onVideoClick: (String) -> Unit = {},
 ) {
-    val borderColor = if (isUserMe) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.tertiary
-    }
-
-    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
-    Row(modifier = spaceBetweenAuthors) {
-        if (isLastMessageByAuthor) {
-            // Avatar
+    val horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        horizontalArrangement = horizontalArrangement,
+        verticalAlignment = Alignment.Bottom,
+    ) {
+        if (!isUserMe) {
             Image(
+                painter = painterResource(id = R.drawable.android_profile_pic),
+                contentDescription = msg.author,
                 modifier = Modifier
-                    .clickable(onClick = { onAuthorClick(msg.author) })
-                    .padding(horizontal = 16.dp)
-                    .size(42.dp)
-                    .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                    .clip(CircleShape)
-                    .align(Alignment.Top),
-                painter = painterResource(id = msg.authorImage),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
+                    .padding(end = 10.dp, bottom = 4.dp)
+                    .size(width = 44.dp, height = 62.dp)
+                    .clickable { onAuthorClick(msg.author) },
+                contentScale = ContentScale.Fit,
             )
+            Column(modifier = Modifier.weight(1f, fill = false)) {
+                if (isLastMessageByAuthor) {
+                    Surface(
+                        shape = RoundedCornerShape(24.dp),
+                        color = Color(0xFFE4E7FF),
+                        modifier = Modifier
+                            .graphicsLayer {
+                                rotationZ = -12f
+                                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 0.5f)
+                            }
+                            .padding(bottom = 2.dp)
+                            .clickable { onAuthorClick(msg.author) },
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = msg.author,
+                                fontFamily = MontserratFontFamily,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 13.sp,
+                                color = Color(0xFF1E40FF),
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = msg.timestamp,
+                                fontFamily = MontserratFontFamily,
+                                fontSize = 11.sp,
+                                color = Color(0xFF1E40FF).copy(alpha = 0.65f),
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+                Surface(
+                    color = Color(0xFFD5DAFF),
+                    shape = RoundedCornerShape(
+                        topStart = 24.dp,
+                        topEnd = 24.dp,
+                        bottomEnd = 24.dp,
+                        bottomStart = 4.dp,
+                    ),
+                ) {
+                    ChatItemBubble(
+                        message = msg,
+                        isUserMe = false,
+                        authorClicked = onAuthorClick,
+                        onVideoClick = onVideoClick,
+                    )
+                }
+            }
         } else {
-            // Space under avatar
-            Spacer(modifier = Modifier.width(74.dp))
-        }
-        AuthorAndTextMessage(
-            msg = msg,
-            isUserMe = isUserMe,
-            isFirstMessageByAuthor = isFirstMessageByAuthor,
-            isLastMessageByAuthor = isLastMessageByAuthor,
-            authorClicked = onAuthorClick,
-            onVideoClick = onVideoClick,
-            modifier = Modifier
-                .padding(end = 16.dp)
-                .weight(1f),
-        )
-    }
-}
-
-@Composable
-fun AuthorAndTextMessage(
-    msg: Message,
-    isUserMe: Boolean,
-    isFirstMessageByAuthor: Boolean,
-    isLastMessageByAuthor: Boolean,
-    authorClicked: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    onVideoClick: (String) -> Unit = {},
-) {
-    Column(modifier = modifier) {
-        if (isLastMessageByAuthor) {
-            AuthorNameTimestamp(msg)
-        }
-        ChatItemBubble(
-            message = msg,
-            isUserMe = isUserMe,
-            authorClicked = authorClicked,
-            onVideoClick = onVideoClick,
-        )
-        if (isFirstMessageByAuthor) {
-            // Last bubble before next author
-            Spacer(modifier = Modifier.height(8.dp))
-        } else {
-            // Between bubbles
-            Spacer(modifier = Modifier.height(4.dp))
+            Surface(
+                color = Color(0xFF97A5FF),
+                shape = RoundedCornerShape(
+                    topStart = 24.dp,
+                    topEnd = 4.dp,
+                    bottomEnd = 24.dp,
+                    bottomStart = 24.dp,
+                ),
+                modifier = Modifier.weight(1f, fill = false),
+            ) {
+                ChatItemBubble(
+                    message = msg,
+                    isUserMe = true,
+                    authorClicked = onAuthorClick,
+                    onVideoClick = onVideoClick,
+                )
+            }
+            Image(
+                painter = painterResource(id = R.drawable.android_profile_pic),
+                contentDescription = msg.author,
+                modifier = Modifier
+                    .padding(start = 10.dp, bottom = 4.dp)
+                    .size(width = 54.dp, height = 62.dp)
+                    .clickable { onAuthorClick(msg.author) },
+                contentScale = ContentScale.Fit,
+            )
         }
     }
 }
-
-@Composable
-private fun AuthorNameTimestamp(msg: Message) {
-    // Combine author and timestamp for a11y.
-    Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
-        Text(
-            text = msg.author,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .alignBy(LastBaseline)
-                .paddingFrom(LastBaseline, after = 8.dp), // Space to 1st bubble
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = msg.timestamp,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.alignBy(LastBaseline),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
 
 @Composable
 fun DayHeader(dayString: String) {
-    Row(
+    Column(
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .height(16.dp),
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        DayHeaderLine()
         Text(
             text = dayString,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontFamily = MontserratFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 13.sp,
+            color = Color.Black,
         )
-        DayHeaderLine()
+        Spacer(modifier = Modifier.height(4.dp))
+        /*Image(
+            painter = painterResource(id = R.drawable.wavy_divider),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth(0.82f)
+                .height(6.dp),
+            contentScale = ContentScale.FillWidth,
+        )*/
     }
-}
-
-@Composable
-private fun RowScope.DayHeaderLine() {
-    HorizontalDivider(
-        modifier = Modifier
-            .weight(1f)
-            .align(Alignment.CenterVertically),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-    )
 }
 
 @Composable
@@ -531,53 +581,35 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
     Column {
         val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
         if (hasText) {
-            Surface(
-                color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
-            ) {
-                ClickableMessage(
-                    message = message,
-                    isUserMe = isUserMe,
-                    authorClicked = authorClicked,
-                )
-            }
+            ClickableMessage(
+                message = message,
+                isUserMe = isUserMe,
+                authorClicked = authorClicked,
+            )
         }
 
         message.image?.let {
-            if (hasText) {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-            Surface(
-                color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
-            ) {
-                Image(
-                    painter = painterResource(it),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
-                    contentDescription = stringResource(id = R.string.attached_image),
-                )
-            }
+            Image(
+                painter = painterResource(it),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(160.dp)
+                    .padding(8.dp),
+                contentDescription = stringResource(id = R.string.attached_image),
+            )
         }
 
         message.videoUri?.let { videoUri ->
-            if (hasText || message.image != null) {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-            Surface(
-                color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
-            ) {
-                VideoThumbnail(
-                    videoUri = videoUri,
-                    onClick = { onVideoClick(videoUri) },
-                    shape = ChatBubbleShape,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(ChatBubbleShape),
-                )
-            }
+            VideoThumbnail(
+                videoUri = videoUri,
+                onClick = { onVideoClick(videoUri) },
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+            )
         }
     }
 }
@@ -593,7 +625,12 @@ fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String
 
     ClickableText(
         text = styledMessage,
-        style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
+        style = TextStyle(
+            fontFamily = MontserratFontFamily,
+            fontSize = if (isUserMe) 18.sp else 16.sp,
+            color = Color.Black,
+            lineHeight = if (isUserMe) 24.sp else 22.sp,
+        ),
         modifier = Modifier.padding(16.dp),
         onClick = {
             styledMessage

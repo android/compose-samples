@@ -37,6 +37,7 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -85,6 +86,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
@@ -182,8 +184,20 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
-    Surface(tonalElevation = 2.dp, contentColor = MaterialTheme.colorScheme.secondary) {
-        Column(modifier = modifier) {
+    Surface(
+        shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp, bottomStart = 28.dp, bottomEnd = 28.dp),
+        color = Color(0xFFF7F6FE),
+        shadowElevation = 8.dp,
+        modifier = modifier
+            .padding(horizontal = 8.dp, vertical = 6.dp)
+            .shadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp, bottomStart = 28.dp, bottomEnd = 28.dp),
+                ambientColor = Color(0x331E40FF),
+                spotColor = Color(0x551E40FF),
+            ),
+    ) {
+        Column {
             AnimatedVisibility(
                 visible = attachedVideoUri != null,
                 enter = expandVertically() + fadeIn(),
@@ -348,71 +362,81 @@ private fun UserInputSelector(
 ) {
     Row(
         modifier = modifier
-            .height(72.dp)
+            .height(56.dp)
             .wrapContentHeight()
-            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            .padding(start = 12.dp, end = 12.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        InputSelectorButton(
+        val iconTint = Color(0xFF1E40FF)
+        IconButton(
             onClick = { onSelectorChange(InputSelector.EMOJI) },
-            icon = painterResource(id = R.drawable.ic_mood),
-            selected = currentInputSelector == InputSelector.EMOJI,
-            description = stringResource(id = R.string.emoji_selector_bt_desc),
-        )
-        InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.DM) },
-            icon = painterResource(id = R.drawable.ic_alternate_email),
-            selected = currentInputSelector == InputSelector.DM,
-            description = stringResource(id = R.string.dm_desc),
-        )
-        InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.PICTURE) },
-            icon = painterResource(id = R.drawable.ic_insert_photo),
-            selected = currentInputSelector == InputSelector.PICTURE,
-            description = stringResource(id = R.string.attach_photo_desc),
-        )
-        InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.MAP) },
-            icon = painterResource(id = R.drawable.ic_place),
-            selected = currentInputSelector == InputSelector.MAP,
-            description = stringResource(id = R.string.map_selector_desc),
-        )
-        InputSelectorButton(
-            onClick = onVideoClick,
-            icon = painterResource(id = R.drawable.ic_duo),
-            selected = false,
-            description = stringResource(id = R.string.videochat_desc),
-        )
-
-        val border = if (!sendMessageEnabled) {
-            BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_mood),
+                contentDescription = stringResource(id = R.string.emoji_selector_bt_desc),
+                tint = iconTint,
+                modifier = Modifier.size(24.dp),
             )
-        } else {
-            null
         }
+        IconButton(
+            onClick = { onSelectorChange(InputSelector.PICTURE) },
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_insert_photo),
+                contentDescription = stringResource(id = R.string.attach_photo_desc),
+                tint = iconTint,
+                modifier = Modifier.size(24.dp),
+            )
+        }
+        IconButton(
+            onClick = onVideoClick,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_duo),
+                contentDescription = stringResource(id = R.string.videochat_desc),
+                tint = iconTint,
+                modifier = Modifier.size(24.dp),
+            )
+        }
+        IconButton(
+            onClick = { onSelectorChange(InputSelector.DM) },
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_spark),
+                contentDescription = "AI Spark",
+                tint = iconTint,
+                modifier = Modifier.size(24.dp),
+            )
+        }
+        IconButton(
+            onClick = { onSelectorChange(InputSelector.MAP) },
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_add),
+                contentDescription = "Add",
+                tint = iconTint,
+                modifier = Modifier.size(24.dp),
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
-        val disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-
-        val buttonColors = ButtonDefaults.buttonColors(
-            disabledContainerColor = Color.Transparent,
-            disabledContentColor = disabledContentColor,
-        )
-
         // Send button
-        Button(
-            modifier = Modifier.height(36.dp),
-            enabled = sendMessageEnabled,
+        IconButton(
             onClick = onMessageSent,
-            colors = buttonColors,
-            border = border,
-            contentPadding = PaddingValues(0.dp),
+            enabled = sendMessageEnabled,
+            modifier = Modifier.size(44.dp),
         ) {
-            Text(
-                stringResource(id = R.string.send),
-                modifier = Modifier.padding(horizontal = 16.dp),
+            Icon(
+                painter = painterResource(id = R.drawable.ic_send),
+                contentDescription = stringResource(id = R.string.send),
+                tint = if (sendMessageEnabled) iconTint else Color(0xFF8E95B3),
+                modifier = Modifier.size(24.dp),
             )
         }
     }
@@ -480,52 +504,34 @@ private fun UserInputText(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp),
-        horizontalArrangement = Arrangement.End,
+            .height(56.dp)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        AnimatedContent(
-            targetState = isRecordingMessage,
-            label = "text-field",
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-        ) { recording ->
-            Box(Modifier.fillMaxSize()) {
-                if (recording) {
-                    RecordingIndicator { swipeOffset.value }
-                } else {
-                    UserInputTextField(
-                        textFieldValue,
-                        onTextChanged,
-                        onTextFieldFocused,
-                        keyboardType,
-                        focusState,
-                        onMessageSent,
-                        Modifier.fillMaxWidth().semantics {
-                            contentDescription = a11ylabel
-                            keyboardShownProperty = keyboardShown
-                        },
-                    )
-                }
-            }
+        Box(
+            modifier = Modifier.weight(1f),
+        ) {
+            UserInputTextField(
+                textFieldValue,
+                onTextChanged,
+                onTextFieldFocused,
+                keyboardType,
+                focusState,
+                onMessageSent,
+                Modifier
+                    .fillMaxWidth()
+                    .semantics {
+                        contentDescription = a11ylabel
+                        keyboardShownProperty = keyboardShown
+                    },
+            )
         }
-        RecordButton(
-            recording = isRecordingMessage,
-            swipeOffset = { swipeOffset.value },
-            onSwipeOffsetChange = { offset -> swipeOffset.value = offset },
-            onStartRecording = {
-                val consumed = !isRecordingMessage
-                isRecordingMessage = true
-                consumed
-            },
-            onFinishRecording = {
-                // handle end of recording
-                isRecordingMessage = false
-            },
-            onCancelRecording = {
-                isRecordingMessage = false
-            },
-            modifier = Modifier.fillMaxHeight(),
+        Image(
+            painter = painterResource(id = R.drawable.ic_jetchat),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(end = 4.dp)
+                .size(32.dp),
         )
     }
 }
@@ -545,7 +551,7 @@ private fun BoxScope.UserInputTextField(
         value = textFieldValue,
         onValueChange = { onTextChanged(it) },
         modifier = modifier
-            .padding(start = 32.dp)
+            .padding(start = 16.dp)
             .align(Alignment.CenterStart)
             .onFocusChanged { state ->
                 if (lastFocusState != state.isFocused) {
@@ -561,19 +567,23 @@ private fun BoxScope.UserInputTextField(
             if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
         },
         maxLines = 1,
-        cursorBrush = SolidColor(LocalContentColor.current),
-        textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current),
+        cursorBrush = SolidColor(Color(0xFF001D35)),
+        textStyle = LocalTextStyle.current.copy(
+            color = Color(0xFF001D35),
+            fontSize = 18.sp,
+        ),
     )
 
-    val disableContentColor =
-        MaterialTheme.colorScheme.onSurfaceVariant
     if (textFieldValue.text.isEmpty() && !focusState) {
         Text(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(start = 32.dp),
-            text = stringResource(R.string.textfield_hint),
-            style = MaterialTheme.typography.bodyLarge.copy(color = disableContentColor),
+                .padding(start = 16.dp),
+            text = "Send a message",
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = Color(0xFF49454F),
+                fontSize = 18.sp,
+            ),
         )
     }
 }
