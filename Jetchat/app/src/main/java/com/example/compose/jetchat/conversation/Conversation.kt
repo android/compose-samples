@@ -20,15 +20,26 @@ package com.example.compose.jetchat.conversation
 
 import android.content.ClipDescription
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +57,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -69,8 +81,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -86,24 +100,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.MeshGradientPainter
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.theme.MontserratFontFamily
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -292,7 +314,8 @@ fun ChannelNameBar(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent,
         ),
-        navigationIcon = {},
+        navigationIcon = {
+        },
         actions = {
             Row(
                 modifier = Modifier.padding(end = 16.dp),
@@ -547,7 +570,25 @@ private fun RowScope.DayHeaderLine() {
 }
 
 @Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
+fun ChatItemBubble(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    onVideoClick: (String) -> Unit = {},
+) {
+    var isLiked by rememberSaveable(
+        message.timestamp,
+        message.author,
+        message.content,
+    ) {
+        mutableStateOf(false)
+    }
+
+    var likeAnimationTrigger by remember { mutableIntStateOf(0) }
+    val haptic = LocalHapticFeedback.current
+
+    val heartMeshPainter = rememberHeartReactionMeshGradientPainter()
 
     val backgroundBubbleColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
@@ -555,18 +596,56 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
         MaterialTheme.colorScheme.surfaceVariant
     }
 
-    Column {
+    val bubbleShape = if (isLiked) {
+        RoundedCornerShape(topStart = 4.dp, topEnd = 24.dp, bottomEnd = 24.dp, bottomStart = 24.dp)
+    } else {
+        ChatBubbleShape
+    }
+
+    val bubbleBorder = if (isLiked) {
+        BorderStroke(1.dp, Color.Black)
+    } else {
+        null
+    }
+
+    val toggleLiked = {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        val nextLiked = !isLiked
+        isLiked = nextLiked
+        if (nextLiked) {
+            likeAnimationTrigger++
+        }
+    }
+
+    Column(modifier = modifier) {
         val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
         if (hasText) {
             Surface(
-                color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
+                shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
-                ClickableMessage(
-                    message = message,
-                    isUserMe = isUserMe,
-                    authorClicked = authorClicked,
-                )
+                Box(
+                    modifier = if (isLiked) {
+                        Modifier
+                            .background(Color.White)
+                            .paint(heartMeshPainter)
+                    } else {
+                        Modifier
+                    },
+                ) {
+                    ClickableMessage(
+                        message = message,
+                        isUserMe = isUserMe,
+                        authorClicked = authorClicked,
+                        isLiked = isLiked,
+                        likeAnimationTrigger = likeAnimationTrigger,
+                        onDoubleClick = toggleLiked,
+                    )
+                }
             }
         }
 
@@ -575,15 +654,31 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Surface(
-                color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
+                shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
-                Image(
-                    painter = painterResource(it),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
-                    contentDescription = stringResource(id = R.string.attached_image),
-                )
+                Box(
+                    modifier = if (isLiked) {
+                        Modifier
+                            .background(Color.White)
+                            .paint(heartMeshPainter)
+                    } else {
+                        Modifier
+                    },
+                ) {
+                    Image(
+                        painter = painterResource(it),
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .padding(if (isLiked) 8.dp else 0.dp)
+                            .size(160.dp),
+                        contentDescription = stringResource(id = R.string.attached_image),
+                    )
+                }
             }
         }
 
@@ -592,49 +687,186 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Surface(
-                color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
+                shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
                 VideoThumbnail(
                     videoUri = videoUri,
                     onClick = { onVideoClick(videoUri) },
-                    shape = ChatBubbleShape,
+                    shape = bubbleShape,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .clip(ChatBubbleShape),
+                        .clip(bubbleShape),
                 )
+            }
+        }
+
+        // Liked reaction badge attached to bubble corner
+        this@Column.AnimatedVisibility(
+            visible = isLiked,
+            enter = scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) + fadeIn(),
+            exit = scaleOut() + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.End)
+                .offset(y = (-8).dp)
+                .padding(end = 4.dp),
+        ) {
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                border = BorderStroke(1.dp, Color(0xFF000000).copy(alpha = 0.15f)),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("❤️", fontSize = 12.sp)
+                }
             }
         }
     }
 }
 
 @Composable
-fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
+fun ClickableMessage(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit,
+    isLiked: Boolean = false,
+    likeAnimationTrigger: Int = 0,
+    onDoubleClick: () -> Unit = {},
+) {
     val uriHandler = LocalUriHandler.current
 
     val styledMessage = messageFormatter(
         text = message.content,
-        primary = isUserMe,
+        primary = isUserMe && !isLiked,
     )
 
-    ClickableText(
-        text = styledMessage,
-        style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
-        modifier = Modifier.padding(16.dp),
-        onClick = {
-            styledMessage
-                .getStringAnnotations(start = it, end = it)
-                .firstOrNull()
-                ?.let { annotation ->
-                    when (annotation.tag) {
-                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
-                        else -> Unit
-                    }
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    // Text bounce animation when message is liked
+    val textScale = remember { Animatable(1f) }
+
+    // Floating heart burst animation directly over the text
+    val heartScale = remember { Animatable(0f) }
+    val heartAlpha = remember { Animatable(0f) }
+    val heartOffsetY = remember { Animatable(0f) }
+
+    LaunchedEffect(likeAnimationTrigger) {
+        if (likeAnimationTrigger > 0 && isLiked) {
+            // Animate bouncy text pulse
+            launch {
+                textScale.animateTo(
+                    targetValue = 1.12f,
+                    animationSpec = tween(durationMillis = 120, easing = FastOutSlowInEasing),
+                )
+                textScale.animateTo(
+                    targetValue = 1f,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMedium,
+                    ),
+                )
+            }
+
+            // Animate floating heart burst
+            launch {
+                heartScale.snapTo(0.2f)
+                heartAlpha.snapTo(1f)
+                heartOffsetY.snapTo(0f)
+
+                launch {
+                    heartScale.animateTo(
+                        targetValue = 1.4f,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessMedium,
+                        ),
+                    )
+                    heartScale.animateTo(
+                        targetValue = 1.0f,
+                        animationSpec = tween(durationMillis = 200),
+                    )
                 }
-        },
-    )
+                launch {
+                    heartOffsetY.animateTo(
+                        targetValue = -45f,
+                        animationSpec = tween(durationMillis = 650, easing = FastOutSlowInEasing),
+                    )
+                }
+                launch {
+                    delay(350)
+                    heartAlpha.animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = 300),
+                    )
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(likeAnimationTrigger) {
+        if (likeAnimationTrigger > 0 && isLiked) {
+            // Animate bouncy text pulse
+            launch {
+                textScale.animateTo(
+                    targetValue = 1.12f,
+                    animationSpec = tween(durationMillis = 120, easing = FastOutSlowInEasing),
+                )
+                textScale.animateTo(
+                    targetValue = 1f,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMedium,
+                    ),
+                )
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier.padding(16.dp),
+    ) {
+        Text(
+            text = styledMessage,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = if (isLiked) Color.Black else LocalContentColor.current,
+            ),
+            modifier = Modifier
+                .graphicsLayer {
+                    scaleX = textScale.value
+                    scaleY = textScale.value
+                }
+                .pointerInput(styledMessage) {
+                    detectTapGestures(
+                        onDoubleTap = { onDoubleClick() },
+                        onTap = { offset ->
+                            layoutResult?.let { layout ->
+                                val position = layout.getOffsetForPosition(offset)
+                                styledMessage
+                                    .getStringAnnotations(start = position, end = position)
+                                    .firstOrNull()
+                                    ?.let { annotation ->
+                                        when (annotation.tag) {
+                                            SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
+                                            SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
+                                            else -> Unit
+                                        }
+                                    }
+                            }
+                        },
+                    )
+                },
+            onTextLayout = { layoutResult = it },
+        )
+    }
 }
 
 @Preview

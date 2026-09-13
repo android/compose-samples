@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.animation.core.LinearEasing
@@ -57,6 +73,39 @@ fun rememberMeshBackgroundGradientPainter(): MeshGradientPainter {
             setVertex(3, 1, Offset(0.3300f, 1.0000f), Color(0xFF1AB2A6))
             setVertex(3, 2, Offset(0.6700f, 1.0000f), Color(0xFF43B55F))
             setVertex(3, 3, Offset(1.0000f, 1.0000f), Color(0xFF43B55F))
+        }
+    }
+}
+
+/**
+ * Heart reaction mesh gradient for chat speech bubbles (Figma node 268:29966).
+ * Vibrant coral, blush, hot pink, and lavender tones.
+ */
+@Composable
+fun rememberHeartReactionMeshGradientPainter(): MeshGradientPainter {
+    return remember {
+        MeshGradientPainter(
+            rows = 2,
+            columns = 3,
+            hasBicubicColor = true,
+        ) {
+            // Row 0 (top edge, y = 0.0f)
+            setVertex(0, 0, Offset(0.0000f, 0.0000f), Color(0xFFFF6B6B))
+            setVertex(0, 1, Offset(0.3300f, 0.0000f), Color(0xFFFFD6D6))
+            setVertex(0, 2, Offset(0.6700f, 0.0000f), Color(0xFFE8C3FF))
+            setVertex(0, 3, Offset(1.0000f, 0.0000f), Color(0xFFE396FF))
+
+            // Row 1 (mid, y ~ 0.33f - 0.50f)
+            setVertex(1, 0, Offset(0.0000f, 0.3300f), Color(0xFFFFAAEA))
+            setVertex(1, 1, Offset(0.3300f, 0.3300f), Color(0xFFFF6060))
+            setVertex(1, 2, Offset(0.6700f, 0.3300f), Color(0xFFFFBCBC))
+            setVertex(1, 3, Offset(1.0000f, 0.5000f), Color(0xFFFF2088))
+
+            // Row 2 (bottom edge, y = 1.0f)
+            setVertex(2, 0, Offset(0.0000f, 1.0000f), Color(0xFFFFFFFF))
+            setVertex(2, 1, Offset(0.3300f, 1.0000f), Color(0xFFD0BEF9))
+            setVertex(2, 2, Offset(0.6637f, 1.0000f), Color(0xFFFFA298))
+            setVertex(2, 3, Offset(1.0000f, 1.0000f), Color(0xFFFF9BEB))
         }
     }
 }
@@ -150,6 +199,18 @@ fun ChatBackground(backgroundType: ChatBackgroundType, modifier: Modifier = Modi
     ) {
         content()
     }
+}
+
+/**
+ * Backwards-compatible fullscreen container using the default mesh background.
+ */
+@Composable
+fun MeshBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    ChatBackground(
+        backgroundType = ChatBackgroundType.MESH_BG,
+        modifier = modifier,
+        content = content,
+    )
 }
 
 @Preview(showBackground = true)
