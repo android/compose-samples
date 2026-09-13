@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.profile
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -138,7 +139,8 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     Text(
         text = userData.name,
         modifier = modifier,
-        style = MaterialTheme.typography.displayLarge,
+        style = MaterialTheme.typography.headlineLarge,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -184,7 +186,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = label,
             modifier = Modifier.baselineHeight(24.dp),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         val style = if (isLink) {

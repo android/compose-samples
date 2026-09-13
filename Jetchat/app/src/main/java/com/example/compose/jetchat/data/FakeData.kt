@@ -99,7 +99,7 @@ val exampleUiState = ConversationUiState(
  */
 val colleagueProfile = ProfileScreenState(
     userId = "12345",
-    photo = R.drawable.someone_else,
+    photo = R.drawable.android_profile_pic,
     name = "Taylor Brooks",
     status = "Away",
     displayName = "taylor",
@@ -114,12 +114,12 @@ val colleagueProfile = ProfileScreenState(
  */
 val meProfile = ProfileScreenState(
     userId = "me",
-    photo = R.drawable.img,
-    name = "Taylor Brooks",
+    photo = R.drawable.android_profile_pic,
+    name = "Ali Conors",
     status = "Online",
-    displayName = "taylor",
-    position = "Senior Android Dev at Openlane",
-    twitter = "twitter.com/taylor",
+    displayName = "aliconors",
+    position = "Senior Android Dev at Yearin\nGoogle Developer Expert",
+    twitter = "twitter.com/aliconors",
     timeZone = "In your timezone",
     commonChannels = null,
 )
