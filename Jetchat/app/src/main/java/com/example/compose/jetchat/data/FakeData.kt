@@ -28,24 +28,61 @@ import com.example.compose.jetchat.profile.ProfileScreenState
 
 val initialMessages = listOf(
     Message(
+        "me",
+        "Check it out!",
+        "8:07 PM",
+    ),
+    Message(
         "Taylor Brooks",
-        "Recently, I've been delving into the JetNews showcase! 🚀",
-        "4:15 PM",
+        "Here's a demo of the new blur regions feature in action! 🎥",
+        "8:06 PM",
+        videoUri = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
     ),
     Message(
         "me",
-        "I've primarily been checking out the JetNews example! 👍",
-        "4:00 PM",
+        "Thank you!$EMOJI_PINK_HEART",
+        "8:06 PM",
+        R.drawable.sticker,
     ),
     Message(
-        "Ali Conors",
-        "Yeah i’ve been mainly referring to the JetNews sample 👍",
-        "3:50 PM",
+        "Taylor Brooks",
+        "You can use all the same stuff",
+        "8:05 PM",
     ),
     Message(
-        "Ali Conors",
-        "How was the progressive blur done? What version of Compose?",
-        "3:45 PM",
+        "Taylor Brooks",
+        "@aliconors Take a look at the `Flow.collectAsStateWithLifecycle()` APIs",
+        "8:05 PM",
+    ),
+    Message(
+        "John Glenn",
+        "Compose newbie as well $EMOJI_FLAMINGO, have you looked at the JetNews sample? " +
+            "Most blog posts end up out of date pretty fast but this sample is always up to " +
+            "date and deals with async data loading (it's faked but the same idea " +
+            "applies) $EMOJI_POINTS https://goo.gle/jetnews",
+        "8:04 PM",
+    ),
+    Message(
+        "me",
+        "Compose newbie: I’ve scourged the internet for tutorials about async data " +
+            "loading but haven’t found any good ones $EMOJI_MELTING $EMOJI_CLOUDS. " +
+            "What’s the recommended way to load async data and emit composable widgets?",
+        "8:03 PM",
+    ),
+    Message(
+        "Shangeeth Sivan",
+        "Does anyone know about Glance Widgets its the new way to build widgets in Android!",
+        "8:08 PM",
+    ),
+    Message(
+        "Taylor Brooks",
+        "Wow! I never knew about Glance Widgets when was this added to the android ecosystem",
+        "8:10 PM",
+    ),
+    Message(
+        "John Glenn",
+        "Yeah its seems to be pretty new!",
+        "8:12 PM",
     ),
 )
 

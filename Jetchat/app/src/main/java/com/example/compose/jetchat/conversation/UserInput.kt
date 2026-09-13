@@ -112,6 +112,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.components.JetchatIcon
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -412,17 +413,6 @@ private fun UserInputSelector(
                 modifier = Modifier.size(24.dp),
             )
         }
-        IconButton(
-            onClick = { onSelectorChange(InputSelector.MAP) },
-            modifier = Modifier.size(40.dp),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = "Add",
-                tint = iconTint,
-                modifier = Modifier.size(24.dp),
-            )
-        }
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -526,12 +516,11 @@ private fun UserInputText(
                     },
             )
         }
-        Image(
-            painter = painterResource(id = R.drawable.ic_jetchat),
-            contentDescription = null,
+        JetchatIcon(
+            contentDescription = stringResource(id = R.string.navigation_drawer_open),
             modifier = Modifier
-                .padding(end = 4.dp)
-                .size(32.dp),
+                .size(64.dp)
+                .padding(16.dp),
         )
     }
 }
