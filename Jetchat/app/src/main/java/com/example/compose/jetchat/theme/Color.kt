@@ -58,3 +58,7 @@ val BlueGrey50 = Color(0xFF767680)
 val BlueGrey60 = Color(0xFF90909A)
 val BlueGrey80 = Color(0xFFC6C5D0)
 val BlueGrey90 = Color(0xFFE2E1EC)
+
+val ProfileSurface = Color(0xFFEAE9FC)
+val ProfileOnSurface = Color(0xFF1D1B1F)
+val ProfileOnSurfaceVariant = Color(0xFF48454F)
