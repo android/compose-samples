@@ -140,7 +140,7 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
         text = userData.name,
         modifier = modifier,
         style = MaterialTheme.typography.headlineLarge,
-        color = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface,
     )
 }
 
