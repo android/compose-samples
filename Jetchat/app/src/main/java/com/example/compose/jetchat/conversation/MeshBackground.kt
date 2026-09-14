@@ -39,12 +39,64 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 /**
+ * Calculates a 2D wave displacement vector for a vertex at ([baseX], [baseY]).
+ * Produces a traveling Gerstner-like orbital wave flowing diagonally across the mesh,
+ * combined with a gentle harmonic cross-wave for a natural fluid surface feel.
+ */
+private fun calculateWaveDisplacement(baseX: Float, baseY: Float, phase1: Float, phase2: Float, scale: Float = 1f): Offset {
+    // Primary diagonal wave (rolling from top-left to bottom-right)
+    val wave1 = phase1 - (baseX * 2.0f + baseY * 2.4f)
+    // Secondary cross-undulation to prevent mechanical repetition
+    val wave2 = phase2 - (baseX * 1.4f - baseY * 1.8f)
+
+    val dx = (0.065f * sin(wave1) + 0.025f * cos(wave2)) * scale
+    val dy = (0.070f * cos(wave1) + 0.025f * sin(wave2)) * scale
+
+    return Offset(dx, dy)
+}
+
+/**
  * 4x4 Mesh Gradient for #composers (Figma "mesh bg").
- * Vibrant lime, teal, and forest green tones.
+ * Vibrant lime, teal, and forest green tones with a subtle undulating wave effect.
  */
 @Composable
 fun rememberMeshBackgroundGradientPainter(): MeshGradientPainter {
-    return remember {
+    val transition = rememberInfiniteTransition(label = "composersMeshWave")
+    val phase1 by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * PI).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "wavePhase1",
+    )
+    val phase2 by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * PI).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4500, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "wavePhase2",
+    )
+
+    // Interior wave displacements
+    val d11 = calculateWaveDisplacement(0.3154f, 0.2157f, phase1, phase2, scale = 1.15f)
+    val d12 = calculateWaveDisplacement(0.6773f, 0.4324f, phase1, phase2, scale = 1.10f)
+    val d21 = calculateWaveDisplacement(0.2936f, 0.6260f, phase1, phase2, scale = 1.15f)
+    val d22 = calculateWaveDisplacement(0.6603f, 0.8200f, phase1, phase2, scale = 0.90f)
+
+    // Edge wave displacements (constrained to slide along outer boundaries)
+    val d02 = calculateWaveDisplacement(0.6700f, 0.0000f, phase1, phase2, scale = 0.85f)
+    val d10 = calculateWaveDisplacement(0.0000f, 0.3300f, phase1, phase2, scale = 0.85f)
+    val d20 = calculateWaveDisplacement(0.0000f, 0.6700f, phase1, phase2, scale = 0.85f)
+    val d13 = calculateWaveDisplacement(1.0000f, 0.2919f, phase1, phase2, scale = 0.75f)
+    val d23 = calculateWaveDisplacement(1.0000f, 0.6736f, phase1, phase2, scale = 0.75f)
+    val d31 = calculateWaveDisplacement(0.3300f, 1.0000f, phase1, phase2, scale = 0.70f)
+    val d32 = calculateWaveDisplacement(0.6700f, 1.0000f, phase1, phase2, scale = 0.70f)
+
+    return remember(phase1, phase2) {
         MeshGradientPainter(
             rows = 3,
             columns = 3,
@@ -53,25 +105,25 @@ fun rememberMeshBackgroundGradientPainter(): MeshGradientPainter {
             // Row 0 (top edge, y = 0.0f)
             setVertex(0, 0, Offset(0.0000f, 0.0000f), Color(0xFFF0FCB0))
             setVertex(0, 1, Offset(0.3300f, 0.0000f), Color(0xFFF0FCB0))
-            setVertex(0, 2, Offset(0.6700f, 0.0000f), Color(0xFFDCFA51))
+            setVertex(0, 2, Offset(0.6700f + d02.x, 0.0000f), Color(0xFFDCFA51))
             setVertex(0, 3, Offset(1.0000f, 0.0000f), Color(0xFFF0FCB0))
 
             // Row 1 (upper-mid, y ~ 0.21f - 0.43f)
-            setVertex(1, 0, Offset(0.0000f, 0.3300f), Color(0xFFDCFA51))
-            setVertex(1, 1, Offset(0.3154f, 0.2157f), Color(0xFF63CEAD))
-            setVertex(1, 2, Offset(0.6773f, 0.4324f), Color(0xFF80B259))
-            setVertex(1, 3, Offset(1.0534f, 0.2919f), Color(0xFF80B259))
+            setVertex(1, 0, Offset(0.0000f, 0.3300f + d10.y), Color(0xFFDCFA51))
+            setVertex(1, 1, Offset(0.3154f + d11.x, 0.2157f + d11.y), Color(0xFF63CEAD))
+            setVertex(1, 2, Offset(0.6773f + d12.x, 0.4324f + d12.y), Color(0xFF80B259))
+            setVertex(1, 3, Offset(1.0534f, 0.2919f + d13.y), Color(0xFF80B259))
 
             // Row 2 (lower-mid, y ~ 0.62f - 0.87f)
-            setVertex(2, 0, Offset(0.0000f, 0.6700f), Color(0xFF63CEAD))
-            setVertex(2, 1, Offset(0.2936f, 0.6260f), Color(0xFF63CEAD))
-            setVertex(2, 2, Offset(0.6603f, 0.8748f), Color(0xFF43B55F))
-            setVertex(2, 3, Offset(1.1238f, 0.6736f), Color(0xFF43B55F))
+            setVertex(2, 0, Offset(0.0000f, 0.6700f + d20.y), Color(0xFF63CEAD))
+            setVertex(2, 1, Offset(0.2936f + d21.x, 0.6260f + d21.y), Color(0xFF63CEAD))
+            setVertex(2, 2, Offset(0.6603f + d22.x, 0.8200f + d22.y), Color(0xFF43B55F))
+            setVertex(2, 3, Offset(1.1238f, 0.6736f + d23.y), Color(0xFF43B55F))
 
             // Row 3 (bottom edge, y = 1.0f)
             setVertex(3, 0, Offset(0.0000f, 1.0000f), Color(0xFF05D6A1))
-            setVertex(3, 1, Offset(0.3300f, 1.0000f), Color(0xFF1AB2A6))
-            setVertex(3, 2, Offset(0.6700f, 1.0000f), Color(0xFF43B55F))
+            setVertex(3, 1, Offset(0.3300f + d31.x, 1.0000f), Color(0xFF1AB2A6))
+            setVertex(3, 2, Offset(0.6700f + d32.x, 1.0000f), Color(0xFF43B55F))
             setVertex(3, 3, Offset(1.0000f, 1.0000f), Color(0xFF43B55F))
         }
     }
@@ -121,7 +173,7 @@ fun rememberAnimatedMeshGradientPainter(): MeshGradientPainter {
         initialValue = 0f,
         targetValue = (2 * PI).toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 8000, easing = LinearEasing),
+            animation = tween(durationMillis = 3200, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
         label = "phase1",
@@ -130,7 +182,7 @@ fun rememberAnimatedMeshGradientPainter(): MeshGradientPainter {
         initialValue = 0f,
         targetValue = (2 * PI).toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 11000, easing = LinearEasing),
+            animation = tween(durationMillis = 6200, easing = LinearEasing),
             repeatMode = RepeatMode.Restart,
         ),
         label = "phase2",
