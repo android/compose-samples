@@ -120,24 +120,16 @@ class MockEpisodePlayer(private val mainDispatcher: CoroutineDispatcher) : Episo
             pause()
         }
 
-        // Keep the currently playing episode in the queue
+        // Everything that is not re-queued keeps its place behind the new episodes
+        val previousList = queue.value.filterNot { it in playerEpisodes }
+
+        // Keep the currently playing episode in the queue, unless the new list already
+        // contains it, otherwise it would show up twice
         val playingEpisode = _currentEpisode.value
-        var previousList: List<PlayerEpisode> = emptyList()
-        queue.update { queue ->
-            playerEpisodes.map { episode ->
-                if (queue.contains(episode)) {
-                    val mutableList = queue.toMutableList()
-                    mutableList.remove(episode)
-                    previousList = mutableList
-                } else {
-                    previousList = queue
-                }
-            }
-            if (playingEpisode != null) {
-                playerEpisodes + listOf(playingEpisode) + previousList
-            } else {
-                playerEpisodes + previousList
-            }
+        queue.value = if (playingEpisode != null && playingEpisode !in playerEpisodes) {
+            playerEpisodes + listOf(playingEpisode) + previousList
+        } else {
+            playerEpisodes + previousList
         }
 
         next()
