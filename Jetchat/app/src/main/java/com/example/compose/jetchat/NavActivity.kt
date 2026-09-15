@@ -16,6 +16,9 @@
 
 package com.example.compose.jetchat
 
+import android.content.pm.ActivityInfo
+import android.graphics.RuntimeColorFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -45,6 +48,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asComposeColorFilter
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -59,6 +63,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.compose.jetchat.components.JetchatDrawer
 import com.example.compose.jetchat.conversation.ImageFilters
+import com.example.compose.jetchat.conversation.ImageFilters.CYBERPUNK_SHADER
 import com.example.compose.jetchat.databinding.ContentMainBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -72,6 +77,11 @@ class NavActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            window.colorMode = ActivityInfo.COLOR_MODE_HDR
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            window.colorMode = ActivityInfo.COLOR_MODE_WIDE_COLOR_GAMUT
+        }
         super.onCreate(savedInstanceState)
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets -> insets }
 
@@ -85,8 +95,8 @@ class NavActivity : AppCompatActivity() {
                     val isCyberpunkMode by viewModel.isCyberpunkMode
                         .collectAsStateWithLifecycle()
 
-                    val clayRenderEffect = remember {
-                        ImageFilters.createClayRenderEffect()
+                    val cyberpunkColorFilter = remember {
+                        ImageFilters.createCyberpunkColorFilter()
                     }
 
                     val haptic = LocalHapticFeedback.current
@@ -126,7 +136,11 @@ class NavActivity : AppCompatActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .graphicsLayer {
-                                renderEffect = if (isCyberpunkMode) clayRenderEffect else null
+                                colorFilter = if (isCyberpunkMode)  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                                    RuntimeColorFilter(CYBERPUNK_SHADER).asComposeColorFilter()
+                                } else {
+                                    null
+                                } else null
                             },
                     ) {
                         JetchatDrawer(
@@ -170,7 +184,7 @@ class NavActivity : AppCompatActivity() {
                             ) {
                                 Text(
                                     text = if (isCyberpunkMode) {
-                                        "🎨 Clay Mode Enabled (AGSL RenderEffect)"
+                                        "🤖 Cyberpunk Mode Enabled (RuntimeColorFilter)"
                                     } else {
                                         "Standard Mode Enabled"
                                     },

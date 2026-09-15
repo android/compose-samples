@@ -62,7 +62,13 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.widget.WidgetReceiver
 
 @Composable
-fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit, selectedMenu: String = "composers") {
+fun JetchatDrawerContent(
+    onProfileClicked: (String) -> Unit,
+    onChatClicked: (String) -> Unit,
+    selectedMenu: String = "composers",
+    isCyberpunkMode: Boolean = false,
+    onToggleCyberpunkMode: () -> Unit = {},
+) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
     Column {
@@ -90,11 +96,51 @@ fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (Str
         ) {
             onProfileClicked(colleagueProfile.userId)
         }
+        DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+        DrawerItemHeader("Settings")
+        CyberpunkModeItem(
+            isCyberpunkMode = isCyberpunkMode,
+            onToggleCyberpunkMode = onToggleCyberpunkMode,
+        )
         if (widgetAddingIsSupported(LocalContext.current)) {
-            DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-            DrawerItemHeader("Settings")
             WidgetDiscoverability()
         }
+    }
+}
+
+@Composable
+private fun CyberpunkModeItem(
+    isCyberpunkMode: Boolean,
+    onToggleCyberpunkMode: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .clip(CircleShape)
+            .clickable(onClick = onToggleCyberpunkMode),
+        verticalAlignment = CenterVertically,
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_jetchat),
+            tint = if (isCyberpunkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
+            contentDescription = null,
+        )
+        Text(
+            text = "Cyberpunk Mode",
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (isCyberpunkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 12.dp),
+        )
+        androidx.compose.material3.Switch(
+            checked = isCyberpunkMode,
+            onCheckedChange = { onToggleCyberpunkMode() },
+            modifier = Modifier.padding(end = 16.dp),
+        )
     }
 }
 
