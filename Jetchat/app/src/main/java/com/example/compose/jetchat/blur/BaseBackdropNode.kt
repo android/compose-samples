@@ -82,6 +82,9 @@ abstract class BaseBackdropNode(
         isDirty = true
     }
 
+    // Suppress NewApi: Android Lint does not yet recognize Build.VERSION.SDK_INT_FULL
+    // checks as satisfying minor SDK 37.2 requirements.
+    @SuppressLint("NewApi")
     override fun ContentDrawScope.draw() {
         val effect = resolveRenderEffect(this)
         if (Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.CINNAMON_BUN && effect != null) {
