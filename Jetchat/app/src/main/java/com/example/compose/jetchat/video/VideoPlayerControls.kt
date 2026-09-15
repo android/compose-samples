@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetchat.conversation
+package com.example.compose.jetchat.video
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
@@ -58,6 +58,8 @@ import androidx.media3.ui.compose.state.MuteButtonState
 import androidx.media3.ui.compose.state.PlayPauseButtonState
 import androidx.media3.ui.compose.state.ProgressStateWithTickInterval
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.conversation.BlurRegionSpec
+import com.example.compose.jetchat.conversation.registerBlurRegion
 import java.util.Locale
 
 /**

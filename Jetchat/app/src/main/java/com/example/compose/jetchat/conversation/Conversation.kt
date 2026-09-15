@@ -31,6 +31,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -80,6 +81,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -91,12 +93,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.blur.BlurRadiusSpec
+import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.video.FullScreenVideoPlayer
+import com.example.compose.jetchat.video.VideoThumbnail
 import kotlinx.coroutines.launch
 
 /**
@@ -190,7 +197,8 @@ fun ConversationContent(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             Column(
-                Modifier.fillMaxSize().padding(paddingValues)
+                Modifier.fillMaxSize()
+                    .padding(bottom = paddingValues.calculateBottomPadding())
                     .background(color = background)
                     .border(width = 2.dp, color = borderStroke)
                     .dragAndDropTarget(shouldStartDragAndDrop = { event ->
@@ -206,6 +214,7 @@ fun ConversationContent(
                     navigateToProfile = navigateToProfile,
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
+                    contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
                     onVideoClick = { videoUri -> activeVideoUri = videoUri },
                 )
                 UserInput(
@@ -265,7 +274,12 @@ fun ChannelNameBar(
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
     JetchatAppBar(
-        modifier = modifier,
+        modifier = modifier
+            .backdropBlur(
+                tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                elevation = 0.dp,
+                radius = 12.dp,
+            ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
         title = {
@@ -316,6 +330,7 @@ fun Messages(
     navigateToProfile: (String) -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     onVideoClick: (String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -325,6 +340,7 @@ fun Messages(
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
+            contentPadding = contentPadding,
             modifier = Modifier
                 .testTag(ConversationTestTag)
                 .fillMaxSize(),
@@ -338,16 +354,16 @@ fun Messages(
 
                 // Hardcode day dividers for simplicity
                 if (index == messages.size - 1) {
-                    item {
+                    item(key = "header_20_aug", contentType = "header") {
                         DayHeader("20 Aug")
                     }
                 } else if (index == 2) {
-                    item {
+                    item(key = "header_today", contentType = "header") {
                         DayHeader("Today")
                     }
                 }
 
-                item {
+                item(key = content.id, contentType = "message") {
                     Message(
                         onAuthorClick = { name -> navigateToProfile(name) },
                         msg = content,
