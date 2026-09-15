@@ -30,6 +30,7 @@ import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.effects.HdrSparkleTouchContainer
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {
@@ -42,20 +43,22 @@ class ConversationFragment : Fragment() {
 
             setContent {
                 JetchatTheme {
-                    ConversationContent(
-                        uiState = exampleUiState,
-                        navigateToProfile = { user ->
-                            // Click callback
-                            val bundle = bundleOf("userId" to user)
-                            findNavController().navigate(
-                                R.id.nav_profile,
-                                bundle,
-                            )
-                        },
-                        onNavIconPressed = {
-                            activityViewModel.openDrawer()
-                        },
-                    )
+                    HdrSparkleTouchContainer {
+                        ConversationContent(
+                            uiState = exampleUiState,
+                            navigateToProfile = { user ->
+                                // Click callback
+                                val bundle = bundleOf("userId" to user)
+                                findNavController().navigate(
+                                    R.id.nav_profile,
+                                    bundle,
+                                )
+                            },
+                            onNavIconPressed = {
+                                activityViewModel.openDrawer()
+                            },
+                        )
+                    }
                 }
             }
         }

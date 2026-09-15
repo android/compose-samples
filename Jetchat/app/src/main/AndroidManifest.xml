@@ -29,6 +29,7 @@
 
         <activity
             android:name=".NavActivity"
+            android:colorMode="wideColorGamut"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>

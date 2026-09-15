@@ -47,6 +47,7 @@ import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.effects.HdrSparkleTouchContainer
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ProfileFragment : Fragment() {
@@ -106,10 +107,12 @@ class ProfileFragment : Fragment() {
                     if (userData == null) {
                         ProfileError()
                     } else {
-                        ProfileScreen(
-                            userData = userData!!,
-                            nestedScrollInteropConnection = nestedScrollInteropConnection,
-                        )
+                        HdrSparkleTouchContainer {
+                            ProfileScreen(
+                                userData = userData!!,
+                                nestedScrollInteropConnection = nestedScrollInteropConnection,
+                            )
+                        }
                     }
                 }
             }

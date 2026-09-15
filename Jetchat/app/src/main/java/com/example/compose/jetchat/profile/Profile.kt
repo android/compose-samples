@@ -16,10 +16,17 @@
 
 package com.example.compose.jetchat.profile
 
+import android.app.Activity
+import android.os.Build
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,8 +39,12 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -51,9 +62,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
@@ -69,6 +88,46 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
+enum class ShowcaseColorMode(
+    val label: String,
+    val colorSpaceName: String,
+    val description: String,
+) {
+    DisplayP3(
+        label = "Display P3",
+        colorSpaceName = "ColorSpaces.DisplayP3",
+        description = "Wide Color Gamut (WCG) preserved via @ColorLong in Compose shaders & Paint without sRGB downsampling (CL 4034508).",
+    ),
+    ExtendedSrgbHdr(
+        label = "Extended sRGB (HDR)",
+        colorSpaceName = "ColorSpaces.ExtendedSrgb",
+        description = "High Dynamic Range values (> 1.0f) produce vibrant highlight luminance on HDR displays without clipping.",
+    ),
+    SrgbClamped(
+        label = "Standard sRGB",
+        colorSpaceName = "ColorSpaces.Srgb",
+        description = "Legacy standard gamut: colors are constrained to 8-bit sRGB color space.",
+    ),
+}
+
+// Wide Color Gamut (Display P3) colors
+private val P3Cyan = Color(0.0f, 0.95f, 1.0f, 1.0f, ColorSpaces.DisplayP3)
+private val P3Magenta = Color(1.0f, 0.05f, 0.7f, 1.0f, ColorSpaces.DisplayP3)
+private val P3Emerald = Color(0.05f, 1.0f, 0.45f, 1.0f, ColorSpaces.DisplayP3)
+private val P3Amber = Color(1.0f, 0.75f, 0.0f, 1.0f, ColorSpaces.DisplayP3)
+
+// Extended sRGB (HDR) colors with values > 1.0f
+private val HdrCyan = Color(0.1f, 1.8f, 2.0f, 1.0f, ColorSpaces.ExtendedSrgb)
+private val HdrMagenta = Color(2.0f, 0.1f, 1.4f, 1.0f, ColorSpaces.ExtendedSrgb)
+private val HdrEmerald = Color(0.1f, 2.0f, 0.8f, 1.0f, ColorSpaces.ExtendedSrgb)
+private val HdrAmber = Color(2.0f, 1.5f, 0.1f, 1.0f, ColorSpaces.ExtendedSrgb)
+
+// Standard sRGB colors
+private val SrgbCyan = Color(0.0f, 0.75f, 0.85f, 1.0f, ColorSpaces.Srgb)
+private val SrgbMagenta = Color(0.85f, 0.1f, 0.6f, 1.0f, ColorSpaces.Srgb)
+private val SrgbEmerald = Color(0.15f, 0.8f, 0.35f, 1.0f, ColorSpaces.Srgb)
+private val SrgbAmber = Color(0.9f, 0.65f, 0.0f, 1.0f, ColorSpaces.Srgb)
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ProfileScreen(
@@ -81,6 +140,7 @@ fun ProfileScreen(
     }
 
     val scrollState = rememberScrollState()
+    var colorMode by remember { mutableStateOf(ShowcaseColorMode.DisplayP3) }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -95,11 +155,17 @@ fun ProfileScreen(
                     .verticalScroll(scrollState),
             ) {
                 ProfileHeader(
-                    scrollState,
-                    userData,
-                    this@BoxWithConstraints.maxHeight,
+                    scrollState = scrollState,
+                    data = userData,
+                    containerHeight = this@BoxWithConstraints.maxHeight,
+                    colorMode = colorMode,
                 )
-                UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
+                UserInfoFields(
+                    userData = userData,
+                    containerHeight = this@BoxWithConstraints.maxHeight,
+                    colorMode = colorMode,
+                    onColorModeChanged = { colorMode = it },
+                )
             }
         }
 
@@ -117,11 +183,23 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
+private fun UserInfoFields(
+    userData: ProfileScreenState,
+    containerHeight: Dp,
+    colorMode: ShowcaseColorMode,
+    onColorModeChanged: (ShowcaseColorMode) -> Unit,
+) {
     Column {
         Spacer(modifier = Modifier.height(8.dp))
 
         NameAndPosition(userData)
+
+        // Interactive Wide Color Gamut & HDR Showcase Card
+        WideColorGamutShowcaseCard(
+            selectedMode = colorMode,
+            onModeSelected = onColorModeChanged,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
 
         ProfileProperty(stringResource(R.string.display_name), userData.displayName)
 
@@ -175,26 +253,210 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 }
 
 @Composable
-private fun ProfileHeader(scrollState: ScrollState, data: ProfileScreenState, containerHeight: Dp) {
+private fun ProfileHeader(
+    scrollState: ScrollState,
+    data: ProfileScreenState,
+    containerHeight: Dp,
+    colorMode: ShowcaseColorMode,
+) {
     val offset = (scrollState.value / 2)
     val offsetDp = with(LocalDensity.current) { offset.toDp() }
 
-    data.photo?.let {
-        Image(
+    val sweepColors = remember(colorMode) {
+        when (colorMode) {
+            ShowcaseColorMode.DisplayP3 -> listOf(P3Cyan, P3Magenta, P3Emerald, P3Amber, P3Cyan)
+            ShowcaseColorMode.ExtendedSrgbHdr -> listOf(HdrCyan, HdrMagenta, HdrEmerald, HdrAmber, HdrCyan)
+            ShowcaseColorMode.SrgbClamped -> listOf(SrgbCyan, SrgbMagenta, SrgbEmerald, SrgbAmber, SrgbCyan)
+        }
+    }
+
+    val backdropBrush = remember(colorMode) {
+        when (colorMode) {
+            ShowcaseColorMode.DisplayP3 -> Brush.radialGradient(
+                colors = listOf(
+                    Color(0.0f, 0.95f, 1.0f, 0.4f, ColorSpaces.DisplayP3),
+                    Color(1.0f, 0.05f, 0.7f, 0.25f, ColorSpaces.DisplayP3),
+                    Color(1.0f, 0.05f, 0.7f, 0.0f, ColorSpaces.DisplayP3),
+                ),
+            )
+            ShowcaseColorMode.ExtendedSrgbHdr -> Brush.radialGradient(
+                colors = listOf(
+                    Color(0.2f, 1.8f, 2.0f, 0.5f, ColorSpaces.ExtendedSrgb),
+                    Color(2.0f, 0.1f, 1.4f, 0.35f, ColorSpaces.ExtendedSrgb),
+                    Color(2.0f, 0.1f, 1.4f, 0.0f, ColorSpaces.ExtendedSrgb),
+                ),
+            )
+            ShowcaseColorMode.SrgbClamped -> Brush.radialGradient(
+                colors = listOf(
+                    Color(0.0f, 0.75f, 0.85f, 0.35f, ColorSpaces.Srgb),
+                    Color(0.85f, 0.1f, 0.6f, 0.2f, ColorSpaces.Srgb),
+                    Color(0.85f, 0.1f, 0.6f, 0.0f, ColorSpaces.Srgb),
+                ),
+            )
+        }
+    }
+
+    val paintAccentColor = remember(colorMode) {
+        when (colorMode) {
+            ShowcaseColorMode.DisplayP3 -> P3Magenta
+            ShowcaseColorMode.ExtendedSrgbHdr -> HdrMagenta
+            ShowcaseColorMode.SrgbClamped -> SrgbMagenta
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = containerHeight / 2)
+            .padding(top = offsetDp),
+        contentAlignment = Alignment.Center,
+    ) {
+        // Atmospheric Wide-Gamut backdrop shader (Brush.radialGradient - CL 4034508 AndroidShader)
+        Box(
             modifier = Modifier
-                .heightIn(max = containerHeight / 2)
-                .fillMaxWidth()
-                // TODO: Update to use offset to avoid recomposition
-                .padding(
-                    start = 16.dp,
-                    top = offsetDp,
-                    end = 16.dp,
-                )
-                .clip(CircleShape),
-            painter = painterResource(id = it),
-            contentScale = ContentScale.Crop,
-            contentDescription = null,
+                .matchParentSize()
+                .background(backdropBrush),
         )
+
+        data.photo?.let { photoRes ->
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.padding(24.dp),
+            ) {
+                // Wide Gamut Halo & Platform Paint Accent Ring
+                Canvas(
+                    modifier = Modifier.matchParentSize(),
+                ) {
+                    val strokeWidth = 5.dp.toPx()
+                    val haloRadius = (size.minDimension / 2f) - (strokeWidth / 2f)
+
+                    // 1. Sweep gradient shader with wide color gamut (CL 4034508 AndroidShader)
+                    drawCircle(
+                        brush = Brush.sweepGradient(sweepColors),
+                        radius = haloRadius,
+                        style = Stroke(width = strokeWidth),
+                    )
+
+                    // 2. Platform Paint drawing via drawIntoCanvas (CL 4034508 AndroidPaint @ColorLong)
+                    drawIntoCanvas { canvas ->
+                        val paint = Paint().apply {
+                            this.color = paintAccentColor
+                            this.style = PaintingStyle.Stroke
+                            this.strokeWidth = 2.dp.toPx()
+                        }
+                        canvas.drawCircle(
+                            center = center,
+                            radius = haloRadius + strokeWidth + 2.dp.toPx(),
+                            paint = paint,
+                        )
+                    }
+                }
+
+                Image(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .clip(CircleShape),
+                    painter = painterResource(id = photoRes),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WideColorGamutShowcaseCard(
+    selectedMode: ShowcaseColorMode,
+    onModeSelected: (ShowcaseColorMode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    val isWindowWcg = remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity?.window?.isWideColorGamut == true
+        } else {
+            false
+        }
+    }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        ),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Wide Color Gamut & HDR",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    text = if (isWindowWcg) "WCG Active" else "sRGB Display",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (isWindowWcg) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "CL 4034508: Compose shaders & Paint now preserve non-sRGB colors on API 29+ via @ColorLong.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Mode Selector Chips
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                ShowcaseColorMode.entries.forEach { mode ->
+                    FilterChip(
+                        selected = selectedMode == mode,
+                        onClick = { onModeSelected(mode) },
+                        label = {
+                            Text(
+                                text = mode.label,
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        },
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Surface(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Text(
+                        text = "ColorSpace: ${selectedMode.colorSpaceName}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = selectedMode.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
     }
 }
 
