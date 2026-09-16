@@ -238,10 +238,13 @@ fun rememberAnimatedMeshGradientPainter(): MeshGradientPainter {
  */
 @Composable
 fun ChatBackground(backgroundType: ChatBackgroundType, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    val (painter, baseColor) = when (backgroundType) {
-        ChatBackgroundType.MESH_BG -> rememberMeshBackgroundGradientPainter() to Color(0xFFEAFFCE)
-        ChatBackgroundType.ANIMATED_BG -> rememberAnimatedMeshGradientPainter() to Color(0xFFF1EEFC)
-    }
+//    val (painter, baseColor) = when (backgroundType) {
+//        ChatBackgroundType.MESH_BG -> rememberMeshBackgroundGradientPainter() to Color(0xFFEAFFCE)
+//        ChatBackgroundType.ANIMATED_BG -> rememberAnimatedMeshGradientPainter() to Color(0xFFF1EEFC)
+//    }
+
+    val (painter, baseColor) = rememberAnimatedMeshGradientPainter() to Color(0xFFF1EEFC)
+
 
     Box(
         modifier = modifier
