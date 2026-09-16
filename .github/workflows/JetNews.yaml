@@ -13,6 +13,9 @@ on:
       - 'JetNews/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   SAMPLE_PATH: JetNews
   compose_store_password: ${{ secrets.compose_store_password }}
@@ -40,6 +43,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
       - name: Enable KVM group perms
         run: |
             echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules

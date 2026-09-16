@@ -25,6 +25,10 @@ on:
 concurrency:
   group: ${{ inputs.name }}-build-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+
 env:
   compose_store_password: ${{ secrets.compose_store_password }}
   compose_key_alias: ${{ secrets.compose_key_alias }}
@@ -40,6 +44,7 @@ jobs:
           # https://github.com/diffplug/spotless/issues/710
           # Check out full history for Spotless to ensure ratchetFrom can find the ratchet version
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
