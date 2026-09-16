@@ -71,6 +71,8 @@ jobs:
           key: gradle-${{ hashFiles('checksum.txt') }}
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        env:
+          ADB_INSTALL_TIMEOUT: 10
         with:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
