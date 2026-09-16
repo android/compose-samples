@@ -81,6 +81,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -179,7 +180,7 @@ fun ConversationContent(
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize().background(color = Color(0xFFEAE9FC))) {
         Scaffold(
             topBar = {
                 ChannelNameBar(
@@ -194,6 +195,7 @@ fun ConversationContent(
                 .contentWindowInsets
                 .exclude(WindowInsets.navigationBars)
                 .exclude(WindowInsets.ime),
+            containerColor = Color.Transparent,
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             Column(

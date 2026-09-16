@@ -78,6 +78,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
@@ -231,18 +232,30 @@ fun UserInput(
                 )
             }
 
+            val cardShape = RoundedCornerShape(48.dp)
             Surface(
-                shape = RoundedCornerShape(
-                    topStart = 48.dp,
-                    topEnd = 48.dp,
-                    bottomEnd = 48.dp,
-                    bottomStart = 48.dp,
-                ),
+                shape = cardShape,
                 color = surfaceColor,
-                shadowElevation = 0.dp,
+                // Default soft shadow when Gemini is idle; the glow replaces it when active.
+                shadowElevation = if (isGeminiActive) 4.dp else 8.dp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 4.dp)
+                    // Default blue-tinted shadow when Gemini is idle; the glow replaces it
+                    // when active. Tinted shadows render on API 28+ (black on older versions).
+                    .then(
+                        if (isGeminiActive) {
+                            Modifier
+                        } else {
+                            Modifier.shadow(
+                                elevation = 16.dp,
+                                shape = cardShape,
+                                clip = false,
+                                ambientColor = Color(0xFF3E41F4),
+                                spotColor = Color(0xFF3E41F4),
+                            )
+                        },
+                    )
                     .heightIn(min = 160.dp),
             ) {
                 Column(
@@ -647,13 +660,15 @@ private fun BoxScope.UserInputTextField(
         }
     }
 
-    // Uses the app's existing Karla font family (SemiBold resolves to the bundled Karla Bold).
+    // Figma spec: Karla, 24sp / 24 line-height, weight 341, colour #000965.
+    // The app's KarlaFontFamily ships Regular (400) + Bold (700); weight 341 resolves
+    // to the nearest — Karla Regular — which matches the light look in the mock.
     val textStyle = TextStyle(
         fontFamily = KarlaFontFamily,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight(341),
         fontSize = 24.sp,
-        lineHeight = 28.sp,
-        color = Color(0xFF001CBA),
+        lineHeight = 24.sp,
+        color = Color(0xFF000965),
     )
 
     BasicTextField(
@@ -676,15 +691,15 @@ private fun BoxScope.UserInputTextField(
         },
         maxLines = 4,
         visualTransformation = unfocusedCaret,
-        cursorBrush = SolidColor(Color(0xFF001CBA)),
-        textStyle = textStyle,
+        cursorBrush = SolidColor(Color(0xFF000965)),
+        textStyle = MaterialTheme.typography.headlineSmall,
     )
 
     if (textFieldValue.text.isEmpty() && !focusState) {
         Text(
             modifier = Modifier.align(Alignment.TopStart),
             text = stringResource(R.string.textfield_hint),
-            style = textStyle.copy(color = Color(0xFF49454F)),
+            style = MaterialTheme.typography.headlineSmall,
         )
     }
 }
