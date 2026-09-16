@@ -714,9 +714,10 @@ private fun BoxScope.UserInputTextField(
         Text(
             modifier = Modifier.align(Alignment.TopStart),
             text = "Send a message",
-                color = Color(0xFF49454F),
-                fontSize = 18.sp,
-            )
+            style = textStyle.copy(
+                color = Color(0xFF001CBA).copy(alpha = 0.5f),
+            ),
+        )
     }
 }
 
