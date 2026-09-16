@@ -38,13 +38,18 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        api-level: [24, 26]
+        api-level: [30, 31]
 
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
+      - name: Enable KVM group perms
+        run: |
+            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+            sudo udevadm control --reload-rules
+            sudo udevadm trigger --name-match=kvm
       
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
@@ -68,9 +73,11 @@ jobs:
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        env:
+          ADB_INSTALL_TIMEOUT: 10
         with:
           api-level: ${{ matrix.api-level }}
-          arch: x86
+          arch: x86_64
           disable-animations: true
           script: ./gradlew connectedCheck --stacktrace
           working-directory: ${{ env.SAMPLE_PATH }}

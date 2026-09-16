@@ -115,6 +115,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.video.VideoPlayer
 import com.example.compose.jetchat.components.rememberUserInputGlowMeshGradientPainter
 import com.example.compose.jetchat.components.rememberUserInputSparkMeshGradientPainter
 import com.example.compose.jetchat.theme.KarlaFontFamily
