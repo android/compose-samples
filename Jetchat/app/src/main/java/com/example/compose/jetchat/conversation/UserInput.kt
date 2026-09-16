@@ -51,6 +51,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -84,17 +85,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -102,17 +110,26 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.components.JetchatIcon
+import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.theme.KarlaFontFamily
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -133,10 +150,20 @@ enum class EmojiStickerSelector {
     STICKER,
 }
 
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, widthDp = 444, heightDp = 280)
 @Composable
 fun UserInputPreview() {
-    UserInput(onMessageSent = {})
+    JetchatTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(top = 84.dp, bottom = 20.dp, start = 12.dp, end = 12.dp),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            UserInput(onMessageSent = {})
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -146,6 +173,7 @@ fun UserInput(
     modifier: Modifier = Modifier,
     resetScroll: () -> Unit = {},
     onVideoMessageSent: (videoUri: String, caption: String) -> Unit = { _, _ -> },
+    initialText: String = "@gemini can you setup an announcement for next meetup",
 ) {
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
@@ -156,7 +184,12 @@ fun UserInput(
     }
 
     var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(
+            TextFieldValue(
+                text = initialText,
+                selection = TextRange(initialText.length),
+            ),
+        )
     }
 
     var attachedVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
@@ -185,65 +218,145 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
-    Surface(
-        shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp, bottomStart = 28.dp, bottomEnd = 28.dp),
-        color = Color(0xFFF7F6FE),
-        shadowElevation = 8.dp,
+    val glowMeshPainter = rememberUserInputGlowMeshGradientPainter()
+
+    val cardShape = RoundedCornerShape(
+        topStart = 48.dp,
+        topEnd = 48.dp,
+        bottomEnd = 28.dp,
+        bottomStart = 48.dp,
+    )
+    val surfaceColor = Color(0xFFEAE9FC)
+    val sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null
+
+    Column(
         modifier = modifier
-            .padding(horizontal = 8.dp, vertical = 6.dp)
-            .shadow(
-                elevation = 10.dp,
-                shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp, bottomStart = 28.dp, bottomEnd = 28.dp),
-                ambientColor = Color(0x331E40FF),
-                spotColor = Color(0x551E40FF),
-            ),
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
     ) {
-        Column {
-            AnimatedVisibility(
-                visible = attachedVideoUri != null,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut(),
+        Box(modifier = Modifier.fillMaxWidth()) {
+            // Animated 6x7 Mesh Gradient Glow behind UserInput (Figma node 188:23011 & 188:22823)
+            // Extends 185.dp above, 68.dp below (covering the nav bar area), and 76.dp horizontally
+            // beyond the card bounds without adding layout height to the parent Column.
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .layout { measurable, constraints ->
+                        val topExpand = 185.dp.roundToPx()
+                        val bottomExpand = 68.dp.roundToPx()
+                        val horizontalExpand = 76.dp.roundToPx()
+                        val expandedWidth = constraints.maxWidth + horizontalExpand * 2
+                        val expandedHeight = constraints.maxHeight + topExpand + bottomExpand
+                        val placeable = measurable.measure(
+                            Constraints.fixed(expandedWidth, expandedHeight),
+                        )
+                        layout(constraints.maxWidth, constraints.maxHeight) {
+                            placeable.place(-horizontalExpand, -topExpand)
+                        }
+                    }
+                    .blur(radius = 12.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    .paint(glowMeshPainter, contentScale = ContentScale.FillBounds),
+            )
+
+            // Main input/design1 Card (396 x 160 dp on 412dp screen, end-padded by 4.dp)
+            Surface(
+                shape = cardShape,
+                color = surfaceColor,
+                shadowElevation = 0.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 4.dp)
+                    .heightIn(min = 160.dp),
             ) {
-                attachedVideoUri?.let { videoUri ->
-                    AttachedVideoPreview(
-                        videoUri = videoUri,
-                        onRemove = { attachedVideoUri = null },
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 160.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        AnimatedVisibility(
+                            visible = attachedVideoUri != null,
+                            enter = expandVertically() + fadeIn(),
+                            exit = shrinkVertically() + fadeOut(),
+                        ) {
+                            attachedVideoUri?.let { videoUri ->
+                                AttachedVideoPreview(
+                                    videoUri = videoUri,
+                                    onRemove = { attachedVideoUri = null },
+                                )
+                            }
+                        }
+
+                        UserInputText(
+                            textFieldValue = textState,
+                            onTextChanged = { textState = it },
+                            keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
+                            onTextFieldFocused = { focused ->
+                                if (focused) {
+                                    currentInputSelector = InputSelector.NONE
+                                    resetScroll()
+                                }
+                                textFieldFocusState = focused
+                            },
+                            onMessageSent = { sendMessage() },
+                            focusState = textFieldFocusState,
+                        )
+                    }
+
+                    UserInputSelector(
+                        onSelectorChange = { currentInputSelector = it },
+                        currentInputSelector = currentInputSelector,
+                        onVideoClick = {
+                            currentInputSelector = InputSelector.NONE
+                            videoPickerLauncher.launch("video/*")
+                        },
+                        onAddClick = {
+                            currentInputSelector = InputSelector.MAP
+                        },
                     )
                 }
             }
 
-            UserInputText(
-                textFieldValue = textState,
-                onTextChanged = { textState = it },
-                // Only show the keyboard if there's no input selector and text field has focus
-                keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
-                // Close extended selector if text field receives focus
-                onTextFieldFocused = { focused ->
-                    if (focused) {
-                        currentInputSelector = InputSelector.NONE
-                        resetScroll()
-                    }
-                    textFieldFocusState = focused
-                },
-                onMessageSent = { sendMessage() },
-                focusState = textFieldFocusState,
+            // Send button (Figma node 188:23028 'Icon button')
+            // Size 72 x 56 dp, cr=[28, 28, 16, 28], extending 4.dp past right edge of card
+            val sendDescription = stringResource(id = R.string.send)
+            val sendButtonShape = RoundedCornerShape(
+                topStart = 28.dp,
+                topEnd = 28.dp,
+                bottomEnd = 16.dp,
+                bottomStart = 28.dp,
             )
-            UserInputSelector(
-                onSelectorChange = { currentInputSelector = it },
-                sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null,
-                onMessageSent = sendMessage,
-                currentInputSelector = currentInputSelector,
-                onVideoClick = {
-                    currentInputSelector = InputSelector.NONE
-                    videoPickerLauncher.launch("video/*")
-                },
-            )
-            SelectorExpanded(
-                onCloseRequested = dismissKeyboard,
-                onTextAdded = { textState = textState.addText(it) },
-                currentSelector = currentInputSelector,
-            )
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(width = 72.dp, height = 56.dp)
+                    .clip(sendButtonShape)
+                    .background(Color(0xFFEAE9FC))
+                    .clickable(
+                        enabled = sendMessageEnabled,
+                        onClick = sendMessage,
+                    )
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = sendDescription
+                        text = AnnotatedString(sendDescription)
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_send),
+                    contentDescription = null,
+                    tint = Color(0xFF444746).copy(alpha = if (sendMessageEnabled) 0.85f else 0.54f),
+                    modifier = Modifier.size(24.dp),
+                )
+            }
         }
+
+        SelectorExpanded(
+            onCloseRequested = dismissKeyboard,
+            onTextAdded = { textState = textState.addText(it) },
+            currentSelector = currentInputSelector,
+        )
     }
 }
 
@@ -355,23 +468,36 @@ fun FunctionalityNotAvailablePanel() {
 @Composable
 private fun UserInputSelector(
     onSelectorChange: (InputSelector) -> Unit,
-    sendMessageEnabled: Boolean,
-    onMessageSent: () -> Unit,
     currentInputSelector: InputSelector,
     modifier: Modifier = Modifier,
     onVideoClick: () -> Unit = {},
+    onAddClick: () -> Unit = {},
 ) {
+    val iconTint = Color(0xFF3E41F4)
+    val sparkButtonSizePx = with(LocalDensity.current) { 48.dp.toPx() }
+    val sparkGradientBrush = remember(sparkButtonSizePx) {
+        Brush.linearGradient(
+            colorStops = arrayOf(
+                0.00f to Color(0xFFF96BD6),
+                0.49f to Color(0xFF9378FF),
+                1.00f to Color(0xFF1E40FF),
+            ),
+            start = Offset(sparkButtonSizePx * 0.09722f, 0f),
+            end = Offset(sparkButtonSizePx * 0.92361f, sparkButtonSizePx),
+        )
+    }
+
     Row(
         modifier = modifier
             .height(56.dp)
-            .wrapContentHeight()
-            .padding(start = 12.dp, end = 12.dp, bottom = 8.dp),
+            .padding(start = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        val iconTint = Color(0xFF1E40FF)
+        // 1. Emoji button (x = 16.dp, size = 48x48 dp)
         IconButton(
             onClick = { onSelectorChange(InputSelector.EMOJI) },
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(48.dp),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_mood),
@@ -380,9 +506,11 @@ private fun UserInputSelector(
                 modifier = Modifier.size(24.dp),
             )
         }
+
+        // 2. Photo button (x = 72.dp, size = 48x48 dp)
         IconButton(
             onClick = { onSelectorChange(InputSelector.PICTURE) },
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(48.dp),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_insert_photo),
@@ -391,9 +519,11 @@ private fun UserInputSelector(
                 modifier = Modifier.size(24.dp),
             )
         }
+
+        // 3. Video / Duo button (x = 128.dp, size = 48x48 dp)
         IconButton(
             onClick = onVideoClick,
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(48.dp),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_duo),
@@ -402,30 +532,34 @@ private fun UserInputSelector(
                 modifier = Modifier.size(24.dp),
             )
         }
-        IconButton(
-            onClick = { onSelectorChange(InputSelector.DM) },
-            modifier = Modifier.size(40.dp),
+
+        // 4. Gemini Sparkle button (x = 184.dp, size = 48x48 dp, gradient circle)
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(Color(0xFF0B57D0))
+                .background(sparkGradientBrush)
+                .clickable { onSelectorChange(InputSelector.DM) },
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_spark),
                 contentDescription = "AI Spark",
-                tint = iconTint,
+                tint = Color.White,
                 modifier = Modifier.size(24.dp),
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Send button
+        // 5. Plus / Add button (x = 240.dp, size = 48x48 dp)
         IconButton(
-            onClick = onMessageSent,
-            enabled = sendMessageEnabled,
-            modifier = Modifier.size(44.dp),
+            onClick = onAddClick,
+            modifier = Modifier.size(48.dp),
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_send),
-                contentDescription = stringResource(id = R.string.send),
-                tint = if (sendMessageEnabled) iconTint else Color(0xFF8E95B3),
+                painter = painterResource(id = R.drawable.ic_add),
+                contentDescription = "Add attachment",
+                tint = Color(0xFF0B57D0),
                 modifier = Modifier.size(24.dp),
             )
         }
@@ -476,7 +610,6 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
 var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
-@OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
@@ -488,39 +621,27 @@ private fun UserInputText(
     onMessageSent: (String) -> Unit,
     focusState: Boolean,
 ) {
-    val swipeOffset = remember { mutableStateOf(0f) }
-    var isRecordingMessage by remember { mutableStateOf(false) }
     val a11ylabel = stringResource(id = R.string.textfield_desc)
-    Row(
+    // Figma node 188:23032 'Chat' positioned at x=32dp, y=20dp, width=324dp (end=40dp), height=72dp
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(start = 32.dp, top = 20.dp, end = 40.dp)
+            .heightIn(min = 72.dp),
     ) {
-        Box(
-            modifier = Modifier.weight(1f),
-        ) {
-            UserInputTextField(
-                textFieldValue,
-                onTextChanged,
-                onTextFieldFocused,
-                keyboardType,
-                focusState,
-                onMessageSent,
-                Modifier
-                    .fillMaxWidth()
-                    .semantics {
-                        contentDescription = a11ylabel
-                        keyboardShownProperty = keyboardShown
-                    },
-            )
-        }
-        JetchatIcon(
-            contentDescription = stringResource(id = R.string.navigation_drawer_open),
-            modifier = Modifier
-                .size(64.dp)
-                .padding(16.dp),
+        UserInputTextField(
+            textFieldValue,
+            onTextChanged,
+            onTextFieldFocused,
+            keyboardType,
+            focusState,
+            onMessageSent,
+            Modifier
+                .fillMaxWidth()
+                .semantics {
+                    contentDescription = a11ylabel
+                    keyboardShownProperty = keyboardShown
+                },
         )
     }
 }
@@ -536,12 +657,40 @@ private fun BoxScope.UserInputTextField(
     modifier: Modifier = Modifier,
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
+    val unfocusedCursorTransformation = remember(focusState) {
+        if (!focusState) {
+            VisualTransformation { annotatedString ->
+                if (annotatedString.text.isNotEmpty()) {
+                    TransformedText(
+                        text = AnnotatedString(annotatedString.text + "|"),
+                        offsetMapping = object : OffsetMapping {
+                            override fun originalToTransformed(offset: Int): Int = offset
+                            override fun transformedToOriginal(offset: Int): Int = offset.coerceAtMost(annotatedString.text.length)
+                        },
+                    )
+                } else {
+                    TransformedText(annotatedString, OffsetMapping.Identity)
+                }
+            }
+        } else {
+            VisualTransformation.None
+        }
+    }
+
+    val textStyle = TextStyle(
+        fontFamily = KarlaFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.sp,
+        color = Color(0xFF001CBA),
+    )
+
     BasicTextField(
         value = textFieldValue,
         onValueChange = { onTextChanged(it) },
         modifier = modifier
-            .padding(start = 16.dp)
-            .align(Alignment.CenterStart)
+            .align(Alignment.TopStart)
             .onFocusChanged { state ->
                 if (lastFocusState != state.isFocused) {
                     onTextFieldFocused(state.isFocused)
@@ -555,25 +704,19 @@ private fun BoxScope.UserInputTextField(
         keyboardActions = KeyboardActions {
             if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
         },
-        maxLines = 1,
-        cursorBrush = SolidColor(Color(0xFF001D35)),
-        textStyle = LocalTextStyle.current.copy(
-            color = Color(0xFF001D35),
-            fontSize = 18.sp,
-        ),
+        maxLines = 4,
+        visualTransformation = unfocusedCursorTransformation,
+        cursorBrush = SolidColor(Color(0xFF001CBA)),
+        textStyle = textStyle,
     )
 
     if (textFieldValue.text.isEmpty() && !focusState) {
         Text(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 16.dp),
+            modifier = Modifier.align(Alignment.TopStart),
             text = "Send a message",
-            style = MaterialTheme.typography.bodyLarge.copy(
                 color = Color(0xFF49454F),
                 fontSize = 18.sp,
-            ),
-        )
+            )
     }
 }
 

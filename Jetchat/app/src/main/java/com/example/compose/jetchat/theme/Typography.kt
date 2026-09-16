@@ -50,6 +50,8 @@ val MontserratFontFamily = FontFamily(
 val KarlaFontFamily = FontFamily(
     Font(googleFont = KarlaFont, fontProvider = provider),
     Font(resId = R.font.karla_regular),
+    Font(googleFont = KarlaFont, fontProvider = provider, weight = FontWeight.SemiBold),
+    Font(resId = R.font.karla_bold, weight = FontWeight.SemiBold),
     Font(googleFont = KarlaFont, fontProvider = provider, weight = FontWeight.Bold),
     Font(resId = R.font.karla_bold, weight = FontWeight.Bold),
 )
