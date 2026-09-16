@@ -660,17 +660,6 @@ private fun BoxScope.UserInputTextField(
         }
     }
 
-    // Figma spec: Karla, 24sp / 24 line-height, weight 341, colour #000965.
-    // The app's KarlaFontFamily ships Regular (400) + Bold (700); weight 341 resolves
-    // to the nearest — Karla Regular — which matches the light look in the mock.
-    val textStyle = TextStyle(
-        fontFamily = KarlaFontFamily,
-        fontWeight = FontWeight(341),
-        fontSize = 24.sp,
-        lineHeight = 24.sp,
-        color = Color(0xFF000965),
-    )
-
     BasicTextField(
         value = textFieldValue,
         onValueChange = { onTextChanged(it) },
@@ -692,7 +681,7 @@ private fun BoxScope.UserInputTextField(
         maxLines = 4,
         visualTransformation = unfocusedCaret,
         cursorBrush = SolidColor(Color(0xFF000965)),
-        textStyle = MaterialTheme.typography.headlineSmall,
+        textStyle = MaterialTheme.typography.headlineSmall.copy(color = Color(0xFF001CBA)),
     )
 
     if (textFieldValue.text.isEmpty() && !focusState) {
