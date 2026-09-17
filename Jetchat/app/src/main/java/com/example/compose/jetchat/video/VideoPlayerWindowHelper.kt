@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.compose.jetchat.conversation
+package com.example.compose.jetchat.video
 
 import android.app.Activity
 import android.content.ContextWrapper

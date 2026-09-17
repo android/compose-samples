@@ -24,7 +24,7 @@ plugins {
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
-    compileSdkMinor = 1
+    compileSdkMinor = 2
     namespace = "com.example.compose.jetchat"
 
     defaultConfig {

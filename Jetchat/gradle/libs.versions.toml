@@ -8,7 +8,7 @@ android-material3 = "1.14.0"
 androidGradlePlugin = "9.3.1"
 androidx-activity-compose = "1.13.0"
 androidx-appcompat = "1.8.0"
-androidx-compose-bom = "2026.09.00"
+androidx-compose-bom = "2026.08.01"
 androidx-constraintlayout = "1.1.2"
 androidx-core-splashscreen = "1.2.0"
 androidx-corektx = "1.19.0"
@@ -58,7 +58,7 @@ room = "2.8.4"
 secrets = "2.0.1"
 spotless = "8.9.0"
 # @keep
-targetSdk = "33"
+targetSdk = "37"
 version-catalog-update = "1.1.1"
 
 [libraries]
