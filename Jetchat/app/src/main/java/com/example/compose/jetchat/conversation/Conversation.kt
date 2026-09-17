@@ -29,6 +29,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -58,8 +59,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -86,6 +89,8 @@ import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.blur.BlurStop
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
@@ -95,12 +100,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.blur.BlurRadiusSpec
 import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
@@ -200,17 +205,21 @@ fun ConversationContent(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             Column(
-                Modifier.fillMaxSize()
+                Modifier
+                    .fillMaxSize()
                     .padding(bottom = paddingValues.calculateBottomPadding())
                     .background(color = background)
                     .border(width = 2.dp, color = borderStroke)
-                    .dragAndDropTarget(shouldStartDragAndDrop = { event ->
-                        event
-                            .mimeTypes()
-                            .contains(
-                                ClipDescription.MIMETYPE_TEXT_PLAIN,
-                            )
-                    }, target = dragAndDropCallback),
+                    .dragAndDropTarget(
+                        shouldStartDragAndDrop = { event ->
+                            event
+                                .mimeTypes()
+                                .contains(
+                                    ClipDescription.MIMETYPE_TEXT_PLAIN,
+                                )
+                        },
+                        target = dragAndDropCallback,
+                    ),
             ) {
                 Messages(
                     messages = uiState.messages,
@@ -243,7 +252,9 @@ fun ConversationContent(
                     },
                     // let this element handle the padding so that the elevation is shown behind the
                     // navigation bar
-                    modifier = Modifier.navigationBarsPadding().imePadding(),
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .imePadding(),
                 )
             }
         }
@@ -281,46 +292,98 @@ fun ChannelNameBar(
             .backdropBlur(
                 tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                 elevation = 0.dp,
-                radius = 12.dp,
+                spec = BlurRadiusSpec.verticalGradient(
+                    listOf(
+                        BlurStop(0.5f, 32.dp),
+                        BlurStop(1f, 0.dp),
+                    ),
+                ),
             ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
+        navigationIcon = {},
         title = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Channel name
-                Text(
-                    text = channelName,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                // Number of members
-                Text(
-                    text = stringResource(R.string.members, channelMembers),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            Surface(
+                onClick = onNavIconPressed,
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = channelName.removePrefix("#"),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy((-4).dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ali),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.someone_else),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.placeholder),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                        )
+                    }
+                }
             }
         },
         actions = {
-            // Search icon
-            Icon(
-                painterResource(id = R.drawable.ic_search),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.search),
-            )
-            // Info icon
-            Icon(
-                painterResource(id = R.drawable.ic_info),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.info),
-            )
+            FilledIconButton(
+                onClick = { functionalityNotAvailablePopupShown = true },
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                modifier = Modifier.size(40.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = stringResource(id = R.string.search),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            FilledIconButton(
+                onClick = { functionalityNotAvailablePopupShown = true },
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                modifier = Modifier.size(40.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_info),
+                    contentDescription = stringResource(id = R.string.info),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
         },
     )
 }
@@ -389,7 +452,7 @@ fun Messages(
         val jumpToBottomButtonEnabled by remember {
             derivedStateOf {
                 scrollState.firstVisibleItemIndex != 0 ||
-                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
             }
         }
 

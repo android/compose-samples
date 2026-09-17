@@ -22,9 +22,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -44,8 +44,17 @@ fun JetchatAppBar(
     onNavIconPressed: () -> Unit = { },
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit = {},
+    navigationIcon: @Composable () -> Unit = {
+        JetchatIcon(
+            contentDescription = stringResource(id = R.string.navigation_drawer_open),
+            modifier = Modifier
+                .size(64.dp)
+                .clickable(onClick = onNavIconPressed)
+                .padding(16.dp),
+        )
+    },
 ) {
-    CenterAlignedTopAppBar(
+    TopAppBar(
         modifier = modifier,
         actions = actions,
         title = title,
@@ -54,15 +63,7 @@ fun JetchatAppBar(
             containerColor = Color.Transparent,
             scrolledContainerColor = Color.Transparent,
         ),
-        navigationIcon = {
-            JetchatIcon(
-                contentDescription = stringResource(id = R.string.navigation_drawer_open),
-                modifier = Modifier
-                    .size(64.dp)
-                    .clickable(onClick = onNavIconPressed)
-                    .padding(16.dp),
-            )
-        },
+        navigationIcon = navigationIcon,
     )
 }
 
