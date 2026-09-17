@@ -121,6 +121,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.runtime.tracing)
+    implementation("androidx.tracing:tracing-perfetto:1.0.1")
+    implementation("androidx.tracing:tracing-perfetto-binary:1.0.1")
+    implementation("androidx.tracing:tracing-perfetto-handshake:1.0.1")
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.ui)
