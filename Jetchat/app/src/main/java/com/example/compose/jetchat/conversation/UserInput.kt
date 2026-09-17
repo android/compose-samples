@@ -24,6 +24,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -206,12 +207,17 @@ fun UserInput(
             .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            // Animated mesh-gradient glow behind the card. Only shown when the message
-            // mentions @gemini. The soft feather is produced entirely by the mesh (bicubic
+            // Animated mesh-gradient glow behind the card. Fades in/out as the message
+            // gains/loses @gemini. The soft feather is produced entirely by the mesh (bicubic
             // colour + fully transparent boundary vertices), so there is no blur and no
             // linear gradient. The layout() lets the glow bleed above/below/beside the card
             // without adding size to the parent Column.
-            if (isGeminiActive) {
+            val glowAlpha by animateFloatAsState(
+                targetValue = if (isGeminiActive) 1f else 0f,
+                animationSpec = tween(durationMillis = 600),
+                label = "glowFade",
+            )
+            if (glowAlpha > 0f) {
                 Box(
                     modifier = Modifier
                         .matchParentSize()
@@ -228,6 +234,7 @@ fun UserInput(
                                 placeable.place(-horizontalExpand, -topExpand)
                             }
                         }
+                        .graphicsLayer { alpha = glowAlpha }
                         .paint(glowMeshPainter, contentScale = ContentScale.FillBounds),
                 )
             }
