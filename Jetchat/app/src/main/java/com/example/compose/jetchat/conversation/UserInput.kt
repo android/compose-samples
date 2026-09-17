@@ -177,6 +177,10 @@ fun UserInput(
         }
     }
 
+    // Toggled when the user clicks the recording mic icon. Drives both the animated mesh-gradient
+    // glow behind the input card and the recording button's gradient fill.
+    var isRecordingActive by rememberSaveable { mutableStateOf(false) }
+
     val sendMessage = {
         val currentVideoUri = attachedVideoUri
         if (currentVideoUri != null) {
@@ -186,6 +190,7 @@ fun UserInput(
             onMessageSent(textState.text)
         }
         textState = TextFieldValue()
+        isRecordingActive = false
         resetScroll()
         dismissKeyboard()
     }
@@ -197,9 +202,7 @@ fun UserInput(
 
     val surfaceColor = Color(0xFFEAE9FC)
     val sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null
-    // Gemini is "active" only when the message mentions @gemini. Drives both the glow and
-    // the spark button's gradient fill.
-    val isGeminiActive = textState.text.contains("@gemini", ignoreCase = true)
+    val isGlowActive = isRecordingActive || textState.text.contains("@gemini", ignoreCase = true)
 
     Column(
         modifier = modifier
@@ -207,17 +210,14 @@ fun UserInput(
             .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            // Animated mesh-gradient glow behind the card. Fades in/out as the message
-            // gains/loses @gemini. The soft feather is produced entirely by the mesh (bicubic
-            // colour + fully transparent boundary vertices), so there is no blur and no
-            // linear gradient. The layout() lets the glow bleed above/below/beside the card
-            // without adding size to the parent Column.
+            // Animated mesh-gradient glow behind the card. Shown when recording mode is active
+            // (triggered on click of the recording icon) or when the message mentions @gemini.
             val glowAlpha by animateFloatAsState(
-                targetValue = if (isGeminiActive) 1f else 0f,
+                targetValue = if (isGlowActive) 1f else 0f,
                 animationSpec = tween(durationMillis = 600),
                 label = "glowFade",
             )
-            if (glowAlpha > 0f) {
+            if (isGlowActive) {
                 Box(
                     modifier = Modifier
                         .matchParentSize()
@@ -244,14 +244,14 @@ fun UserInput(
                 shape = cardShape,
                 color = surfaceColor,
                 // Default soft shadow when Gemini is idle; the glow replaces it when active.
-                shadowElevation = if (isGeminiActive) 4.dp else 8.dp,
+                shadowElevation = if (isGlowActive) 4.dp else 8.dp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 4.dp)
                     // Default blue-tinted shadow when Gemini is idle; the glow replaces it
                     // when active. Tinted shadows render on API 28+ (black on older versions).
                     .then(
-                        if (isGeminiActive) {
+                        if (isGlowActive) {
                             Modifier
                         } else {
                             Modifier.shadow(
@@ -314,7 +314,8 @@ fun UserInput(
                         UserInputSelector(
                             onSelectorChange = { currentInputSelector = it },
                             currentInputSelector = currentInputSelector,
-                            geminiActive = isGeminiActive,
+                            recordingActive = isGlowActive,
+                            onRecordingClick = { isRecordingActive = !isRecordingActive },
                             onVideoClick = {
                                 currentInputSelector = InputSelector.NONE
                                 videoPickerLauncher.launch("video/*")
@@ -456,7 +457,8 @@ fun FunctionalityNotAvailablePanel() {
 private fun UserInputSelector(
     onSelectorChange: (InputSelector) -> Unit,
     currentInputSelector: InputSelector,
-    geminiActive: Boolean,
+    recordingActive: Boolean,
+    onRecordingClick: () -> Unit,
     modifier: Modifier = Modifier,
     onVideoClick: () -> Unit = {},
     onAddClick: () -> Unit = {},
@@ -506,32 +508,32 @@ private fun UserInputSelector(
             )
         }
 
-        // Gemini spark button. Only active (mesh-gradient circle + white icon) when the
-        // message mentions @gemini; otherwise it's a plain blue-tinted icon like the others.
-        if (geminiActive) {
+        // Recording mic button. Active (mesh-gradient circle + white mic icon) when triggered
+        // via click; otherwise a blue-tinted mic icon matching Figma 191:24835.
+        if (recordingActive) {
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
                     .paint(sparkMeshPainter, contentScale = ContentScale.FillBounds)
-                    .clickable { onSelectorChange(InputSelector.DM) },
+                    .clickable { onRecordingClick() },
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_spark),
-                    contentDescription = stringResource(id = R.string.dm_desc),
+                    painter = painterResource(id = R.drawable.ic_mic),
+                    contentDescription = stringResource(id = R.string.record_message),
                     tint = Color.White,
                     modifier = Modifier.size(24.dp),
                 )
             }
         } else {
             IconButton(
-                onClick = { onSelectorChange(InputSelector.DM) },
+                onClick = onRecordingClick,
                 modifier = Modifier.size(48.dp),
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_spark),
-                    contentDescription = stringResource(id = R.string.dm_desc),
+                    painter = painterResource(id = R.drawable.ic_mic),
+                    contentDescription = stringResource(id = R.string.record_message),
                     tint = iconTint,
                     modifier = Modifier.size(24.dp),
                 )
