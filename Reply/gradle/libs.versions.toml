@@ -5,7 +5,7 @@
 [versions]
 accompanist = "0.37.3"
 android-material3 = "1.14.0"
-androidGradlePlugin = "9.4.0"
+androidGradlePlugin = "9.3.1"
 androidx-activity-compose = "1.13.0"
 androidx-appcompat = "1.8.0"
 androidx-compose-bom = "2026.09.00"
@@ -160,7 +160,7 @@ rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 
 [plugins]
-android-application = "com.android.application:9.4.1"
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
