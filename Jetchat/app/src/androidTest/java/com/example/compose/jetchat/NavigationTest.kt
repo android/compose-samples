@@ -22,9 +22,13 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
@@ -49,13 +53,14 @@ class NavigationTest {
     @Test
     fun profileScreen_back_conversationScreen() {
         val navController = getNavController()
-        // Navigate to profile        \
+        // Navigate to profile
         navigateToProfile("Taylor Brooks")
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
-        // Extra UI check
+        // Extra UI check (scroll to Display name as the new profile header is taller)
         composeTestRule
             .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
+            .performScrollTo()
             .assertIsDisplayed()
 
         // Press back
@@ -79,10 +84,25 @@ class NavigationTest {
         assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
     }
 
+    private fun openDrawer() {
+        val navDrawerNodes = composeTestRule
+            .onAllNodesWithContentDescription(
+                composeTestRule.activity.getString(R.string.navigation_drawer_open),
+            )
+            .fetchSemanticsNodes()
+        if (navDrawerNodes.isNotEmpty()) {
+            composeTestRule.onNodeWithContentDescription(
+                composeTestRule.activity.getString(R.string.navigation_drawer_open),
+            ).performClick()
+        } else {
+            composeTestRule.runOnUiThread {
+                ViewModelProvider(composeTestRule.activity)[MainViewModel::class.java].openDrawer()
+            }
+        }
+    }
+
     private fun navigateToProfile(name: String) {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open),
-        ).performClick()
+        openDrawer()
 
         composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
     }
@@ -95,9 +115,7 @@ class NavigationTest {
     )
 
     private fun navigateToHome() {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open),
-        ).performClick()
+        openDrawer()
 
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
     }
