@@ -45,6 +45,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -56,6 +60,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.colormode.ColorModeInspectorDialog
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
@@ -90,9 +95,10 @@ fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (Str
         ) {
             onProfileClicked(colleagueProfile.userId)
         }
+        DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
+        DrawerItemHeader("Settings")
+        ColorModeDiscoverability()
         if (widgetAddingIsSupported(LocalContext.current)) {
-            DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-            DrawerItemHeader("Settings")
             WidgetDiscoverability()
         }
     }
@@ -238,6 +244,38 @@ fun DrawerPreviewDark() {
                 JetchatDrawerContent({}, {})
             }
         }
+    }
+}
+
+@Composable
+private fun ColorModeDiscoverability() {
+    var showInspector by remember { mutableStateOf(false) }
+    if (showInspector) {
+        ColorModeInspectorDialog { showInspector = false }
+    }
+    Row(
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .clip(CircleShape)
+            .clickable(onClick = {
+                showInspector = true
+            }),
+        verticalAlignment = CenterVertically,
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_color_lens),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            contentDescription = null,
+        )
+        Text(
+            "Color Modes & HDR",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(start = 0.dp),
+        )
     }
 }
 

@@ -107,6 +107,7 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.blur.backdropBlur
+import com.example.compose.jetchat.colormode.ColorModeInspectorDialog
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
@@ -287,6 +288,10 @@ fun ChannelNameBar(
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
+    var colorModeInspectorShown by remember { mutableStateOf(false) }
+    if (colorModeInspectorShown) {
+        ColorModeInspectorDialog { colorModeInspectorShown = false }
+    }
     JetchatAppBar(
         modifier = modifier
             .backdropBlur(
@@ -354,6 +359,21 @@ fun ChannelNameBar(
             }
         },
         actions = {
+            FilledIconButton(
+                onClick = { colorModeInspectorShown = true },
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                modifier = Modifier.size(40.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_color_lens),
+                    contentDescription = "Color Modes & HDR",
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
             FilledIconButton(
                 onClick = { functionalityNotAvailablePopupShown = true },
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -452,7 +472,7 @@ fun Messages(
         val jumpToBottomButtonEnabled by remember {
             derivedStateOf {
                 scrollState.firstVisibleItemIndex != 0 ||
-                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
             }
         }
 
