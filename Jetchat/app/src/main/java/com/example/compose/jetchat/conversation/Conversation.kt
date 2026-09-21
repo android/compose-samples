@@ -81,6 +81,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -179,8 +180,9 @@ fun ConversationContent(
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize().background(color = Color(0xFFEAE9FC))) {
         Scaffold(
+            containerColor = Color(0xFFEAE9FC),
             topBar = {
                 ChannelNameBar(
                     channelName = uiState.channelName,
@@ -194,6 +196,7 @@ fun ConversationContent(
                 .contentWindowInsets
                 .exclude(WindowInsets.navigationBars)
                 .exclude(WindowInsets.ime),
+//            containerColor = Color.Transparent,
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             Column(
@@ -276,7 +279,7 @@ fun ChannelNameBar(
     JetchatAppBar(
         modifier = modifier
             .backdropBlur(
-                tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                tint = Color(0xFFEAE9FC).copy(alpha = 0.5f),
                 elevation = 0.dp,
                 radius = 12.dp,
             ),
@@ -288,12 +291,13 @@ fun ChannelNameBar(
                 Text(
                     text = channelName,
                     style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFF000965)
                 )
                 // Number of members
                 Text(
                     text = stringResource(R.string.members, channelMembers),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color(0xFF444746),
                 )
             }
         },
@@ -412,44 +416,87 @@ fun Message(
     isLastMessageByAuthor: Boolean,
     onVideoClick: (String) -> Unit = {},
 ) {
-    val borderColor = if (isUserMe) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.tertiary
-    }
+    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 12.dp) else Modifier
 
-    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
-    Row(modifier = spaceBetweenAuthors) {
-        if (isLastMessageByAuthor) {
-            // Avatar
-            Image(
+    if (isUserMe) {
+        // Self messages: right-aligned bubble (#97A5FF) with avatar on the right (Figma 191:25321, 191:25358)
+        Row(
+            modifier = spaceBetweenAuthors
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End,
+            verticalAlignment = Alignment.Top,
+        ) {
+            AuthorAndTextMessage(
+                msg = msg,
+                isUserMe = true,
+                isFirstMessageByAuthor = isFirstMessageByAuthor,
+                isLastMessageByAuthor = isLastMessageByAuthor,
+                authorClicked = onAuthorClick,
+                onVideoClick = onVideoClick,
                 modifier = Modifier
-                    .clickable(onClick = { onAuthorClick(msg.author) })
-                    .padding(horizontal = 16.dp)
-                    .size(42.dp)
-                    .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                    .clip(CircleShape)
-                    .align(Alignment.Top),
-                painter = painterResource(id = msg.authorImage),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
+                    .weight(1f, fill = false)
+                    .padding(start = 32.dp),
             )
-        } else {
-            // Space under avatar
-            Spacer(modifier = Modifier.width(74.dp))
+            Spacer(modifier = Modifier.width(12.dp))
+            if (isLastMessageByAuthor) {
+                Image(
+                    modifier = Modifier
+                        .clickable(onClick = { onAuthorClick(msg.author) })
+                        .size(48.dp)
+                        .border(1.5.dp, Color(0xFF97A5FF), CircleShape)
+                        .clip(CircleShape),
+                    painter = painterResource(id = msg.authorImage),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                )
+            } else {
+                Spacer(modifier = Modifier.width(48.dp))
+            }
         }
-        AuthorAndTextMessage(
-            msg = msg,
-            isUserMe = isUserMe,
-            isFirstMessageByAuthor = isFirstMessageByAuthor,
-            isLastMessageByAuthor = isLastMessageByAuthor,
-            authorClicked = onAuthorClick,
-            onVideoClick = onVideoClick,
-            modifier = Modifier
-                .padding(end = 16.dp)
-                .weight(1f),
-        )
+    } else {
+        // Other user messages: left-aligned avatar + pill badge header + bubble (#D5DAFF) (Figma 191:25301, 191:25334)
+        Column(
+            modifier = spaceBetweenAuthors
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        ) {
+            if (isLastMessageByAuthor) {
+                AuthorNameTimestamp(msg = msg, onAuthorClick = onAuthorClick)
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
+            ) {
+                if (isLastMessageByAuthor) {
+                    Image(
+                        modifier = Modifier
+                            .clickable(onClick = { onAuthorClick(msg.author) })
+                            .size(48.dp)
+                            .border(1.5.dp, Color(0xFF1E40FF).copy(alpha = 0.2f), CircleShape)
+                            .clip(CircleShape),
+                        painter = painterResource(id = msg.authorImage),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                    )
+                } else {
+                    Spacer(modifier = Modifier.width(48.dp))
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                AuthorAndTextMessage(
+                    msg = msg,
+                    isUserMe = false,
+                    isFirstMessageByAuthor = isFirstMessageByAuthor,
+                    isLastMessageByAuthor = isLastMessageByAuthor,
+                    authorClicked = onAuthorClick,
+                    onVideoClick = onVideoClick,
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .padding(end = 32.dp),
+                )
+            }
+        }
     }
 }
 
@@ -463,10 +510,10 @@ fun AuthorAndTextMessage(
     modifier: Modifier = Modifier,
     onVideoClick: (String) -> Unit = {},
 ) {
-    Column(modifier = modifier) {
-        if (isLastMessageByAuthor) {
-            AuthorNameTimestamp(msg)
-        }
+    Column(
+        modifier = modifier,
+        horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
+    ) {
         ChatItemBubble(
             message = msg,
             isUserMe = isUserMe,
@@ -484,41 +531,70 @@ fun AuthorAndTextMessage(
 }
 
 @Composable
-private fun AuthorNameTimestamp(msg: Message) {
-    // Combine author and timestamp for a11y.
-    Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
-        Text(
-            text = msg.author,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .alignBy(LastBaseline)
-                .paddingFrom(LastBaseline, after = 8.dp), // Space to 1st bubble
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = msg.timestamp,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.alignBy(LastBaseline),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+private fun AuthorNameTimestamp(
+    msg: Message,
+    onAuthorClick: (String) -> Unit = {},
+) {
+    // Figma name+time pill badge (id=191:25314, 191:25347)
+    // Fill: #EAE9FC + 20% #1E40FF (~#D4D9FC), cornerRadius = 24.dp
+    Surface(
+        shape = RoundedCornerShape(24.dp),
+        color = Color(0xFFD4D9FC),
+        modifier = Modifier
+            .clip(RoundedCornerShape(24.dp))
+            .clickable { onAuthorClick(msg.author) }
+            .semantics(mergeDescendants = true) {},
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = msg.author,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF1E40FF),
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = msg.timestamp,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color(0xFF836FB2),
+            )
+        }
     }
 }
 
-private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
+// Figma 191:25313 / 191:25346: cr=[24.0, 24.0, 24.0, 4.0] for other users
+private val OtherChatBubbleShape = RoundedCornerShape(
+    topStart = 24.dp,
+    topEnd = 24.dp,
+    bottomEnd = 24.dp,
+    bottomStart = 4.dp,
+)
+
+private val SelfChatBubbleShape = RoundedCornerShape(
+    topStart = 24.dp,
+    topEnd = 4.dp,
+    bottomEnd = 24.dp,
+    bottomStart = 24.dp,
+)
 
 @Composable
 fun DayHeader(dayString: String) {
     Row(
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .height(16.dp),
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+            .height(24.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         DayHeaderLine()
         Text(
             text = dayString,
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+            ),
+            color = Color(0xFF000000),
         )
         DayHeaderLine()
     }
@@ -530,25 +606,33 @@ private fun RowScope.DayHeaderLine() {
         modifier = Modifier
             .weight(1f)
             .align(Alignment.CenterVertically),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+        color = Color(0xFF79767F).copy(alpha = 0.45f),
     )
 }
 
 @Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
-
+fun ChatItemBubble(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit,
+    onVideoClick: (String) -> Unit = {},
+) {
+    // Figma speech-bubble fills: #97A5FF for self, #D5DAFF for others
     val backgroundBubbleColor = if (isUserMe) {
-        MaterialTheme.colorScheme.primary
+        Color(0xFF97A5FF)
     } else {
-        MaterialTheme.colorScheme.surfaceVariant
+        Color(0xFFD5DAFF)
     }
+    val bubbleShape = if (isUserMe) SelfChatBubbleShape else OtherChatBubbleShape
 
-    Column {
+    Column(
+        horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
+    ) {
         val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
         if (hasText) {
             Surface(
                 color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                shape = bubbleShape,
             ) {
                 ClickableMessage(
                     message = message,
@@ -564,7 +648,7 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             }
             Surface(
                 color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                shape = bubbleShape,
             ) {
                 Image(
                     painter = painterResource(it),
@@ -581,16 +665,16 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             }
             Surface(
                 color = backgroundBubbleColor,
-                shape = ChatBubbleShape,
+                shape = bubbleShape,
             ) {
                 VideoThumbnail(
                     videoUri = videoUri,
                     onClick = { onVideoClick(videoUri) },
-                    shape = ChatBubbleShape,
+                    shape = bubbleShape,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .clip(ChatBubbleShape),
+                        .clip(bubbleShape),
                 )
             }
         }
@@ -603,13 +687,16 @@ fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String
 
     val styledMessage = messageFormatter(
         text = message.content,
-        primary = isUserMe,
+        primary = false,
     )
 
     ClickableText(
         text = styledMessage,
-        style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
-        modifier = Modifier.padding(16.dp),
+        style = MaterialTheme.typography.bodyLarge.copy(
+            color = Color(0xFF000000),
+            lineHeight = androidx.compose.ui.unit.TextUnit(24f, androidx.compose.ui.unit.TextUnitType.Sp),
+        ),
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         onClick = {
             styledMessage
                 .getStringAnnotations(start = it, end = it)
