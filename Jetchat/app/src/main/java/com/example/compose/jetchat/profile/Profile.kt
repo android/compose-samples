@@ -95,9 +95,9 @@ fun ProfileScreen(
                     .verticalScroll(scrollState),
             ) {
                 ProfileHeader(
-                    scrollState,
-                    userData,
-                    this@BoxWithConstraints.maxHeight,
+                    scrollOffset = { scrollState.value },
+                    data = userData,
+                    containerHeight = this@BoxWithConstraints.maxHeight,
                 )
                 UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
             }
@@ -175,21 +175,16 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 }
 
 @Composable
-private fun ProfileHeader(scrollState: ScrollState, data: ProfileScreenState, containerHeight: Dp) {
-    val offset = (scrollState.value / 2)
-    val offsetDp = with(LocalDensity.current) { offset.toDp() }
-
+private fun ProfileHeader(scrollOffset: () -> Int, data: ProfileScreenState, containerHeight: Dp) {
     data.photo?.let {
         Image(
             modifier = Modifier
                 .heightIn(max = containerHeight / 2)
                 .fillMaxWidth()
-                // TODO: Update to use offset to avoid recomposition
-                .padding(
-                    start = 16.dp,
-                    top = offsetDp,
-                    end = 16.dp,
-                )
+                .padding(horizontal = 16.dp)
+                .offset {
+                    androidx.compose.ui.unit.IntOffset(x = 0, y = scrollOffset() / 2)
+                }
                 .clip(CircleShape),
             painter = painterResource(id = it),
             contentScale = ContentScale.Crop,

@@ -359,7 +359,9 @@ private fun VideoPlayerProgressSlider(
 ) {
     val currentPositionMs = progressState.currentPositionMs.coerceAtLeast(0L).toInt()
     val durationMs = progressState.durationMs.coerceAtLeast(1L).toInt()
-    val formattedTime = remember(currentPositionMs, durationMs) {
+    val currentPositionSeconds = currentPositionMs / 1000
+    val durationSeconds = durationMs / 1000
+    val formattedTime = remember(currentPositionSeconds, durationSeconds) {
         "${formatTime(currentPositionMs)} / ${formatTime(durationMs)}"
     }
     Text(

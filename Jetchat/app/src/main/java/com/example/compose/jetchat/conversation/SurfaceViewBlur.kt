@@ -23,16 +23,13 @@ import android.view.BlurRegion
 import android.view.RoundedRectBlurRegion
 import android.view.SurfaceView
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.onLayoutRectChanged
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.requireDensity
+import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.spatial.RelativeLayoutBounds
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntRect
@@ -42,9 +39,10 @@ import java.util.WeakHashMap
 /**
  * Data specification for a blur region placed over a SurfaceView.
  */
+@Immutable
 data class BlurRegionSpec(
     val id: String,
-    val boundsInSurface: RectF = RectF(),
+    val boundsInSurface: Rect = Rect.Zero,
     val boundsInWindow: IntRect = IntRect.Zero,
     val cornerRadiusPx: Float = 0f,
     val blurRadiusPx: Float = 50f,
@@ -94,9 +92,14 @@ object SurfaceViewBlurHelper {
 
         val blurRegions = ArrayList<BlurRegion>(regionList.size)
         for (spec in regionList) {
-            if (spec.boundsInSurface.width() <= 0f || spec.boundsInSurface.height() <= 0f) continue
+            if (spec.boundsInSurface.width <= 0f || spec.boundsInSurface.height <= 0f) continue
             val roundedRectRegion = RoundedRectBlurRegion().apply {
-                bounds = spec.boundsInSurface
+                bounds = RectF(
+                    spec.boundsInSurface.left,
+                    spec.boundsInSurface.top,
+                    spec.boundsInSurface.right,
+                    spec.boundsInSurface.bottom,
+                )
                 setCornerRadii(spec.cornerRadiusPx.coerceAtLeast(0f))
                 alpha = spec.alpha.coerceIn(0f, 1f)
                 blurRadius = spec.blurRadiusPx.coerceAtLeast(0f)
@@ -112,7 +115,6 @@ object SurfaceViewBlurHelper {
  * enabling SurfaceView#setBlurRegions to blur the region underneath this control.
  * This modifier doesn't do blurring itself.
  */
-@Composable
 fun Modifier.registerBlurRegion(
     id: String,
     cornerRadius: Dp,
@@ -120,38 +122,48 @@ fun Modifier.registerBlurRegion(
     alpha: Float = 1.0f,
     onUpdateRegion: (BlurRegionSpec) -> Unit,
     onRemoveRegion: (String) -> Unit,
-): Modifier {
-    val density = LocalDensity.current
-    val cornerRadiusPx = remember(density, cornerRadius) { with(density) { cornerRadius.toPx() } }
-    val blurRadiusPx = remember(density, blurRadius) { with(density) { blurRadius.toPx() } }
-
-    val currentOnUpdateRegion by rememberUpdatedState(onUpdateRegion)
-    val currentOnRemoveRegion by rememberUpdatedState(onRemoveRegion)
-
-    DisposableEffect(id) {
-        onDispose {
-            currentOnRemoveRegion(id)
+): Modifier = this
+    .then(
+        RegisterBlurRegionLifecycleElement(
+            id = id,
+            onRemoveRegion = onRemoveRegion,
+        ),
+    )
+    .onLayoutRectChanged(throttleMillis = 0, debounceMillis = 0) { bounds: RelativeLayoutBounds ->
+        val boxInWindow = bounds.boundsInWindow
+        if (boxInWindow.width > 0 && boxInWindow.height > 0) {
+            onUpdateRegion(
+                BlurRegionSpec(
+                    id = id,
+                    boundsInWindow = boxInWindow,
+                    cornerRadiusPx = cornerRadius.value,
+                    blurRadiusPx = blurRadius.value,
+                    alpha = alpha,
+                ),
+            )
         }
     }
 
-    var lastBounds by remember(id) { mutableStateOf<IntRect?>(null) }
+private data class RegisterBlurRegionLifecycleElement(val id: String, val onRemoveRegion: (String) -> Unit) :
+    ModifierNodeElement<RegisterBlurRegionLifecycleNode>() {
+    override fun create(): RegisterBlurRegionLifecycleNode = RegisterBlurRegionLifecycleNode(id, onRemoveRegion)
 
-    return this.onLayoutRectChanged(throttleMillis = 0, debounceMillis = 0) { bounds: RelativeLayoutBounds ->
-        val boxInWindow = bounds.boundsInWindow
-        if (boxInWindow.width > 0 && boxInWindow.height > 0) {
-            val prev = lastBounds
-            if (prev == null || prev != boxInWindow) {
-                lastBounds = boxInWindow
-                currentOnUpdateRegion(
-                    BlurRegionSpec(
-                        id = id,
-                        boundsInWindow = boxInWindow,
-                        cornerRadiusPx = cornerRadiusPx,
-                        blurRadiusPx = blurRadiusPx,
-                        alpha = alpha,
-                    ),
-                )
-            }
+    override fun update(node: RegisterBlurRegionLifecycleNode) {
+        if (node.id != id) {
+            node.onRemoveRegion(node.id)
+            node.id = id
         }
+        node.onRemoveRegion = onRemoveRegion
+    }
+
+    override fun InspectorInfo.inspectableProperties() {
+        name = "registerBlurRegion"
+        properties["id"] = id
+    }
+}
+
+private class RegisterBlurRegionLifecycleNode(var id: String, var onRemoveRegion: (String) -> Unit) : Modifier.Node() {
+    override fun onDetach() {
+        onRemoveRegion(id)
     }
 }

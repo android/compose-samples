@@ -90,7 +90,11 @@ fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (Str
         ) {
             onProfileClicked(colleagueProfile.userId)
         }
-        if (widgetAddingIsSupported(LocalContext.current)) {
+        val context = LocalContext.current
+        val isWidgetAddingSupported = androidx.compose.runtime.remember(context) {
+            widgetAddingIsSupported(context)
+        }
+        if (isWidgetAddingSupported) {
             DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
             DrawerItemHeader("Settings")
             WidgetDiscoverability()

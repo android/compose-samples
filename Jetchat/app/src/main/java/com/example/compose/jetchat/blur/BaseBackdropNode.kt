@@ -57,6 +57,8 @@ abstract class BaseBackdropNode(
     private var renderNode: RenderNode? = null
     private val androidOutline = AndroidOutline()
     private val tintPaint = Paint()
+    private val reusableOutlinePath = AndroidPath()
+    private val reusableCornerRadii = FloatArray(8)
 
     private var lastWidth = -1
     private var lastHeight = -1
@@ -138,7 +140,14 @@ abstract class BaseBackdropNode(
 
                 // Map Compose Shape to Android Outline
                 val composeOutline = shape.createOutline(size, layoutDirection, this)
-                updateAndroidOutline(androidOutline, composeOutline, widthPx, heightPx)
+                updateAndroidOutline(
+                    androidOutline = androidOutline,
+                    composeOutline = composeOutline,
+                    width = widthPx,
+                    height = heightPx,
+                    reusablePath = reusableOutlinePath,
+                    reusableRadii = reusableCornerRadii,
+                )
 
                 if (elevationPx > 0f) {
                     node.elevation = elevationPx
@@ -186,7 +195,14 @@ abstract class BaseBackdropNode(
 /**
  * Helper to populate an [AndroidOutline] from a Compose [Outline].
  */
-private fun updateAndroidOutline(androidOutline: AndroidOutline, composeOutline: Outline, width: Int, height: Int) {
+private fun updateAndroidOutline(
+    androidOutline: AndroidOutline,
+    composeOutline: Outline,
+    width: Int,
+    height: Int,
+    reusablePath: AndroidPath,
+    reusableRadii: FloatArray,
+) {
     androidOutline.alpha = 1.0f
     when (composeOutline) {
         is Outline.Rectangle -> {
@@ -205,31 +221,29 @@ private fun updateAndroidOutline(androidOutline: AndroidOutline, composeOutline:
                 // Uniform corner radii: use setRoundRect with scalar radius
                 androidOutline.setRoundRect(0, 0, width, height, radius)
             } else {
-                // Complex corner radii: convert to Path
-                val path = AndroidPath().apply {
-                    addRoundRect(
-                        0f,
-                        0f,
-                        width.toFloat(),
-                        height.toFloat(),
-                        floatArrayOf(
-                            rect.topLeftCornerRadius.x,
-                            rect.topLeftCornerRadius.y,
-                            rect.topRightCornerRadius.x,
-                            rect.topRightCornerRadius.y,
-                            rect.bottomRightCornerRadius.x,
-                            rect.bottomRightCornerRadius.y,
-                            rect.bottomLeftCornerRadius.x,
-                            rect.bottomLeftCornerRadius.y,
-                        ),
-                        AndroidPath.Direction.CW,
-                    )
-                }
+                // Complex corner radii: reuse Path buffer with rewind()
+                reusablePath.rewind()
+                reusableRadii[0] = rect.topLeftCornerRadius.x
+                reusableRadii[1] = rect.topLeftCornerRadius.y
+                reusableRadii[2] = rect.topRightCornerRadius.x
+                reusableRadii[3] = rect.topRightCornerRadius.y
+                reusableRadii[4] = rect.bottomRightCornerRadius.x
+                reusableRadii[5] = rect.bottomRightCornerRadius.y
+                reusableRadii[6] = rect.bottomLeftCornerRadius.x
+                reusableRadii[7] = rect.bottomLeftCornerRadius.y
+                reusablePath.addRoundRect(
+                    0f,
+                    0f,
+                    width.toFloat(),
+                    height.toFloat(),
+                    reusableRadii,
+                    AndroidPath.Direction.CW,
+                )
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    androidOutline.setPath(path)
+                    androidOutline.setPath(reusablePath)
                 } else {
                     @Suppress("DEPRECATION")
-                    androidOutline.setConvexPath(path)
+                    androidOutline.setConvexPath(reusablePath)
                 }
             }
         }

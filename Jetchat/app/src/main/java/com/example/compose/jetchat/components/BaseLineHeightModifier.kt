@@ -19,10 +19,12 @@ package com.example.compose.jetchat.components
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
-import androidx.compose.ui.layout.LayoutModifier
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.node.LayoutModifierNode
+import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 
@@ -39,10 +41,24 @@ import androidx.compose.ui.unit.Dp
  * This modifier can be used to distribute multiple text elements using a certain distance between
  * baselines.
  */
-data class BaselineHeightModifier(val heightFromBaseline: Dp) : LayoutModifier {
+private data class BaselineHeightElement(val heightFromBaseline: Dp) : ModifierNodeElement<BaselineHeightNode>() {
+    override fun create(): BaselineHeightNode = BaselineHeightNode(heightFromBaseline)
+
+    override fun update(node: BaselineHeightNode) {
+        node.heightFromBaseline = heightFromBaseline
+    }
+
+    override fun InspectorInfo.inspectableProperties() {
+        name = "baselineHeight"
+        value = heightFromBaseline
+    }
+}
+
+private class BaselineHeightNode(var heightFromBaseline: Dp) :
+    Modifier.Node(),
+    LayoutModifierNode {
 
     override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {
-
         val textPlaceable = measurable.measure(constraints)
         val firstBaseline = textPlaceable[FirstBaseline]
         val lastBaseline = textPlaceable[LastBaseline]
@@ -55,4 +71,4 @@ data class BaselineHeightModifier(val heightFromBaseline: Dp) : LayoutModifier {
     }
 }
 
-fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier = this.then(BaselineHeightModifier(heightFromBaseline))
+fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier = this.then(BaselineHeightElement(heightFromBaseline))

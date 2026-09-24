@@ -88,13 +88,21 @@ import kotlinx.coroutines.withContext
 const val DEFAULT_VIDEO_URL =
     "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_5MB.mp4"
 
+private val DefaultVideoShape = RoundedCornerShape(16.dp)
+private val VideoThumbnailGradient = Brush.verticalGradient(
+    colors = listOf(
+        Color(0xFF262638),
+        Color(0xFF14141E),
+    ),
+)
+
 /**
  * Lightweight video thumbnail displayed inside scrollable lists (LazyColumn).
  * Shows an extracted video frame or styled gradient placeholder with a centered play icon.
  * Clicking triggers [onClick] to navigate to the full-screen video player screen.
  */
 @Composable
-fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(16.dp)) {
+fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = Modifier, shape: Shape = DefaultVideoShape) {
     val context = LocalContext.current
     val resolvedUri = remember(videoUri) { resolveVideoUri(videoUri) }
 
@@ -121,14 +129,7 @@ fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = M
     Box(
         modifier = modifier
             .clip(shape)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF262638),
-                        Color(0xFF14141E),
-                    ),
-                ),
-            )
+            .background(brush = VideoThumbnailGradient)
             .clickable(
                 role = Role.Button,
                 onClickLabel = stringResource(R.string.play_video),
@@ -254,7 +255,7 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
                 if (right > left && bottom > top) {
                     val cornerRadius = spec.cornerRadiusPx
                     spec.copy(
-                        boundsInSurface = RectF(left, top, right, bottom),
+                        boundsInSurface = androidx.compose.ui.geometry.Rect(left, top, right, bottom),
                         cornerRadiusPx = cornerRadius,
                     )
                 } else {
@@ -387,7 +388,7 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
  * Displays a thumbnail in place and launches the fullscreen player screen when tapped.
  */
 @Composable
-fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boolean = false, shape: Shape = RoundedCornerShape(16.dp)) {
+fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boolean = false, shape: Shape = DefaultVideoShape) {
     var isPlayerOpen by rememberSaveable { mutableStateOf(autoPlay) }
 
     if (isPlayerOpen) {

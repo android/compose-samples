@@ -709,6 +709,10 @@ fun ExtendedSelectorInnerButton(text: String, onClick: () -> Unit, selected: Boo
 
 @Composable
 fun EmojiTable(onTextAdded: (String) -> Unit, modifier: Modifier = Modifier) {
+    val emojiTextStyle = LocalTextStyle.current.copy(
+        fontSize = 18.sp,
+        textAlign = TextAlign.Center,
+    )
     Column(modifier.fillMaxWidth()) {
         repeat(4) { x ->
             Row(
@@ -723,10 +727,7 @@ fun EmojiTable(onTextAdded: (String) -> Unit, modifier: Modifier = Modifier) {
                             .sizeIn(minWidth = 42.dp, minHeight = 42.dp)
                             .padding(8.dp),
                         text = emoji,
-                        style = LocalTextStyle.current.copy(
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                        ),
+                        style = emojiTextStyle,
                     )
                 }
             }
