@@ -22,13 +22,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
@@ -84,25 +81,10 @@ class NavigationTest {
         assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
     }
 
-    private fun openDrawer() {
-        val navDrawerNodes = composeTestRule
-            .onAllNodesWithContentDescription(
-                composeTestRule.activity.getString(R.string.navigation_drawer_open),
-            )
-            .fetchSemanticsNodes()
-        if (navDrawerNodes.isNotEmpty()) {
-            composeTestRule.onNodeWithContentDescription(
-                composeTestRule.activity.getString(R.string.navigation_drawer_open),
-            ).performClick()
-        } else {
-            composeTestRule.runOnUiThread {
-                ViewModelProvider(composeTestRule.activity)[MainViewModel::class.java].openDrawer()
-            }
-        }
-    }
-
     private fun navigateToProfile(name: String) {
-        openDrawer()
+        composeTestRule.onNodeWithContentDescription(
+            composeTestRule.activity.getString(R.string.navigation_drawer_open),
+        ).performClick()
 
         composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
     }
@@ -115,7 +97,9 @@ class NavigationTest {
     )
 
     private fun navigateToHome() {
-        openDrawer()
+        composeTestRule.onNodeWithContentDescription(
+            composeTestRule.activity.getString(R.string.navigation_drawer_open),
+        ).performClick()
 
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
     }

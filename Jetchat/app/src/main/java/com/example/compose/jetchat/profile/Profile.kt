@@ -16,13 +16,11 @@
 
 package com.example.compose.jetchat.profile
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,7 +52,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
@@ -63,11 +60,9 @@ import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.example.compose.jetchat.theme.ProfileTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun ProfileScreen(userData: ProfileScreenState) {
+fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
@@ -75,29 +70,27 @@ fun ProfileScreen(userData: ProfileScreenState) {
 
     val scrollState = rememberScrollState()
 
-    ProfileTheme {
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize(),
-        ) {
-            Surface {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.surfaceContainer)
-                        .verticalScroll(scrollState),
-                ) {
-                    ProfileHeader(userData)
-                    UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
-                }
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                    .verticalScroll(scrollState),
+            ) {
+                ProfileHeader(userData)
+                UserInfoFields(userData)
             }
         }
     }
 }
 
 @Composable
-private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
-    Column {
+private fun UserInfoFields(userData: ProfileScreenState) {
+    Column(modifier = Modifier.navigationBarsPadding()) {
         Spacer(modifier = Modifier.height(40.dp))
 
         NameAndPosition(userData)
@@ -111,10 +104,6 @@ private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
         userData.timeZone?.let {
             ProfileProperty(stringResource(R.string.timezone), userData.timeZone)
         }
-
-        // Add a spacer that always shows part (320.dp) of the fields list regardless of the device,
-        // in order to always leave some content at the top.
-        Spacer(Modifier.height((containerHeight - 320.dp).coerceAtLeast(0.dp)))
     }
 }
 
@@ -156,16 +145,13 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 
 @Composable
 private fun ProfileHeader(data: ProfileScreenState) {
-
     data.photo?.let {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(0.96f)
                 .blur {
                     radius = BlurRadiusSpec.verticalGradient(
                         listOf(
-                            BlurStop(0.0f, 0.dp),
                             BlurStop(0.5f, 0.dp),
                             BlurStop(1.0f, 32.dp),
                         ),
@@ -173,7 +159,7 @@ private fun ProfileHeader(data: ProfileScreenState) {
                     edgeTreatment = BlurredEdgeTreatment.Unbounded
                 },
             painter = painterResource(id = it),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.FillWidth,
             contentDescription = null,
         )
     }
@@ -186,7 +172,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = label,
             modifier = Modifier.baselineHeight(24.dp),
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         val style = if (isLink) {

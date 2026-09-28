@@ -44,7 +44,6 @@ class ProfileFragment : Fragment() {
         viewModel.setUserId(userId)
     }
 
-    @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         ComposeView(inflater.context).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -61,6 +60,7 @@ class ProfileFragment : Fragment() {
                     } else {
                         ProfileScreen(
                             userData = userData!!,
+                            onNavIconPressed = { activityViewModel.openDrawer() },
                         )
                     }
                 }

@@ -27,13 +27,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.ui.unit.sp
-import com.example.compose.jetchat.R
 
 val JetchatDarkColorScheme = darkColorScheme(
     primary = Blue80,
@@ -90,13 +83,8 @@ val JetchatLightColorScheme = lightColorScheme(
     inverseOnSurface = Grey95,
     surfaceVariant = BlueGrey90,
     onSurfaceVariant = BlueGrey30,
+    surfaceContainer = BlueGrey95,
     outline = BlueGrey50,
-)
-
-val ProfileColorScheme = JetchatLightColorScheme.copy(
-    surfaceContainer = ProfileSurface,
-    onSurface = ProfileOnSurface,
-    onSurfaceVariant = ProfileOnSurfaceVariant,
 )
 
 @SuppressLint("NewApi")
@@ -120,14 +108,6 @@ fun JetchatTheme(isDarkTheme: Boolean = isSystemInDarkTheme(), isDynamicColor: B
     MaterialTheme(
         colorScheme = myColorScheme,
         typography = JetchatTypography,
-        content = content,
-    )
-}
-@Composable
-fun ProfileTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = ProfileColorScheme,
-        typography = ProfileTypography,
         content = content,
     )
 }
