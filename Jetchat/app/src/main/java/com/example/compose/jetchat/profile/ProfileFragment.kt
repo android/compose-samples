@@ -59,7 +59,7 @@ class ProfileFragment : Fragment() {
                         ProfileError()
                     } else {
                         ProfileScreen(
-                            userData = userData!!
+                            userData = userData!!,
                         )
                     }
                 }
