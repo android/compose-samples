@@ -59,8 +59,7 @@ class ProfileFragment : Fragment() {
                         ProfileError()
                     } else {
                         ProfileScreen(
-                            userData = userData!!,
-                            onNavIconPressed = { activityViewModel.openDrawer() },
+                            userData = userData!!
                         )
                     }
                 }

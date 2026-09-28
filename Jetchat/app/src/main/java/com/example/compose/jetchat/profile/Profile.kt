@@ -62,7 +62,7 @@ import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Composable
-fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: () -> Unit = { }) {
+fun ProfileScreen(userData: ProfileScreenState) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
