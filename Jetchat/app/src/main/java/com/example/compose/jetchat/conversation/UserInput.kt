@@ -115,11 +115,11 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.rememberUserInputGlowMeshGradientPainter
 import com.example.compose.jetchat.components.rememberUserInputSparkMeshGradientPainter
 import com.example.compose.jetchat.video.VideoPlayer
-import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
