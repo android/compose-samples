@@ -20,15 +20,24 @@ package com.example.compose.jetchat.conversation
 
 import android.content.ClipDescription
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,8 +53,8 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -53,11 +62,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -67,8 +74,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -82,25 +91,29 @@ import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.blur.BlurRadiusSpec
 import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.components.rememberHeartReactionMeshGradientPainter
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.video.FullScreenVideoPlayer
@@ -180,9 +193,9 @@ fun ConversationContent(
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
 
-    Box(modifier = modifier.fillMaxSize().background(color = Color(0xFFEAE9FC))) {
+    Box(modifier = modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.surfaceContainer)) {
         Scaffold(
-            containerColor = Color(0xFFEAE9FC),
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             topBar = {
                 ChannelNameBar(
                     channelName = uiState.channelName,
@@ -196,7 +209,6 @@ fun ConversationContent(
                 .contentWindowInsets
                 .exclude(WindowInsets.navigationBars)
                 .exclude(WindowInsets.ime),
-//            containerColor = Color.Transparent,
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             Column(
@@ -279,7 +291,7 @@ fun ChannelNameBar(
     JetchatAppBar(
         modifier = modifier
             .backdropBlur(
-                tint = Color(0xFFEAE9FC).copy(alpha = 0.5f),
+                tint = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
                 elevation = 0.dp,
                 radius = 12.dp,
             ),
@@ -291,13 +303,13 @@ fun ChannelNameBar(
                 Text(
                     text = channelName,
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color(0xFF000965)
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 // Number of members
                 Text(
                     text = stringResource(R.string.members, channelMembers),
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF444746),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
@@ -419,12 +431,12 @@ fun Message(
     val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 12.dp) else Modifier
 
     if (isUserMe) {
-        // Self messages: right-aligned bubble (#97A5FF) with avatar on the right (Figma 191:25321, 191:25358)
+        // Self messages: right-aligned bubble with avatar on the right (Figma 191:25321)
         Row(
             modifier = spaceBetweenAuthors
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End,
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.Top,
         ) {
             AuthorAndTextMessage(
@@ -444,7 +456,7 @@ fun Message(
                     modifier = Modifier
                         .clickable(onClick = { onAuthorClick(msg.author) })
                         .size(48.dp)
-                        .border(1.5.dp, Color(0xFF97A5FF), CircleShape)
+                        .border(1.5.dp, MaterialTheme.colorScheme.inversePrimary, CircleShape)
                         .clip(CircleShape),
                     painter = painterResource(id = msg.authorImage),
                     contentScale = ContentScale.Crop,
@@ -455,7 +467,7 @@ fun Message(
             }
         }
     } else {
-        // Other user messages: left-aligned avatar + pill badge header + bubble (#D5DAFF) (Figma 191:25301, 191:25334)
+        // Other user messages: left-aligned avatar + pill badge header + bubble (Figma 191:25301)
         Column(
             modifier = spaceBetweenAuthors
                 .fillMaxWidth()
@@ -474,7 +486,7 @@ fun Message(
                         modifier = Modifier
                             .clickable(onClick = { onAuthorClick(msg.author) })
                             .size(48.dp)
-                            .border(1.5.dp, Color(0xFF1E40FF).copy(alpha = 0.2f), CircleShape)
+                            .border(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), CircleShape)
                             .clip(CircleShape),
                         painter = painterResource(id = msg.authorImage),
                         contentScale = ContentScale.Crop,
@@ -531,15 +543,11 @@ fun AuthorAndTextMessage(
 }
 
 @Composable
-private fun AuthorNameTimestamp(
-    msg: Message,
-    onAuthorClick: (String) -> Unit = {},
-) {
+private fun AuthorNameTimestamp(msg: Message, onAuthorClick: (String) -> Unit = {}) {
     // Figma name+time pill badge (id=191:25314, 191:25347)
-    // Fill: #EAE9FC + 20% #1E40FF (~#D4D9FC), cornerRadius = 24.dp
     Surface(
         shape = RoundedCornerShape(24.dp),
-        color = Color(0xFFD4D9FC),
+        color = MaterialTheme.colorScheme.secondaryContainer,
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
             .clickable { onAuthorClick(msg.author) }
@@ -552,13 +560,13 @@ private fun AuthorNameTimestamp(
             Text(
                 text = msg.author,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF1E40FF),
+                color = MaterialTheme.colorScheme.primary,
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = msg.timestamp,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF836FB2),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
         }
     }
@@ -592,9 +600,9 @@ fun DayHeader(dayString: String) {
             text = dayString,
             modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold,
             ),
-            color = Color(0xFF000000),
+            color = MaterialTheme.colorScheme.onSurface,
         )
         DayHeaderLine()
     }
@@ -606,24 +614,44 @@ private fun RowScope.DayHeaderLine() {
         modifier = Modifier
             .weight(1f)
             .align(Alignment.CenterVertically),
-        color = Color(0xFF79767F).copy(alpha = 0.45f),
+        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f),
     )
 }
 
 @Composable
-fun ChatItemBubble(
-    message: Message,
-    isUserMe: Boolean,
-    authorClicked: (String) -> Unit,
-    onVideoClick: (String) -> Unit = {},
-) {
-    // Figma speech-bubble fills: #97A5FF for self, #D5DAFF for others
+fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
+    var isLiked by rememberSaveable(
+        message.timestamp,
+        message.author,
+        message.content,
+    ) {
+        mutableStateOf(false)
+    }
+
+    var likeAnimationTrigger by remember { mutableIntStateOf(0) }
+    val haptic = LocalHapticFeedback.current
+    val heartMeshPainter = rememberHeartReactionMeshGradientPainter()
+
     val backgroundBubbleColor = if (isUserMe) {
-        Color(0xFF97A5FF)
+        MaterialTheme.colorScheme.inversePrimary
     } else {
-        Color(0xFFD5DAFF)
+        MaterialTheme.colorScheme.primaryContainer
     }
     val bubbleShape = if (isUserMe) SelfChatBubbleShape else OtherChatBubbleShape
+    val bubbleBorder = if (isLiked) {
+        BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+    } else {
+        null
+    }
+
+    val toggleLiked = {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        val nextLiked = !isLiked
+        isLiked = nextLiked
+        if (nextLiked) {
+            likeAnimationTrigger++
+        }
+    }
 
     Column(
         horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
@@ -631,14 +659,31 @@ fun ChatItemBubble(
         val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
         if (hasText) {
             Surface(
-                color = backgroundBubbleColor,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
-                ClickableMessage(
-                    message = message,
-                    isUserMe = isUserMe,
-                    authorClicked = authorClicked,
-                )
+                Box(
+                    modifier = if (isLiked) {
+                        Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
+                    } else {
+                        Modifier
+                    },
+                ) {
+                    ClickableMessage(
+                        message = message,
+                        isUserMe = isUserMe,
+                        authorClicked = authorClicked,
+                        isLiked = isLiked,
+                        likeAnimationTrigger = likeAnimationTrigger,
+                        onDoubleClick = toggleLiked,
+                    )
+                }
             }
         }
 
@@ -647,15 +692,31 @@ fun ChatItemBubble(
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Surface(
-                color = backgroundBubbleColor,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
-                Image(
-                    painter = painterResource(it),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
-                    contentDescription = stringResource(id = R.string.attached_image),
-                )
+                Box(
+                    modifier = if (isLiked) {
+                        Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
+                    } else {
+                        Modifier
+                    },
+                ) {
+                    Image(
+                        painter = painterResource(it),
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .padding(if (isLiked) 8.dp else 0.dp)
+                            .size(160.dp),
+                        contentDescription = stringResource(id = R.string.attached_image),
+                    )
+                }
             }
         }
 
@@ -664,8 +725,12 @@ fun ChatItemBubble(
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Surface(
-                color = backgroundBubbleColor,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
                 VideoThumbnail(
                     videoUri = videoUri,
@@ -678,11 +743,43 @@ fun ChatItemBubble(
                 )
             }
         }
+
+        // Liked reaction badge attached to bubble corner
+        this@Column.AnimatedVisibility(
+            visible = isLiked,
+            enter = scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) + fadeIn(),
+            exit = scaleOut() + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.End)
+                .offset(y = (-8).dp)
+                .padding(end = 4.dp),
+        ) {
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surface,
+                shadowElevation = 2.dp,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f)),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("❤️", fontSize = 12.sp)
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
+fun ClickableMessage(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit,
+    isLiked: Boolean = false,
+    likeAnimationTrigger: Int = 0,
+    onDoubleClick: () -> Unit = {},
+) {
     val uriHandler = LocalUriHandler.current
 
     val styledMessage = messageFormatter(
@@ -690,25 +787,59 @@ fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String
         primary = false,
     )
 
-    ClickableText(
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    // Text bounce animation when message is liked
+    val textScale = remember { Animatable(1f) }
+
+    LaunchedEffect(likeAnimationTrigger) {
+        if (likeAnimationTrigger > 0 && isLiked) {
+            textScale.animateTo(
+                targetValue = 1.12f,
+                animationSpec = tween(durationMillis = 120, easing = FastOutSlowInEasing),
+            )
+            textScale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMedium,
+                ),
+            )
+        }
+    }
+
+    Text(
         text = styledMessage,
         style = MaterialTheme.typography.bodyLarge.copy(
-            color = Color(0xFF000000),
-            lineHeight = androidx.compose.ui.unit.TextUnit(24f, androidx.compose.ui.unit.TextUnitType.Sp),
+            color = MaterialTheme.colorScheme.onSurface,
         ),
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-        onClick = {
-            styledMessage
-                .getStringAnnotations(start = it, end = it)
-                .firstOrNull()
-                ?.let { annotation ->
-                    when (annotation.tag) {
-                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
-                        else -> Unit
-                    }
-                }
-        },
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .graphicsLayer {
+                scaleX = textScale.value
+                scaleY = textScale.value
+            }
+            .pointerInput(styledMessage) {
+                detectTapGestures(
+                    onDoubleTap = { onDoubleClick() },
+                    onTap = { offset ->
+                        layoutResult?.let { layout ->
+                            val position = layout.getOffsetForPosition(offset)
+                            styledMessage
+                                .getStringAnnotations(start = position, end = position)
+                                .firstOrNull()
+                                ?.let { annotation ->
+                                    when (annotation.tag) {
+                                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
+                                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
+                                        else -> Unit
+                                    }
+                                }
+                        }
+                    },
+                )
+            },
+        onTextLayout = { layoutResult = it },
     )
 }
 

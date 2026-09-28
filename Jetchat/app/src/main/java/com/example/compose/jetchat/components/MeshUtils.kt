@@ -181,6 +181,39 @@ fun rememberUserInputGlowMeshGradientPainter(): MeshGradientPainter {
 }
 
 /**
+ * Heart reaction mesh gradient for liked chat speech bubbles (Figma node 268:29966).
+ * Vibrant coral, blush, hot pink, and lavender tones.
+ */
+@Composable
+fun rememberHeartReactionMeshGradientPainter(): MeshGradientPainter {
+    return remember {
+        MeshGradientPainter(
+            rows = 2,
+            columns = 3,
+            hasBicubicColor = true,
+        ) {
+            // Row 0 (top edge, y = 0.0f)
+            setVertex(0, 0, Offset(0.0000f, 0.0000f), Color(0xFFFF6B6B))
+            setVertex(0, 1, Offset(0.3300f, 0.0000f), Color(0xFFFFD6D6))
+            setVertex(0, 2, Offset(0.6700f, 0.0000f), Color(0xFFE8C3FF))
+            setVertex(0, 3, Offset(1.0000f, 0.0000f), Color(0xFFE396FF))
+
+            // Row 1 (mid, y ~ 0.33f - 0.50f)
+            setVertex(1, 0, Offset(0.0000f, 0.3300f), Color(0xFFFFAAEA))
+            setVertex(1, 1, Offset(0.3300f, 0.3300f), Color(0xFFFF6060))
+            setVertex(1, 2, Offset(0.6700f, 0.3300f), Color(0xFFFFBCBC))
+            setVertex(1, 3, Offset(1.0000f, 0.5000f), Color(0xFFFF2088))
+
+            // Row 2 (bottom edge, y = 1.0f)
+            setVertex(2, 0, Offset(0.0000f, 1.0000f), Color(0xFFFFFFFF))
+            setVertex(2, 1, Offset(0.3300f, 1.0000f), Color(0xFFD0BEF9))
+            setVertex(2, 2, Offset(0.6637f, 1.0000f), Color(0xFFFFA298))
+            setVertex(2, 3, Offset(1.0000f, 1.0000f), Color(0xFFFF9BEB))
+        }
+    }
+}
+
+/**
  * A small static mesh gradient for the Gemini spark button: a pink → purple → blue diagonal
  * built from a 2x2-cell mesh (3x3 vertices) with bicubic colour blending. This reproduces the
  * Figma diagonal fill without a linear gradient, keeping the screen mesh-only.

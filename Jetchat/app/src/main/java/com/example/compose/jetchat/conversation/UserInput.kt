@@ -46,6 +46,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -75,6 +76,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
@@ -89,7 +91,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -97,35 +98,28 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.semantics.text
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.video.VideoPlayer
 import com.example.compose.jetchat.components.rememberUserInputGlowMeshGradientPainter
 import com.example.compose.jetchat.components.rememberUserInputSparkMeshGradientPainter
-import com.example.compose.jetchat.theme.KarlaFontFamily
+import com.example.compose.jetchat.video.VideoPlayer
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
@@ -200,7 +194,7 @@ fun UserInput(
 
     val glowMeshPainter = rememberUserInputGlowMeshGradientPainter()
 
-    val surfaceColor = Color(0xFFEAE9FC)
+    val surfaceColor = MaterialTheme.colorScheme.surfaceContainer
     val sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null
     val isGlowActive = isRecordingActive || textState.text.contains("@gemini", ignoreCase = true)
 
@@ -221,25 +215,18 @@ fun UserInput(
                 Box(
                     modifier = Modifier
                         .matchParentSize()
-                        .layout { measurable, constraints ->
-                            val topExpand = 185.dp.roundToPx()
-                            val bottomExpand = 68.dp.roundToPx()
-                            val horizontalExpand = 76.dp.roundToPx()
-                            val expandedWidth = constraints.maxWidth + horizontalExpand * 2
-                            val expandedHeight = constraints.maxHeight + topExpand + bottomExpand
-                            val placeable = measurable.measure(
-                                Constraints.fixed(expandedWidth, expandedHeight),
-                            )
-                            layout(constraints.maxWidth, constraints.maxHeight) {
-                                placeable.place(-horizontalExpand, -topExpand)
-                            }
+                        .graphicsLayer {
+                            alpha = glowAlpha
+                            scaleX = 1.38f
+                            scaleY = 2.85f
+                            translationY = -58.dp.toPx()
                         }
-                        .graphicsLayer { alpha = glowAlpha }
                         .paint(glowMeshPainter, contentScale = ContentScale.FillBounds),
                 )
             }
 
             val cardShape = RoundedCornerShape(48.dp)
+
             Surface(
                 shape = cardShape,
                 color = surfaceColor,
@@ -258,17 +245,17 @@ fun UserInput(
                                 elevation = 16.dp,
                                 shape = cardShape,
                                 clip = false,
-                                ambientColor = Color(0xFF3E41F4),
-                                spotColor = Color(0xFF3E41F4),
+                                ambientColor = MaterialTheme.colorScheme.primary,
+                                spotColor = MaterialTheme.colorScheme.primary,
                             )
                         },
                     )
-                    .heightIn(min = 160.dp),
+                    .heightIn(min = 136.dp),
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 160.dp),
+                        .heightIn(min = 136.dp),
                     verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -309,7 +296,7 @@ fun UserInput(
                             .height(56.dp)
                             .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         UserInputSelector(
                             onSelectorChange = { currentInputSelector = it },
@@ -330,12 +317,13 @@ fun UserInput(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_send),
                                 contentDescription = null,
-                                tint = Color(0xFF444746).copy(alpha = if (sendMessageEnabled) 0.85f else 0.54f),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                    alpha = if (sendMessageEnabled) 0.85f else 0.54f,
+                                ),
                                 modifier = Modifier.size(24.dp),
                             )
                         }
                     }
-
                 }
             }
         }
@@ -463,7 +451,7 @@ private fun UserInputSelector(
     onVideoClick: () -> Unit = {},
     onAddClick: () -> Unit = {},
 ) {
-    val iconTint = Color(0xFF3E41F4)
+    val iconTint = MaterialTheme.colorScheme.primary
     val sparkMeshPainter = rememberUserInputSparkMeshGradientPainter()
 
     Row(
@@ -508,8 +496,8 @@ private fun UserInputSelector(
             )
         }
 
-        // Recording mic button. Active (mesh-gradient circle + white mic icon) when triggered
-        // via click; otherwise a blue-tinted mic icon matching Figma 191:24835.
+        // Recording mic button. Active (white rounded rect + primary mic icon per Figma 289:33323)
+        // when triggered via click; otherwise an unhighlighted primary mic icon.
         if (recordingActive) {
             Box(
                 modifier = Modifier
@@ -548,7 +536,7 @@ private fun UserInputSelector(
             Icon(
                 painter = painterResource(id = R.drawable.ic_add),
                 contentDescription = stringResource(id = R.string.map_selector_desc),
-                tint = Color(0xFF0B57D0),
+                tint = iconTint,
                 modifier = Modifier.size(24.dp),
             )
         }
@@ -611,12 +599,12 @@ private fun UserInputText(
     focusState: Boolean,
 ) {
     val a11ylabel = stringResource(id = R.string.textfield_desc)
-    // Figma 'Chat' text area at x=32dp, top=20dp, end=40dp.
+    // Figma 'Chat' text area (191:24767): 380x48dp inside 396x136dp card.
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 32.dp, top = 20.dp, end = 40.dp)
-            .heightIn(min = 64.dp),
+            .padding(start = 24.dp, top = 20.dp, end = 32.dp)
+            .heightIn(min = 48.dp),
     ) {
         UserInputTextField(
             textFieldValue,
@@ -638,7 +626,7 @@ private fun UserInputText(
 @Composable
 private fun BoxScope.UserInputTextField(
     textFieldValue: TextFieldValue,
-    onTextChanged: (TextFieldValue) -> Unit,
+    onValueChange: (TextFieldValue) -> Unit,
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
@@ -656,8 +644,7 @@ private fun BoxScope.UserInputTextField(
                         text = AnnotatedString(annotated.text + "|"),
                         offsetMapping = object : OffsetMapping {
                             override fun originalToTransformed(offset: Int): Int = offset
-                            override fun transformedToOriginal(offset: Int): Int =
-                                offset.coerceAtMost(annotated.text.length)
+                            override fun transformedToOriginal(offset: Int): Int = offset.coerceAtMost(annotated.text.length)
                         },
                     )
                 } else {
@@ -671,7 +658,7 @@ private fun BoxScope.UserInputTextField(
 
     BasicTextField(
         value = textFieldValue,
-        onValueChange = { onTextChanged(it) },
+        onValueChange = { onValueChange(it) },
         modifier = modifier
             .align(Alignment.TopStart)
             .onFocusChanged { state ->
@@ -689,15 +676,18 @@ private fun BoxScope.UserInputTextField(
         },
         maxLines = 4,
         visualTransformation = unfocusedCaret,
-        cursorBrush = SolidColor(Color(0xFF000965)),
-        textStyle = MaterialTheme.typography.headlineSmall.copy(color = Color(0xFF001CBA)),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        textStyle = MaterialTheme.typography.titleLarge.copy(
+            color = MaterialTheme.colorScheme.primary,
+        ),
     )
 
     if (textFieldValue.text.isEmpty() && !focusState) {
         Text(
             modifier = Modifier.align(Alignment.TopStart),
             text = stringResource(R.string.textfield_hint),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
