@@ -35,8 +35,5 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Jetchat.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
-
-    <style name="Theme.Jetchat.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
-
 </resources>
+

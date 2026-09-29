@@ -20,21 +20,20 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeRight
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
-import org.junit.Assert.assertEquals
+import com.example.compose.jetchat.conversation.ConversationTestTag
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,16 +48,13 @@ class NavigationTest {
     @Test
     fun app_launches() {
         // Check app launches at the correct destination
-        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
+        composeTestRule.onNodeWithTag(ConversationTestTag).assertIsDisplayed()
     }
 
     @Test
     fun profileScreen_back_conversationScreen() {
-        val navController = getNavController()
         // Navigate to profile
         navigateToProfile("Taylor Brooks")
-        // Check profile is displayed
-        assertEquals(navController.currentDestination?.id, R.id.nav_profile)
         // Extra UI check (scroll to Display name as the new profile header is taller)
         composeTestRule
             .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
@@ -69,7 +65,24 @@ class NavigationTest {
         Espresso.pressBack()
 
         // Check that we're home
-        assertEquals(navController.currentDestination?.id, R.id.nav_home)
+        composeTestRule.onNodeWithTag(ConversationTestTag).assertIsDisplayed()
+    }
+
+    @Test
+    fun messageAuthor_click_navigatesToProfile_and_back() {
+        composeTestRule
+            .onAllNodes(hasContentDescription("Taylor Brooks"))
+            .onFirst()
+            .performClick()
+
+        composeTestRule
+            .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
+            .performScrollTo()
+            .assertIsDisplayed()
+
+        Espresso.pressBack()
+
+        composeTestRule.onNodeWithTag(ConversationTestTag).assertIsDisplayed()
     }
 
     /**
@@ -83,7 +96,7 @@ class NavigationTest {
         navigateToHomeFromProfile()
 
         // Chewie, we're home
-        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
+        composeTestRule.onNodeWithTag(ConversationTestTag).assertIsDisplayed()
     }
 
     private fun navigateToProfile(name: String) {
@@ -101,22 +114,10 @@ class NavigationTest {
         composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu),
     )
 
-    private fun navigateToHome() {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open),
-        ).performClick()
-
-        composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
-    }
-
     private fun navigateToHomeFromProfile() {
         composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
             swipeRight()
         }
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
-    }
-
-    private fun getNavController(): NavController {
-        return composeTestRule.activity.findNavController(R.id.nav_host_fragment)
     }
 }

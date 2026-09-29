@@ -22,6 +22,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.compose.jetchat.data.colleagueProfile
+import com.example.compose.jetchat.data.getProfile
 import com.example.compose.jetchat.data.meProfile
 
 class ProfileViewModel : ViewModel() {
@@ -32,12 +33,7 @@ class ProfileViewModel : ViewModel() {
         if (newUserId != userId) {
             userId = newUserId ?: meProfile.userId
         }
-        // Workaround for simplicity
-        _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
-            meProfile
-        } else {
-            colleagueProfile
-        }
+        _userData.value = getProfile(userId)
     }
 
     private val _userData = MutableLiveData<ProfileScreenState>()
