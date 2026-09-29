@@ -64,16 +64,15 @@ fun rememberUserInputGlowMeshGradientPainter(): MeshGradientPainter {
         label = "glowPhase2",
     )
 
-    // Helper for smooth organic orbital displacement per interior vertex.
-    fun orbit(colIdx: Int, rowIdx: Int, ampX: Float, ampY: Float): Offset {
-        val angle1 = phase1 + colIdx * 0.85f + rowIdx * 0.65f
-        val angle2 = phase2 - colIdx * 0.55f + rowIdx * 0.90f
-        val dx = ampX * (0.72f * cos(angle1) + 0.28f * sin(angle2))
-        val dy = ampY * (0.72f * sin(angle1) + 0.28f * cos(angle2))
-        return Offset(dx, dy)
-    }
+    return remember {
+        fun orbit(colIdx: Int, rowIdx: Int, ampX: Float, ampY: Float): Offset {
+            val angle1 = phase1 + colIdx * 0.85f + rowIdx * 0.65f
+            val angle2 = phase2 - colIdx * 0.55f + rowIdx * 0.90f
+            val dx = ampX * (0.72f * cos(angle1) + 0.28f * sin(angle2))
+            val dy = ampY * (0.72f * sin(angle1) + 0.28f * cos(angle2))
+            return Offset(dx, dy)
+        }
 
-    return remember(phase1, phase2) {
         val uCols = floatArrayOf(0.00f, 0.12f, 0.27f, 0.56f, 0.78f, 1.00f)
         val vRows = floatArrayOf(0.00f, 0.20f, 0.33f, 0.43f, 0.64f, 0.85f, 1.00f)
 

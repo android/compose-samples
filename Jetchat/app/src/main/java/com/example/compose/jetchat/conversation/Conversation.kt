@@ -758,7 +758,6 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 2.dp,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f)),
             ) {
                 Row(

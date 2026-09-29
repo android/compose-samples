@@ -192,8 +192,6 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
-    val glowMeshPainter = rememberUserInputGlowMeshGradientPainter()
-
     val surfaceColor = MaterialTheme.colorScheme.surfaceContainer
     val sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null
     val isGlowActive = isRecordingActive || textState.text.contains("@gemini", ignoreCase = true)
@@ -212,6 +210,7 @@ fun UserInput(
                 label = "glowFade",
             )
             if (isGlowActive) {
+                val glowMeshPainter = rememberUserInputGlowMeshGradientPainter()
                 Box(
                     modifier = Modifier
                         .matchParentSize()
@@ -498,34 +497,26 @@ private fun UserInputSelector(
 
         // Recording mic button. Active (white rounded rect + primary mic icon per Figma 289:33323)
         // when triggered via click; otherwise an unhighlighted primary mic icon.
-        if (recordingActive) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .paint(sparkMeshPainter, contentScale = ContentScale.FillBounds)
-                    .clickable { onRecordingClick() },
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic),
-                    contentDescription = stringResource(id = R.string.record_message),
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp),
-                )
-            }
-        } else {
-            IconButton(
-                onClick = onRecordingClick,
-                modifier = Modifier.size(48.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic),
-                    contentDescription = stringResource(id = R.string.record_message),
-                    tint = iconTint,
-                    modifier = Modifier.size(24.dp),
-                )
-            }
+        IconButton(
+            onClick = onRecordingClick,
+            modifier = Modifier
+                .size(48.dp)
+                .then(
+                    if (recordingActive) {
+                        Modifier
+                            .clip(CircleShape)
+                            .paint(sparkMeshPainter, contentScale = ContentScale.FillBounds)
+                    } else {
+                        Modifier
+                    },
+                ),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_mic),
+                contentDescription = stringResource(id = R.string.record_message),
+                tint = if (recordingActive) Color.White else iconTint,
+                modifier = Modifier.size(24.dp),
+            )
         }
 
         // Add / attachment
