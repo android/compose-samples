@@ -83,6 +83,7 @@ val JetchatLightColorScheme = lightColorScheme(
     inverseOnSurface = Grey95,
     surfaceVariant = BlueGrey90,
     onSurfaceVariant = BlueGrey30,
+    surfaceContainer = BlueGrey95,
     outline = BlueGrey50,
 )
 

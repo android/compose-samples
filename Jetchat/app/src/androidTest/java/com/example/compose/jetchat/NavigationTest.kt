@@ -21,10 +21,16 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeRight
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
@@ -49,13 +55,14 @@ class NavigationTest {
     @Test
     fun profileScreen_back_conversationScreen() {
         val navController = getNavController()
-        // Navigate to profile        \
+        // Navigate to profile
         navigateToProfile("Taylor Brooks")
         // Check profile is displayed
         assertEquals(navController.currentDestination?.id, R.id.nav_profile)
-        // Extra UI check
+        // Extra UI check (scroll to Display name as the new profile header is taller)
         composeTestRule
             .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
+            .performScrollTo()
             .assertIsDisplayed()
 
         // Press back
@@ -71,9 +78,9 @@ class NavigationTest {
     @Test
     fun drawer_conversationScreen_backstackPopUp() {
         navigateToProfile("Ali Conors (you)")
-        navigateToHome()
+        navigateToHomeFromProfile()
         navigateToProfile("Taylor Brooks")
-        navigateToHome()
+        navigateToHomeFromProfile()
 
         // Chewie, we're home
         assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
@@ -99,6 +106,13 @@ class NavigationTest {
             composeTestRule.activity.getString(R.string.navigation_drawer_open),
         ).performClick()
 
+        composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
+    }
+
+    private fun navigateToHomeFromProfile() {
+        composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
+            swipeRight()
+        }
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
     }
 
