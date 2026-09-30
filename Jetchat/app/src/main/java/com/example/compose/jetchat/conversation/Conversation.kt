@@ -181,6 +181,7 @@ fun ConversationContent(
     }
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
+    var activeVideoText by rememberSaveable { mutableStateOf<String?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -218,7 +219,10 @@ fun ConversationContent(
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
                     contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
-                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
+                    onVideoClick = { videoUri, messageText ->
+                        activeVideoUri = videoUri
+                        activeVideoText = messageText
+                    },
                 )
                 UserInput(
                     onMessageSent = { content ->
@@ -256,7 +260,11 @@ fun ConversationContent(
             activeVideoUri?.let { uri ->
                 FullScreenVideoPlayer(
                     videoUri = uri,
-                    onDismiss = { activeVideoUri = null },
+                    messageText = activeVideoText,
+                    onDismiss = {
+                        activeVideoUri = null
+                        activeVideoText = null
+                    },
                 )
             }
         }
@@ -334,7 +342,7 @@ fun Messages(
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
 ) {
     val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
@@ -413,7 +421,7 @@ fun Message(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
 ) {
     val borderColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
@@ -489,7 +497,7 @@ fun AuthorAndTextMessage(
     isLastMessageByAuthor: Boolean,
     authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
 ) {
     Column(
         modifier = modifier,
@@ -567,7 +575,12 @@ private fun RowScope.DayHeaderLine() {
 }
 
 @Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
+fun ChatItemBubble(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit,
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+) {
     val backgroundBubbleColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -627,7 +640,7 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             ) {
                 VideoThumbnail(
                     videoUri = videoUri,
-                    onClick = { onVideoClick(videoUri) },
+                    onClick = { onVideoClick(videoUri, message.content) },
                     shape = bubbleShape,
                     modifier = Modifier
                         .widthIn(max = 260.dp)

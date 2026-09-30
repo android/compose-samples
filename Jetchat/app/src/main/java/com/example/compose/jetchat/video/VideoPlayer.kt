@@ -85,8 +85,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-const val DEFAULT_VIDEO_URL =
-    "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_5MB.mp4"
+const val DEFAULT_VIDEO_URL = "asset:///delightful_tips.mp4"
 
 /**
  * Lightweight video thumbnail displayed inside scrollable lists (LazyColumn).
@@ -100,20 +99,26 @@ fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = M
 
     val thumbnailBitmap by produceState<Bitmap?>(initialValue = null, resolvedUri) {
         withContext(Dispatchers.IO) {
+            val retriever = MediaMetadataRetriever()
             try {
-                val retriever = MediaMetadataRetriever()
                 val uriString = resolvedUri.toString()
-                if (uriString.startsWith("http://") || uriString.startsWith("https://")) {
-                    retriever.setDataSource(uriString, HashMap<String, String>())
+                if (uriString.startsWith("asset:///") || uriString.startsWith("file:///android_asset/")) {
+                    val assetPath = uriString
+                        .removePrefix("asset:///")
+                        .removePrefix("file:///android_asset/")
+                    context.assets.openFd(assetPath).use { afd ->
+                        retriever.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                    }
                 } else {
                     retriever.setDataSource(context, resolvedUri)
                 }
                 val bitmap = retriever.getFrameAtTime(1_000_000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
                     ?: retriever.frameAtTime
-                retriever.release()
                 value = bitmap
             } catch (e: Throwable) {
-                // Fallback to stylized dark gradient placeholder on network/codec error
+                // Fallback to stylized dark gradient placeholder on codec error
+            } finally {
+                retriever.release()
             }
         }
     }
@@ -181,7 +186,12 @@ fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = M
  */
 @OptIn(UnstableApi::class)
 @Composable
-fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+fun FullScreenVideoPlayer(
+    videoUri: String,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    messageText: String? = null,
+) {
     val context = LocalContext.current
     val resolvedUri = remember(videoUri) { resolveVideoUri(videoUri) }
 
@@ -252,12 +262,31 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
                 val bottom = boxBottom.coerceIn(0f, surfaceH)
 
                 if (right > left && bottom > top) {
-                    val coversFullWidth = left <= 0f && right >= surfaceW
-                    val coversFullHeight = top <= 0f && bottom >= surfaceH
-                    val cornerRadius = if (coversFullWidth || coversFullHeight) 0f else spec.cornerRadiusPx
+                    val r = spec.cornerRadiusPx.coerceAtLeast(0f)
+                    val clipLeft = boxLeft <= 0f
+                    val clipTop = boxTop <= 0f
+                    val clipRight = boxRight >= surfaceW
+                    val clipBottom = boxBottom >= surfaceH
+
+                    val topLeft = if (clipLeft || clipTop) 0f else r
+                    val topRight = if (clipRight || clipTop) 0f else r
+                    val bottomLeft = if (clipLeft || clipBottom) 0f else r
+                    val bottomRight = if (clipRight || clipBottom) 0f else r
+
+                    val allSame = topLeft == topRight && topRight == bottomLeft && bottomLeft == bottomRight
                     spec.copy(
                         boundsInSurface = RectF(left, top, right, bottom),
-                        cornerRadiusPx = cornerRadius,
+                        cornerRadiusPx = if (allSame) topLeft else 0f,
+                        cornerRadiiPx = if (allSame) {
+                            null
+                        } else {
+                            listOf(
+                                topLeft, topLeft,
+                                topRight, topRight,
+                                bottomLeft, bottomLeft,
+                                bottomRight, bottomRight,
+                            )
+                        },
                     )
                 } else {
                     null
@@ -378,6 +407,7 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
                 },
                 onToggleFullscreen = onDismiss,
                 onUpdateBlurRegions = { updateBlurRegions() },
+                messageText = messageText,
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -389,13 +419,20 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
  * Displays a thumbnail in place and launches the fullscreen player screen when tapped.
  */
 @Composable
-fun VideoPlayer(videoUri: String, modifier: Modifier = Modifier, autoPlay: Boolean = false, shape: Shape = RoundedCornerShape(16.dp)) {
+fun VideoPlayer(
+    videoUri: String,
+    modifier: Modifier = Modifier,
+    autoPlay: Boolean = false,
+    shape: Shape = RoundedCornerShape(16.dp),
+    messageText: String? = null,
+) {
     var isPlayerOpen by rememberSaveable { mutableStateOf(autoPlay) }
 
     if (isPlayerOpen) {
         FullScreenVideoPlayer(
             videoUri = videoUri,
             onDismiss = { isPlayerOpen = false },
+            messageText = messageText,
         )
     } else {
         VideoThumbnail(
