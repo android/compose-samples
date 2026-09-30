@@ -297,7 +297,7 @@ fun UserInput(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_send),
-                            contentDescription = null,
+                            contentDescription = stringResource(id = R.string.send),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
                                 alpha = if (sendMessageEnabled) 0.85f else 0.54f,
                             ),
@@ -490,7 +490,7 @@ private fun UserInputSelector(
                     } else {
                         Modifier
                     },
-                ),
+                )
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_mic),
@@ -507,7 +507,7 @@ private fun UserInputSelector(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = stringResource(id = R.string.map_selector_desc),
+                contentDescription = stringResource(id = R.string.add_attachment_desc),
                 tint = iconTint,
                 modifier = Modifier.size(24.dp),
             )
