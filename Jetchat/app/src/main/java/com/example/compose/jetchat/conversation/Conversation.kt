@@ -22,13 +22,16 @@ import android.content.ClipDescription
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -45,6 +48,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,7 +60,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -91,6 +97,7 @@ import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -581,20 +588,8 @@ private fun AuthorNameTimestamp(msg: Message, onAuthorClick: (String) -> Unit = 
     }
 }
 
-// Other users' bubbles use a small bottom-start corner that points towards the avatar
-private val OtherChatBubbleShape = RoundedCornerShape(
-    topStart = 24.dp,
-    topEnd = 24.dp,
-    bottomEnd = 24.dp,
-    bottomStart = 4.dp,
-)
-
-private val SelfChatBubbleShape = RoundedCornerShape(
-    topStart = 24.dp,
-    topEnd = 4.dp,
-    bottomEnd = 24.dp,
-    bottomStart = 24.dp,
-)
+private val ChatBubbleShapeOthers = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
+private val ChatBubbleShapeMe = RoundedCornerShape(20.dp, 4.dp, 20.dp, 20.dp)
 
 @Composable
 fun DayHeader(dayString: String) {
@@ -644,18 +639,33 @@ fun ChatItemBubble(
     } else {
         MaterialTheme.colorScheme.primaryContainer
     }
-    val bubbleShape = if (isUserMe) SelfChatBubbleShape else OtherChatBubbleShape
+    val bubbleShape = if (isUserMe) ChatBubbleShapeMe else ChatBubbleShapeOthers
     val bubbleBorder = if (isLiked) {
         BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
     } else {
         null
     }
 
+    // Inset that reveals the heart mesh around liked media. It is applied inside the fixed-size
+    // image, so liking never changes the bubble size (no jumps in the LazyColumn).
+    val likedMediaInset by animateDpAsState(
+        targetValue = if (isLiked) 8.dp else 0.dp,
+        label = "likedMediaInset",
+    )
+
     // pointerInput(Unit) below captures this once, so always call the latest callback.
     val toggleLiked by rememberUpdatedState {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         onLikeToggled(message.id)
     }
+
+    // Goes 0 -> 1 when the message is liked; the whole text bubble scales up and back down along
+    // the way. graphicsLayer only affects drawing, so the LazyColumn layout doesn't move.
+    val likeProgress by animateFloatAsState(
+        targetValue = if (isLiked) 1f else 0f,
+        animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
+        label = "likeBounce",
+    )
 
     Column(
         horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
@@ -666,9 +676,17 @@ fun ChatItemBubble(
                 color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
                 border = bubbleBorder,
-                modifier = Modifier.pointerInput(Unit) {
-                    detectTapGestures(onDoubleTap = { toggleLiked() })
-                },
+                modifier = Modifier
+                    .graphicsLayer {
+                        val scale = if (isLiked) 1f + LikeBounceScale * sin(PI.toFloat() * likeProgress) else 1f
+                        scaleX = scale
+                        scaleY = scale
+                        // Grow away from the avatar, anchored at the bubble's pointed corner.
+                        transformOrigin = TransformOrigin(pivotFractionX = if (isUserMe) 1f else 0f, pivotFractionY = 0f)
+                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures(onDoubleTap = { toggleLiked() })
+                    },
             ) {
                 Box(
                     modifier = if (isLiked) {
@@ -681,16 +699,22 @@ fun ChatItemBubble(
                 ) {
                     ClickableMessage(
                         message = message,
-                        isUserMe = isUserMe,
                         authorClicked = authorClicked,
                     )
                 }
             }
         }
 
-        message.image?.let {
+        message.image?.let { imageRes ->
             if (hasText) {
                 Spacer(modifier = Modifier.height(4.dp))
+            }
+            val painter = painterResource(imageRes)
+            val intrinsicSize = painter.intrinsicSize
+            val aspectRatio = if (intrinsicSize.width > 0f && intrinsicSize.height > 0f) {
+                intrinsicSize.width / intrinsicSize.height
+            } else {
+                1f
             }
             Surface(
                 color = if (isLiked) Color.Transparent else backgroundBubbleColor,
@@ -710,11 +734,13 @@ fun ChatItemBubble(
                     },
                 ) {
                     Image(
-                        painter = painterResource(it),
-                        contentScale = ContentScale.Fit,
+                        painter = painter,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .padding(if (isLiked) 8.dp else 0.dp)
-                            .size(160.dp),
+                            .sizeIn(maxWidth = 240.dp, maxHeight = 260.dp)
+                            .aspectRatio(aspectRatio, matchHeightConstraintsFirst = aspectRatio < 1f)
+                            .padding(likedMediaInset)
+                            .clip(bubbleShape),
                         contentDescription = stringResource(id = R.string.attached_image),
                     )
                 }
@@ -738,6 +764,7 @@ fun ChatItemBubble(
                     onClick = { onVideoClick(videoUri) },
                     shape = bubbleShape,
                     modifier = Modifier
+                        .widthIn(max = 260.dp)
                         .fillMaxWidth()
                         .height(200.dp)
                         .clip(bubbleShape),
@@ -748,8 +775,11 @@ fun ChatItemBubble(
         // Liked reaction badge attached to bubble corner
         this@Column.AnimatedVisibility(
             visible = isLiked,
-            enter = scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) + fadeIn(),
-            exit = scaleOut() + fadeOut(),
+
+            enter = expandVertically(expandFrom = Alignment.Top, clip = false) +
+                scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) +
+                fadeIn(),
+            exit = shrinkVertically(shrinkTowards = Alignment.Top, clip = false) + scaleOut() + fadeOut(),
             modifier = Modifier
                 .align(Alignment.End)
                 .offset(y = (-8).dp)
@@ -769,7 +799,7 @@ fun ChatItemBubble(
 }
 
 @Composable
-fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
+fun ClickableMessage(message: Message, authorClicked: (String) -> Unit) {
     // Links and @mentions are LinkAnnotations, so the Text handles their clicks and all other
     // taps (e.g. double tap to like) fall through to the bubble.
     val styledMessage = messageFormatter(
@@ -778,25 +808,12 @@ fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String
         onPersonClick = authorClicked,
     )
 
-    // Goes 0 -> 1 when the message is liked; the text scales up and back down along the way.
-    val likeProgress by animateFloatAsState(
-        targetValue = if (message.isLiked) 1f else 0f,
-        animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
-        label = "likeBounce",
-    )
-
     Text(
         text = styledMessage,
         style = MaterialTheme.typography.bodyLarge.copy(
             color = MaterialTheme.colorScheme.onSurface,
         ),
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .graphicsLayer {
-                val scale = if (message.isLiked) 1f + LikeBounceScale * sin(PI.toFloat() * likeProgress) else 1f
-                scaleX = scale
-                scaleY = scale
-            },
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
     )
 }
 

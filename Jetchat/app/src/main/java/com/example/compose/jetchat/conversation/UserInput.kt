@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -63,6 +64,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -181,31 +183,35 @@ fun UserInput(
     // Animated mesh-gradient glow behind the card, shown while recording is active.
     val glowAlpha by animateFloatAsState(
         targetValue = if (isRecordingActive) 1f else 0f,
-        animationSpec = tween(durationMillis = 600),
+        animationSpec = tween(durationMillis = GlowFadeDurationMillis),
         label = "glowFade",
     )
-    val glowMeshPainter = if (isRecordingActive) rememberUserInputGlowMeshGradientPainter() else null
+
+    val isGlowVisible by remember { derivedStateOf { glowAlpha > 0f } }
+    val glowMeshPainter = if (isRecordingActive || isGlowVisible) {
+        rememberUserInputGlowMeshGradientPainter()
+    } else {
+        null
+    }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
     ) {
-        val cardShape = RoundedCornerShape(48.dp)
+        val cardShape = RoundedCornerShape(32.dp)
 
         Surface(
             shape = cardShape,
             color = surfaceColor,
-            // Soft shadow while idle; the glow replaces it while recording.
-            shadowElevation = if (isRecordingActive) 4.dp else 8.dp,
             modifier = Modifier
                 .fillMaxWidth()
                 // Draw the glow behind the card, scaled past its bounds.
                 .then(
                     if (glowMeshPainter != null) {
                         Modifier.drawBehind {
-                            translate(top = -58.dp.toPx()) {
-                                scale(scaleX = 1.38f, scaleY = 2.85f) {
+                            translate(top = -GlowTopOffset.toPx()) {
+                                scale(scaleX = GlowScaleX, scaleY = GlowScaleY) {
                                     with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
                                 }
                             }
@@ -233,9 +239,7 @@ fun UserInput(
                 .heightIn(min = 136.dp),
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 136.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
@@ -422,96 +426,91 @@ fun FunctionalityNotAvailablePanel() {
 }
 
 @Composable
-private fun UserInputSelector(
+private fun RowScope.UserInputSelector(
     onSelectorChange: (InputSelector) -> Unit,
     currentInputSelector: InputSelector,
     recordingActive: Boolean,
     onRecordingClick: () -> Unit,
-    modifier: Modifier = Modifier,
     onVideoClick: () -> Unit = {},
     onAddClick: () -> Unit = {},
 ) {
     val iconTint = MaterialTheme.colorScheme.primary
     val recordButtonPainter = rememberRecordButtonMeshGradientPainter()
 
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    // Emoji
+    IconButton(
+        onClick = { onSelectorChange(InputSelector.EMOJI) },
+        modifier = Modifier.size(48.dp),
     ) {
-        // Emoji
-        IconButton(
-            onClick = { onSelectorChange(InputSelector.EMOJI) },
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_mood),
-                contentDescription = stringResource(id = R.string.emoji_selector_bt_desc),
-                tint = iconTint,
-                modifier = Modifier.size(24.dp),
-            )
-        }
+        Icon(
+            painter = painterResource(id = R.drawable.ic_mood),
+            contentDescription = stringResource(id = R.string.emoji_selector_bt_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
 
-        // Photo
-        IconButton(
-            onClick = { onSelectorChange(InputSelector.PICTURE) },
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_insert_photo),
-                contentDescription = stringResource(id = R.string.attach_photo_desc),
-                tint = iconTint,
-                modifier = Modifier.size(24.dp),
-            )
-        }
+    // Photo
+    IconButton(
+        onClick = { onSelectorChange(InputSelector.PICTURE) },
+        modifier = Modifier.size(48.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_insert_photo),
+            contentDescription = stringResource(id = R.string.attach_photo_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
 
-        // Video / Duo
-        IconButton(
-            onClick = onVideoClick,
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_duo),
-                contentDescription = stringResource(id = R.string.videochat_desc),
-                tint = iconTint,
-                modifier = Modifier.size(24.dp),
-            )
-        }
+    // Video / Duo
+    IconButton(
+        onClick = onVideoClick,
+        modifier = Modifier.size(48.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_duo),
+            contentDescription = stringResource(id = R.string.videochat_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
 
-        // Record (mic) button: filled with a mesh gradient while recording is active,
-        // otherwise a plain primary-tinted mic icon.
-        IconButton(
-            onClick = onRecordingClick,
-            modifier = Modifier
-                .size(48.dp)
-                .then(
-                    if (recordingActive) {
-                        Modifier
-                            .clip(CircleShape)
-                            .paint(recordButtonPainter, contentScale = ContentScale.FillBounds)
-                    } else {
-                        Modifier
-                    },
-                ),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_mic),
-                contentDescription = stringResource(id = R.string.record_message),
-                tint = if (recordingActive) Color.White else iconTint,
-                modifier = Modifier.size(24.dp),
-            )
-        }
+    // Record (mic) button: filled with a mesh gradient while recording is active,
+    // otherwise a plain primary-tinted mic icon.
+    IconButton(
+        onClick = onRecordingClick,
+        modifier = Modifier
+            .size(48.dp)
+            .then(
+                if (recordingActive) {
+                    Modifier
+                        .clip(CircleShape)
+                        .paint(recordButtonPainter, contentScale = ContentScale.FillBounds)
+                } else {
+                    Modifier
+                },
+            ),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_mic),
+            contentDescription = stringResource(id = R.string.record_message),
+            tint = if (recordingActive) Color.White else iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
 
-        // Add / attachment
-        IconButton(
-            onClick = onAddClick,
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = stringResource(id = R.string.add_attachment_desc),
-                tint = iconTint,
-                modifier = Modifier.size(24.dp),
-            )
-        }
+    // Add / attachment
+    IconButton(
+        onClick = onAddClick,
+        modifier = Modifier.size(48.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_add),
+            contentDescription = stringResource(id = R.string.add_attachment_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
     }
 }
 
@@ -696,6 +695,11 @@ fun EmojiTable(onTextAdded: (String) -> Unit, modifier: Modifier = Modifier) {
 }
 
 private const val EMOJI_COLUMNS = 10
+
+private const val GlowFadeDurationMillis = 600
+private val GlowTopOffset = 58.dp
+private const val GlowScaleX = 1.38f
+private const val GlowScaleY = 2.85f
 
 private val emojis = listOf(
     "\ud83d\ude00", // Grinning Face
