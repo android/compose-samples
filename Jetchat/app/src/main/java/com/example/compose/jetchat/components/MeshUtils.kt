@@ -180,7 +180,7 @@ fun rememberUserInputGlowMeshGradientPainter(): MeshGradientPainter {
 }
 
 /**
- * Heart reaction mesh gradient for liked chat speech bubbles (Figma node 268:29966).
+ * Heart reaction mesh gradient for liked chat speech bubbles.
  * Vibrant coral, blush, hot pink, and lavender tones.
  */
 @Composable
@@ -213,19 +213,18 @@ fun rememberHeartReactionMeshGradientPainter(): MeshGradientPainter {
 }
 
 /**
- * A small static mesh gradient for the Gemini spark button: a pink → purple → blue diagonal
- * built from a 2x2-cell mesh (3x3 vertices) with bicubic colour blending. This reproduces the
- * Figma diagonal fill without a linear gradient, keeping the screen mesh-only.
+ * A small static mesh gradient that fills the record (mic) button while recording is active:
+ * a pink → purple → blue diagonal built from a 2x2-cell mesh (3x3 vertices) with bicubic
+ * color blending.
  */
 @Composable
-fun rememberUserInputSparkMeshGradientPainter(): MeshGradientPainter {
-    val pink = Color(0xFFF96BD6)
-    val pinkPurple = Color(0xFFC072EA)
-    val purple = Color(0xFF9378FF)
-    val purpleBlue = Color(0xFF585CFF)
-    val blue = Color(0xFF1E40FF)
-
+fun rememberRecordButtonMeshGradientPainter(): MeshGradientPainter {
     return remember {
+        val pink = Color(0xFFF96BD6)
+        val pinkPurple = Color(0xFFC072EA)
+        val purple = Color(0xFF9378FF)
+        val purpleBlue = Color(0xFF585CFF)
+        val blue = Color(0xFF1E40FF)
         val positions = floatArrayOf(0f, 0.5f, 1f)
         val colors = arrayOf(
             arrayOf(pink, pinkPurple, purple),

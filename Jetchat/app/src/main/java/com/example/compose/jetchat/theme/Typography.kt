@@ -78,7 +78,7 @@ val JetchatTypography = Typography(
     ),
     headlineLarge = TextStyle(
         fontFamily = MontserratFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 72.sp,
         lineHeight = 64.sp,
         letterSpacing = 0.sp,

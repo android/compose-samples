@@ -22,11 +22,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -43,7 +39,6 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -61,15 +56,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -79,7 +71,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
@@ -88,38 +80,29 @@ import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.components.rememberRecordButtonMeshGradientPainter
 import com.example.compose.jetchat.components.rememberUserInputGlowMeshGradientPainter
-import com.example.compose.jetchat.components.rememberUserInputSparkMeshGradientPainter
 import com.example.compose.jetchat.video.VideoPlayer
-import kotlin.math.absoluteValue
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
@@ -135,7 +118,7 @@ enum class EmojiStickerSelector {
     STICKER,
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, widthDp = 412, heightDp = 320)
+@Preview
 @Composable
 fun UserInputPreview() {
     UserInput(onMessageSent = {})
@@ -194,134 +177,132 @@ fun UserInput(
 
     val surfaceColor = MaterialTheme.colorScheme.surfaceContainer
     val sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null
-    val isGlowActive = isRecordingActive || textState.text.contains("@gemini", ignoreCase = true)
+
+    // Animated mesh-gradient glow behind the card, shown while recording is active.
+    val glowAlpha by animateFloatAsState(
+        targetValue = if (isRecordingActive) 1f else 0f,
+        animationSpec = tween(durationMillis = 600),
+        label = "glowFade",
+    )
+    val glowMeshPainter = if (isRecordingActive) rememberUserInputGlowMeshGradientPainter() else null
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            // Animated mesh-gradient glow behind the card. Shown when recording mode is active
-            // (triggered on click of the recording icon) or when the message mentions @gemini.
-            val glowAlpha by animateFloatAsState(
-                targetValue = if (isGlowActive) 1f else 0f,
-                animationSpec = tween(durationMillis = 600),
-                label = "glowFade",
-            )
-            if (isGlowActive) {
-                val glowMeshPainter = rememberUserInputGlowMeshGradientPainter()
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .graphicsLayer {
-                            alpha = glowAlpha
-                            scaleX = 1.38f
-                            scaleY = 2.85f
-                            translationY = -58.dp.toPx()
-                        }
-                        .paint(glowMeshPainter, contentScale = ContentScale.FillBounds),
-                )
-            }
+        val cardShape = RoundedCornerShape(48.dp)
 
-            val cardShape = RoundedCornerShape(48.dp)
-
-            Surface(
-                shape = cardShape,
-                color = surfaceColor,
-                // Default soft shadow when Gemini is idle; the glow replaces it when active.
-                shadowElevation = if (isGlowActive) 4.dp else 8.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 4.dp)
-                    // Default blue-tinted shadow when Gemini is idle; the glow replaces it
-                    // when active. Tinted shadows render on API 28+ (black on older versions).
-                    .then(
-                        if (isGlowActive) {
-                            Modifier
-                        } else {
-                            Modifier.shadow(
-                                elevation = 16.dp,
-                                shape = cardShape,
-                                clip = false,
-                                ambientColor = MaterialTheme.colorScheme.primary,
-                                spotColor = MaterialTheme.colorScheme.primary,
-                            )
-                        },
-                    )
-                    .heightIn(min = 136.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 136.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        AnimatedVisibility(
-                            visible = attachedVideoUri != null,
-                            enter = expandVertically() + fadeIn(),
-                            exit = shrinkVertically() + fadeOut(),
-                        ) {
-                            attachedVideoUri?.let { videoUri ->
-                                AttachedVideoPreview(
-                                    videoUri = videoUri,
-                                    onRemove = { attachedVideoUri = null },
-                                )
+        Surface(
+            shape = cardShape,
+            color = surfaceColor,
+            // Soft shadow while idle; the glow replaces it while recording.
+            shadowElevation = if (isRecordingActive) 4.dp else 8.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                // Draw the glow behind the card, scaled past its bounds.
+                .then(
+                    if (glowMeshPainter != null) {
+                        Modifier.drawBehind {
+                            translate(top = -58.dp.toPx()) {
+                                scale(scaleX = 1.38f, scaleY = 2.85f) {
+                                    with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
+                                }
                             }
                         }
-
-                        UserInputText(
-                            textFieldValue = textState,
-                            onTextChanged = { textState = it },
-                            // Only show the keyboard if there's no input selector and text field has focus
-                            keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
-                            // Close extended selector if text field receives focus
-                            onTextFieldFocused = { focused ->
-                                if (focused) {
-                                    currentInputSelector = InputSelector.NONE
-                                    resetScroll()
-                                }
-                                textFieldFocusState = focused
-                            },
-                            onMessageSent = { sendMessage() },
-                            focusState = textFieldFocusState,
+                    } else {
+                        Modifier
+                    },
+                )
+                .padding(end = 4.dp)
+                // Blue-tinted shadow while idle; the glow replaces it while recording.
+                // Tinted shadows render on API 28+ (black on older versions).
+                .then(
+                    if (isRecordingActive) {
+                        Modifier
+                    } else {
+                        Modifier.shadow(
+                            elevation = 16.dp,
+                            shape = cardShape,
+                            clip = false,
+                            ambientColor = MaterialTheme.colorScheme.primary,
+                            spotColor = MaterialTheme.colorScheme.primary,
                         )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
+                    },
+                )
+                .heightIn(min = 136.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 136.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    AnimatedVisibility(
+                        visible = attachedVideoUri != null,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut(),
                     ) {
-                        UserInputSelector(
-                            onSelectorChange = { currentInputSelector = it },
-                            currentInputSelector = currentInputSelector,
-                            recordingActive = isGlowActive,
-                            onRecordingClick = { isRecordingActive = !isRecordingActive },
-                            onVideoClick = {
-                                currentInputSelector = InputSelector.NONE
-                                videoPickerLauncher.launch("video/*")
-                            },
-                            onAddClick = { currentInputSelector = InputSelector.MAP },
-                        )
-
-                        IconButton(
-                            onClick = sendMessage,
-                            modifier = Modifier.clickable(enabled = sendMessageEnabled, onClick = sendMessage).size(48.dp),
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_send),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                    alpha = if (sendMessageEnabled) 0.85f else 0.54f,
-                                ),
-                                modifier = Modifier.size(24.dp),
+                        attachedVideoUri?.let { videoUri ->
+                            AttachedVideoPreview(
+                                videoUri = videoUri,
+                                onRemove = { attachedVideoUri = null },
                             )
                         }
+                    }
+
+                    UserInputText(
+                        textFieldValue = textState,
+                        onTextChanged = { textState = it },
+                        // Only show the keyboard if there's no input selector and text field has focus
+                        keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
+                        // Close extended selector if text field receives focus
+                        onTextFieldFocused = { focused ->
+                            if (focused) {
+                                currentInputSelector = InputSelector.NONE
+                                resetScroll()
+                            }
+                            textFieldFocusState = focused
+                        },
+                        onMessageSent = { sendMessage() },
+                        focusState = textFieldFocusState,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    UserInputSelector(
+                        onSelectorChange = { currentInputSelector = it },
+                        currentInputSelector = currentInputSelector,
+                        recordingActive = isRecordingActive,
+                        onRecordingClick = { isRecordingActive = !isRecordingActive },
+                        onVideoClick = {
+                            currentInputSelector = InputSelector.NONE
+                            videoPickerLauncher.launch("video/*")
+                        },
+                        onAddClick = { currentInputSelector = InputSelector.MAP },
+                    )
+
+                    IconButton(
+                        onClick = sendMessage,
+                        enabled = sendMessageEnabled,
+                        modifier = Modifier.size(48.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_send),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                alpha = if (sendMessageEnabled) 0.85f else 0.54f,
+                            ),
+                            modifier = Modifier.size(24.dp),
+                        )
                     }
                 }
             }
@@ -451,7 +432,7 @@ private fun UserInputSelector(
     onAddClick: () -> Unit = {},
 ) {
     val iconTint = MaterialTheme.colorScheme.primary
-    val sparkMeshPainter = rememberUserInputSparkMeshGradientPainter()
+    val recordButtonPainter = rememberRecordButtonMeshGradientPainter()
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -495,8 +476,8 @@ private fun UserInputSelector(
             )
         }
 
-        // Recording mic button. Active (white rounded rect + primary mic icon per Figma 289:33323)
-        // when triggered via click; otherwise an unhighlighted primary mic icon.
+        // Record (mic) button: filled with a mesh gradient while recording is active,
+        // otherwise a plain primary-tinted mic icon.
         IconButton(
             onClick = onRecordingClick,
             modifier = Modifier
@@ -505,7 +486,7 @@ private fun UserInputSelector(
                     if (recordingActive) {
                         Modifier
                             .clip(CircleShape)
-                            .paint(sparkMeshPainter, contentScale = ContentScale.FillBounds)
+                            .paint(recordButtonPainter, contentScale = ContentScale.FillBounds)
                     } else {
                         Modifier
                     },
@@ -535,42 +516,6 @@ private fun UserInputSelector(
 }
 
 @Composable
-private fun InputSelectorButton(
-    onClick: () -> Unit,
-    icon: androidx.compose.ui.graphics.painter.Painter,
-    description: String,
-    selected: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    val backgroundModifier = if (selected) {
-        Modifier.background(
-            color = LocalContentColor.current,
-            shape = RoundedCornerShape(14.dp),
-        )
-    } else {
-        Modifier
-    }
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.then(backgroundModifier),
-    ) {
-        val tint = if (selected) {
-            contentColorFor(backgroundColor = LocalContentColor.current)
-        } else {
-            LocalContentColor.current
-        }
-        Icon(
-            icon,
-            tint = tint,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(56.dp),
-            contentDescription = description,
-        )
-    }
-}
-
-@Composable
 private fun NotAvailablePopup(onDismissed: () -> Unit) {
     FunctionalityNotAvailablePopup(onDismissed)
 }
@@ -590,7 +535,6 @@ private fun UserInputText(
     focusState: Boolean,
 ) {
     val a11ylabel = stringResource(id = R.string.textfield_desc)
-    // Figma 'Chat' text area (191:24767): 380x48dp inside 396x136dp card.
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -617,7 +561,7 @@ private fun UserInputText(
 @Composable
 private fun BoxScope.UserInputTextField(
     textFieldValue: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
+    onTextChanged: (TextFieldValue) -> Unit,
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
@@ -626,30 +570,9 @@ private fun BoxScope.UserInputTextField(
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
 
-    // When unfocused, draw a trailing "|" caret after any typed text (matches the Figma mock).
-    val unfocusedCaret = remember(focusState) {
-        if (!focusState) {
-            VisualTransformation { annotated ->
-                if (annotated.text.isNotEmpty()) {
-                    TransformedText(
-                        text = AnnotatedString(annotated.text + "|"),
-                        offsetMapping = object : OffsetMapping {
-                            override fun originalToTransformed(offset: Int): Int = offset
-                            override fun transformedToOriginal(offset: Int): Int = offset.coerceAtMost(annotated.text.length)
-                        },
-                    )
-                } else {
-                    TransformedText(annotated, OffsetMapping.Identity)
-                }
-            }
-        } else {
-            VisualTransformation.None
-        }
-    }
-
     BasicTextField(
         value = textFieldValue,
-        onValueChange = { onValueChange(it) },
+        onValueChange = { onTextChanged(it) },
         modifier = modifier
             .align(Alignment.TopStart)
             .onFocusChanged { state ->
@@ -666,7 +589,6 @@ private fun BoxScope.UserInputTextField(
             if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
         },
         maxLines = 4,
-        visualTransformation = unfocusedCaret,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         textStyle = MaterialTheme.typography.titleLarge.copy(
             color = MaterialTheme.colorScheme.primary,
@@ -680,71 +602,6 @@ private fun BoxScope.UserInputTextField(
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-    }
-}
-
-@Composable
-private fun RecordingIndicator(swipeOffset: () -> Float) {
-    var duration by remember { mutableStateOf(Duration.ZERO) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(1000.milliseconds)
-            duration += 1.seconds
-        }
-    }
-    Row(
-        Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-
-        val animatedPulse = infiniteTransition.animateFloat(
-            initialValue = 1f,
-            targetValue = 0.2f,
-            animationSpec = infiniteRepeatable(
-                tween(2000),
-                repeatMode = RepeatMode.Reverse,
-            ),
-            label = "pulse",
-        )
-        Box(
-            Modifier
-                .size(56.dp)
-                .padding(24.dp)
-                .graphicsLayer {
-                    scaleX = animatedPulse.value
-                    scaleY = animatedPulse.value
-                }
-                .clip(CircleShape)
-                .background(Color.Red),
-        )
-        Text(
-            duration.toComponents { minutes, seconds, _ ->
-                val min = minutes.toString().padStart(2, '0')
-                val sec = seconds.toString().padStart(2, '0')
-                "$min:$sec"
-            },
-            Modifier.alignByBaseline(),
-        )
-        Box(
-            Modifier
-                .fillMaxSize()
-                .alignByBaseline()
-                .clipToBounds(),
-        ) {
-            val swipeThreshold = with(LocalDensity.current) { 200.dp.toPx() }
-            Text(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .graphicsLayer {
-                        translationX = swipeOffset() / 2
-                        alpha = 1 - (swipeOffset().absoluteValue / swipeThreshold)
-                    },
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.swipe_to_cancel_recording),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
     }
 }
 

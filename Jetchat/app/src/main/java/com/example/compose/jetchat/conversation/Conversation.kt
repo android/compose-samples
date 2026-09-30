@@ -20,9 +20,9 @@ package com.example.compose.jetchat.conversation
 
 import android.content.ClipDescription
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -74,13 +74,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -89,7 +88,6 @@ import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
@@ -100,12 +98,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -119,6 +115,8 @@ import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.video.FullScreenVideoPlayer
 import com.example.compose.jetchat.video.VideoThumbnail
+import kotlin.math.PI
+import kotlin.math.sin
 import kotlinx.coroutines.launch
 
 /**
@@ -128,6 +126,7 @@ import kotlinx.coroutines.launch
  * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
  * @param onNavIconPressed Sends an event up when the user clicks on the menu
+ * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -136,6 +135,7 @@ fun ConversationContent(
     navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { },
+    onMessageLikeToggled: (messageId: String) -> Unit = { },
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
@@ -232,6 +232,7 @@ fun ConversationContent(
                     scrollState = scrollState,
                     contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
                     onVideoClick = { videoUri -> activeVideoUri = videoUri },
+                    onMessageLikeToggled = onMessageLikeToggled,
                 )
                 UserInput(
                     onMessageSent = { content ->
@@ -349,6 +350,7 @@ fun Messages(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onVideoClick: (String) -> Unit = {},
+    onMessageLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
@@ -388,6 +390,7 @@ fun Messages(
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
                         isLastMessageByAuthor = isLastMessageByAuthor,
                         onVideoClick = onVideoClick,
+                        onLikeToggled = onMessageLikeToggled,
                     )
                 }
             }
@@ -428,11 +431,12 @@ fun Message(
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
     onVideoClick: (String) -> Unit = {},
+    onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 12.dp) else Modifier
 
     if (isUserMe) {
-        // Self messages: right-aligned bubble with avatar on the right (Figma 191:25321)
+        // Self messages: right-aligned bubble with avatar on the right
         Row(
             modifier = spaceBetweenAuthors
                 .fillMaxWidth()
@@ -447,6 +451,7 @@ fun Message(
                 isLastMessageByAuthor = isLastMessageByAuthor,
                 authorClicked = onAuthorClick,
                 onVideoClick = onVideoClick,
+                onLikeToggled = onLikeToggled,
                 modifier = Modifier
                     .weight(1f, fill = false)
                     .padding(start = 32.dp),
@@ -468,7 +473,7 @@ fun Message(
             }
         }
     } else {
-        // Other user messages: left-aligned avatar + pill badge header + bubble (Figma 191:25301)
+        // Other user messages: left-aligned avatar + name/timestamp badge header + bubble
         Column(
             modifier = spaceBetweenAuthors
                 .fillMaxWidth()
@@ -504,6 +509,7 @@ fun Message(
                     isLastMessageByAuthor = isLastMessageByAuthor,
                     authorClicked = onAuthorClick,
                     onVideoClick = onVideoClick,
+                    onLikeToggled = onLikeToggled,
                     modifier = Modifier
                         .weight(1f, fill = false)
                         .padding(end = 32.dp),
@@ -522,6 +528,7 @@ fun AuthorAndTextMessage(
     authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
     onVideoClick: (String) -> Unit = {},
+    onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -532,6 +539,7 @@ fun AuthorAndTextMessage(
             isUserMe = isUserMe,
             authorClicked = authorClicked,
             onVideoClick = onVideoClick,
+            onLikeToggled = onLikeToggled,
         )
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
@@ -545,7 +553,7 @@ fun AuthorAndTextMessage(
 
 @Composable
 private fun AuthorNameTimestamp(msg: Message, onAuthorClick: (String) -> Unit = {}) {
-    // Figma name+time pill badge (id=191:25314, 191:25347)
+    // Author name + timestamp pill badge
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.secondaryContainer,
@@ -573,7 +581,7 @@ private fun AuthorNameTimestamp(msg: Message, onAuthorClick: (String) -> Unit = 
     }
 }
 
-// Figma 191:25313 / 191:25346: cr=[24.0, 24.0, 24.0, 4.0] for other users
+// Other users' bubbles use a small bottom-start corner that points towards the avatar
 private val OtherChatBubbleShape = RoundedCornerShape(
     topStart = 24.dp,
     topEnd = 24.dp,
@@ -620,16 +628,14 @@ private fun RowScope.DayHeaderLine() {
 }
 
 @Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
-    var isLiked by rememberSaveable(
-        message.timestamp,
-        message.author,
-        message.content,
-    ) {
-        mutableStateOf(false)
-    }
-
-    var likeAnimationTrigger by remember { mutableIntStateOf(0) }
+fun ChatItemBubble(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit,
+    onVideoClick: (String) -> Unit = {},
+    onLikeToggled: (messageId: String) -> Unit = {},
+) {
+    val isLiked = message.isLiked
     val haptic = LocalHapticFeedback.current
     val heartMeshPainter = rememberHeartReactionMeshGradientPainter()
 
@@ -645,13 +651,10 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
         null
     }
 
-    val toggleLiked = {
+    // pointerInput(Unit) below captures this once, so always call the latest callback.
+    val toggleLiked by rememberUpdatedState {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-        val nextLiked = !isLiked
-        isLiked = nextLiked
-        if (nextLiked) {
-            likeAnimationTrigger++
-        }
+        onLikeToggled(message.id)
     }
 
     Column(
@@ -680,9 +683,6 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                         message = message,
                         isUserMe = isUserMe,
                         authorClicked = authorClicked,
-                        isLiked = isLiked,
-                        likeAnimationTrigger = likeAnimationTrigger,
-                        onDoubleClick = toggleLiked,
                     )
                 }
             }
@@ -755,58 +755,35 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                 .offset(y = (-8).dp)
                 .padding(end = 4.dp),
         ) {
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f)),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("❤️", fontSize = 12.sp)
-                }
-            }
+            val badgeShape = RoundedCornerShape(12.dp)
+            Text(
+                text = "❤️",
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f), badgeShape)
+                    .background(MaterialTheme.colorScheme.surface, badgeShape)
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+            )
         }
     }
 }
 
 @Composable
-fun ClickableMessage(
-    message: Message,
-    isUserMe: Boolean,
-    authorClicked: (String) -> Unit,
-    isLiked: Boolean = false,
-    likeAnimationTrigger: Int = 0,
-    onDoubleClick: () -> Unit = {},
-) {
-    val uriHandler = LocalUriHandler.current
-
+fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
+    // Links and @mentions are LinkAnnotations, so the Text handles their clicks and all other
+    // taps (e.g. double tap to like) fall through to the bubble.
     val styledMessage = messageFormatter(
         text = message.content,
         primary = false,
+        onPersonClick = authorClicked,
     )
 
-    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-
-    // Text bounce animation when message is liked
-    val textScale = remember { Animatable(1f) }
-
-    LaunchedEffect(likeAnimationTrigger) {
-        if (likeAnimationTrigger > 0 && isLiked) {
-            textScale.animateTo(
-                targetValue = 1.12f,
-                animationSpec = tween(durationMillis = 120, easing = FastOutSlowInEasing),
-            )
-            textScale.animateTo(
-                targetValue = 1f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessMedium,
-                ),
-            )
-        }
-    }
+    // Goes 0 -> 1 when the message is liked; the text scales up and back down along the way.
+    val likeProgress by animateFloatAsState(
+        targetValue = if (message.isLiked) 1f else 0f,
+        animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
+        label = "likeBounce",
+    )
 
     Text(
         text = styledMessage,
@@ -816,32 +793,14 @@ fun ClickableMessage(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .graphicsLayer {
-                scaleX = textScale.value
-                scaleY = textScale.value
-            }
-            .pointerInput(styledMessage) {
-                detectTapGestures(
-                    onDoubleTap = { onDoubleClick() },
-                    onTap = { offset ->
-                        layoutResult?.let { layout ->
-                            val position = layout.getOffsetForPosition(offset)
-                            styledMessage
-                                .getStringAnnotations(start = position, end = position)
-                                .firstOrNull()
-                                ?.let { annotation ->
-                                    when (annotation.tag) {
-                                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
-                                        else -> Unit
-                                    }
-                                }
-                        }
-                    },
-                )
+                val scale = if (message.isLiked) 1f + LikeBounceScale * sin(PI.toFloat() * likeProgress) else 1f
+                scaleX = scale
+                scaleY = scale
             },
-        onTextLayout = { layoutResult = it },
     )
 }
+
+private const val LikeBounceScale = 0.12f
 
 @Preview
 @Composable
