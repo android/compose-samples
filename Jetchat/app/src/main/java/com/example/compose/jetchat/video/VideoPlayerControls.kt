@@ -35,7 +35,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -171,8 +170,6 @@ fun VideoPlayerOverlayControls(
     }
 }
 
-private val InfoCardShape = RoundedCornerShape(16.dp)
-
 @Composable
 private fun VideoPlayerInfoCard(
     messageText: String,
@@ -202,13 +199,13 @@ private fun VideoPlayerInfoCard(
                 onRemoveRegion = onRemoveRegion,
             )
             .background(
-                color = Color(0x33000000),
-                shape = InfoCardShape,
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
             )
             .border(
                 width = 1.dp,
-                color = Color(0x33FFFFFF),
-                shape = InfoCardShape,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
             )
             .padding(12.dp),
     ) {
@@ -240,12 +237,12 @@ private fun VideoPlayerExitFullscreenButton(
                 onRemoveRegion = onRemoveRegion,
             )
             .background(
-                color = Color(0x33000000),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                 shape = CircleShape,
             )
             .border(
                 width = 1.dp,
-                color = Color(0x33FFFFFF),
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
                 shape = CircleShape,
             ),
     ) {
@@ -282,12 +279,12 @@ private fun VideoPlayerCenterPlayButton(
             )
             .clip(CircleShape)
             .background(
-                color = Color(0x33000000),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                 shape = CircleShape,
             )
             .border(
                 width = 1.dp,
-                color = Color(0x4DFFFFFF),
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                 shape = CircleShape,
             )
             .clickable(
@@ -313,8 +310,6 @@ private fun VideoPlayerCenterPlayButton(
         )
     }
 }
-
-private val BottomBarShape = RoundedCornerShape(16.dp)
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -351,13 +346,13 @@ private fun VideoPlayerBottomBar(
                 onRemoveRegion = onRemoveRegion,
             )
             .background(
-                color = Color(0x33000000),
-                shape = BottomBarShape,
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
             )
             .border(
                 width = 1.dp,
-                color = Color(0x33FFFFFF),
-                shape = BottomBarShape,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
             )
             .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
