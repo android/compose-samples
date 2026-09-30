@@ -183,7 +183,7 @@ fun UserInput(
     // Animated mesh-gradient glow behind the card, shown while recording is active.
     val glowAlpha by animateFloatAsState(
         targetValue = if (isRecordingActive) 1f else 0f,
-        animationSpec = tween(durationMillis = GlowFadeDurationMillis),
+        animationSpec = tween(durationMillis = 600),
         label = "glowFade",
     )
 
@@ -210,8 +210,8 @@ fun UserInput(
                 .then(
                     if (glowMeshPainter != null) {
                         Modifier.drawBehind {
-                            translate(top = -GlowTopOffset.toPx()) {
-                                scale(scaleX = GlowScaleX, scaleY = GlowScaleY) {
+                            translate(top = -58.dp.toPx()) {
+                                scale(scaleX = 1.38f, scaleY = 2.85f) {
                                     with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
                                 }
                             }
@@ -435,7 +435,7 @@ private fun RowScope.UserInputSelector(
     onAddClick: () -> Unit = {},
 ) {
     val iconTint = MaterialTheme.colorScheme.primary
-    val recordButtonPainter = rememberRecordButtonMeshGradientPainter()
+    val recordButtonPainter = if (recordingActive) rememberRecordButtonMeshGradientPainter() else null
 
     // Emoji
     IconButton(
@@ -483,7 +483,7 @@ private fun RowScope.UserInputSelector(
         modifier = Modifier
             .size(48.dp)
             .then(
-                if (recordingActive) {
+                if (recordButtonPainter != null) {
                     Modifier
                         .clip(CircleShape)
                         .paint(recordButtonPainter, contentScale = ContentScale.FillBounds)
@@ -695,11 +695,6 @@ fun EmojiTable(onTextAdded: (String) -> Unit, modifier: Modifier = Modifier) {
 }
 
 private const val EMOJI_COLUMNS = 10
-
-private const val GlowFadeDurationMillis = 600
-private val GlowTopOffset = 58.dp
-private const val GlowScaleX = 1.38f
-private const val GlowScaleY = 2.85f
 
 private val emojis = listOf(
     "\ud83d\ude00", // Grinning Face

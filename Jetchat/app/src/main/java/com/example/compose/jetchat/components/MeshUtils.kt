@@ -67,14 +67,14 @@ fun rememberUserInputGlowMeshGradientPainter(): MeshGradientPainter {
     return remember {
         fun orbit(colIdx: Int, rowIdx: Int, ampX: Float, ampY: Float): Offset {
             val angle1 = phase1 + colIdx * 0.85f + rowIdx * 0.65f
-            val angle2 = phase2 - colIdx * 0.55f + rowIdx * 0.90f
+            val angle2 = phase2 - colIdx * 0.55f + rowIdx * 0.9f
             val dx = ampX * (0.72f * cos(angle1) + 0.28f * sin(angle2))
             val dy = ampY * (0.72f * sin(angle1) + 0.28f * cos(angle2))
             return Offset(dx, dy)
         }
 
-        val uCols = floatArrayOf(0.00f, 0.12f, 0.27f, 0.56f, 0.78f, 1.00f)
-        val vRows = floatArrayOf(0.00f, 0.20f, 0.33f, 0.43f, 0.64f, 0.85f, 1.00f)
+        val uCols = floatArrayOf(0f, 0.12f, 0.27f, 0.56f, 0.78f, 1f)
+        val vRows = floatArrayOf(0f, 0.2f, 0.33f, 0.43f, 0.64f, 0.85f, 1f)
 
         val gridColors = arrayOf(
             // Row 0: transparent royal-blue boundary (top of the glow).
@@ -160,7 +160,7 @@ fun rememberUserInputGlowMeshGradientPainter(): MeshGradientPainter {
                         }
                         val ampY = when (r) {
                             1, 2 -> 0.028f
-                            3 -> 0.020f
+                            3 -> 0.02f
                             4 -> 0.022f
                             else -> 0.016f
                         }
@@ -191,23 +191,23 @@ fun rememberHeartReactionMeshGradientPainter(): MeshGradientPainter {
             columns = 3,
             hasBicubicColor = true,
         ) {
-            // Row 0 (top edge, y = 0.0f)
-            setVertex(0, 0, Offset(0.0000f, 0.0000f), Color(0xFFFF6B6B))
-            setVertex(0, 1, Offset(0.3300f, 0.0000f), Color(0xFFFFD6D6))
-            setVertex(0, 2, Offset(0.6700f, 0.0000f), Color(0xFFE8C3FF))
-            setVertex(0, 3, Offset(1.0000f, 0.0000f), Color(0xFFE396FF))
+            // Row 0 (top edge, y = 0f)
+            setVertex(0, 0, Offset(0f, 0f), Color(0xFFFF6B6B))
+            setVertex(0, 1, Offset(0.33f, 0f), Color(0xFFFFD6D6))
+            setVertex(0, 2, Offset(0.67f, 0f), Color(0xFFE8C3FF))
+            setVertex(0, 3, Offset(1f, 0f), Color(0xFFE396FF))
 
-            // Row 1 (mid, y ~ 0.33f - 0.50f)
-            setVertex(1, 0, Offset(0.0000f, 0.3300f), Color(0xFFFFAAEA))
-            setVertex(1, 1, Offset(0.3300f, 0.3300f), Color(0xFFFF6060))
-            setVertex(1, 2, Offset(0.6700f, 0.3300f), Color(0xFFFFBCBC))
-            setVertex(1, 3, Offset(1.0000f, 0.5000f), Color(0xFFFF2088))
+            // Row 1 (mid, y ~ 0.33f - 0.5f)
+            setVertex(1, 0, Offset(0f, 0.33f), Color(0xFFFFAAEA))
+            setVertex(1, 1, Offset(0.33f, 0.33f), Color(0xFFFF6060))
+            setVertex(1, 2, Offset(0.67f, 0.33f), Color(0xFFFFBCBC))
+            setVertex(1, 3, Offset(1f, 0.5f), Color(0xFFFF2088))
 
-            // Row 2 (bottom edge, y = 1.0f)
-            setVertex(2, 0, Offset(0.0000f, 1.0000f), Color(0xFFFFFFFF))
-            setVertex(2, 1, Offset(0.3300f, 1.0000f), Color(0xFFD0BEF9))
-            setVertex(2, 2, Offset(0.6637f, 1.0000f), Color(0xFFFFA298))
-            setVertex(2, 3, Offset(1.0000f, 1.0000f), Color(0xFFFF9BEB))
+            // Row 2 (bottom edge, y = 1f)
+            setVertex(2, 0, Offset(0f, 1f), Color(0xFFFFFFFF))
+            setVertex(2, 1, Offset(0.33f, 1f), Color(0xFFD0BEF9))
+            setVertex(2, 2, Offset(0.66f, 1f), Color(0xFFFFA298))
+            setVertex(2, 3, Offset(1f, 1f), Color(0xFFFF9BEB))
         }
     }
 }

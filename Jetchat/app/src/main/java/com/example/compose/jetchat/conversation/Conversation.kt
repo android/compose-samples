@@ -22,10 +22,11 @@ import android.content.ClipDescription
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -40,7 +41,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -440,90 +440,80 @@ fun Message(
     onVideoClick: (String) -> Unit = {},
     onLikeToggled: (messageId: String) -> Unit = {},
 ) {
-    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 12.dp) else Modifier
+    val borderColor = if (isUserMe) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.tertiary
+    }
 
-    if (isUserMe) {
-        // Self messages: right-aligned bubble with avatar on the right
-        Row(
-            modifier = spaceBetweenAuthors
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Top,
-        ) {
+    val spaceBetweenAuthorsModifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
+    Column(modifier = spaceBetweenAuthorsModifier.fillMaxWidth()) {
+        if (!isUserMe && isLastMessageByAuthor) {
+            AuthorNameTimestamp(
+                msg = msg,
+                onAuthorClick = onAuthorClick,
+                modifier = Modifier.padding(start = 16.dp, bottom = 6.dp),
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            if (!isUserMe) {
+                if (isLastMessageByAuthor) {
+                    AuthorAvatar(
+                        authorImage = msg.authorImage,
+                        authorName = msg.author,
+                        borderColor = borderColor,
+                        onAuthorClick = onAuthorClick,
+                    )
+                } else {
+                    Spacer(modifier = Modifier.width(74.dp))
+                }
+            }
             AuthorAndTextMessage(
                 msg = msg,
-                isUserMe = true,
+                isUserMe = isUserMe,
                 isFirstMessageByAuthor = isFirstMessageByAuthor,
                 isLastMessageByAuthor = isLastMessageByAuthor,
                 authorClicked = onAuthorClick,
                 onVideoClick = onVideoClick,
                 onLikeToggled = onLikeToggled,
                 modifier = Modifier
-                    .weight(1f, fill = false)
-                    .padding(start = 32.dp),
+                    .padding(
+                        start = if (isUserMe) 16.dp else 0.dp,
+                        end = if (isUserMe) 0.dp else 16.dp,
+                    )
+                    .weight(1f),
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            if (isLastMessageByAuthor) {
-                Image(
-                    modifier = Modifier
-                        .clickable(onClick = { onAuthorClick(msg.author) })
-                        .size(48.dp)
-                        .border(1.5.dp, MaterialTheme.colorScheme.inversePrimary, CircleShape)
-                        .clip(CircleShape),
-                    painter = painterResource(id = msg.authorImage),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                )
-            } else {
-                Spacer(modifier = Modifier.width(48.dp))
-            }
-        }
-    } else {
-        // Other user messages: left-aligned avatar + name/timestamp badge header + bubble
-        Column(
-            modifier = spaceBetweenAuthors
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            if (isLastMessageByAuthor) {
-                AuthorNameTimestamp(msg = msg, onAuthorClick = onAuthorClick)
-                Spacer(modifier = Modifier.height(6.dp))
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top,
-            ) {
+            if (isUserMe) {
                 if (isLastMessageByAuthor) {
-                    Image(
-                        modifier = Modifier
-                            .clickable(onClick = { onAuthorClick(msg.author) })
-                            .size(48.dp)
-                            .border(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), CircleShape)
-                            .clip(CircleShape),
-                        painter = painterResource(id = msg.authorImage),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = null,
+                    AuthorAvatar(
+                        authorImage = msg.authorImage,
+                        authorName = msg.author,
+                        borderColor = borderColor,
+                        onAuthorClick = onAuthorClick,
                     )
                 } else {
-                    Spacer(modifier = Modifier.width(48.dp))
+                    Spacer(modifier = Modifier.width(74.dp))
                 }
-                Spacer(modifier = Modifier.width(12.dp))
-                AuthorAndTextMessage(
-                    msg = msg,
-                    isUserMe = false,
-                    isFirstMessageByAuthor = isFirstMessageByAuthor,
-                    isLastMessageByAuthor = isLastMessageByAuthor,
-                    authorClicked = onAuthorClick,
-                    onVideoClick = onVideoClick,
-                    onLikeToggled = onLikeToggled,
-                    modifier = Modifier
-                        .weight(1f, fill = false)
-                        .padding(end = 32.dp),
-                )
             }
         }
     }
+}
+
+@Composable
+private fun RowScope.AuthorAvatar(authorImage: Int, authorName: String, borderColor: Color, onAuthorClick: (String) -> Unit) {
+    Image(
+        modifier = Modifier
+            .clickable(onClick = { onAuthorClick(authorName) })
+            .padding(horizontal = 16.dp)
+            .size(42.dp)
+            .border(2.dp, borderColor, CircleShape)
+            .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+            .clip(CircleShape)
+            .align(Alignment.Top),
+        painter = painterResource(id = authorImage),
+        contentScale = ContentScale.Crop,
+        contentDescription = null,
+    )
 }
 
 @Composable
@@ -559,12 +549,12 @@ fun AuthorAndTextMessage(
 }
 
 @Composable
-private fun AuthorNameTimestamp(msg: Message, onAuthorClick: (String) -> Unit = {}) {
+private fun AuthorNameTimestamp(msg: Message, modifier: Modifier = Modifier, onAuthorClick: (String) -> Unit = {}) {
     // Author name + timestamp pill badge
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.secondaryContainer,
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(24.dp))
             .clickable { onAuthorClick(msg.author) }
             .semantics(mergeDescendants = true) {},
@@ -632,7 +622,7 @@ fun ChatItemBubble(
 ) {
     val isLiked = message.isLiked
     val haptic = LocalHapticFeedback.current
-    val heartMeshPainter = rememberHeartReactionMeshGradientPainter()
+    val heartMeshPainter = if (isLiked) rememberHeartReactionMeshGradientPainter() else null
 
     val backgroundBubbleColor = if (isUserMe) {
         MaterialTheme.colorScheme.inversePrimary
@@ -646,26 +636,28 @@ fun ChatItemBubble(
         null
     }
 
+    val likeTransition = updateTransition(targetState = isLiked, label = "like")
+
     // Inset that reveals the heart mesh around liked media. It is applied inside the fixed-size
     // image, so liking never changes the bubble size (no jumps in the LazyColumn).
-    val likedMediaInset by animateDpAsState(
-        targetValue = if (isLiked) 8.dp else 0.dp,
-        label = "likedMediaInset",
-    )
+    val likedMediaInset by likeTransition.animateDp(label = "likedMediaInset") { liked ->
+        if (liked) 8.dp else 0.dp
+    }
+
+    // Goes 0 -> 1 when the message is liked; the whole text bubble scales up and back down along
+    // the way. graphicsLayer only affects drawing, so the LazyColumn layout doesn't move.
+    val likeProgress by likeTransition.animateFloat(
+        transitionSpec = { tween(durationMillis = 350, easing = FastOutSlowInEasing) },
+        label = "likeBounce",
+    ) { liked ->
+        if (liked) 1f else 0f
+    }
 
     // pointerInput(Unit) below captures this once, so always call the latest callback.
     val toggleLiked by rememberUpdatedState {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         onLikeToggled(message.id)
     }
-
-    // Goes 0 -> 1 when the message is liked; the whole text bubble scales up and back down along
-    // the way. graphicsLayer only affects drawing, so the LazyColumn layout doesn't move.
-    val likeProgress by animateFloatAsState(
-        targetValue = if (isLiked) 1f else 0f,
-        animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
-        label = "likeBounce",
-    )
 
     Column(
         horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
@@ -689,7 +681,7 @@ fun ChatItemBubble(
                     },
             ) {
                 Box(
-                    modifier = if (isLiked) {
+                    modifier = if (heartMeshPainter != null) {
                         Modifier
                             .background(MaterialTheme.colorScheme.surface)
                             .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
@@ -725,7 +717,7 @@ fun ChatItemBubble(
                 },
             ) {
                 Box(
-                    modifier = if (isLiked) {
+                    modifier = if (heartMeshPainter != null) {
                         Modifier
                             .background(MaterialTheme.colorScheme.surface)
                             .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
