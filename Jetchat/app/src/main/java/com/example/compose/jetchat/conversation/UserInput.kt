@@ -490,7 +490,7 @@ private fun UserInputSelector(
                     } else {
                         Modifier
                     },
-                )
+                ),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_mic),
