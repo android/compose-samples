@@ -99,6 +99,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -303,8 +304,12 @@ fun ChannelNameBar(
         onNavIconPressed = onNavIconPressed,
         navigationIcon = {},
         title = {
+            val navDrawerDescription = stringResource(R.string.navigation_drawer_open)
             Surface(
                 onClick = onNavIconPressed,
+                modifier = Modifier.semantics {
+                    contentDescription = navDrawerDescription
+                },
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
             ) {
