@@ -186,12 +186,7 @@ fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = M
  */
 @OptIn(UnstableApi::class)
 @Composable
-fun FullScreenVideoPlayer(
-    videoUri: String,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier,
-    messageText: String? = null,
-) {
+fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Modifier = Modifier, messageText: String? = null) {
     val context = LocalContext.current
     val resolvedUri = remember(videoUri) { resolveVideoUri(videoUri) }
 
