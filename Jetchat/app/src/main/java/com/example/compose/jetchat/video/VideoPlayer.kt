@@ -252,7 +252,9 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
                 val bottom = boxBottom.coerceIn(0f, surfaceH)
 
                 if (right > left && bottom > top) {
-                    val cornerRadius = spec.cornerRadiusPx
+                    val coversFullWidth = left <= 0f && right >= surfaceW
+                    val coversFullHeight = top <= 0f && bottom >= surfaceH
+                    val cornerRadius = if (coversFullWidth || coversFullHeight) 0f else spec.cornerRadiusPx
                     spec.copy(
                         boundsInSurface = RectF(left, top, right, bottom),
                         cornerRadiusPx = cornerRadius,
