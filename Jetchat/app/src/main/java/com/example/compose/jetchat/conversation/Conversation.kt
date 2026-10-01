@@ -41,6 +41,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -69,8 +70,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -98,6 +102,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.blur.BlurStop
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -108,6 +114,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -212,35 +219,7 @@ fun ConversationContent(
                     scrollBehavior = scrollBehavior,
                 )
             },
-            // Exclude ime and navigation bar padding so this can be added by the UserInput composable
-            contentWindowInsets = ScaffoldDefaults
-                .contentWindowInsets
-                .exclude(WindowInsets.navigationBars)
-                .exclude(WindowInsets.ime),
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        ) { paddingValues ->
-            Column(
-                Modifier.fillMaxSize()
-                    .padding(bottom = paddingValues.calculateBottomPadding())
-                    .background(color = background)
-                    .border(width = 2.dp, color = borderStroke)
-                    .dragAndDropTarget(shouldStartDragAndDrop = { event ->
-                        event
-                            .mimeTypes()
-                            .contains(
-                                ClipDescription.MIMETYPE_TEXT_PLAIN,
-                            )
-                    }, target = dragAndDropCallback),
-            ) {
-                Messages(
-                    messages = uiState.messages,
-                    navigateToProfile = navigateToProfile,
-                    modifier = Modifier.weight(1f),
-                    scrollState = scrollState,
-                    contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
-                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
-                    onMessageLikeToggled = onMessageLikeToggled,
-                )
+            bottomBar = {
                 UserInput(
                     onMessageSent = { content ->
                         uiState.addMessage(
@@ -264,7 +243,52 @@ fun ConversationContent(
                     },
                     // let this element handle the padding so that the elevation is shown behind the
                     // navigation bar
-                    modifier = Modifier.navigationBarsPadding().imePadding(),
+                    modifier = Modifier
+                        .imePadding()
+                        .backdropBlur(
+                            fallbackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                            elevation = 0.dp,
+                            spec = BlurRadiusSpec.verticalGradient(
+                                listOf(
+                                    BlurStop(0f, 0.dp),
+                                    BlurStop(0.5f, 32.dp),
+                                ),
+                            ),
+                        )
+                        .navigationBarsPadding(),
+                )
+            },
+            // Exclude ime and navigation bar padding so this can be added by the UserInput composable
+            contentWindowInsets = ScaffoldDefaults
+                .contentWindowInsets
+                .exclude(WindowInsets.navigationBars)
+                .exclude(WindowInsets.ime),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        ) { paddingValues ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(color = background)
+                    .border(width = 2.dp, color = borderStroke)
+                    .dragAndDropTarget(
+                        shouldStartDragAndDrop = { event ->
+                            event
+                                .mimeTypes()
+                                .contains(
+                                    ClipDescription.MIMETYPE_TEXT_PLAIN,
+                                )
+                        },
+                        target = dragAndDropCallback,
+                    ),
+            ) {
+                Messages(
+                    messages = uiState.messages,
+                    navigateToProfile = navigateToProfile,
+                    modifier = Modifier.weight(1f),
+                    scrollState = scrollState,
+                    contentPadding = paddingValues,
+                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
+                    onMessageLikeToggled = onMessageLikeToggled,
                 )
             }
         }
@@ -300,49 +324,104 @@ fun ChannelNameBar(
     JetchatAppBar(
         modifier = modifier
             .backdropBlur(
-                tint = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f),
+                fallbackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                 elevation = 0.dp,
-                radius = 12.dp,
+                spec = BlurRadiusSpec.verticalGradient(
+                    listOf(
+                        BlurStop(0.5f, 32.dp),
+                        BlurStop(1f, 0.dp),
+                    ),
+                ),
             ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
+        navigationIcon = {},
         title = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Channel name
-                Text(
-                    text = channelName,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                // Number of members
-                Text(
-                    text = stringResource(R.string.members, channelMembers),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            val navDrawerDescription = stringResource(R.string.navigation_drawer_open)
+            Surface(
+                onClick = onNavIconPressed,
+                modifier = Modifier.semantics {
+                    contentDescription = navDrawerDescription
+                },
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = channelName.removePrefix("#"),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy((-4).dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ali),
+                            contentDescription = "Ali Conors",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.someone_else),
+                            contentDescription = "Taylor Brooks",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.placeholder),
+                            contentDescription = "John Glenn",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                        )
+                    }
+                }
             }
         },
         actions = {
-            // Search icon
-            Icon(
-                painterResource(id = R.drawable.ic_search),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.search),
-            )
-            // Info icon
-            Icon(
-                painterResource(id = R.drawable.ic_info),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.info),
-            )
+            FilledIconButton(
+                onClick = { functionalityNotAvailablePopupShown = true },
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                modifier = Modifier.size(40.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = stringResource(id = R.string.search),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            FilledIconButton(
+                onClick = { functionalityNotAvailablePopupShown = true },
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                modifier = Modifier.size(40.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_info),
+                    contentDescription = stringResource(id = R.string.info),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
         },
     )
 }
@@ -425,7 +504,9 @@ fun Messages(
                     scrollState.animateScrollToItem(0)
                 }
             },
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = contentPadding.calculateBottomPadding()),
         )
     }
 }
