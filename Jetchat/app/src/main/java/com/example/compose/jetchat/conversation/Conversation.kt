@@ -294,31 +294,6 @@ fun ConversationContent(
                     },
                     onMessageLikeToggled = onMessageLikeToggled,
                 )
-                UserInput(
-                    onMessageSent = { content ->
-                        uiState.addMessage(
-                            Message(authorMe, content, timeNow),
-                        )
-                    },
-                    onVideoMessageSent = { videoUri, content ->
-                        uiState.addMessage(
-                            Message(
-                                author = authorMe,
-                                content = content,
-                                timestamp = timeNow,
-                                videoUri = videoUri,
-                            ),
-                        )
-                    },
-                    resetScroll = {
-                        scope.launch {
-                            scrollState.scrollToItem(0)
-                        }
-                    },
-                    // let this element handle the padding so that the elevation is shown behind the
-                    // navigation bar
-                    modifier = Modifier.navigationBarsPadding().imePadding(),
-                )
             }
         }
 
