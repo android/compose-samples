@@ -219,39 +219,7 @@ fun ConversationContent(
                     scrollBehavior = scrollBehavior,
                 )
             },
-            // Exclude ime and navigation bar padding so this can be added by the UserInput composable
-            contentWindowInsets = ScaffoldDefaults
-                .contentWindowInsets
-                .exclude(WindowInsets.navigationBars)
-                .exclude(WindowInsets.ime),
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        ) { paddingValues ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(bottom = paddingValues.calculateBottomPadding())
-                    .background(color = background)
-                    .border(width = 2.dp, color = borderStroke)
-                    .dragAndDropTarget(
-                        shouldStartDragAndDrop = { event ->
-                            event
-                                .mimeTypes()
-                                .contains(
-                                    ClipDescription.MIMETYPE_TEXT_PLAIN,
-                                )
-                        },
-                        target = dragAndDropCallback,
-                    ),
-            ) {
-                Messages(
-                    messages = uiState.messages,
-                    navigateToProfile = navigateToProfile,
-                    modifier = Modifier.weight(1f),
-                    scrollState = scrollState,
-                    contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
-                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
-                    onMessageLikeToggled = onMessageLikeToggled,
-                )
+            bottomBar = {
                 UserInput(
                     onMessageSent = { content ->
                         uiState.addMessage(
@@ -276,8 +244,51 @@ fun ConversationContent(
                     // let this element handle the padding so that the elevation is shown behind the
                     // navigation bar
                     modifier = Modifier
-                        .navigationBarsPadding()
-                        .imePadding(),
+                        .imePadding()
+                        .backdropBlur(
+                            fallbackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                            elevation = 0.dp,
+                            spec = BlurRadiusSpec.verticalGradient(
+                                listOf(
+                                    BlurStop(0f, 0.dp),
+                                    BlurStop(0.5f, 32.dp),
+                                ),
+                            ),
+                        )
+                        .navigationBarsPadding(),
+                )
+            },
+            // Exclude ime and navigation bar padding so this can be added by the UserInput composable
+            contentWindowInsets = ScaffoldDefaults
+                .contentWindowInsets
+                .exclude(WindowInsets.navigationBars)
+                .exclude(WindowInsets.ime),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        ) { paddingValues ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(color = background)
+                    .border(width = 2.dp, color = borderStroke)
+                    .dragAndDropTarget(
+                        shouldStartDragAndDrop = { event ->
+                            event
+                                .mimeTypes()
+                                .contains(
+                                    ClipDescription.MIMETYPE_TEXT_PLAIN,
+                                )
+                        },
+                        target = dragAndDropCallback,
+                    ),
+            ) {
+                Messages(
+                    messages = uiState.messages,
+                    navigateToProfile = navigateToProfile,
+                    modifier = Modifier.weight(1f),
+                    scrollState = scrollState,
+                    contentPadding = paddingValues,
+                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
+                    onMessageLikeToggled = onMessageLikeToggled,
                 )
             }
         }
@@ -493,7 +504,9 @@ fun Messages(
                     scrollState.animateScrollToItem(0)
                 }
             },
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = contentPadding.calculateBottomPadding()),
         )
     }
 }
