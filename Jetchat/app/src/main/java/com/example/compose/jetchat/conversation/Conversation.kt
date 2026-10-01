@@ -362,7 +362,7 @@ fun ChannelNameBar(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ali),
-                            contentDescription = null,
+                            contentDescription = "Ali Conors",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(24.dp)
@@ -371,7 +371,7 @@ fun ChannelNameBar(
                         )
                         Image(
                             painter = painterResource(id = R.drawable.someone_else),
-                            contentDescription = null,
+                            contentDescription = "Taylor Brooks",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(24.dp)
@@ -380,7 +380,7 @@ fun ChannelNameBar(
                         )
                         Image(
                             painter = painterResource(id = R.drawable.placeholder),
-                            contentDescription = null,
+                            contentDescription = "John Glenn",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(24.dp)
