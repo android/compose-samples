@@ -23,6 +23,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,9 +32,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -61,6 +63,8 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.conversation.BlurRegionSpec
 import com.example.compose.jetchat.conversation.registerBlurRegion
 import java.util.Locale
+
+private val MinWidthForInfoCard = 500.dp
 
 /**
  * Overlay controls for VideoPlayer with frosted glass styling and blur underneath.
@@ -78,6 +82,7 @@ fun VideoPlayerOverlayControls(
     onToggleFullscreen: () -> Unit,
     onUpdateBlurRegions: () -> Unit,
     modifier: Modifier = Modifier,
+    messageText: String? = null,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -116,6 +121,29 @@ fun VideoPlayerOverlayControls(
             modifier = Modifier.align(Alignment.Center),
         )
 
+        // Right-docked Video Info Card (only shown when the screen width allows for it)
+        if (!messageText.isNullOrBlank()) {
+            VideoPlayerInfoCard(
+                messageText = messageText,
+                onUpdateRegion = { spec ->
+                    blurRegionSpecs[spec.id] = spec
+                    onUpdateBlurRegions()
+                },
+                onRemoveRegion = { id ->
+                    if (blurRegionSpecs.remove(id) != null) {
+                        onUpdateBlurRegions()
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .then(
+                        if (isFullscreen)
+                            Modifier.windowInsetsPadding(WindowInsets.safeContent)
+                        else Modifier,
+                    ),
+            )
+        }
+
         // Bottom Control Bar Pill
         VideoPlayerBottomBar(
             playPauseButtonState = playPauseButtonState,
@@ -143,6 +171,53 @@ fun VideoPlayerOverlayControls(
 }
 
 @Composable
+private fun VideoPlayerInfoCard(
+    messageText: String,
+    onUpdateRegion: (BlurRegionSpec) -> Unit,
+    onRemoveRegion: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .layout { measurable, constraints ->
+                if (constraints.maxWidth < MinWidthForInfoCard.roundToPx()) {
+                    onRemoveRegion("video_info_card")
+                    layout(0, 0) {}
+                } else {
+                    val placeable = measurable.measure(constraints)
+                    layout(placeable.width, placeable.height) {
+                        placeable.placeRelative(0, 0)
+                    }
+                }
+            }
+            .padding(horizontal = 8.dp)
+            .widthIn(max = 200.dp)
+            .registerBlurRegion(
+                id = "video_info_card",
+                cornerRadius = 16.dp,
+                onUpdateRegion = onUpdateRegion,
+                onRemoveRegion = onRemoveRegion,
+            )
+            .background(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
+            )
+            .padding(12.dp),
+    ) {
+        Text(
+            text = messageText,
+            color = Color.White,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@Composable
 private fun VideoPlayerExitFullscreenButton(
     onClick: () -> Unit,
     onUpdateRegion: (BlurRegionSpec) -> Unit,
@@ -162,12 +237,12 @@ private fun VideoPlayerExitFullscreenButton(
                 onRemoveRegion = onRemoveRegion,
             )
             .background(
-                color = Color(0x33000000),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                 shape = CircleShape,
             )
             .border(
                 width = 1.dp,
-                color = Color(0x33FFFFFF),
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
                 shape = CircleShape,
             ),
     ) {
@@ -204,12 +279,12 @@ private fun VideoPlayerCenterPlayButton(
             )
             .clip(CircleShape)
             .background(
-                color = Color(0x33000000),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                 shape = CircleShape,
             )
             .border(
                 width = 1.dp,
-                color = Color(0x4DFFFFFF),
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                 shape = CircleShape,
             )
             .clickable(
@@ -235,8 +310,6 @@ private fun VideoPlayerCenterPlayButton(
         )
     }
 }
-
-private val BottomBarShape = RoundedCornerShape(16.dp)
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -268,18 +341,18 @@ private fun VideoPlayerBottomBar(
             .padding(horizontal = 8.dp, vertical = 16.dp)
             .registerBlurRegion(
                 id = "bottom_bar",
-                cornerRadius = 0.dp,
+                cornerRadius = 16.dp,
                 onUpdateRegion = onUpdateRegion,
                 onRemoveRegion = onRemoveRegion,
             )
             .background(
-                color = Color(0x33000000),
-                shape = BottomBarShape,
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
             )
             .border(
                 width = 1.dp,
-                color = Color(0x33FFFFFF),
-                shape = BottomBarShape,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.large,
             )
             .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {

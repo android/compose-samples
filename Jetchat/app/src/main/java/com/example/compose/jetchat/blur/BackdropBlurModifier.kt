@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 /**
  * Applies an in-window backdrop [RenderEffect] to content drawn behind this composable in the window.
  *
- * On supported platforms (Android 17 / SDK 37+), this leverages [RenderNode.setBackdropRenderEffect]
+ * On supported platforms (Android 17 / SDK 37.2+), this leverages [RenderNode.setBackdropRenderEffect]
  * to apply hardware-accelerated visual effects (like blur) to the backdrop before this composable
  * is drawn, enabling translucent floating navigation bars, top app bars, and frosted-glass cards.
  *
@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
  * @param elevation Optional elevation shadow cast by this component.
  * @param outerShadowOnly If true, clips out the shadow cast beneath the outline area so the shadow
  *                        does not darken the translucent frosted glass interior.
- * @param fallbackColor An optional fallback background color for platforms earlier than Android 17.
+ * @param fallbackColor An optional fallback background color for platforms earlier than Android 17 (37.2).
  */
 fun Modifier.backdropRenderEffect(
     renderEffect: RenderEffect?,
@@ -75,7 +75,7 @@ fun Modifier.backdropRenderEffect(
     outerShadowOnly: Boolean = true,
     fallbackColor: Color = if (tint.isSpecified) tint else Color.Transparent,
 ): Modifier = backdropRenderEffect(
-    renderEffect = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    renderEffect = if (Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.CINNAMON_BUN) {
         renderEffect?.asAndroidRenderEffect()
     } else {
         null
@@ -364,9 +364,10 @@ private class BackdropBlurNode(
     private var cachedSpec: BlurRadiusSpec? = null
 
     override fun resolveRenderEffect(density: Density, size: Size): RenderEffect? {
+        if (Build.VERSION.SDK_INT_FULL < Build.VERSION_CODES_FULL.CINNAMON_BUN) return null
         val currentDensity = density.density
         if (cachedEffect == null || cachedDensity != currentDensity || cachedSize != size || cachedSpec != spec) {
-            cachedEffect = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && size.width > 0f && size.height > 0f) {
+            cachedEffect = if (size.width > 0f && size.height > 0f) {
                 try {
                     spec.createRenderEffect(size, density).asAndroidRenderEffect()
                 } catch (_: Throwable) {
@@ -431,11 +432,12 @@ private class BackdropEllipticalBlurNode(
     private var cachedRadiusY: Dp = 0.dp
 
     override fun resolveRenderEffect(density: Density): RenderEffect? {
+        if (Build.VERSION.SDK_INT_FULL < Build.VERSION_CODES_FULL.CINNAMON_BUN) return null
         val currentDensity = density.density
         if (cachedEffect == null || cachedDensity != currentDensity || cachedRadiusX != radiusX || cachedRadiusY != radiusY) {
             val rxPx = with(density) { radiusX.toPx() }
             val ryPx = with(density) { radiusY.toPx() }
-            cachedEffect = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (rxPx > 0f || ryPx > 0f)) {
+            cachedEffect = if (rxPx > 0f || ryPx > 0f) {
                 RenderEffect.createBlurEffect(
                     rxPx.coerceAtLeast(0.01f),
                     ryPx.coerceAtLeast(0.01f),

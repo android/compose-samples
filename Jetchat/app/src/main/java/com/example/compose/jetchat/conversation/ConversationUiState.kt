@@ -28,6 +28,14 @@ class ConversationUiState(val channelName: String, val channelMembers: Int, init
     fun addMessage(msg: Message) {
         _messages.add(0, msg) // Add to the beginning of the list
     }
+
+    fun toggleLike(messageId: String) {
+        val index = _messages.indexOfFirst { it.id == messageId }
+        if (index != -1) {
+            val message = _messages[index]
+            _messages[index] = message.copy(isLiked = !message.isLiked)
+        }
+    }
 }
 
 @Immutable
@@ -39,4 +47,5 @@ data class Message(
     val authorImage: Int = getAuthorImage(author),
     val videoUri: String? = null,
     val id: String = "$author-$timestamp-$content",
+    val isLiked: Boolean = false,
 )

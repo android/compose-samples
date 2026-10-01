@@ -23,16 +23,27 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,8 +61,8 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
@@ -61,7 +72,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
@@ -85,6 +95,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -96,15 +107,18 @@ import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.blur.BlurRadiusSpec
 import androidx.compose.ui.graphics.blur.BlurStop
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -112,13 +126,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.graphics.shapes.Morph
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.components.rememberHeartReactionMeshGradientPainter
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.FullScreenRoundedRectangle
 import com.example.compose.jetchat.theme.JetchatTheme
@@ -130,6 +145,8 @@ import com.example.compose.jetchat.theme.sharedElementTransitionSpec
 import com.example.compose.jetchat.theme.toShape
 import com.example.compose.jetchat.video.FullScreenVideoPlayer
 import com.example.compose.jetchat.video.VideoThumbnail
+import kotlin.math.PI
+import kotlin.math.sin
 import kotlinx.coroutines.launch
 
 /**
@@ -139,6 +156,7 @@ import kotlinx.coroutines.launch
  * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
  * @param onNavIconPressed Sends an event up when the user clicks on the menu
+ * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
  * @param navigateToProfileWithKey User action when navigation to a profile is requested with a shared element key
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -148,6 +166,7 @@ fun ConversationContent(
     navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { },
+    onMessageLikeToggled: (messageId: String) -> Unit = { },
     navigateToProfileWithKey: (user: String, sharedElementKey: String?) -> Unit = { user, _ ->
         navigateToProfile(user)
     },
@@ -208,9 +227,11 @@ fun ConversationContent(
     }
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
+    var activeVideoText by rememberSaveable { mutableStateOf<String?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             topBar = {
                 ChannelNameBar(
                     channelName = uiState.channelName,
@@ -219,39 +240,7 @@ fun ConversationContent(
                     scrollBehavior = scrollBehavior,
                 )
             },
-            // Exclude ime and navigation bar padding so this can be added by the UserInput composable
-            contentWindowInsets = ScaffoldDefaults
-                .contentWindowInsets
-                .exclude(WindowInsets.navigationBars)
-                .exclude(WindowInsets.ime),
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        ) { paddingValues ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(bottom = paddingValues.calculateBottomPadding())
-                    .background(color = background)
-                    .border(width = 2.dp, color = borderStroke)
-                    .dragAndDropTarget(
-                        shouldStartDragAndDrop = { event ->
-                            event
-                                .mimeTypes()
-                                .contains(
-                                    ClipDescription.MIMETYPE_TEXT_PLAIN,
-                                )
-                        },
-                        target = dragAndDropCallback,
-                    ),
-            ) {
-                Messages(
-                    messages = uiState.messages,
-                    navigateToProfile = navigateToProfile,
-                    navigateToProfileWithKey = navigateToProfileWithKey,
-                    modifier = Modifier.weight(1f),
-                    scrollState = scrollState,
-                    contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
-                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
-                )
+            bottomBar = {
                 UserInput(
                     onMessageSent = { content ->
                         uiState.addMessage(
@@ -276,8 +265,55 @@ fun ConversationContent(
                     // let this element handle the padding so that the elevation is shown behind the
                     // navigation bar
                     modifier = Modifier
-                        .navigationBarsPadding()
-                        .imePadding(),
+                        .imePadding()
+                        .backdropBlur(
+                            fallbackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                            elevation = 0.dp,
+                            spec = BlurRadiusSpec.verticalGradient(
+                                listOf(
+                                    BlurStop(0f, 0.dp),
+                                    BlurStop(0.5f, 32.dp),
+                                ),
+                            ),
+                        )
+                        .navigationBarsPadding(),
+                )
+            },
+            // Exclude ime and navigation bar padding so this can be added by the UserInput composable
+            contentWindowInsets = ScaffoldDefaults
+                .contentWindowInsets
+                .exclude(WindowInsets.navigationBars)
+                .exclude(WindowInsets.ime),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        ) { paddingValues ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(color = background)
+                    .border(width = 2.dp, color = borderStroke)
+                    .dragAndDropTarget(
+                        shouldStartDragAndDrop = { event ->
+                            event
+                                .mimeTypes()
+                                .contains(
+                                    ClipDescription.MIMETYPE_TEXT_PLAIN,
+                                )
+                        },
+                        target = dragAndDropCallback,
+                    ),
+            ) {
+                Messages(
+                    messages = uiState.messages,
+                    navigateToProfile = navigateToProfile,
+                    navigateToProfileWithKey = navigateToProfileWithKey,
+                    modifier = Modifier.weight(1f),
+                    scrollState = scrollState,
+                    contentPadding = paddingValues,
+                    onVideoClick = { videoUri, messageText ->
+                        activeVideoUri = videoUri
+                        activeVideoText = messageText
+                    },
+                    onMessageLikeToggled = onMessageLikeToggled,
                 )
             }
         }
@@ -290,7 +326,11 @@ fun ConversationContent(
             activeVideoUri?.let { uri ->
                 FullScreenVideoPlayer(
                     videoUri = uri,
-                    onDismiss = { activeVideoUri = null },
+                    messageText = activeVideoText,
+                    onDismiss = {
+                        activeVideoUri = null
+                        activeVideoText = null
+                    },
                 )
             }
         }
@@ -326,10 +366,12 @@ fun ChannelNameBar(
         onNavIconPressed = onNavIconPressed,
         navigationIcon = {},
         title = {
-            val navDrawerDesc = stringResource(id = R.string.navigation_drawer_open)
+            val navDrawerDescription = stringResource(R.string.navigation_drawer_open)
             Surface(
                 onClick = onNavIconPressed,
-                modifier = Modifier.semantics { contentDescription = navDrawerDesc },
+                modifier = Modifier.semantics {
+                    contentDescription = navDrawerDescription
+                },
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
             ) {
@@ -349,7 +391,7 @@ fun ChannelNameBar(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ali),
-                            contentDescription = null,
+                            contentDescription = "Ali Conors",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(24.dp)
@@ -358,7 +400,7 @@ fun ChannelNameBar(
                         )
                         Image(
                             painter = painterResource(id = R.drawable.someone_else),
-                            contentDescription = null,
+                            contentDescription = "Taylor Brooks",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(24.dp)
@@ -367,7 +409,7 @@ fun ChannelNameBar(
                         )
                         Image(
                             painter = painterResource(id = R.drawable.placeholder),
-                            contentDescription = null,
+                            contentDescription = "John Glenn",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(24.dp)
@@ -422,7 +464,8 @@ fun Messages(
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onMessageLikeToggled: (messageId: String) -> Unit = {},
     navigateToProfileWithKey: (user: String, sharedElementKey: String?) -> Unit = { user, _ ->
         navigateToProfile(user)
     },
@@ -465,6 +508,7 @@ fun Messages(
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
                         isLastMessageByAuthor = isLastMessageByAuthor,
                         onVideoClick = onVideoClick,
+                        onLikeToggled = onMessageLikeToggled,
                     )
                 }
             }
@@ -492,7 +536,9 @@ fun Messages(
                     scrollState.animateScrollToItem(0)
                 }
             },
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = contentPadding.calculateBottomPadding()),
         )
     }
 }
@@ -504,7 +550,8 @@ fun Message(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val borderColor = if (isUserMe) {
         MaterialTheme.colorScheme.primary
@@ -634,7 +681,7 @@ private fun RowScope.AuthorAvatar(
                     restingShape = MaterialShapes.Cookie9Sided,
                     targetShape = FullScreenRoundedRectangle,
                 )
-                .border(1.5.dp, borderColor.copy(alpha = borderAlpha), currentShape)
+                .border(2.dp, borderColor.copy(alpha = borderAlpha), currentShape)
                 .border(3.dp, MaterialTheme.colorScheme.surface.copy(alpha = borderAlpha), currentShape)
                 .clip(currentShape)
                 .blur {
@@ -661,20 +708,19 @@ fun AuthorAndTextMessage(
     isLastMessageByAuthor: Boolean,
     authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
     ) {
-        if (isLastMessageByAuthor) {
-            AuthorNameTimestamp(msg)
-        }
         ChatItemBubble(
             message = msg,
             isUserMe = isUserMe,
             authorClicked = authorClicked,
             onVideoClick = onVideoClick,
+            onLikeToggled = onLikeToggled,
         )
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
@@ -687,23 +733,32 @@ fun AuthorAndTextMessage(
 }
 
 @Composable
-private fun AuthorNameTimestamp(msg: Message) {
-    // Combine author and timestamp for a11y.
-    Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
-        Text(
-            text = msg.author,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .alignBy(LastBaseline)
-                .paddingFrom(LastBaseline, after = 8.dp), // Space to 1st bubble
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = msg.timestamp,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.alignBy(LastBaseline),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+private fun AuthorNameTimestamp(msg: Message, modifier: Modifier = Modifier, onAuthorClick: (String) -> Unit = {}) {
+    // Author name + timestamp pill badge
+    Surface(
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        modifier = modifier
+            .clip(RoundedCornerShape(24.dp))
+            .clickable { onAuthorClick(msg.author) }
+            .semantics(mergeDescendants = true) {},
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = msg.author,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = msg.timestamp,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+        }
     }
 }
 
@@ -714,15 +769,18 @@ private val ChatBubbleShapeMe = RoundedCornerShape(20.dp, 4.dp, 20.dp, 20.dp)
 fun DayHeader(dayString: String) {
     Row(
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .height(16.dp),
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+            .height(24.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         DayHeaderLine()
         Text(
             text = dayString,
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+            ),
+            color = MaterialTheme.colorScheme.onSurface,
         )
         DayHeaderLine()
     }
@@ -734,31 +792,86 @@ private fun RowScope.DayHeaderLine() {
         modifier = Modifier
             .weight(1f)
             .align(Alignment.CenterVertically),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f),
     )
 }
 
 @Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit, onVideoClick: (String) -> Unit = {}) {
+fun ChatItemBubble(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (String) -> Unit,
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onLikeToggled: (messageId: String) -> Unit = {},
+) {
+    val isLiked = message.isLiked
+    val haptic = LocalHapticFeedback.current
+    val heartMeshPainter = if (isLiked) rememberHeartReactionMeshGradientPainter() else null
+
     val backgroundBubbleColor = if (isUserMe) {
-        MaterialTheme.colorScheme.primary
+        MaterialTheme.colorScheme.inversePrimary
     } else {
-        MaterialTheme.colorScheme.surfaceVariant
+        MaterialTheme.colorScheme.primaryContainer
     }
     val bubbleShape = if (isUserMe) ChatBubbleShapeMe else ChatBubbleShapeOthers
+    val bubbleBorder = if (isLiked) {
+        BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+    } else {
+        null
+    }
 
-    Column(horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start) {
+    val likeTransition = updateTransition(targetState = isLiked, label = "like")
+
+    // Goes 0 -> 1 when the message is liked; the whole text bubble scales up and back down along
+    // the way. graphicsLayer only affects drawing, so the LazyColumn layout doesn't move.
+    val likeProgress by likeTransition.animateFloat(
+        transitionSpec = { tween(durationMillis = 350, easing = FastOutSlowInEasing) },
+        label = "likeBounce",
+    ) { liked ->
+        if (liked) 1f else 0f
+    }
+
+    // pointerInput(Unit) below captures this once, so always call the latest callback.
+    val toggleLiked by rememberUpdatedState {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        onLikeToggled(message.id)
+    }
+
+    Column(
+        horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
+    ) {
         val hasText = message.content.isNotBlank() || (message.image == null && message.videoUri == null)
         if (hasText) {
             Surface(
-                color = backgroundBubbleColor,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier
+                    .graphicsLayer {
+                        val scale = if (isLiked) 1f + LikeBounceScale * sin(PI.toFloat() * likeProgress) else 1f
+                        scaleX = scale
+                        scaleY = scale
+                        // Grow away from the avatar, anchored at the bubble's pointed corner.
+                        transformOrigin = TransformOrigin(pivotFractionX = if (isUserMe) 1f else 0f, pivotFractionY = 0f)
+                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures(onDoubleTap = { toggleLiked() })
+                    },
             ) {
-                ClickableMessage(
-                    message = message,
-                    isUserMe = isUserMe,
-                    authorClicked = authorClicked,
-                )
+                Box(
+                    modifier = if (heartMeshPainter != null) {
+                        Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
+                    } else {
+                        Modifier
+                    },
+                ) {
+                    ClickableMessage(
+                        message = message,
+                        authorClicked = authorClicked,
+                    )
+                }
             }
         }
 
@@ -774,18 +887,38 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                 1f
             }
             Surface(
-                color = backgroundBubbleColor,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
-                Image(
-                    painter = painter,
-                    contentScale = ContentScale.Crop,
+                Box(
+                    // Animates the 8dp frame that reveals the heart mesh around a liked image.
                     modifier = Modifier
-                        .sizeIn(maxWidth = 240.dp, maxHeight = 260.dp)
-                        .aspectRatio(aspectRatio, matchHeightConstraintsFirst = aspectRatio < 1f)
-                        .clip(bubbleShape),
-                    contentDescription = stringResource(id = R.string.attached_image),
-                )
+                        .animateContentSize()
+                        .then(
+                            if (heartMeshPainter != null) {
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
+                            } else {
+                                Modifier
+                            },
+                        ),
+                ) {
+                    Image(
+                        painter = painter,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(if (isLiked) 8.dp else 0.dp)
+                            .sizeIn(maxWidth = 240.dp, maxHeight = 260.dp)
+                            .aspectRatio(aspectRatio, matchHeightConstraintsFirst = aspectRatio < 1f)
+                            .clip(bubbleShape),
+                        contentDescription = stringResource(id = R.string.attached_image),
+                    )
+                }
             }
         }
 
@@ -794,51 +927,88 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Surface(
-                color = backgroundBubbleColor,
+                color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
+                border = bubbleBorder,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onDoubleTap = { toggleLiked() })
+                },
             ) {
-                VideoThumbnail(
-                    videoUri = videoUri,
-                    onClick = { onVideoClick(videoUri) },
-                    shape = bubbleShape,
+                Box(
+                    // Animates the 8dp frame that reveals the heart mesh around a liked video.
                     modifier = Modifier
-                        .widthIn(max = 260.dp)
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(bubbleShape),
-                )
+                        .animateContentSize()
+                        .then(
+                            if (heartMeshPainter != null) {
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
+                            } else {
+                                Modifier
+                            },
+                        ),
+                ) {
+                    VideoThumbnail(
+                        videoUri = videoUri,
+                        onClick = { onVideoClick(videoUri, message.content) },
+                        shape = bubbleShape,
+                        modifier = Modifier
+                            .padding(if (isLiked) 8.dp else 0.dp)
+                            .widthIn(max = 260.dp)
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(bubbleShape),
+                    )
+                }
             }
+        }
+
+        // Liked reaction badge attached to bubble corner
+        this@Column.AnimatedVisibility(
+            visible = isLiked,
+
+            enter = expandVertically(expandFrom = Alignment.Top, clip = false) +
+                scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) +
+                fadeIn(),
+            exit = shrinkVertically(shrinkTowards = Alignment.Top, clip = false) + scaleOut() + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.End)
+                .offset(y = (-8).dp)
+                .padding(end = 4.dp),
+        ) {
+            val badgeShape = RoundedCornerShape(12.dp)
+            Text(
+                text = "❤️",
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f), badgeShape)
+                    .background(MaterialTheme.colorScheme.surface, badgeShape)
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+            )
         }
     }
 }
 
 @Composable
-fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
-    val uriHandler = LocalUriHandler.current
-
+fun ClickableMessage(message: Message, authorClicked: (String) -> Unit) {
+    // Links and @mentions are LinkAnnotations, so the Text handles their clicks and all other
+    // taps (e.g. double tap to like) fall through to the bubble.
     val styledMessage = messageFormatter(
         text = message.content,
-        primary = isUserMe,
+        primary = false,
+        onPersonClick = authorClicked,
     )
 
-    ClickableText(
+    Text(
         text = styledMessage,
-        style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
-        modifier = Modifier.padding(16.dp),
-        onClick = {
-            styledMessage
-                .getStringAnnotations(start = it, end = it)
-                .firstOrNull()
-                ?.let { annotation ->
-                    when (annotation.tag) {
-                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
-                        else -> Unit
-                    }
-                }
-        },
+        style = MaterialTheme.typography.bodyLarge.copy(
+            color = MaterialTheme.colorScheme.onSurface,
+        ),
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
     )
 }
+
+private const val LikeBounceScale = 0.12f
 
 @Preview
 @Composable

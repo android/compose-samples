@@ -120,7 +120,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.googlefonts)
 
     implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.androidx.media3.ui.compose)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
