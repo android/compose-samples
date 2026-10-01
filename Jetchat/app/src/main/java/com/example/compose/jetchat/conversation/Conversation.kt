@@ -207,6 +207,7 @@ fun ConversationContent(
     }
 
     var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
+    var activeVideoText by rememberSaveable { mutableStateOf<String?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -287,7 +288,10 @@ fun ConversationContent(
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
                     contentPadding = paddingValues,
-                    onVideoClick = { videoUri -> activeVideoUri = videoUri },
+                    onVideoClick = { videoUri, messageText ->
+                        activeVideoUri = videoUri
+                        activeVideoText = messageText
+                    },
                     onMessageLikeToggled = onMessageLikeToggled,
                 )
             }
@@ -301,7 +305,11 @@ fun ConversationContent(
             activeVideoUri?.let { uri ->
                 FullScreenVideoPlayer(
                     videoUri = uri,
-                    onDismiss = { activeVideoUri = null },
+                    messageText = activeVideoText,
+                    onDismiss = {
+                        activeVideoUri = null
+                        activeVideoText = null
+                    },
                 )
             }
         }
@@ -435,7 +443,7 @@ fun Messages(
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
     onMessageLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -518,7 +526,7 @@ fun Message(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
     onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val borderColor = if (isUserMe) {
@@ -605,7 +613,7 @@ fun AuthorAndTextMessage(
     isLastMessageByAuthor: Boolean,
     authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
     onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     Column(
@@ -698,7 +706,7 @@ fun ChatItemBubble(
     message: Message,
     isUserMe: Boolean,
     authorClicked: (String) -> Unit,
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
     onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val isLiked = message.isLiked
@@ -847,7 +855,7 @@ fun ChatItemBubble(
                 ) {
                     VideoThumbnail(
                         videoUri = videoUri,
-                        onClick = { onVideoClick(videoUri) },
+                        onClick = { onVideoClick(videoUri, message.content) },
                         shape = bubbleShape,
                         modifier = Modifier
                             .padding(if (isLiked) 8.dp else 0.dp)

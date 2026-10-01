@@ -47,6 +47,7 @@ data class BlurRegionSpec(
     val boundsInSurface: RectF = RectF(),
     val boundsInWindow: IntRect = IntRect.Zero,
     val cornerRadiusPx: Float = 0f,
+    val cornerRadiiPx: List<Float>? = null,
     val blurRadiusPx: Float = 50f,
     val alpha: Float = 1.0f,
 )
@@ -97,7 +98,11 @@ object SurfaceViewBlurHelper {
             if (spec.boundsInSurface.width() <= 0f || spec.boundsInSurface.height() <= 0f) continue
             val roundedRectRegion = RoundedRectBlurRegion().apply {
                 bounds = spec.boundsInSurface
-                setCornerRadii(spec.cornerRadiusPx.coerceAtLeast(0f))
+                if (spec.cornerRadiiPx != null && spec.cornerRadiiPx.size == 8) {
+                    setCornerRadii(spec.cornerRadiiPx.toFloatArray())
+                } else {
+                    setCornerRadii(spec.cornerRadiusPx.coerceAtLeast(0f))
+                }
                 alpha = spec.alpha.coerceIn(0f, 1f)
                 blurRadius = spec.blurRadiusPx.coerceAtLeast(0f)
             }
@@ -152,6 +157,9 @@ fun Modifier.registerBlurRegion(
                     ),
                 )
             }
+        } else if (lastBounds != null) {
+            lastBounds = null
+            currentOnRemoveRegion(id)
         }
     }
 }

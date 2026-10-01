@@ -36,7 +36,7 @@ val initialMessages = listOf(
         "Taylor Brooks",
         "Here's a demo of the new blur regions feature in action! 🎥",
         "8:06 PM",
-        videoUri = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        videoUri = "asset:///delightful_tips.mp4",
     ),
     Message(
         "me",
