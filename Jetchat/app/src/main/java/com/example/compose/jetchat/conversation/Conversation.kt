@@ -750,16 +750,32 @@ fun ChatItemBubble(
                     detectTapGestures(onDoubleTap = { toggleLiked() })
                 },
             ) {
-                VideoThumbnail(
-                    videoUri = videoUri,
-                    onClick = { onVideoClick(videoUri) },
-                    shape = bubbleShape,
+                Box(
+                    // Animates the 8dp frame that reveals the heart mesh around a liked video.
                     modifier = Modifier
-                        .widthIn(max = 260.dp)
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(bubbleShape),
-                )
+                        .animateContentSize()
+                        .then(
+                            if (heartMeshPainter != null) {
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
+                            } else {
+                                Modifier
+                            },
+                        ),
+                ) {
+                    VideoThumbnail(
+                        videoUri = videoUri,
+                        onClick = { onVideoClick(videoUri) },
+                        shape = bubbleShape,
+                        modifier = Modifier
+                            .padding(if (isLiked) 8.dp else 0.dp)
+                            .widthIn(max = 260.dp)
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(bubbleShape),
+                    )
+                }
             }
         }
 
