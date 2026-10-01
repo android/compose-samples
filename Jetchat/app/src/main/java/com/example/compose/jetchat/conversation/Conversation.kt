@@ -20,6 +20,9 @@ package com.example.compose.jetchat.conversation
 
 import android.content.ClipDescription
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
@@ -70,11 +73,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -83,6 +88,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -98,6 +104,8 @@ import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
@@ -120,13 +128,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.graphics.shapes.Morph
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.rememberHeartReactionMeshGradientPainter
 import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.theme.FullScreenRoundedRectangle
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.theme.LocalNavAnimatedVisibilityScope
+import com.example.compose.jetchat.theme.SharedElementKey
+import com.example.compose.jetchat.theme.sharedAvatarElement
+import com.example.compose.jetchat.theme.sharedBoundsRevealWithShapeMorph
+import com.example.compose.jetchat.theme.sharedElementTransitionSpec
+import com.example.compose.jetchat.theme.toShape
 import com.example.compose.jetchat.video.FullScreenVideoPlayer
 import com.example.compose.jetchat.video.VideoThumbnail
 import kotlin.math.PI
@@ -141,6 +157,7 @@ import kotlinx.coroutines.launch
  * @param modifier [Modifier] to apply to this layout node
  * @param onNavIconPressed Sends an event up when the user clicks on the menu
  * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
+ * @param navigateToProfileWithKey User action when navigation to a profile is requested with a shared element key
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -150,6 +167,9 @@ fun ConversationContent(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { },
     onMessageLikeToggled: (messageId: String) -> Unit = { },
+    navigateToProfileWithKey: (user: String, sharedElementKey: String?) -> Unit = { user, _ ->
+        navigateToProfile(user)
+    },
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
@@ -285,6 +305,7 @@ fun ConversationContent(
                 Messages(
                     messages = uiState.messages,
                     navigateToProfile = navigateToProfile,
+                    navigateToProfileWithKey = navigateToProfileWithKey,
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState,
                     contentPadding = paddingValues,
@@ -445,6 +466,9 @@ fun Messages(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
     onMessageLikeToggled: (messageId: String) -> Unit = {},
+    navigateToProfileWithKey: (user: String, sharedElementKey: String?) -> Unit = { user, _ ->
+        navigateToProfile(user)
+    },
 ) {
     val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
@@ -478,7 +502,7 @@ fun Messages(
 
                 item(key = content.id, contentType = "message") {
                     Message(
-                        onAuthorClick = { name -> navigateToProfile(name) },
+                        onAuthorClick = { name -> navigateToProfileWithKey(name, content.id) },
                         msg = content,
                         isUserMe = content.author == authorMe,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
@@ -548,6 +572,7 @@ fun Message(
             if (!isUserMe) {
                 if (isLastMessageByAuthor) {
                     AuthorAvatar(
+                        sharedElementKey = msg.id,
                         authorImage = msg.authorImage,
                         authorName = msg.author,
                         borderColor = borderColor,
@@ -575,6 +600,7 @@ fun Message(
             if (isUserMe) {
                 if (isLastMessageByAuthor) {
                     AuthorAvatar(
+                        sharedElementKey = msg.id,
                         authorImage = msg.authorImage,
                         authorName = msg.author,
                         borderColor = borderColor,
@@ -588,21 +614,100 @@ fun Message(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-private fun RowScope.AuthorAvatar(authorImage: Int, authorName: String, borderColor: Color, onAuthorClick: (String) -> Unit) {
-    Image(
+private fun RowScope.AuthorAvatar(
+    sharedElementKey: String,
+    authorImage: Int,
+    authorName: String,
+    borderColor: Color,
+    onAuthorClick: (String) -> Unit,
+) {
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+    val progress = if (animatedVisibilityScope != null) {
+        val animatedProgress by animatedVisibilityScope.transition.animateFloat(
+            transitionSpec = { MaterialTheme.motionScheme.sharedElementTransitionSpec() },
+            label = "avatarShapeProgress",
+        ) { state ->
+            when (state) {
+                EnterExitState.PreEnter -> 1f
+                EnterExitState.Visible -> 0f
+                EnterExitState.PostExit -> 1f
+            }
+        }
+        animatedProgress
+    } else {
+        0f
+    }
+
+    val progressiveBlurRadius = if (animatedVisibilityScope != null) {
+        val animatedRadius by animatedVisibilityScope.transition.animateDp(
+            transitionSpec = { MaterialTheme.motionScheme.sharedElementTransitionSpec() },
+            label = "avatarProgressiveBlur",
+        ) { state ->
+            when (state) {
+                EnterExitState.PreEnter -> 32.dp
+                EnterExitState.Visible -> 0.dp
+                EnterExitState.PostExit -> 32.dp
+            }
+        }
+        animatedRadius.coerceAtLeast(0.dp)
+    } else {
+        0.dp
+    }
+
+    val morph = remember {
+        Morph(MaterialShapes.Cookie9Sided, FullScreenRoundedRectangle)
+    }
+    val currentShape = morph.toShape(progress)
+    val borderAlpha = (1f - progress).coerceIn(0f, 1f)
+
+    Box(
         modifier = Modifier
-            .clickable(onClick = { onAuthorClick(authorName) })
+            .align(Alignment.Top)
             .padding(horizontal = 16.dp)
+            .sharedBoundsRevealWithShapeMorph(
+                sharedElementKey = SharedElementKey.ProfileContainer(sharedElementKey),
+                restingShape = MaterialShapes.Cookie9Sided,
+                targetShape = FullScreenRoundedRectangle,
+                renderInOverlayDuringTransition = false,
+                targetValueByState = {
+                    when (it) {
+                        EnterExitState.PreEnter -> 1f
+                        EnterExitState.Visible -> 0f
+                        EnterExitState.PostExit -> 1f
+                    }
+                },
+                keepChildrenSizePlacement = false,
+            )
             .size(42.dp)
-            .border(2.dp, borderColor, CircleShape)
-            .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-            .clip(CircleShape)
-            .align(Alignment.Top),
-        painter = painterResource(id = authorImage),
-        contentScale = ContentScale.Crop,
-        contentDescription = null,
-    )
+            .clickable(onClick = { onAuthorClick(authorName) }),
+    ) {
+        Image(
+            modifier = Modifier
+                .fillMaxSize()
+                .sharedAvatarElement(
+                    sharedElementKey = SharedElementKey.ProfileAvatar(sharedElementKey),
+                    restingShape = MaterialShapes.Cookie9Sided,
+                    targetShape = FullScreenRoundedRectangle,
+                )
+                .border(2.dp, borderColor.copy(alpha = borderAlpha), currentShape)
+                .border(3.dp, MaterialTheme.colorScheme.surface.copy(alpha = borderAlpha), currentShape)
+                .clip(currentShape)
+                .blur {
+                    radius = BlurRadiusSpec.verticalGradient(
+                        listOf(
+                            BlurStop(0.5f, 0.dp),
+                            BlurStop(1.0f, progressiveBlurRadius),
+                        ),
+                    )
+                    edgeTreatment = BlurredEdgeTreatment.Unbounded
+                },
+            painter = painterResource(id = authorImage),
+            contentScale = ContentScale.Crop,
+            contentDescription = authorName,
+        )
+    }
 }
 
 @Composable

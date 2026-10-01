@@ -19,6 +19,7 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.toMutableStateList
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.data.getAuthorImage
 
 class ConversationUiState(val channelName: String, val channelMembers: Int, initialMessages: List<Message>) {
     private val _messages: MutableList<Message> = initialMessages.toMutableStateList()
@@ -43,7 +44,7 @@ data class Message(
     val content: String,
     val timestamp: String,
     val image: Int? = null,
-    val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else,
+    val authorImage: Int = getAuthorImage(author),
     val videoUri: String? = null,
     val id: String = "$author-$timestamp-$content",
     val isLiked: Boolean = false,

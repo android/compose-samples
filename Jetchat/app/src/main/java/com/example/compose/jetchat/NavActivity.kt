@@ -20,26 +20,53 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.os.bundleOf
+import androidx.compose.ui.unit.IntOffset
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import androidx.navigation3.ui.NavDisplay
 import com.example.compose.jetchat.components.JetchatDrawer
-import com.example.compose.jetchat.databinding.ContentMainBinding
+import com.example.compose.jetchat.conversation.ConversationContent
+import com.example.compose.jetchat.conversation.ConversationViewModel
+import com.example.compose.jetchat.profile.ProfileError
+import com.example.compose.jetchat.profile.ProfileScreen
+import com.example.compose.jetchat.profile.ProfileViewModel
+import com.example.compose.jetchat.theme.LocalNavAnimatedVisibilityScope
+import com.example.compose.jetchat.theme.LocalSharedTransitionScope
+import com.example.compose.jetchat.theme.sharedElementTransitionSpec
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object ConversationRoute : NavKey
+
+@Serializable
+data class ProfileRoute(val userId: String, val sharedElementKey: String? = null) : NavKey
 
 /**
  * Main activity for the app.
@@ -47,7 +74,11 @@ import kotlinx.coroutines.launch
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(
+        ExperimentalMaterial3Api::class,
+        ExperimentalMaterial3ExpressiveApi::class,
+        ExperimentalSharedTransitionApi::class,
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -61,6 +92,7 @@ class NavActivity : AppCompatActivity() {
                     val drawerOpen by viewModel.drawerShouldBeOpened
                         .collectAsStateWithLifecycle()
 
+                    val backStack = rememberNavBackStack(ConversationRoute)
                     var selectedMenu by remember { mutableStateOf("composers") }
                     if (drawerOpen) {
                         // Open drawer and reset state in VM.
@@ -80,38 +112,84 @@ class NavActivity : AppCompatActivity() {
                         drawerState = drawerState,
                         selectedMenu = selectedMenu,
                         onChatClicked = {
-                            findNavController().popBackStack(R.id.nav_home, false)
+                            backStack.removeAll { it !is ConversationRoute }
                             scope.launch {
                                 drawerState.close()
                             }
                             selectedMenu = it
                         },
                         onProfileClicked = {
-                            val bundle = bundleOf("userId" to it)
-                            findNavController().navigate(R.id.nav_profile, bundle)
+                            backStack.add(ProfileRoute(userId = it))
                             scope.launch {
                                 drawerState.close()
                             }
                             selectedMenu = it
                         },
                     ) {
-                        AndroidViewBinding(ContentMainBinding::inflate)
+                        val sharedTransitionScope = LocalSharedTransitionScope.current
+                        val animationSpec = MaterialTheme.motionScheme.sharedElementTransitionSpec<IntOffset>()
+                        val transitionSpec = slideIn(animationSpec) { IntOffset.Zero } togetherWith
+                            slideOut(animationSpec) { IntOffset.Zero }
+
+                        NavDisplay(
+                            backStack = backStack,
+                            onBack = { backStack.removeLastOrNull() },
+                            sharedTransitionScope = sharedTransitionScope,
+                            entryDecorators = listOf(
+                                rememberSaveableStateHolderNavEntryDecorator(),
+                                rememberViewModelStoreNavEntryDecorator(),
+                            ),
+                            transitionSpec = { transitionSpec },
+                            popTransitionSpec = { transitionSpec },
+                            entryProvider = entryProvider {
+                                entry<ConversationRoute> {
+                                    CompositionLocalProvider(
+                                        LocalNavAnimatedVisibilityScope provides LocalNavAnimatedContentScope.current,
+                                    ) {
+                                        val conversationViewModel: ConversationViewModel = viewModel()
+                                        ConversationContent(
+                                            uiState = conversationViewModel.uiState,
+                                            navigateToProfile = { user ->
+                                                backStack.add(ProfileRoute(userId = user))
+                                            },
+                                            navigateToProfileWithKey = { user, sharedElementKey ->
+                                                backStack.add(
+                                                    ProfileRoute(
+                                                        userId = user,
+                                                        sharedElementKey = sharedElementKey,
+                                                    ),
+                                                )
+                                            },
+                                            onNavIconPressed = {
+                                                viewModel.openDrawer()
+                                            },
+                                            onMessageLikeToggled = conversationViewModel::toggleLike,
+                                        )
+                                    }
+                                }
+                                entry<ProfileRoute> { route ->
+                                    CompositionLocalProvider(
+                                        LocalNavAnimatedVisibilityScope provides LocalNavAnimatedContentScope.current,
+                                    ) {
+                                        val profileViewModel: ProfileViewModel = viewModel(key = route.userId)
+                                        profileViewModel.setUserId(route.userId)
+                                        val userData by profileViewModel.userData.observeAsState()
+
+                                        if (userData == null) {
+                                            ProfileError()
+                                        } else {
+                                            ProfileScreen(
+                                                userData = userData!!,
+                                                sharedElementKey = route.sharedElementKey,
+                                            )
+                                        }
+                                    }
+                                }
+                            },
+                        )
                     }
                 }
             },
         )
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return findNavController().navigateUp() || super.onSupportNavigateUp()
-    }
-
-    /**
-     * See https://issuetracker.google.com/142847973
-     */
-    private fun findNavController(): NavController {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        return navHostFragment.navController
     }
 }

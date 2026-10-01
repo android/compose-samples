@@ -16,11 +16,16 @@
 
 package com.example.compose.jetchat.profile
 
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,68 +34,137 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.blur.BlurRadiusSpec
 import androidx.compose.ui.graphics.blur.BlurStop
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.graphics.shapes.Morph
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.AnimatingFabContent
 import com.example.compose.jetchat.components.baselineHeight
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.theme.FullScreenRoundedRectangle
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.theme.LocalNavAnimatedVisibilityScope
+import com.example.compose.jetchat.theme.SharedElementKey
+import com.example.compose.jetchat.theme.sharedAvatarElement
+import com.example.compose.jetchat.theme.sharedBoundsRevealWithShapeMorph
+import com.example.compose.jetchat.theme.sharedElementTransitionSpec
+import com.example.compose.jetchat.theme.toShape
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun ProfileScreen(userData: ProfileScreenState) {
+fun ProfileScreen(userData: ProfileScreenState, sharedElementKey: String? = null) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
 
     val scrollState = rememberScrollState()
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+    val blurRadius = if (animatedVisibilityScope != null) {
+        val animatedBlur by animatedVisibilityScope.transition.animateDp(
+            transitionSpec = { MaterialTheme.motionScheme.sharedElementTransitionSpec() },
+            label = "profileBackdropBlur",
+        ) { state ->
+            when (state) {
+                EnterExitState.PreEnter -> 0.dp
+                EnterExitState.Visible -> 32.dp
+                EnterExitState.PostExit -> 0.dp
+            }
+        }
+        animatedBlur.coerceAtLeast(0.dp)
+    } else {
+        0.dp
+    }
+
+    val contentAlpha = if (animatedVisibilityScope != null) {
+        val animatedAlpha by animatedVisibilityScope.transition.animateFloat(
+            transitionSpec = { MaterialTheme.motionScheme.sharedElementTransitionSpec() },
+            label = "profileContentAlpha",
+        ) { state ->
+            when (state) {
+                EnterExitState.PreEnter -> 0f
+                EnterExitState.Visible -> 1f
+                EnterExitState.PostExit -> 0f
+            }
+        }
+        animatedAlpha.coerceIn(0f, 1f)
+    } else {
+        1f
+    }
 
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .backdropBlur(radius = blurRadius),
     ) {
-        Surface {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .sharedBoundsRevealWithShapeMorph(
+                    sharedElementKey = sharedElementKey?.let { SharedElementKey.ProfileContainer(it) },
+                    restingShape = FullScreenRoundedRectangle,
+                    targetShape = MaterialShapes.Cookie9Sided,
+                    zIndexInOverlay = 1f,
+                    targetValueByState = {
+                        when (it) {
+                            EnterExitState.PreEnter -> 1f
+                            EnterExitState.Visible -> 0f
+                            EnterExitState.PostExit -> 1f
+                        }
+                    },
+                    keepChildrenSizePlacement = true,
+                ),
+            color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = contentAlpha),
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
                     .verticalScroll(scrollState),
             ) {
-                ProfileHeader(userData)
-                UserInfoFields(userData)
+                ProfileHeader(
+                    data = userData,
+                    sharedElementKey = sharedElementKey,
+                )
+                UserInfoFields(
+                    userData = userData,
+                    modifier = Modifier.graphicsLayer { this.alpha = contentAlpha },
+                )
             }
         }
     }
 }
 
 @Composable
-private fun UserInfoFields(userData: ProfileScreenState) {
-    Column(modifier = Modifier.navigationBarsPadding()) {
+private fun UserInfoFields(userData: ProfileScreenState, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.navigationBarsPadding()) {
         Spacer(modifier = Modifier.height(40.dp))
 
         NameAndPosition(userData)
@@ -143,23 +217,47 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-private fun ProfileHeader(data: ProfileScreenState) {
+private fun ProfileHeader(data: ProfileScreenState, sharedElementKey: String? = null) {
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+    val progressiveBlurRadius = if (animatedVisibilityScope != null) {
+        val animatedRadius by animatedVisibilityScope.transition.animateDp(
+            transitionSpec = { MaterialTheme.motionScheme.sharedElementTransitionSpec() },
+            label = "profileProgressiveBlur",
+        ) { state ->
+            when (state) {
+                EnterExitState.PreEnter -> 0.dp
+                EnterExitState.Visible -> 32.dp
+                EnterExitState.PostExit -> 0.dp
+            }
+        }
+        animatedRadius.coerceAtLeast(0.dp)
+    } else {
+        32.dp
+    }
+
     data.photo?.let {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
+                .aspectRatio(1f)
+                .sharedAvatarElement(
+                    sharedElementKey = sharedElementKey?.let { key -> SharedElementKey.ProfileAvatar(key) },
+                    restingShape = FullScreenRoundedRectangle,
+                    targetShape = MaterialShapes.Cookie9Sided,
+                )
                 .blur {
                     radius = BlurRadiusSpec.verticalGradient(
                         listOf(
                             BlurStop(0.5f, 0.dp),
-                            BlurStop(1.0f, 32.dp),
+                            BlurStop(1.0f, progressiveBlurRadius),
                         ),
                     )
                     edgeTreatment = BlurredEdgeTreatment.Unbounded
                 },
             painter = painterResource(id = it),
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
             contentDescription = null,
         )
     }

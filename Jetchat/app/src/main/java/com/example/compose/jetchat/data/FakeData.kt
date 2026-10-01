@@ -26,6 +26,90 @@ import com.example.compose.jetchat.data.EMOJIS.EMOJI_PINK_HEART
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_POINTS
 import com.example.compose.jetchat.profile.ProfileScreenState
 
+/**
+ * Example "me" profile.
+ */
+val meProfile = ProfileScreenState(
+    userId = "me",
+    photo = R.drawable.ali,
+    name = "Ali Conors",
+    status = "Online",
+    displayName = "aliconors",
+    position = "Senior Android Dev at Yearin\nGoogle Developer Expert",
+    twitter = "twitter.com/aliconors",
+    timeZone = "In your timezone",
+    commonChannels = null,
+)
+
+/**
+ * Example colleague profile (Taylor Brooks)
+ */
+val colleagueProfile = ProfileScreenState(
+    userId = "12345",
+    photo = R.drawable.someone_else,
+    name = "Taylor Brooks",
+    status = "Away",
+    displayName = "taylor",
+    position = "Senior Android Dev at Openlane",
+    twitter = "twitter.com/taylorbrookscodes",
+    timeZone = "12:25 AM local time (Eastern Daylight Time)",
+    commonChannels = "2",
+)
+
+val taylorProfile = colleagueProfile
+
+/**
+ * Example John Glenn profile.
+ */
+val johnGlennProfile = ProfileScreenState(
+    userId = "john_glenn",
+    photo = R.drawable.android_profile_pic,
+    name = "John Glenn",
+    status = "Online",
+    displayName = "jglenn",
+    position = "Staff Android Engineer at SpaceApps",
+    twitter = "twitter.com/johnglenn",
+    timeZone = "11:25 PM local time (Central Daylight Time)",
+    commonChannels = "3",
+)
+
+/**
+ * Example Shangeeth Sivan profile.
+ */
+val shangeethProfile = ProfileScreenState(
+    userId = "shangeeth",
+    photo = R.drawable.someone_else,
+    name = "Shangeeth Sivan",
+    status = "Online",
+    displayName = "shangeeth",
+    position = "Android Dev & Glance Widgets Specialist",
+    twitter = "twitter.com/shangeethsivan",
+    timeZone = "6:25 AM local time (India Standard Time)",
+    commonChannels = "2",
+)
+
+val allProfiles: List<ProfileScreenState> = listOf(
+    meProfile,
+    taylorProfile,
+    johnGlennProfile,
+    shangeethProfile,
+)
+
+fun getProfile(userIdOrName: String?): ProfileScreenState {
+    if (userIdOrName == null) return meProfile
+    return allProfiles.firstOrNull { profile ->
+        profile.userId.equals(userIdOrName, ignoreCase = true) ||
+            profile.displayName.equals(userIdOrName, ignoreCase = true) ||
+            profile.name.equals(userIdOrName, ignoreCase = true)
+    } ?: colleagueProfile
+}
+
+fun getAuthorImage(author: String): Int = when (author) {
+    "me", "Ali Conors", "aliconors" -> R.drawable.ali
+    "John Glenn", "jglenn" -> R.drawable.android_profile_pic
+    else -> R.drawable.someone_else
+}
+
 val initialMessages = listOf(
     Message(
         "me",
@@ -242,36 +326,6 @@ val exampleUiState = ConversationUiState(
     initialMessages = initialMessages,
     channelName = "#composers",
     channelMembers = 42,
-)
-
-/**
- * Example colleague profile
- */
-val colleagueProfile = ProfileScreenState(
-    userId = "12345",
-    photo = R.drawable.android_profile_pic,
-    name = "Taylor Brooks",
-    status = "Away",
-    displayName = "taylor",
-    position = "Senior Android Dev at Openlane",
-    twitter = "twitter.com/taylorbrookscodes",
-    timeZone = "12:25 AM local time (Eastern Daylight Time)",
-    commonChannels = "2",
-)
-
-/**
- * Example "me" profile.
- */
-val meProfile = ProfileScreenState(
-    userId = "me",
-    photo = R.drawable.android_profile_pic,
-    name = "Ali Conors",
-    status = "Online",
-    displayName = "aliconors",
-    position = "Senior Android Dev at Yearin\nGoogle Developer Expert",
-    twitter = "twitter.com/aliconors",
-    timeZone = "In your timezone",
-    commonChannels = null,
 )
 
 object EMOJIS {
