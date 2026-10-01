@@ -20,14 +20,9 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -35,7 +30,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,16 +39,14 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,20 +54,17 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,16 +73,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -110,12 +102,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.components.rememberRecordButtonMeshGradientPainter
+import com.example.compose.jetchat.components.rememberUserInputGlowMeshGradientPainter
 import com.example.compose.jetchat.video.VideoPlayer
-import kotlin.math.absoluteValue
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 
 enum class InputSelector {
     NONE,
@@ -167,6 +156,10 @@ fun UserInput(
         }
     }
 
+    // Toggled when the user clicks the recording mic icon. Drives both the animated mesh-gradient
+    // glow behind the input card and the recording button's gradient fill.
+    var isRecordingActive by rememberSaveable { mutableStateOf(false) }
+
     val sendMessage = {
         val currentVideoUri = attachedVideoUri
         if (currentVideoUri != null) {
@@ -176,6 +169,7 @@ fun UserInput(
             onMessageSent(textState.text)
         }
         textState = TextFieldValue()
+        isRecordingActive = false
         resetScroll()
         dismissKeyboard()
     }
@@ -183,53 +177,146 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
-    Surface(tonalElevation = 2.dp, contentColor = MaterialTheme.colorScheme.secondary) {
-        Column(modifier = modifier) {
-            AnimatedVisibility(
-                visible = attachedVideoUri != null,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut(),
+    val surfaceColor = MaterialTheme.colorScheme.surfaceContainer
+    val sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null
+
+    // Animated mesh-gradient glow behind the card, shown while recording is active.
+    val glowAlpha by animateFloatAsState(
+        targetValue = if (isRecordingActive) 1f else 0f,
+        animationSpec = tween(durationMillis = 600),
+        label = "glowFade",
+    )
+
+    val isGlowVisible by remember { derivedStateOf { glowAlpha > 0f } }
+    val glowMeshPainter = if (isRecordingActive || isGlowVisible) {
+        rememberUserInputGlowMeshGradientPainter()
+    } else {
+        null
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
+    ) {
+        val cardShape = RoundedCornerShape(32.dp)
+
+        Surface(
+            shape = cardShape,
+            color = surfaceColor,
+            modifier = Modifier
+                .fillMaxWidth()
+                // Draw the glow behind the card, scaled past its bounds.
+                .then(
+                    if (glowMeshPainter != null) {
+                        Modifier.drawBehind {
+                            translate(top = -58.dp.toPx()) {
+                                scale(scaleX = 1.38f, scaleY = 2.85f) {
+                                    with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
+                                }
+                            }
+                        }
+                    } else {
+                        Modifier
+                    },
+                )
+                .padding(end = 4.dp)
+                // Blue-tinted shadow while idle; the glow replaces it while recording.
+                // Tinted shadows render on API 28+ (black on older versions).
+                .then(
+                    if (isRecordingActive) {
+                        Modifier
+                    } else {
+                        Modifier.shadow(
+                            elevation = 16.dp,
+                            shape = cardShape,
+                            clip = false,
+                            ambientColor = MaterialTheme.colorScheme.primary,
+                            spotColor = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                )
+                .heightIn(min = 136.dp),
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                attachedVideoUri?.let { videoUri ->
-                    AttachedVideoPreview(
-                        videoUri = videoUri,
-                        onRemove = { attachedVideoUri = null },
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    AnimatedVisibility(
+                        visible = attachedVideoUri != null,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut(),
+                    ) {
+                        attachedVideoUri?.let { videoUri ->
+                            AttachedVideoPreview(
+                                videoUri = videoUri,
+                                onRemove = { attachedVideoUri = null },
+                            )
+                        }
+                    }
+
+                    UserInputText(
+                        textFieldValue = textState,
+                        onTextChanged = { textState = it },
+                        // Only show the keyboard if there's no input selector and text field has focus
+                        keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
+                        // Close extended selector if text field receives focus
+                        onTextFieldFocused = { focused ->
+                            if (focused) {
+                                currentInputSelector = InputSelector.NONE
+                                resetScroll()
+                            }
+                            textFieldFocusState = focused
+                        },
+                        onMessageSent = { sendMessage() },
+                        focusState = textFieldFocusState,
                     )
                 }
-            }
 
-            UserInputText(
-                textFieldValue = textState,
-                onTextChanged = { textState = it },
-                // Only show the keyboard if there's no input selector and text field has focus
-                keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
-                // Close extended selector if text field receives focus
-                onTextFieldFocused = { focused ->
-                    if (focused) {
-                        currentInputSelector = InputSelector.NONE
-                        resetScroll()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    UserInputSelector(
+                        onSelectorChange = { currentInputSelector = it },
+                        currentInputSelector = currentInputSelector,
+                        recordingActive = isRecordingActive,
+                        onRecordingClick = { isRecordingActive = !isRecordingActive },
+                        onVideoClick = {
+                            currentInputSelector = InputSelector.NONE
+                            videoPickerLauncher.launch("video/*")
+                        },
+                        onAddClick = { currentInputSelector = InputSelector.MAP },
+                    )
+
+                    IconButton(
+                        onClick = sendMessage,
+                        enabled = sendMessageEnabled,
+                        modifier = Modifier.size(48.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_send),
+                            contentDescription = stringResource(id = R.string.send),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                alpha = if (sendMessageEnabled) 0.85f else 0.54f,
+                            ),
+                            modifier = Modifier.size(24.dp),
+                        )
                     }
-                    textFieldFocusState = focused
-                },
-                onMessageSent = { sendMessage() },
-                focusState = textFieldFocusState,
-            )
-            UserInputSelector(
-                onSelectorChange = { currentInputSelector = it },
-                sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null,
-                onMessageSent = sendMessage,
-                currentInputSelector = currentInputSelector,
-                onVideoClick = {
-                    currentInputSelector = InputSelector.NONE
-                    videoPickerLauncher.launch("video/*")
-                },
-            )
-            SelectorExpanded(
-                onCloseRequested = dismissKeyboard,
-                onTextAdded = { textState = textState.addText(it) },
-                currentSelector = currentInputSelector,
-            )
+                }
+            }
         }
+
+        SelectorExpanded(
+            onCloseRequested = dismissKeyboard,
+            onTextAdded = { textState = textState.addText(it) },
+            currentSelector = currentInputSelector,
+        )
     }
 }
 
@@ -339,118 +426,90 @@ fun FunctionalityNotAvailablePanel() {
 }
 
 @Composable
-private fun UserInputSelector(
+private fun RowScope.UserInputSelector(
     onSelectorChange: (InputSelector) -> Unit,
-    sendMessageEnabled: Boolean,
-    onMessageSent: () -> Unit,
     currentInputSelector: InputSelector,
-    modifier: Modifier = Modifier,
+    recordingActive: Boolean,
+    onRecordingClick: () -> Unit,
     onVideoClick: () -> Unit = {},
+    onAddClick: () -> Unit = {},
 ) {
-    Row(
-        modifier = modifier
-            .height(72.dp)
-            .wrapContentHeight()
-            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.EMOJI) },
-            icon = painterResource(id = R.drawable.ic_mood),
-            selected = currentInputSelector == InputSelector.EMOJI,
-            description = stringResource(id = R.string.emoji_selector_bt_desc),
-        )
-        InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.DM) },
-            icon = painterResource(id = R.drawable.ic_alternate_email),
-            selected = currentInputSelector == InputSelector.DM,
-            description = stringResource(id = R.string.dm_desc),
-        )
-        InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.PICTURE) },
-            icon = painterResource(id = R.drawable.ic_insert_photo),
-            selected = currentInputSelector == InputSelector.PICTURE,
-            description = stringResource(id = R.string.attach_photo_desc),
-        )
-        InputSelectorButton(
-            onClick = { onSelectorChange(InputSelector.MAP) },
-            icon = painterResource(id = R.drawable.ic_place),
-            selected = currentInputSelector == InputSelector.MAP,
-            description = stringResource(id = R.string.map_selector_desc),
-        )
-        InputSelectorButton(
-            onClick = onVideoClick,
-            icon = painterResource(id = R.drawable.ic_duo),
-            selected = false,
-            description = stringResource(id = R.string.videochat_desc),
-        )
+    val iconTint = MaterialTheme.colorScheme.primary
+    val recordButtonPainter = if (recordingActive) rememberRecordButtonMeshGradientPainter() else null
 
-        val border = if (!sendMessageEnabled) {
-            BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-            )
-        } else {
-            null
-        }
-        Spacer(modifier = Modifier.weight(1f))
-
-        val disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-
-        val buttonColors = ButtonDefaults.buttonColors(
-            disabledContainerColor = Color.Transparent,
-            disabledContentColor = disabledContentColor,
-        )
-
-        // Send button
-        Button(
-            modifier = Modifier.height(36.dp),
-            enabled = sendMessageEnabled,
-            onClick = onMessageSent,
-            colors = buttonColors,
-            border = border,
-            contentPadding = PaddingValues(0.dp),
-        ) {
-            Text(
-                stringResource(id = R.string.send),
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-        }
-    }
-}
-
-@Composable
-private fun InputSelectorButton(
-    onClick: () -> Unit,
-    icon: androidx.compose.ui.graphics.painter.Painter,
-    description: String,
-    selected: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    val backgroundModifier = if (selected) {
-        Modifier.background(
-            color = LocalContentColor.current,
-            shape = RoundedCornerShape(14.dp),
-        )
-    } else {
-        Modifier
-    }
+    // Emoji
     IconButton(
-        onClick = onClick,
-        modifier = modifier.then(backgroundModifier),
+        onClick = { onSelectorChange(InputSelector.EMOJI) },
+        modifier = Modifier.size(48.dp),
     ) {
-        val tint = if (selected) {
-            contentColorFor(backgroundColor = LocalContentColor.current)
-        } else {
-            LocalContentColor.current
-        }
         Icon(
-            icon,
-            tint = tint,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(56.dp),
-            contentDescription = description,
+            painter = painterResource(id = R.drawable.ic_mood),
+            contentDescription = stringResource(id = R.string.emoji_selector_bt_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+
+    // Photo
+    IconButton(
+        onClick = { onSelectorChange(InputSelector.PICTURE) },
+        modifier = Modifier.size(48.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_insert_photo),
+            contentDescription = stringResource(id = R.string.attach_photo_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+
+    // Video / Duo
+    IconButton(
+        onClick = onVideoClick,
+        modifier = Modifier.size(48.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_duo),
+            contentDescription = stringResource(id = R.string.videochat_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+
+    // Record (mic) button: filled with a mesh gradient while recording is active,
+    // otherwise a plain primary-tinted mic icon.
+    IconButton(
+        onClick = onRecordingClick,
+        modifier = Modifier
+            .size(48.dp)
+            .then(
+                if (recordButtonPainter != null) {
+                    Modifier
+                        .clip(CircleShape)
+                        .paint(recordButtonPainter, contentScale = ContentScale.FillBounds)
+                } else {
+                    Modifier
+                },
+            ),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_mic),
+            contentDescription = stringResource(id = R.string.record_message),
+            tint = if (recordingActive) Color.White else iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+
+    // Add / attachment
+    IconButton(
+        onClick = onAddClick,
+        modifier = Modifier.size(48.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_add),
+            contentDescription = stringResource(id = R.string.add_attachment_desc),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
         )
     }
 }
@@ -463,7 +522,6 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
 var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
-@OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
@@ -475,58 +533,26 @@ private fun UserInputText(
     onMessageSent: (String) -> Unit,
     focusState: Boolean,
 ) {
-    val swipeOffset = remember { mutableStateOf(0f) }
-    var isRecordingMessage by remember { mutableStateOf(false) }
     val a11ylabel = stringResource(id = R.string.textfield_desc)
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp),
-        horizontalArrangement = Arrangement.End,
+            .padding(start = 24.dp, top = 20.dp, end = 32.dp)
+            .heightIn(min = 48.dp),
     ) {
-        AnimatedContent(
-            targetState = isRecordingMessage,
-            label = "text-field",
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-        ) { recording ->
-            Box(Modifier.fillMaxSize()) {
-                if (recording) {
-                    RecordingIndicator { swipeOffset.value }
-                } else {
-                    UserInputTextField(
-                        textFieldValue,
-                        onTextChanged,
-                        onTextFieldFocused,
-                        keyboardType,
-                        focusState,
-                        onMessageSent,
-                        Modifier.fillMaxWidth().semantics {
-                            contentDescription = a11ylabel
-                            keyboardShownProperty = keyboardShown
-                        },
-                    )
-                }
-            }
-        }
-        RecordButton(
-            recording = isRecordingMessage,
-            swipeOffset = { swipeOffset.value },
-            onSwipeOffsetChange = { offset -> swipeOffset.value = offset },
-            onStartRecording = {
-                val consumed = !isRecordingMessage
-                isRecordingMessage = true
-                consumed
-            },
-            onFinishRecording = {
-                // handle end of recording
-                isRecordingMessage = false
-            },
-            onCancelRecording = {
-                isRecordingMessage = false
-            },
-            modifier = Modifier.fillMaxHeight(),
+        UserInputTextField(
+            textFieldValue,
+            onTextChanged,
+            onTextFieldFocused,
+            keyboardType,
+            focusState,
+            onMessageSent,
+            Modifier
+                .fillMaxWidth()
+                .semantics {
+                    contentDescription = a11ylabel
+                    keyboardShownProperty = keyboardShown
+                },
         )
     }
 }
@@ -542,12 +568,12 @@ private fun BoxScope.UserInputTextField(
     modifier: Modifier = Modifier,
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
+
     BasicTextField(
         value = textFieldValue,
         onValueChange = { onTextChanged(it) },
         modifier = modifier
-            .padding(start = 32.dp)
-            .align(Alignment.CenterStart)
+            .align(Alignment.TopStart)
             .onFocusChanged { state ->
                 if (lastFocusState != state.isFocused) {
                     onTextFieldFocused(state.isFocused)
@@ -561,86 +587,20 @@ private fun BoxScope.UserInputTextField(
         keyboardActions = KeyboardActions {
             if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
         },
-        maxLines = 1,
-        cursorBrush = SolidColor(LocalContentColor.current),
-        textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current),
+        maxLines = 4,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        textStyle = MaterialTheme.typography.titleLarge.copy(
+            color = MaterialTheme.colorScheme.primary,
+        ),
     )
 
-    val disableContentColor =
-        MaterialTheme.colorScheme.onSurfaceVariant
     if (textFieldValue.text.isEmpty() && !focusState) {
         Text(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 32.dp),
+            modifier = Modifier.align(Alignment.TopStart),
             text = stringResource(R.string.textfield_hint),
-            style = MaterialTheme.typography.bodyLarge.copy(color = disableContentColor),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-    }
-}
-
-@Composable
-private fun RecordingIndicator(swipeOffset: () -> Float) {
-    var duration by remember { mutableStateOf(Duration.ZERO) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(1000.milliseconds)
-            duration += 1.seconds
-        }
-    }
-    Row(
-        Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-
-        val animatedPulse = infiniteTransition.animateFloat(
-            initialValue = 1f,
-            targetValue = 0.2f,
-            animationSpec = infiniteRepeatable(
-                tween(2000),
-                repeatMode = RepeatMode.Reverse,
-            ),
-            label = "pulse",
-        )
-        Box(
-            Modifier
-                .size(56.dp)
-                .padding(24.dp)
-                .graphicsLayer {
-                    scaleX = animatedPulse.value
-                    scaleY = animatedPulse.value
-                }
-                .clip(CircleShape)
-                .background(Color.Red),
-        )
-        Text(
-            duration.toComponents { minutes, seconds, _ ->
-                val min = minutes.toString().padStart(2, '0')
-                val sec = seconds.toString().padStart(2, '0')
-                "$min:$sec"
-            },
-            Modifier.alignByBaseline(),
-        )
-        Box(
-            Modifier
-                .fillMaxSize()
-                .alignByBaseline()
-                .clipToBounds(),
-        ) {
-            val swipeThreshold = with(LocalDensity.current) { 200.dp.toPx() }
-            Text(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .graphicsLayer {
-                        translationX = swipeOffset() / 2
-                        alpha = 1 - (swipeOffset().absoluteValue / swipeThreshold)
-                    },
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.swipe_to_cancel_recording),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
     }
 }
 
