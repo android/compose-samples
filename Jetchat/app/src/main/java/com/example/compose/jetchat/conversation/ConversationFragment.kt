@@ -26,15 +26,16 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {
 
     private val activityViewModel: MainViewModel by activityViewModels()
+    private val viewModel: ConversationViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         ComposeView(inflater.context).apply {
@@ -43,7 +44,7 @@ class ConversationFragment : Fragment() {
             setContent {
                 JetchatTheme {
                     ConversationContent(
-                        uiState = exampleUiState,
+                        uiState = viewModel.uiState,
                         navigateToProfile = { user ->
                             // Click callback
                             val bundle = bundleOf("userId" to user)
@@ -55,6 +56,7 @@ class ConversationFragment : Fragment() {
                         onNavIconPressed = {
                             activityViewModel.openDrawer()
                         },
+                        onMessageLikeToggled = viewModel::toggleLike,
                     )
                 }
             }
