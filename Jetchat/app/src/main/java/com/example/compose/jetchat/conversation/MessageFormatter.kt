@@ -19,9 +19,12 @@ package com.example.compose.jetchat.conversation
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -29,6 +32,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.sp
 
 // Regex containing the syntax tokens
@@ -55,11 +59,13 @@ typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
  * | `MyClass.myMethod` -> inline code styling
  *
  * @param text contains message to be parsed
- * @return AnnotatedString with annotations used inside the ClickableText wrapper
+ * @param onPersonClick called with the username when an @mention is clicked
+ * @return AnnotatedString with links for URLs and @mentions
  */
 @Composable
-fun messageFormatter(text: String, primary: Boolean): AnnotatedString {
+fun messageFormatter(text: String, primary: Boolean, onPersonClick: (String) -> Unit = {}): AnnotatedString {
     val colorScheme = MaterialTheme.colorScheme
+    val currentOnPersonClick by rememberUpdatedState(onPersonClick)
     return remember(text, primary, colorScheme) {
         val tokens = symbolPattern.findAll(text)
         buildAnnotatedString {
@@ -81,11 +87,22 @@ fun messageFormatter(text: String, primary: Boolean): AnnotatedString {
                     primary = primary,
                     codeSnippetBackground = codeSnippetBackground,
                 )
-                append(annotatedString)
 
-                if (stringAnnotation != null) {
-                    val (item, start, end, tag) = stringAnnotation
-                    addStringAnnotation(tag = tag, start = start, end = end, annotation = item)
+                val link = stringAnnotation?.let { annotation ->
+                    when (annotation.tag) {
+                        SymbolAnnotationType.LINK.name -> LinkAnnotation.Url(annotation.item)
+
+                        SymbolAnnotationType.PERSON.name -> LinkAnnotation.Clickable(annotation.item) {
+                            currentOnPersonClick(annotation.item)
+                        }
+
+                        else -> null
+                    }
+                }
+                if (link != null) {
+                    withLink(link) { append(annotatedString) }
+                } else {
+                    append(annotatedString)
                 }
 
                 cursorPosition = token.range.last + 1

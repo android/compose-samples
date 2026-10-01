@@ -138,7 +138,7 @@ fun createMagnifierEffect(
     specularIntensity: Float = 0.15f,
     tileMode: Shader.TileMode = Shader.TileMode.CLAMP,
 ): RenderEffect? {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null
+    if (Build.VERSION.SDK_INT_FULL < Build.VERSION_CODES_FULL.CINNAMON_BUN) return null
     if (size.width <= 0f || size.height <= 0f) return null
 
     val blurEffect = if (blurRadiusPx > 0f) {
@@ -149,41 +149,39 @@ fun createMagnifierEffect(
         )
     } else null
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        try {
-            val lensShader = RuntimeShader(MAGNIFIER_LENS_SHADER).apply {
-                setFloatUniform("size", size.width, size.height)
-                setFloatUniform("zoom", zoom)
-                setFloatUniform("lensCurvature", lensCurvature)
-                setFloatUniform("chromaticAberration", chromaticAberrationPx)
-            }
-            val lensEffect = RenderEffect.createRuntimeShaderEffect(lensShader, "content")
-
-            val stage1 = if (blurEffect != null) {
-                // inner = blurEffect (blurs backdrop first)
-                // outer = lensEffect (magnifies the blurred backdrop)
-                RenderEffect.createChainEffect(lensEffect, blurEffect)
-            } else {
-                lensEffect
-            }
-
-            if (rimIntensity > 0f || specularIntensity > 0f) {
-                val glassShader = RuntimeShader(GLASS_FINISH_SHADER).apply {
-                    setFloatUniform("size", size.width, size.height)
-                    setFloatUniform("rimIntensity", rimIntensity)
-                    setFloatUniform("specularIntensity", specularIntensity)
-                }
-                val glassEffect = RenderEffect.createRuntimeShaderEffect(glassShader, "content")
-
-                // inner = stage1 (magnified backdrop)
-                // outer = glassEffect (adds lens rim highlight & specular sheen)
-                return RenderEffect.createChainEffect(glassEffect, stage1)
-            }
-
-            return stage1
-        } catch (t: Throwable) {
-            Log.w("BackdropMagnifier", "Failed to create chained magnifier effect: ${t.message}")
+    try {
+        val lensShader = RuntimeShader(MAGNIFIER_LENS_SHADER).apply {
+            setFloatUniform("size", size.width, size.height)
+            setFloatUniform("zoom", zoom)
+            setFloatUniform("lensCurvature", lensCurvature)
+            setFloatUniform("chromaticAberration", chromaticAberrationPx)
         }
+        val lensEffect = RenderEffect.createRuntimeShaderEffect(lensShader, "content")
+
+        val stage1 = if (blurEffect != null) {
+            // inner = blurEffect (blurs backdrop first)
+            // outer = lensEffect (magnifies the blurred backdrop)
+            RenderEffect.createChainEffect(lensEffect, blurEffect)
+        } else {
+            lensEffect
+        }
+
+        if (rimIntensity > 0f || specularIntensity > 0f) {
+            val glassShader = RuntimeShader(GLASS_FINISH_SHADER).apply {
+                setFloatUniform("size", size.width, size.height)
+                setFloatUniform("rimIntensity", rimIntensity)
+                setFloatUniform("specularIntensity", specularIntensity)
+            }
+            val glassEffect = RenderEffect.createRuntimeShaderEffect(glassShader, "content")
+
+            // inner = stage1 (magnified backdrop)
+            // outer = glassEffect (adds lens rim highlight & specular sheen)
+            return RenderEffect.createChainEffect(glassEffect, stage1)
+        }
+
+        return stage1
+    } catch (t: Throwable) {
+        Log.w("BackdropMagnifier", "Failed to create chained magnifier effect: ${t.message}")
     }
 
     return blurEffect

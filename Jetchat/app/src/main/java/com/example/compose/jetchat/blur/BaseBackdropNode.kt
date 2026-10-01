@@ -24,6 +24,7 @@ import android.graphics.RenderEffect
 import android.graphics.RenderNode
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -85,11 +86,15 @@ abstract class BaseBackdropNode(
         isDirty = true
     }
 
-    // Suppress NewApi: Android Lint does not yet recognize Build.VERSION.SDK_INT_FULL
-    // checks as satisfying minor SDK 37.2 requirements.
+    // Suppress NewApi: Emulator/device images may report CINNAMON_BUN (37.0) even when
+    // setBackdropRenderEffect is annotated with CINNAMON_BUN_2 (37.2).
     @SuppressLint("NewApi")
     override fun ContentDrawScope.draw() {
-        val effect = resolveRenderEffect(this, size)
+        val effect = if (Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.CINNAMON_BUN) {
+            resolveRenderEffect(this, size)
+        } else {
+            null
+        }
         if (Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.CINNAMON_BUN && effect != null) {
             val widthPx = size.width.roundToInt()
             val heightPx = size.height.roundToInt()
@@ -189,6 +194,7 @@ abstract class BaseBackdropNode(
 /**
  * Helper to populate an [AndroidOutline] from a Compose [Outline].
  */
+@RequiresApi(Build.VERSION_CODES_FULL.CINNAMON_BUN)
 private fun updateAndroidOutline(androidOutline: AndroidOutline, composeOutline: Outline, width: Int, height: Int) {
     androidOutline.alpha = 1.0f
     when (composeOutline) {
@@ -228,22 +234,12 @@ private fun updateAndroidOutline(androidOutline: AndroidOutline, composeOutline:
                         AndroidPath.Direction.CW,
                     )
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    androidOutline.setPath(path)
-                } else {
-                    @Suppress("DEPRECATION")
-                    androidOutline.setConvexPath(path)
-                }
+                androidOutline.setPath(path)
             }
         }
 
         is Outline.Generic -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                androidOutline.setPath(composeOutline.path.asAndroidPath())
-            } else {
-                @Suppress("DEPRECATION")
-                androidOutline.setConvexPath(composeOutline.path.asAndroidPath())
-            }
+            androidOutline.setPath(composeOutline.path.asAndroidPath())
         }
     }
 }
