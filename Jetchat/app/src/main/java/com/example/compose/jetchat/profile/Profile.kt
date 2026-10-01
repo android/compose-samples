@@ -99,7 +99,7 @@ fun ProfileScreen(userData: ProfileScreenState, sharedElementKey: String? = null
                 EnterExitState.PostExit -> 0.dp
             }
         }
-        animatedBlur
+        animatedBlur.coerceAtLeast(0.dp)
     } else {
         0.dp
     }
@@ -115,7 +115,7 @@ fun ProfileScreen(userData: ProfileScreenState, sharedElementKey: String? = null
                 EnterExitState.PostExit -> 0f
             }
         }
-        animatedAlpha
+        animatedAlpha.coerceIn(0f, 1f)
     } else {
         1f
     }
@@ -232,7 +232,7 @@ private fun ProfileHeader(data: ProfileScreenState, sharedElementKey: String? = 
                 EnterExitState.PostExit -> 0.dp
             }
         }
-        animatedRadius
+        animatedRadius.coerceAtLeast(0.dp)
     } else {
         32.dp
     }

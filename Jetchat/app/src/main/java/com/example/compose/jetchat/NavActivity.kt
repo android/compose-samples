@@ -21,13 +21,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -51,12 +52,13 @@ import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
 import com.example.compose.jetchat.components.JetchatDrawer
 import com.example.compose.jetchat.conversation.ConversationContent
-import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.conversation.ConversationViewModel
 import com.example.compose.jetchat.profile.ProfileError
 import com.example.compose.jetchat.profile.ProfileScreen
 import com.example.compose.jetchat.profile.ProfileViewModel
 import com.example.compose.jetchat.theme.LocalNavAnimatedVisibilityScope
 import com.example.compose.jetchat.theme.LocalSharedTransitionScope
+import com.example.compose.jetchat.theme.sharedElementTransitionSpec
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -72,7 +74,11 @@ data class ProfileRoute(val userId: String, val sharedElementKey: String? = null
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+    @OptIn(
+        ExperimentalMaterial3Api::class,
+        ExperimentalMaterial3ExpressiveApi::class,
+        ExperimentalSharedTransitionApi::class,
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -121,8 +127,9 @@ class NavActivity : AppCompatActivity() {
                         },
                     ) {
                         val sharedTransitionScope = LocalSharedTransitionScope.current
-                        val transitionSpec = slideIn(tween(600)) { IntOffset.Zero } togetherWith
-                            slideOut(tween(600)) { IntOffset.Zero }
+                        val animationSpec = MaterialTheme.motionScheme.sharedElementTransitionSpec<IntOffset>()
+                        val transitionSpec = slideIn(animationSpec) { IntOffset.Zero } togetherWith
+                            slideOut(animationSpec) { IntOffset.Zero }
 
                         NavDisplay(
                             backStack = backStack,
@@ -139,8 +146,9 @@ class NavActivity : AppCompatActivity() {
                                     CompositionLocalProvider(
                                         LocalNavAnimatedVisibilityScope provides LocalNavAnimatedContentScope.current,
                                     ) {
+                                        val conversationViewModel: ConversationViewModel = viewModel()
                                         ConversationContent(
-                                            uiState = exampleUiState,
+                                            uiState = conversationViewModel.uiState,
                                             navigateToProfile = { user ->
                                                 backStack.add(ProfileRoute(userId = user))
                                             },
@@ -155,6 +163,7 @@ class NavActivity : AppCompatActivity() {
                                             onNavIconPressed = {
                                                 viewModel.openDrawer()
                                             },
+                                            onMessageLikeToggled = conversationViewModel::toggleLike,
                                         )
                                     }
                                 }

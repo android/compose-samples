@@ -26,8 +26,9 @@ import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
@@ -92,7 +93,7 @@ fun Morph.toShape(progress: Float, startAngle: Int = 0): Shape {
                 workPath!!.rewind()
             }
             val path = workPath!!
-            toPath(progress = progress, path = path, startAngle = startAngle)
+            toPath(progress = progress.coerceIn(0f, 1f), path = path, startAngle = startAngle)
             val scaleMatrix = Matrix().apply { scale(x = size.width, y = size.height) }
             path.transform(scaleMatrix)
             path.translate(size.center - path.getBounds().center)
@@ -110,7 +111,10 @@ val MotionScheme.sharedElementTransitionBounds: BoundsTransform
     get() = BoundsTransform { _, _ -> sharedElementTransitionSpec() }
 
 fun <T> MotionScheme.sharedElementTransitionSpec(): FiniteAnimationSpec<T> {
-    return tween(600)
+    return spring(
+        dampingRatio = Spring.DampingRatioLowBouncy,
+        stiffness = Spring.StiffnessMediumLow,
+    )
 }
 
 class MorphOverlayClip(val morph: Morph, private val animatedProgress: () -> Float) : SharedTransitionScope.OverlayClip {
@@ -123,7 +127,7 @@ class MorphOverlayClip(val morph: Morph, private val animatedProgress: () -> Flo
         layoutDirection: LayoutDirection,
         density: Density,
     ): Path? {
-        val progress = animatedProgress.invoke()
+        val progress = animatedProgress.invoke().coerceIn(0f, 1f)
         workPath.reset()
         morph.toPath(progress = progress, path = workPath)
         matrix.reset()

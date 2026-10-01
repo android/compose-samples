@@ -559,46 +559,56 @@ fun Message(
         MaterialTheme.colorScheme.tertiary
     }
 
-    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
-    Row(modifier = spaceBetweenAuthors.fillMaxWidth()) {
-        if (!isUserMe) {
-            if (isLastMessageByAuthor) {
-                AuthorAvatar(
-                    sharedElementKey = msg.id,
-                    authorImage = msg.authorImage,
-                    authorName = msg.author,
-                    borderColor = borderColor,
-                    onAuthorClick = onAuthorClick,
-                )
-            } else {
-                Spacer(modifier = Modifier.width(74.dp))
-            }
+    val spaceBetweenAuthorsModifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
+    Column(modifier = spaceBetweenAuthorsModifier.fillMaxWidth()) {
+        if (!isUserMe && isLastMessageByAuthor) {
+            AuthorNameTimestamp(
+                msg = msg,
+                onAuthorClick = onAuthorClick,
+                modifier = Modifier.padding(start = 16.dp, bottom = 6.dp),
+            )
         }
-        AuthorAndTextMessage(
-            msg = msg,
-            isUserMe = isUserMe,
-            isFirstMessageByAuthor = isFirstMessageByAuthor,
-            isLastMessageByAuthor = isLastMessageByAuthor,
-            authorClicked = onAuthorClick,
-            onVideoClick = onVideoClick,
-            modifier = Modifier
-                .padding(
-                    start = if (isUserMe) 16.dp else 0.dp,
-                    end = if (isUserMe) 0.dp else 16.dp,
-                )
-                .weight(1f),
-        )
-        if (isUserMe) {
-            if (isLastMessageByAuthor) {
-                AuthorAvatar(
-                    sharedElementKey = msg.id,
-                    authorImage = msg.authorImage,
-                    authorName = msg.author,
-                    borderColor = borderColor,
-                    onAuthorClick = onAuthorClick,
-                )
-            } else {
-                Spacer(modifier = Modifier.width(74.dp))
+        Row(modifier = Modifier.fillMaxWidth()) {
+            if (!isUserMe) {
+                if (isLastMessageByAuthor) {
+                    AuthorAvatar(
+                        sharedElementKey = msg.id,
+                        authorImage = msg.authorImage,
+                        authorName = msg.author,
+                        borderColor = borderColor,
+                        onAuthorClick = onAuthorClick,
+                    )
+                } else {
+                    Spacer(modifier = Modifier.width(74.dp))
+                }
+            }
+            AuthorAndTextMessage(
+                msg = msg,
+                isUserMe = isUserMe,
+                isFirstMessageByAuthor = isFirstMessageByAuthor,
+                isLastMessageByAuthor = isLastMessageByAuthor,
+                authorClicked = onAuthorClick,
+                onVideoClick = onVideoClick,
+                onLikeToggled = onLikeToggled,
+                modifier = Modifier
+                    .padding(
+                        start = if (isUserMe) 16.dp else 0.dp,
+                        end = if (isUserMe) 0.dp else 16.dp,
+                    )
+                    .weight(1f),
+            )
+            if (isUserMe) {
+                if (isLastMessageByAuthor) {
+                    AuthorAvatar(
+                        sharedElementKey = msg.id,
+                        authorImage = msg.authorImage,
+                        authorName = msg.author,
+                        borderColor = borderColor,
+                        onAuthorClick = onAuthorClick,
+                    )
+                } else {
+                    Spacer(modifier = Modifier.width(74.dp))
+                }
             }
         }
     }
@@ -641,7 +651,7 @@ private fun RowScope.AuthorAvatar(
                 EnterExitState.PostExit -> 32.dp
             }
         }
-        animatedRadius
+        animatedRadius.coerceAtLeast(0.dp)
     } else {
         0.dp
     }
