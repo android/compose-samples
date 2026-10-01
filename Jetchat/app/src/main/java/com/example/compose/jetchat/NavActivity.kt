@@ -16,11 +16,14 @@
 
 package com.example.compose.jetchat
 
+import android.R
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.animation.togetherWith
@@ -56,7 +59,6 @@ import com.example.compose.jetchat.conversation.ConversationViewModel
 import com.example.compose.jetchat.profile.ProfileError
 import com.example.compose.jetchat.profile.ProfileScreen
 import com.example.compose.jetchat.profile.ProfileViewModel
-import com.example.compose.jetchat.theme.LocalNavAnimatedVisibilityScope
 import com.example.compose.jetchat.theme.LocalSharedTransitionScope
 import com.example.compose.jetchat.theme.sharedElementTransitionSpec
 import kotlinx.coroutines.launch
@@ -74,11 +76,6 @@ data class ProfileRoute(val userId: String, val sharedElementKey: String? = null
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
-    @OptIn(
-        ExperimentalMaterial3Api::class,
-        ExperimentalMaterial3ExpressiveApi::class,
-        ExperimentalSharedTransitionApi::class,
-    )
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -127,9 +124,8 @@ class NavActivity : AppCompatActivity() {
                         },
                     ) {
                         val sharedTransitionScope = LocalSharedTransitionScope.current
-                        val animationSpec = MaterialTheme.motionScheme.sharedElementTransitionSpec<IntOffset>()
-                        val transitionSpec = slideIn(animationSpec) { IntOffset.Zero } togetherWith
-                            slideOut(animationSpec) { IntOffset.Zero }
+                        val animationSpec = MaterialTheme.motionScheme.sharedElementTransitionSpec<Float>()
+                        val transitionSpec = fadeIn(animationSpec)  togetherWith fadeOut(animationSpec)
 
                         NavDisplay(
                             backStack = backStack,
@@ -143,46 +139,38 @@ class NavActivity : AppCompatActivity() {
                             popTransitionSpec = { transitionSpec },
                             entryProvider = entryProvider {
                                 entry<ConversationRoute> {
-                                    CompositionLocalProvider(
-                                        LocalNavAnimatedVisibilityScope provides LocalNavAnimatedContentScope.current,
-                                    ) {
-                                        val conversationViewModel: ConversationViewModel = viewModel()
-                                        ConversationContent(
-                                            uiState = conversationViewModel.uiState,
-                                            navigateToProfile = { user ->
-                                                backStack.add(ProfileRoute(userId = user))
-                                            },
-                                            navigateToProfileWithKey = { user, sharedElementKey ->
-                                                backStack.add(
-                                                    ProfileRoute(
-                                                        userId = user,
-                                                        sharedElementKey = sharedElementKey,
-                                                    ),
-                                                )
-                                            },
-                                            onNavIconPressed = {
-                                                viewModel.openDrawer()
-                                            },
-                                            onMessageLikeToggled = conversationViewModel::toggleLike,
-                                        )
-                                    }
+                                    val conversationViewModel: ConversationViewModel = viewModel()
+                                    ConversationContent(
+                                        uiState = conversationViewModel.uiState,
+                                        navigateToProfile = { user ->
+                                            backStack.add(ProfileRoute(userId = user))
+                                        },
+                                        navigateToProfileWithKey = { user, sharedElementKey ->
+                                            backStack.add(
+                                                ProfileRoute(
+                                                    userId = user,
+                                                    sharedElementKey = sharedElementKey,
+                                                ),
+                                            )
+                                        },
+                                        onNavIconPressed = {
+                                            viewModel.openDrawer()
+                                        },
+                                        onMessageLikeToggled = conversationViewModel::toggleLike,
+                                    )
                                 }
                                 entry<ProfileRoute> { route ->
-                                    CompositionLocalProvider(
-                                        LocalNavAnimatedVisibilityScope provides LocalNavAnimatedContentScope.current,
-                                    ) {
-                                        val profileViewModel: ProfileViewModel = viewModel(key = route.userId)
-                                        profileViewModel.setUserId(route.userId)
-                                        val userData by profileViewModel.userData.observeAsState()
+                                    val profileViewModel: ProfileViewModel = viewModel(key = route.userId)
+                                    profileViewModel.setUserId(route.userId)
+                                    val userData by profileViewModel.userData.observeAsState()
 
-                                        if (userData == null) {
-                                            ProfileError()
-                                        } else {
-                                            ProfileScreen(
-                                                userData = userData!!,
-                                                sharedElementKey = route.sharedElementKey,
-                                            )
-                                        }
+                                    if (userData == null) {
+                                        ProfileError()
+                                    } else {
+                                        ProfileScreen(
+                                            userData = userData!!,
+                                            sharedElementKey = route.sharedElementKey,
+                                        )
                                     }
                                 }
                             },

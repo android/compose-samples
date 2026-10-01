@@ -71,6 +71,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.MorphPolygonShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -79,7 +80,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -88,7 +88,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -117,6 +116,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onLayoutRectChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
@@ -128,21 +128,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.graphics.shapes.Morph
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.blur.backdropBlur
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.rememberHeartReactionMeshGradientPainter
 import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.theme.Cookie9Sided
 import com.example.compose.jetchat.theme.FullScreenRoundedRectangle
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.example.compose.jetchat.theme.LocalNavAnimatedVisibilityScope
 import com.example.compose.jetchat.theme.SharedElementKey
 import com.example.compose.jetchat.theme.sharedAvatarElement
-import com.example.compose.jetchat.theme.sharedBoundsRevealWithShapeMorph
 import com.example.compose.jetchat.theme.sharedElementTransitionSpec
-import com.example.compose.jetchat.theme.toShape
 import com.example.compose.jetchat.video.FullScreenVideoPlayer
 import com.example.compose.jetchat.video.VideoThumbnail
 import kotlin.math.PI
@@ -159,7 +157,6 @@ import kotlinx.coroutines.launch
  * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
  * @param navigateToProfileWithKey User action when navigation to a profile is requested with a shared element key
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ConversationContent(
     uiState: ConversationUiState,
@@ -337,7 +334,6 @@ fun ConversationContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelNameBar(
     channelName: String,
@@ -614,7 +610,6 @@ fun Message(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 private fun RowScope.AuthorAvatar(
     sharedElementKey: String,
@@ -623,8 +618,9 @@ private fun RowScope.AuthorAvatar(
     borderColor: Color,
     onAuthorClick: (String) -> Unit,
 ) {
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-    val progress = if (animatedVisibilityScope != null) {
+    var isVisible by remember { mutableStateOf(false) }
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
+    val progress = if (isVisible) {
         val animatedProgress by animatedVisibilityScope.transition.animateFloat(
             transitionSpec = { MaterialTheme.motionScheme.sharedElementTransitionSpec() },
             label = "avatarShapeProgress",
@@ -640,7 +636,7 @@ private fun RowScope.AuthorAvatar(
         0f
     }
 
-    val progressiveBlurRadius = if (animatedVisibilityScope != null) {
+    val progressiveBlurRadius = if (isVisible) {
         val animatedRadius by animatedVisibilityScope.transition.animateDp(
             transitionSpec = { MaterialTheme.motionScheme.sharedElementTransitionSpec() },
             label = "avatarProgressiveBlur",
@@ -656,43 +652,43 @@ private fun RowScope.AuthorAvatar(
         0.dp
     }
 
-    val morph = remember {
-        Morph(MaterialShapes.Cookie9Sided, FullScreenRoundedRectangle)
+    val currentProgress by rememberUpdatedState(progress.coerceIn(0f, 1f))
+    val currentShape = remember {
+        MorphPolygonShape(Cookie9Sided, FullScreenRoundedRectangle) {
+            currentProgress
+        }
     }
-    val currentShape = morph.toShape(progress)
     val borderAlpha = (1f - progress).coerceIn(0f, 1f)
 
     Box(
         modifier = Modifier
             .align(Alignment.Top)
             .padding(horizontal = 16.dp)
-            .sharedBoundsRevealWithShapeMorph(
-                sharedElementKey = SharedElementKey.ProfileContainer(sharedElementKey),
-                restingShape = MaterialShapes.Cookie9Sided,
-                targetShape = FullScreenRoundedRectangle,
-                renderInOverlayDuringTransition = false,
-                targetValueByState = {
-                    when (it) {
-                        EnterExitState.PreEnter -> 1f
-                        EnterExitState.Visible -> 0f
-                        EnterExitState.PostExit -> 1f
-                    }
-                },
-                keepChildrenSizePlacement = false,
-            )
+            .onLayoutRectChanged { bounds ->
+                val visible = bounds.fractionVisibleInWindow() > 0f
+                if (visible != isVisible) {
+                    isVisible = visible
+                }
+            }
             .size(42.dp)
             .clickable(onClick = { onAuthorClick(authorName) }),
     ) {
+        val avatarSharedElementModifier = if (isVisible) {
+            Modifier.sharedAvatarElement(
+                sharedElementKey = SharedElementKey.ProfileAvatar(sharedElementKey),
+                restingShape = Cookie9Sided,
+                targetShape = FullScreenRoundedRectangle,
+            )
+        } else {
+            Modifier
+        }
+
         Image(
             modifier = Modifier
                 .fillMaxSize()
-                .sharedAvatarElement(
-                    sharedElementKey = SharedElementKey.ProfileAvatar(sharedElementKey),
-                    restingShape = MaterialShapes.Cookie9Sided,
-                    targetShape = FullScreenRoundedRectangle,
-                )
                 .border(2.dp, borderColor.copy(alpha = borderAlpha), currentShape)
                 .border(3.dp, MaterialTheme.colorScheme.surface.copy(alpha = borderAlpha), currentShape)
+                .then(avatarSharedElementModifier)
                 .clip(currentShape)
                 .blur {
                     radius = BlurRadiusSpec.verticalGradient(
