@@ -35,3 +35,4 @@ proguard-project.txt
 *.iml
 .idea
 .kotlin/
+Jetchat/gradle/gradle-daemon-jvm.properties
