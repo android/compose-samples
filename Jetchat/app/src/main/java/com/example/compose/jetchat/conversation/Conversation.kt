@@ -20,9 +20,9 @@ package com.example.compose.jetchat.conversation
 
 import android.content.ClipDescription
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -638,12 +638,6 @@ fun ChatItemBubble(
 
     val likeTransition = updateTransition(targetState = isLiked, label = "like")
 
-    // Inset that reveals the heart mesh around liked media. It is applied inside the fixed-size
-    // image, so liking never changes the bubble size (no jumps in the LazyColumn).
-    val likedMediaInset by likeTransition.animateDp(label = "likedMediaInset") { liked ->
-        if (liked) 8.dp else 0.dp
-    }
-
     // Goes 0 -> 1 when the message is liked; the whole text bubble scales up and back down along
     // the way. graphicsLayer only affects drawing, so the LazyColumn layout doesn't move.
     val likeProgress by likeTransition.animateFloat(
@@ -717,21 +711,26 @@ fun ChatItemBubble(
                 },
             ) {
                 Box(
-                    modifier = if (heartMeshPainter != null) {
-                        Modifier
-                            .background(MaterialTheme.colorScheme.surface)
-                            .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
-                    } else {
-                        Modifier
-                    },
+                    // Animates the 8dp frame that reveals the heart mesh around a liked image.
+                    modifier = Modifier
+                        .animateContentSize()
+                        .then(
+                            if (heartMeshPainter != null) {
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .paint(heartMeshPainter, contentScale = ContentScale.FillBounds)
+                            } else {
+                                Modifier
+                            },
+                        ),
                 ) {
                     Image(
                         painter = painter,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
+                            .padding(if (isLiked) 8.dp else 0.dp)
                             .sizeIn(maxWidth = 240.dp, maxHeight = 260.dp)
                             .aspectRatio(aspectRatio, matchHeightConstraintsFirst = aspectRatio < 1f)
-                            .padding(likedMediaInset)
                             .clip(bubbleShape),
                         contentDescription = stringResource(id = R.string.attached_image),
                     )
