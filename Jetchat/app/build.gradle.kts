@@ -86,6 +86,28 @@ android {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
+
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "androidx.compose.foundation" ||
+                requested.group == "androidx.compose.animation" ||
+                requested.group == "androidx.compose.ui" ||
+                requested.group == "androidx.compose.runtime") {
+                useVersion("1.13.0-SNAPSHOT")
+            }
+            if (requested.group == "androidx.compose.material3") {
+                useVersion("1.6.0-SNAPSHOT")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -124,6 +146,7 @@ dependencies {
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    testImplementation(libs.junit)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)

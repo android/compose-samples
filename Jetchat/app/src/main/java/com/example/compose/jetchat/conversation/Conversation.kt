@@ -691,7 +691,7 @@ private fun RowScope.AuthorAvatar(
                 .then(avatarSharedElementModifier)
                 .clip(currentShape)
                 .blur {
-                    radius = BlurRadiusSpec.verticalGradient(
+                    blurRadiusSpec = BlurRadiusSpec.verticalGradient(
                         listOf(
                             BlurStop(0.5f, 0.dp),
                             BlurStop(1.0f, progressiveBlurRadius),

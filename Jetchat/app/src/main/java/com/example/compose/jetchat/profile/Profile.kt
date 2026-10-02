@@ -218,7 +218,7 @@ private fun ProfileHeader(data: ProfileScreenState, sharedElementKey: String? = 
                     targetShape = Cookie9Sided,
                 )
                 .blur {
-                    radius = BlurRadiusSpec.verticalGradient(
+                    blurRadiusSpec = BlurRadiusSpec.verticalGradient(
                         listOf(
                             BlurStop(0.5f, 0.dp),
                             BlurStop(1.0f, progressiveBlurRadius),

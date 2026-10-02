@@ -28,11 +28,9 @@ import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.shape.CornerRounding
 import androidx.compose.foundation.shape.MorphPolygonShape
 import androidx.compose.foundation.shape.PolygonShape
-import androidx.compose.foundation.shape.PolygonShapeGeometry.Companion.CornerRounding
-import androidx.compose.foundation.shape.PolygonShapeGeometry.CornerRounding.Companion.Unrounded
-import androidx.compose.foundation.shape.transformed
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
@@ -54,17 +52,26 @@ val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> {
 }
 
 val FullScreenRoundedRectangle: PolygonShape = PolygonShape.rectangle(
-    topStartRounding = CornerRounding(percent = 15),
-    topEndRounding = CornerRounding(percent = 15),
-    bottomEndRounding = Unrounded,
-    bottomStartRounding = Unrounded,
-).transformed(contentScale = ContentScale.Fit)
+    topStartRounding = CornerRounding.fraction(0.15f),
+    topEndRounding = CornerRounding.fraction(0.15f),
+    bottomEndRounding = CornerRounding.Unrounded,
+    bottomStartRounding = CornerRounding.Unrounded,
+).apply {
+    transform {
+        scaleToFit()
+    }
+}
 
 val Cookie9Sided: PolygonShape = PolygonShape.star(
     numPoints = 9,
     innerRadiusRatio = 0.8f,
-    outerRounding = CornerRounding(percent = 50),
-).transformed( contentScale = ContentScale.Fit)
+    outerRounding = CornerRounding.fraction(0.5f),
+).apply {
+    transform {
+        rotate(-90f)
+        scaleToFit()
+    }
+}
 
 val MotionScheme.sharedElementTransitionBounds: BoundsTransform
     @Composable
