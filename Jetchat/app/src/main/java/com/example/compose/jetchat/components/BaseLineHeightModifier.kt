@@ -24,7 +24,7 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 
 /**
  * Applied to a Text, it sets the distance between the top and the first baseline. It
@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.Dp
  * This modifier can be used to distribute multiple text elements using a certain distance between
  * baselines.
  */
-data class BaselineHeightModifier(val heightFromBaseline: Dp) : LayoutModifier {
+data class BaselineHeightModifier(val heightFromBaseline: TextUnit) : LayoutModifier {
 
     override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {
 
@@ -55,4 +55,4 @@ data class BaselineHeightModifier(val heightFromBaseline: Dp) : LayoutModifier {
     }
 }
 
-fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier = this.then(BaselineHeightModifier(heightFromBaseline))
+fun Modifier.baselineHeight(heightFromBaseline: TextUnit): Modifier = this.then(BaselineHeightModifier(heightFromBaseline))

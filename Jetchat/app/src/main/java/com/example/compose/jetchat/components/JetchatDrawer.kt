@@ -138,7 +138,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
     }
     Row(
         modifier = Modifier
-            .height(56.dp)
+            .heightIn(min = 56.dp)
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .clip(CircleShape)
@@ -179,7 +179,7 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, selected: B
     }
     Row(
         modifier = Modifier
-            .height(56.dp)
+            .heightIn(min = 56.dp)
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .clip(CircleShape)
@@ -247,7 +247,7 @@ private fun WidgetDiscoverability() {
     val context = LocalContext.current
     Row(
         modifier = Modifier
-            .height(56.dp)
+            .heightIn(min = 56.dp)
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .clip(CircleShape)
