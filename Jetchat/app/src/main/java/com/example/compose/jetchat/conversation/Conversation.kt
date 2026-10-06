@@ -54,6 +54,7 @@ import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
@@ -675,7 +676,7 @@ fun DayHeader(dayString: String) {
     Row(
         modifier = Modifier
             .padding(vertical = 12.dp, horizontal = 16.dp)
-            .height(24.dp),
+            .heightIn(min = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         DayHeaderLine()
