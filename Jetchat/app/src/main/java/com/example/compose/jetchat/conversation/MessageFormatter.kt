@@ -63,11 +63,22 @@ typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
  * @return AnnotatedString with links for URLs and @mentions
  */
 @Composable
-fun messageFormatter(text: String, primary: Boolean, onPersonClick: (String) -> Unit = {}): AnnotatedString {
+fun messageFormatter(
+    text: String,
+    primary: Boolean,
+    onPersonClick: (String) -> Unit = {},
+    annotatedContent: AnnotatedString? = null,
+): AnnotatedString {
     val colorScheme = MaterialTheme.colorScheme
     val currentOnPersonClick by rememberUpdatedState(onPersonClick)
-    return remember(text, primary, colorScheme) {
+    return remember(text, primary, colorScheme, annotatedContent) {
         val tokens = symbolPattern.findAll(text)
+        // Rich-text spans index into the raw [text]. Markdown-lite tokens drop their delimiters
+        // when rendered, so track where each raw boundary ends up in the built string. Only
+        // allocated when there are spans to remap.
+        val extraSpans = annotatedContent?.spanStyles.orEmpty()
+        val rawToBuilt = if (extraSpans.isNotEmpty()) IntArray(text.length + 1) else null
+
         buildAnnotatedString {
             var cursorPosition = 0
 
@@ -79,7 +90,14 @@ fun messageFormatter(text: String, primary: Boolean, onPersonClick: (String) -> 
                 }
 
             for (token in tokens) {
-                append(text.slice(cursorPosition until token.range.first))
+                val first = token.range.first
+                if (rawToBuilt != null) {
+                    val segmentStart = length
+                    for (p in cursorPosition until first) {
+                        rawToBuilt[p] = segmentStart + (p - cursorPosition)
+                    }
+                }
+                append(text.substring(cursorPosition, first))
 
                 val (annotatedString, stringAnnotation) = getSymbolAnnotation(
                     matchResult = token,
@@ -87,6 +105,16 @@ fun messageFormatter(text: String, primary: Boolean, onPersonClick: (String) -> 
                     primary = primary,
                     codeSnippetBackground = codeSnippetBackground,
                 )
+
+                if (rawToBuilt != null) {
+                    val tokenStart = length
+                    val content = annotatedString.text
+                    // Number of leading delimiter characters stripped from the raw token.
+                    val lead = if (content.isEmpty()) 0 else token.value.indexOf(content).coerceAtLeast(0)
+                    for (p in token.range) {
+                        rawToBuilt[p] = tokenStart + (p - first - lead).coerceIn(0, content.length)
+                    }
+                }
 
                 val link = stringAnnotation?.let { annotation ->
                     when (annotation.tag) {
@@ -108,10 +136,63 @@ fun messageFormatter(text: String, primary: Boolean, onPersonClick: (String) -> 
                 cursorPosition = token.range.last + 1
             }
 
-            if (!tokens.none()) {
-                append(text.slice(cursorPosition..text.lastIndex))
-            } else {
-                append(text)
+            // Trailing plain text (or the whole text when there were no tokens).
+            if (rawToBuilt != null) {
+                val segmentStart = length
+                for (p in cursorPosition..text.length) {
+                    rawToBuilt[p] = segmentStart + (p - cursorPosition)
+                }
+            }
+            append(text.substring(cursorPosition))
+
+            if (rawToBuilt != null) {
+                applyRichTextSpans(extraSpans, rawToBuilt)
+            }
+        }
+    }
+}
+
+// SpanStyle merging replaces (rather than combines) textDecoration, so overlapping underline and
+// strikethrough ranges need an explicit combined style.
+private val UnderlineLineThroughSpanStyle = SpanStyle(
+    textDecoration = TextDecoration.combine(
+        listOf(TextDecoration.Underline, TextDecoration.LineThrough),
+    ),
+)
+
+/**
+ * Applies rich-text [spans] (indexed into the raw message text) to this builder, remapping each
+ * boundary through [rawToBuilt].
+ */
+private fun AnnotatedString.Builder.applyRichTextSpans(spans: List<AnnotatedString.Range<SpanStyle>>, rawToBuilt: IntArray) {
+    val maxRaw = rawToBuilt.lastIndex
+    var underlineRanges: MutableList<IntRange>? = null
+    var strikethroughRanges: MutableList<IntRange>? = null
+
+    for (span in spans) {
+        val start = rawToBuilt[span.start.coerceIn(0, maxRaw)]
+        val end = rawToBuilt[span.end.coerceIn(0, maxRaw)].coerceIn(start, length)
+        if (start >= end) continue
+        addStyle(span.item, start, end)
+        when (span.item.textDecoration) {
+            TextDecoration.Underline ->
+                (underlineRanges ?: mutableListOf<IntRange>().also { underlineRanges = it })
+                    .add(start until end)
+
+            TextDecoration.LineThrough ->
+                (strikethroughRanges ?: mutableListOf<IntRange>().also { strikethroughRanges = it })
+                    .add(start until end)
+        }
+    }
+
+    val underlines = underlineRanges ?: return
+    val strikethroughs = strikethroughRanges ?: return
+    for (u in underlines) {
+        for (s in strikethroughs) {
+            val overlapStart = maxOf(u.first, s.first)
+            val overlapEnd = minOf(u.last, s.last) + 1
+            if (overlapStart < overlapEnd) {
+                addStyle(UnderlineLineThroughSpanStyle, overlapStart, overlapEnd)
             }
         }
     }
