@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.compose)
 }
@@ -105,6 +106,10 @@ android {
     }
 }
 
+baselineProfile {
+    mergeIntoMain = true
+}
+
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
@@ -121,6 +126,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.runtime.tracing)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.ui)
@@ -129,6 +135,9 @@ dependencies {
     implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":benchmark"))
 
     implementation(libs.coil.kt.compose)
 
