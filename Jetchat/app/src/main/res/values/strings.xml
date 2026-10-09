@@ -81,5 +81,13 @@
     <string name="fullscreen_video">Full screen</string>
     <string name="exit_fullscreen_video">Exit full screen</string>
     <string name="remove_attached_video">Remove attached video</string>
+    <string name="format_text">Format text</string>
+    <string name="close_rich_text_editor">Close rich text editor</string>
+    <string name="format_bold">Bold</string>
+    <string name="format_italic">Italic</string>
+    <string name="format_underlined">Underline</string>
+    <string name="format_strikethrough">Strikethrough</string>
+    <string name="format_color">Font color</string>
+    <string name="format_size">Font size</string>
 
 </resources>

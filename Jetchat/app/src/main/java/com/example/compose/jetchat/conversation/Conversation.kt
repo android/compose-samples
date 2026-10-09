@@ -223,18 +223,24 @@ fun ConversationContent(
             },
             bottomBar = {
                 UserInput(
-                    onMessageSent = { content ->
-                        uiState.addMessage(
-                            Message(authorMe, content, timeNow),
-                        )
-                    },
-                    onVideoMessageSent = { videoUri, content ->
+                    onMessageSent = { annotatedContent ->
                         uiState.addMessage(
                             Message(
                                 author = authorMe,
-                                content = content,
+                                content = annotatedContent.text,
+                                timestamp = timeNow,
+                                annotatedContent = annotatedContent.takeIf { it.spanStyles.isNotEmpty() },
+                            ),
+                        )
+                    },
+                    onVideoMessageSent = { videoUri, caption ->
+                        uiState.addMessage(
+                            Message(
+                                author = authorMe,
+                                content = caption.text,
                                 timestamp = timeNow,
                                 videoUri = videoUri,
+                                annotatedContent = caption.takeIf { it.spanStyles.isNotEmpty() },
                             ),
                         )
                     },
@@ -903,6 +909,7 @@ fun ClickableMessage(message: Message, authorClicked: (String) -> Unit) {
         text = message.content,
         primary = false,
         onPersonClick = authorClicked,
+        annotatedContent = message.annotatedContent,
     )
 
     Text(
