@@ -121,6 +121,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.blur.backdropBlur
@@ -785,13 +786,9 @@ fun ChatItemBubble(
             if (hasText) {
                 Spacer(modifier = Modifier.height(4.dp))
             }
-            val painter = painterResource(imageRes)
-            val intrinsicSize = painter.intrinsicSize
-            val aspectRatio = if (intrinsicSize.width > 0f && intrinsicSize.height > 0f) {
-                intrinsicSize.width / intrinsicSize.height
-            } else {
-                1f
-            }
+            // Message images are large photos: decode them off the main thread at display size
+            // instead of with painterResource, which decodes the full bitmap during composition.
+            val aspectRatio = rememberImageAspectRatio(imageRes)
             Surface(
                 color = if (isLiked) Color.Transparent else backgroundBubbleColor,
                 shape = bubbleShape,
@@ -814,8 +811,8 @@ fun ChatItemBubble(
                             },
                         ),
                 ) {
-                    Image(
-                        painter = painter,
+                    AsyncImage(
+                        model = imageRes,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .padding(if (isLiked) 8.dp else 0.dp)

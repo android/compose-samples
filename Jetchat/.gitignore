@@ -14,3 +14,6 @@
 .cxx
 local.properties
 .kotlin/
+
+# Macrobenchmark results and Perfetto traces from local performance runs
+/benchmark_reports
