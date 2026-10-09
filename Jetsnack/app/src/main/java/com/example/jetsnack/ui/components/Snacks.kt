@@ -176,7 +176,8 @@ private fun HighlightedSnacks(
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
     val transition = animatedVisibilityScope.transition
-    val isTransitioning = transition.currentState != transition.targetState || transition.isSeeking
+    val isTransitioning =
+        transition.currentState != transition.targetState || sharedTransitionScope.isTransitionActive
     val roundedCornerAnimation by transition
         .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
             when (enterExit) {
@@ -237,7 +238,8 @@ private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No animatedVisibilityScope found")
     val transition = animatedVisibilityScope.transition
-    val isTransitioning = transition.currentState != transition.targetState || transition.isSeeking
+    val isTransitioning =
+        transition.currentState != transition.targetState || sharedTransitionScope.isTransitionActive
     val origin = remember(snackCollectionId) { snackCollectionId.toString() }
     val itemShape = MaterialTheme.shapes.medium
     val titleStyle = MaterialTheme.typography.titleMedium
@@ -278,7 +280,7 @@ fun SnackItem(
     animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No animatedVisibilityScope found"),
     isTransitioning: Boolean = animatedVisibilityScope.transition.let {
-        it.currentState != it.targetState || it.isSeeking
+        it.currentState != it.targetState || sharedTransitionScope.isTransitionActive
     },
     origin: String = remember(snackCollectionId) { snackCollectionId.toString() },
     shape: Shape = MaterialTheme.shapes.medium,
@@ -366,7 +368,7 @@ private fun HighlightSnackItem(
     animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found"),
     isTransitioning: Boolean = animatedVisibilityScope.transition.let {
-        it.currentState != it.targetState || it.isSeeking
+        it.currentState != it.targetState || sharedTransitionScope.isTransitionActive
     },
     cardShape: Shape = RoundedCornerShape(20.dp),
     overlayClip: SharedTransitionScope.OverlayClip = remember(sharedTransitionScope, cardShape) {
