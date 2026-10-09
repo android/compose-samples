@@ -23,8 +23,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -32,6 +37,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -56,14 +62,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -75,18 +84,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -98,8 +110,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.rememberRecordButtonMeshGradientPainter
@@ -177,8 +191,48 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
-    val surfaceColor = MaterialTheme.colorScheme.surfaceContainer
+    val surfaceColor by animateColorAsState(
+        targetValue = if (textFieldFocusState) {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
+        label = "inputSurfaceColor",
+    )
     val sendMessageEnabled = !formattedTextState.isBlank || attachedVideoUri != null
+    val borderColor by animateColorAsState(
+        targetValue = if (textFieldFocusState && !isRecordingActive) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            Color.Transparent
+        },
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
+        label = "inputBorderColor",
+    )
+
+    val focusProgress = animateFloatAsState(
+        targetValue = if (textFieldFocusState) 1f else 0f,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "inputFocusProgress",
+    )
+    val shadowColor = MaterialTheme.colorScheme.primary
+
+    val focusScale = remember { Animatable(1f) }
+    LaunchedEffect(textFieldFocusState) {
+        if (textFieldFocusState) {
+            focusScale.animateTo(1.03f, tween(durationMillis = 120, easing = FastOutSlowInEasing))
+            focusScale.animateTo(
+                1f,
+                spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMediumLow,
+                ),
+            )
+        } else {
+            focusScale.animateTo(1f, spring(stiffness = Spring.StiffnessMedium))
+        }
+    }
 
     // Animated mesh-gradient glow behind the card, shown while recording is active.
     val glowAlpha by animateFloatAsState(
@@ -204,8 +258,13 @@ fun UserInput(
         Surface(
             shape = cardShape,
             color = surfaceColor,
+            border = BorderStroke(1.dp, borderColor),
             modifier = Modifier
                 .fillMaxWidth()
+                .graphicsLayer {
+                    scaleX = focusScale.value
+                    scaleY = focusScale.value
+                }
                 // Draw the glow behind the card, scaled past its bounds.
                 .then(
                     if (glowMeshPainter != null) {
@@ -221,19 +280,23 @@ fun UserInput(
                     },
                 )
                 .padding(end = 4.dp)
-                // Blue-tinted shadow while idle; the glow replaces it while recording.
-                // Tinted shadows render on API 28+ (black on older versions).
+                // Primary-tinted drop shadow while idle; the glow replaces it while recording.
+                // Soft and centred at rest, tighter/stronger and offset to the
+                // bottom-left while focused.
                 .then(
                     if (isRecordingActive) {
                         Modifier
                     } else {
-                        Modifier.shadow(
-                            elevation = 16.dp,
-                            shape = cardShape,
-                            clip = false,
-                            ambientColor = MaterialTheme.colorScheme.primary,
-                            spotColor = MaterialTheme.colorScheme.primary,
-                        )
+                        Modifier.dropShadow(cardShape) {
+                            val p = focusProgress.value
+                            radius = lerp(24.dp.toPx(), 10.dp.toPx(), p)
+                            offset = Offset(
+                                x = lerp(0f, -4.dp.toPx(), p),
+                                y = lerp(4.dp.toPx(), 6.dp.toPx(), p),
+                            )
+                            color = shadowColor
+                            alpha = lerp(0.25f, 0.6f, p)
+                        }
                     },
                 )
                 .heightIn(min = 136.dp),
@@ -303,17 +366,27 @@ fun UserInput(
                         onAddClick = { currentInputSelector = InputSelector.MAP },
                     )
 
-                    IconButton(
+                    // Wide filled icon button: primary container when enabled; icon-only (no
+                    // container) when disabled.
+                    FilledIconButton(
                         onClick = sendMessage,
                         enabled = sendMessageEnabled,
-                        modifier = Modifier.size(48.dp),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = Color.Transparent,
+                            disabledContentColor =
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.54f),
+                        ),
+                        modifier = Modifier.size(
+                            IconButtonDefaults.smallContainerSize(
+                                IconButtonDefaults.IconButtonWidthOption.Wide,
+                            ),
+                        ),
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_send),
                             contentDescription = stringResource(id = R.string.send),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                alpha = if (sendMessageEnabled) 0.85f else 0.54f,
-                            ),
                             modifier = Modifier.size(24.dp),
                         )
                     }
@@ -398,7 +471,15 @@ private fun SelectorExpanded(
         }
     }
 
-    Surface(tonalElevation = 8.dp) {
+    Surface(
+        tonalElevation = 8.dp,
+        // The rich-text toolbar is docked to the keyboard rather than inset under the card.
+        modifier = if (currentSelector == InputSelector.RICHTEXTEDITOR) {
+            Modifier.dockedToKeyboard()
+        } else {
+            Modifier
+        },
+    ) {
         when (currentSelector) {
             InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester)
             InputSelector.DM -> NotAvailablePopup(onCloseRequested)
@@ -408,6 +489,28 @@ private fun SelectorExpanded(
             InputSelector.RICHTEXTEDITOR -> RichTextToolbar(spanStyleState = spanStyleState)
             InputSelector.NONE -> Unit
         }
+    }
+}
+
+/**
+ * Lets the rich-text toolbar break out of [UserInput]'s inset column padding so it spans the full
+ * width and sits flush on the keyboard (the column itself follows the IME via the caller's
+ * imePadding). [start], [end] and [bottom] must match that column's padding.
+ */
+private fun Modifier.dockedToKeyboard(start: Dp = 8.dp, end: Dp = 4.dp, bottom: Dp = 8.dp): Modifier = layout { measurable, constraints ->
+    val startPx = start.roundToPx()
+    val extraWidth = startPx + end.roundToPx()
+    val placeable = measurable.measure(
+        if (constraints.hasBoundedWidth) {
+            constraints.copy(maxWidth = constraints.maxWidth + extraWidth)
+        } else {
+            constraints
+        },
+    )
+    val width = (placeable.width - extraWidth).coerceIn(constraints.minWidth, constraints.maxWidth)
+    layout(width, placeable.height) {
+        // Shift left over the start padding and down over the bottom padding.
+        placeable.place(x = -startPx, y = bottom.roundToPx())
     }
 }
 
