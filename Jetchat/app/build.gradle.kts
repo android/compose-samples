@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 android {
@@ -63,6 +64,13 @@ android {
                 "proguard-rules.pro",
             )
         }
+
+        // Non-debuggable, non-minified build type for Macrobenchmark and composition tracing
+        create("benchmark") {
+            initWith(getByName("debug"))
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
 
     kotlin {
@@ -86,6 +94,11 @@ android {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
+}
+
+baselineProfile {
+    // Put the generated profile in src/main so every build type, including benchmark, ships it
+    mergeIntoMain = true
 }
 
 dependencies {
@@ -115,8 +128,13 @@ dependencies {
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.compose.ui.googlefonts)
+    // Adds composable function names to Perfetto traces
+    implementation(libs.androidx.compose.runtime.tracing)
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":benchmark"))
 
     implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.coil.kt.compose)
     implementation(libs.androidx.media3.ui.compose)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
