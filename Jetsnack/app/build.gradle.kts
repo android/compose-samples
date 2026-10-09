@@ -73,9 +73,13 @@ android {
         }
 
         create("benchmark") {
-            initWith(getByName("debug"))
-            signingConfig = signingConfigs.getByName("debug")
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("release")
             matchingFallbacks.add("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-benchmark-rules.pro",
+            )
             isDebuggable = false
         }
     }
