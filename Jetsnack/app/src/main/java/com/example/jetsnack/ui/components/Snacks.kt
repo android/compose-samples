@@ -21,13 +21,17 @@ package com.example.jetsnack.ui.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,19 +60,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.jetsnack.R
@@ -88,6 +98,12 @@ private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
 private val Density.cardWidthWithPaddingPx
     get() = (HighlightCardWidth + HighlightCardPadding).toPx()
+
+private val ExpressiveFadeIn = fadeIn(nonSpatialExpressiveSpring())
+private val ExpressiveFadeOut = fadeOut(nonSpatialExpressiveSpring())
+private val DefaultFadeIn = fadeIn()
+private val DefaultFadeOut = fadeOut()
+private val ScaleToBoundsResizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
 
 @Composable
 fun SnackCollection(
@@ -155,20 +171,60 @@ private fun HighlightedSnacks(
         else -> JetsnackTheme.colors.gradient6_2
     }
 
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No Scope found")
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No Scope found")
+    val transition = animatedVisibilityScope.transition
+    val isTransitioning = transition.currentState != transition.targetState || transition.isSeeking
+    val roundedCornerAnimation by transition
+        .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
+            when (enterExit) {
+                EnterExitState.PreEnter -> 0.dp
+                EnterExitState.Visible -> 20.dp
+                EnterExitState.PostExit -> 20.dp
+            }
+        }
+    val cardShape = remember(roundedCornerAnimation) { RoundedCornerShape(roundedCornerAnimation) }
+    val overlayClip = remember(sharedTransitionScope, cardShape) {
+        with(sharedTransitionScope) { OverlayClip(cardShape) }
+    }
+    val origin = remember(snackCollectionId) { snackCollectionId.toString() }
+    val borderColor = JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f)
+    val textSecondaryColor = JetsnackTheme.colors.textSecondary
+    val textHelpColor = JetsnackTheme.colors.textHelp
+    val titleStyle = MaterialTheme.typography.titleLarge
+    val taglineStyle = MaterialTheme.typography.bodyLarge
+
     LazyRow(
         state = rowState,
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(start = 24.dp, end = 24.dp),
     ) {
-        itemsIndexed(snacks) { index, snack ->
+        itemsIndexed(
+            items = snacks,
+            key = { _, snack -> snack.id },
+        ) { itemIndex, snack ->
             HighlightSnackItem(
                 snackCollectionId = snackCollectionId,
                 snack = snack,
                 onSnackClick = onSnackClick,
-                index = index,
+                index = itemIndex,
                 gradient = gradient,
                 scrollProvider = scrollProvider,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+                isTransitioning = isTransitioning,
+                cardShape = cardShape,
+                overlayClip = overlayClip,
+                origin = origin,
+                cardWidthWithPaddingPx = cardWidthWithPaddingPx,
+                borderColor = borderColor,
+                textSecondaryColor = textSecondaryColor,
+                textHelpColor = textHelpColor,
+                titleStyle = titleStyle,
+                taglineStyle = taglineStyle,
             )
         }
     }
@@ -176,38 +232,76 @@ private fun HighlightedSnacks(
 
 @Composable
 private fun Snacks(snackCollectionId: Long, snacks: List<Snack>, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No sharedTransitionScope found")
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No animatedVisibilityScope found")
+    val transition = animatedVisibilityScope.transition
+    val isTransitioning = transition.currentState != transition.targetState || transition.isSeeking
+    val origin = remember(snackCollectionId) { snackCollectionId.toString() }
+    val itemShape = MaterialTheme.shapes.medium
+    val titleStyle = MaterialTheme.typography.titleMedium
+    val textSecondaryColor = JetsnackTheme.colors.textSecondary
+
     LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
     ) {
-        items(snacks) { snack ->
-            SnackItem(snack, snackCollectionId, onSnackClick)
+        items(
+            items = snacks,
+            key = { snack -> snack.id },
+        ) { snack ->
+            SnackItem(
+                snack = snack,
+                snackCollectionId = snackCollectionId,
+                onSnackClick = onSnackClick,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+                isTransitioning = isTransitioning,
+                origin = origin,
+                shape = itemShape,
+                titleStyle = titleStyle,
+                textSecondaryColor = textSecondaryColor,
+            )
         }
     }
 }
 
 @Composable
-fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String) -> Unit, modifier: Modifier = Modifier) {
+fun SnackItem(
+    snack: Snack,
+    snackCollectionId: Long,
+    onSnackClick: (Long, String) -> Unit,
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No sharedTransitionScope found"),
+    animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No animatedVisibilityScope found"),
+    isTransitioning: Boolean = animatedVisibilityScope.transition.let {
+        it.currentState != it.targetState || it.isSeeking
+    },
+    origin: String = remember(snackCollectionId) { snackCollectionId.toString() },
+    shape: Shape = MaterialTheme.shapes.medium,
+    titleStyle: TextStyle = MaterialTheme.typography.titleMedium,
+    textSecondaryColor: Color = JetsnackTheme.colors.textSecondary,
+) {
+    val enterTransition = if (isTransitioning) ExpressiveFadeIn else EnterTransition.None
+    val exitTransition = if (isTransitioning) ExpressiveFadeOut else ExitTransition.None
+
     JetsnackSurface(
-        shape = MaterialTheme.shapes.medium,
+        shape = shape,
         modifier = modifier.padding(
             start = 4.dp,
             end = 4.dp,
             bottom = 8.dp,
         ),
-
     ) {
-        val sharedTransitionScope = LocalSharedTransitionScope.current
-            ?: throw IllegalStateException("No sharedTransitionScope found")
-        val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-            ?: throw IllegalStateException("No animatedVisibilityScope found")
-
         with(sharedTransitionScope) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .clickable(onClick = {
-                        onSnackClick(snack.id, snackCollectionId.toString())
+                        onSnackClick(snack.id, origin)
                     })
                     .padding(8.dp),
             ) {
@@ -221,18 +315,20 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
+                                    origin = origin,
                                     type = SnackSharedElementType.Image,
                                 ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
+                            enter = enterTransition,
+                            exit = exitTransition,
                             boundsTransform = snackDetailBoundsTransform,
                         ),
                 )
                 Text(
                     text = snack.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = titleStyle,
+                    color = textSecondaryColor,
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .wrapContentWidth()
@@ -240,14 +336,14 @@ fun SnackItem(snack: Snack, snackCollectionId: Long, onSnackClick: (Long, String
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
+                                    origin = origin,
                                     type = SnackSharedElementType.Title,
                                 ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
-                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                            enter = enterTransition,
+                            exit = exitTransition,
+                            resizeMode = ScaleToBoundsResizeMode,
                             boundsTransform = snackDetailBoundsTransform,
                         ),
                 )
@@ -265,42 +361,49 @@ private fun HighlightSnackItem(
     gradient: List<Color>,
     scrollProvider: () -> Float,
     modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalStateException("No Scope found"),
+    animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No Scope found"),
+    isTransitioning: Boolean = animatedVisibilityScope.transition.let {
+        it.currentState != it.targetState || it.isSeeking
+    },
+    cardShape: Shape = RoundedCornerShape(20.dp),
+    overlayClip: SharedTransitionScope.OverlayClip = remember(sharedTransitionScope, cardShape) {
+        with(sharedTransitionScope) { OverlayClip(cardShape) }
+    },
+    origin: String = remember(snackCollectionId) { snackCollectionId.toString() },
+    cardWidthWithPaddingPx: Float = with(LocalDensity.current) { this.cardWidthWithPaddingPx },
+    borderColor: Color = JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
+    textSecondaryColor: Color = JetsnackTheme.colors.textSecondary,
+    textHelpColor: Color = JetsnackTheme.colors.textHelp,
+    titleStyle: TextStyle = MaterialTheme.typography.titleLarge,
+    taglineStyle: TextStyle = MaterialTheme.typography.bodyLarge,
 ) {
-    val sharedTransitionScope = LocalSharedTransitionScope.current
-        ?: throw IllegalStateException("No Scope found")
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
-        ?: throw IllegalStateException("No Scope found")
+    val boundsEnter = if (isTransitioning) DefaultFadeIn else EnterTransition.None
+    val boundsExit = if (isTransitioning) DefaultFadeOut else ExitTransition.None
+    val expressiveEnter = if (isTransitioning) ExpressiveFadeIn else EnterTransition.None
+    val expressiveExit = if (isTransitioning) ExpressiveFadeOut else ExitTransition.None
+
     with(sharedTransitionScope) {
-        val roundedCornerAnimation by animatedVisibilityScope.transition
-            .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
-                when (enterExit) {
-                    EnterExitState.PreEnter -> 0.dp
-                    EnterExitState.Visible -> 20.dp
-                    EnterExitState.PostExit -> 20.dp
-                }
-            }
         JetsnackCard(
             elevation = 0.dp,
-            shape = RoundedCornerShape(roundedCornerAnimation),
+            shape = cardShape,
             modifier = modifier
                 .padding(bottom = 16.dp)
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(
                         key = SnackSharedElementKey(
                             snackId = snack.id,
-                            origin = snackCollectionId.toString(),
+                            origin = origin,
                             type = SnackSharedElementType.Bounds,
                         ),
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = snackDetailBoundsTransform,
-                    clipInOverlayDuringTransition = OverlayClip(
-                        RoundedCornerShape(
-                            roundedCornerAnimation,
-                        ),
-                    ),
-                    enter = fadeIn(),
-                    exit = fadeOut(),
+                    clipInOverlayDuringTransition = overlayClip,
+                    enter = boundsEnter,
+                    exit = boundsExit,
                 )
                 .size(
                     width = HighlightCardWidth,
@@ -308,8 +411,8 @@ private fun HighlightSnackItem(
                 )
                 .border(
                     1.dp,
-                    JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
-                    RoundedCornerShape(roundedCornerAnimation),
+                    borderColor,
+                    cardShape,
                 ),
 
         ) {
@@ -318,7 +421,7 @@ private fun HighlightSnackItem(
                     .clickable(onClick = {
                         onSnackClick(
                             snack.id,
-                            snackCollectionId.toString(),
+                            origin,
                         )
                     })
                     .fillMaxSize(),
@@ -335,15 +438,15 @@ private fun HighlightSnackItem(
                                 rememberSharedContentState(
                                     key = SnackSharedElementKey(
                                         snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
+                                        origin = origin,
                                         type = SnackSharedElementType.Background,
                                     ),
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = snackDetailBoundsTransform,
-                                enter = fadeIn(nonSpatialExpressiveSpring()),
-                                exit = fadeOut(nonSpatialExpressiveSpring()),
-                                resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                                enter = expressiveEnter,
+                                exit = expressiveExit,
+                                resizeMode = ScaleToBoundsResizeMode,
                             )
                             .height(100.dp)
                             .fillMaxWidth()
@@ -370,13 +473,13 @@ private fun HighlightSnackItem(
                                 rememberSharedContentState(
                                     key = SnackSharedElementKey(
                                         snackId = snack.id,
-                                        origin = snackCollectionId.toString(),
+                                        origin = origin,
                                         type = SnackSharedElementType.Image,
                                     ),
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
-                                exit = fadeOut(nonSpatialExpressiveSpring()),
-                                enter = fadeIn(nonSpatialExpressiveSpring()),
+                                exit = expressiveExit,
+                                enter = expressiveEnter,
                                 boundsTransform = snackDetailBoundsTransform,
                             )
                             .align(Alignment.BottomCenter)
@@ -389,23 +492,23 @@ private fun HighlightSnackItem(
                     text = snack.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = JetsnackTheme.colors.textSecondary,
+                    style = titleStyle,
+                    color = textSecondaryColor,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
+                                    origin = origin,
                                     type = SnackSharedElementType.Title,
                                 ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            enter = expressiveEnter,
+                            exit = expressiveExit,
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                            resizeMode = ScaleToBoundsResizeMode,
                         )
                         .wrapContentWidth(),
                 )
@@ -413,23 +516,23 @@ private fun HighlightSnackItem(
 
                 Text(
                     text = snack.tagline,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = JetsnackTheme.colors.textHelp,
+                    style = taglineStyle,
+                    color = textHelpColor,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .sharedBounds(
                             rememberSharedContentState(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
-                                    origin = snackCollectionId.toString(),
+                                    origin = origin,
                                     type = SnackSharedElementType.Tagline,
                                 ),
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            enter = expressiveEnter,
+                            exit = expressiveExit,
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                            resizeMode = ScaleToBoundsResizeMode,
                         )
                         .wrapContentWidth(),
                 )
@@ -453,23 +556,29 @@ fun SnackImage(
     modifier: Modifier = Modifier,
     elevation: Dp = 0.dp,
 ) {
-    JetsnackSurface(
-        elevation = elevation,
-        shape = CircleShape,
-        modifier = modifier,
-    ) {
-
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageRes)
-                .crossfade(true)
-                .build(),
-            placeholder = debugPlaceholder(debugPreview = R.drawable.placeholder),
-            contentDescription = contentDescription,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-        )
+    val context = LocalContext.current
+    val imageRequest = remember(context, imageRes) {
+        ImageRequest.Builder(context)
+            .data(imageRes)
+            .crossfade(true)
+            .build()
     }
+    val backgroundColor = getBackgroundColorForElevation(
+        color = JetsnackTheme.colors.uiBackground,
+        elevation = elevation,
+    )
+    AsyncImage(
+        model = imageRequest,
+        placeholder = debugPlaceholder(debugPreview = R.drawable.placeholder),
+        contentDescription = contentDescription,
+        modifier = modifier
+            .shadow(elevation = elevation, shape = CircleShape, clip = false)
+            .zIndex(elevation.value)
+            .background(color = backgroundColor, shape = CircleShape)
+            .clip(CircleShape)
+            .fillMaxSize(),
+        contentScale = ContentScale.Crop,
+    )
 }
 
 @Preview("default")

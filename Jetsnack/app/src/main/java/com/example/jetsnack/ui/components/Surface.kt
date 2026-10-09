@@ -65,8 +65,7 @@ fun JetsnackSurface(
     }
 }
 
-@Composable
-private fun getBackgroundColorForElevation(color: Color, elevation: Dp): Color {
+internal fun getBackgroundColorForElevation(color: Color, elevation: Dp): Color {
     return if (elevation > 0.dp // && https://issuetracker.google.com/issues/161429530
         // JetsnackTheme.colors.isDark //&&
         // color == JetsnackTheme.colors.uiBackground

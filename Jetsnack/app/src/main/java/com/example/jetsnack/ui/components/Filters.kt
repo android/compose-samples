@@ -69,7 +69,7 @@ fun FilterBar(
             contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
             modifier = Modifier.heightIn(min = 56.dp),
         ) {
-            item {
+            item(key = "filter_button") {
                 AnimatedVisibility(visible = !filterScreenVisible) {
                     IconButton(
                         onClick = onShowFilters,
@@ -92,7 +92,10 @@ fun FilterBar(
                     }
                 }
             }
-            items(filters) { filter ->
+            items(
+                items = filters,
+                key = { filter -> filter.name },
+            ) { filter ->
                 FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
             }
         }
