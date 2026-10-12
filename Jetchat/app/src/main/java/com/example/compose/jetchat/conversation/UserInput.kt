@@ -59,6 +59,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
@@ -106,6 +107,8 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -827,6 +830,24 @@ private fun BoxScope.UserInputTextField(
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
 
+    val codeBackground = MaterialTheme.colorScheme.surface
+    val markdownStyling = remember(codeBackground) {
+        val codeStyle = SpanStyle(fontFamily = FontFamily.Monospace, background = codeBackground)
+        // Same syntax as the message bubbles (MessageFormatter). Markers stay visible while typing.
+        OutputTransformation {
+            symbolPattern.findAll(asCharSequence()).forEach { match ->
+                val style = when (match.value.first()) {
+                    '@', '*' -> InlineStyle.Bold.spanStyle
+                    '_' -> InlineStyle.Italic.spanStyle
+                    '~' -> InlineStyle.Strikethrough.spanStyle
+                    '`' -> codeStyle
+                    else -> null // URLs
+                }
+                style?.let { addStyle(it, match.range.first, match.range.last + 1) }
+            }
+        }
+    }
+
     FormattedTextField(
         state = formattedTextState,
         modifier = modifier
@@ -849,6 +870,7 @@ private fun BoxScope.UserInputTextField(
         textStyle = MaterialTheme.typography.titleLarge.copy(
             color = MaterialTheme.colorScheme.primary,
         ),
+        outputTransformation = markdownStyling,
     )
 
     if (formattedTextState.isEmpty && !focusState) {

@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.ExpandPolicy
 import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.KeyboardActionHandler
+import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
@@ -103,6 +104,7 @@ fun FormattedTextField(
     onKeyboardAction: KeyboardActionHandler? = null,
     lineLimits: TextFieldLineLimits = TextFieldLineLimits.Default,
     cursorBrush: Brush = SolidColor(Color.Black),
+    outputTransformation: OutputTransformation? = null,
 ) {
     BasicTextField(
         state = state.textFieldState,
@@ -113,6 +115,7 @@ fun FormattedTextField(
         onKeyboardAction = onKeyboardAction,
         lineLimits = lineLimits,
         cursorBrush = cursorBrush,
+        outputTransformation = outputTransformation,
     )
 }
 
