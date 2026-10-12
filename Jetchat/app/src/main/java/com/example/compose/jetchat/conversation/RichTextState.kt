@@ -26,8 +26,6 @@ import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -122,7 +120,6 @@ fun FormattedTextField(
 /**
  * Wraps [TextFieldState] and [SpanStyleState] for rich inline text formatting.
  */
-@Stable
 class FormattedTextState internal constructor(val textFieldState: TextFieldState) {
     constructor(initialText: String = "") : this(TextFieldState(initialText))
 
@@ -202,7 +199,6 @@ class FormattedTextState internal constructor(val textFieldState: TextFieldState
  * the active color. Cheap structural equality keeps `derivedStateOf` readers from recomposing
  * unless something actually changed.
  */
-@Immutable
 private data class ResolvedStyles(val activeMask: Int = 0, val activeColorStyle: SpanStyle? = null) {
     fun isActive(style: InlineStyle): Boolean = activeMask and style.mask != 0
 
@@ -220,7 +216,6 @@ private data class ResolvedStyles(val activeMask: Int = 0, val activeColorStyle:
  * Manages inline [InlineStyle]s and the active color for a [TextFieldState] in a single
  * `derivedStateOf` pass, and handles collapsed-selection style overrides for the next insert edit.
  */
-@Stable
 class SpanStyleState(private val state: TextFieldState) {
 
     private val computed by derivedStateOf { computeStyles(state.selection) }
