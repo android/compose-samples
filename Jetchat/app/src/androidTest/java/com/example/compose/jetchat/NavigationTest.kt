@@ -31,10 +31,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeRight
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -49,17 +47,14 @@ class NavigationTest {
     @Test
     fun app_launches() {
         // Check app launches at the correct destination
-        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
+        assertConversationIsDisplayed()
     }
 
     @Test
     fun profileScreen_back_conversationScreen() {
-        val navController = getNavController()
         // Navigate to profile
         navigateToProfile("Taylor Brooks")
-        // Check profile is displayed
-        assertEquals(navController.currentDestination?.id, R.id.nav_profile)
-        // Extra UI check (scroll to Display name as the new profile header is taller)
+        // Check profile is displayed (scroll to Display name as the new profile header is taller)
         composeTestRule
             .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
             .performScrollTo()
@@ -69,7 +64,7 @@ class NavigationTest {
         Espresso.pressBack()
 
         // Check that we're home
-        assertEquals(navController.currentDestination?.id, R.id.nav_home)
+        assertConversationIsDisplayed()
     }
 
     /**
@@ -83,7 +78,19 @@ class NavigationTest {
         navigateToHomeFromProfile()
 
         // Chewie, we're home
-        assertEquals(getNavController().currentDestination?.id, R.id.nav_home)
+        assertConversationIsDisplayed()
+
+        // The profiles were popped off the back stack, so pressing back leaves the app
+        val activity = composeTestRule.activity
+        Espresso.pressBackUnconditionally()
+        composeTestRule.runOnIdle {
+            assertTrue(activity.isFinishing)
+        }
+    }
+
+    private fun assertConversationIsDisplayed() {
+        // The channel name is shown in the conversation's app bar (and in the drawer, which is excluded)
+        composeTestRule.onNode(hasText("composers") and !isInDrawer()).assertIsDisplayed()
     }
 
     private fun navigateToProfile(name: String) {
@@ -114,9 +121,5 @@ class NavigationTest {
             swipeRight()
         }
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
-    }
-
-    private fun getNavController(): NavController {
-        return composeTestRule.activity.findNavController(R.id.nav_host_fragment)
     }
 }
