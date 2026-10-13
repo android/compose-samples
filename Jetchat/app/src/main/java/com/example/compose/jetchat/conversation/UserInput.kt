@@ -37,7 +37,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -85,15 +84,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
@@ -208,7 +212,7 @@ fun UserInput(
         targetValue = if (textFieldFocusState && !isRecordingActive) {
             MaterialTheme.colorScheme.primary
         } else {
-            Color.Transparent
+            MaterialTheme.colorScheme.primary.copy(alpha = 0f)
         },
         animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
         label = "inputBorderColor",
@@ -232,7 +236,7 @@ fun UserInput(
                     stiffness = Spring.StiffnessMediumLow,
                 ),
             )
-        } else {
+        } else if (focusScale.value != 1f) {
             focusScale.animateTo(1f, spring(stiffness = Spring.StiffnessMedium))
         }
     }
@@ -260,8 +264,8 @@ fun UserInput(
 
         Surface(
             shape = cardShape,
-            color = surfaceColor,
-            border = BorderStroke(1.dp, borderColor),
+            color = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .fillMaxWidth()
                 .graphicsLayer {
@@ -302,6 +306,24 @@ fun UserInput(
                         }
                     },
                 )
+                // Fill and border are drawn here so the color animations skip recomposition.
+                .drawWithCache {
+                    val fill = cardShape.createOutline(size, layoutDirection, this)
+                    val stroke = 1.dp.toPx()
+                    val half = stroke / 2
+                    val borderRadius = CornerRadius(cardShape.topStart.toPx(size, this) - half)
+                    onDrawWithContent {
+                        drawOutline(fill, surfaceColor)
+                        drawContent()
+                        drawRoundRect(
+                            color = borderColor,
+                            topLeft = Offset(half, half),
+                            size = Size(size.width - stroke, size.height - stroke),
+                            cornerRadius = borderRadius,
+                            style = Stroke(stroke),
+                        )
+                    }
+                }
                 .heightIn(min = 136.dp),
         ) {
             Column(
