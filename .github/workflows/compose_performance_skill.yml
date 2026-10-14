@@ -1,0 +1,129 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: Jetpack Compose Performance Review
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+on:
+  pull_request:
+    branches: [ '*' ]
+    paths:
+      - '**/*.kt'
+      - '.github/workflows/compose_performance_skill.yml'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Optional pull request number to review (leave empty to audit all Kotlin files)'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compose-performance-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.repository == 'android/compose-samples' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.fork == false)
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        token: ${{ secrets.PAT || github.token }}
+        fetch-depth: 0
+        persist-credentials: false
+
+    - name: Install Jetpack Compose Performance Skill
+      run: |
+        set -euo pipefail
+        curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
+        export PATH="${HOME}/.local/bin:${PATH}"
+        android skills add --agent=gemini --project=. jetpack-compose-performance
+
+    - name: Prepare Review Context
+      id: context
+      env:
+        GH_TOKEN: ${{ secrets.PAT || github.token }}
+        PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number }}
+        BASE_REF: ${{ github.base_ref }}
+      run: |
+        set -euo pipefail
+        mkdir -p .gemini
+        if [[ -n "${PR_NUMBER}" ]]; then
+          if [[ -n "${BASE_REF}" ]]; then
+            git diff --name-only --diff-filter=ACMRT "origin/${BASE_REF}...HEAD" -- '*.kt' > .gemini/target_files.txt
+          else
+            gh pr diff "${PR_NUMBER}" --name-only | grep '\.kt$' > .gemini/target_files.txt || true
+          fi
+          echo "mode=pr" >> "${GITHUB_OUTPUT}"
+          echo "pr_number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
+        else
+          find . -name '*.kt' -not -path './.*' | sed 's|^\./||' | sort > .gemini/target_files.txt
+          echo "mode=repo" >> "${GITHUB_OUTPUT}"
+          echo "pr_number=" >> "${GITHUB_OUTPUT}"
+        fi
+        FILE_COUNT=$(grep -c '\.kt$' .gemini/target_files.txt || true)
+        echo "file_count=${FILE_COUNT}" >> "${GITHUB_OUTPUT}"
+        echo "Found ${FILE_COUNT} Kotlin file(s) to audit."
+
+    - name: Run Jetpack Compose Performance Skill
+      if: steps.context.outputs.file_count != '0'
+      id: gemini_review
+      uses: google-github-actions/run-gemini-cli@f77273f4c914e4bf38440cf36a0369cb64a37489 # v0.1.22
+      env:
+        GEMINI_CLI_TRUST_WORKSPACE: 'true'
+        GITHUB_TOKEN: ${{ secrets.PAT || github.token }}
+      with:
+        gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+        github_pr_number: ${{ steps.context.outputs.pr_number }}
+        upload_artifacts: 'true'
+        settings: |
+          {
+            "model": {
+              "maxSessionTurns": 35
+            }
+          }
+        prompt: |
+          Use the `jetpack-compose-performance` skill located at `.agents/skills/jetpack-compose-performance/SKILL.md` to audit the target Kotlin files listed in `.gemini/target_files.txt`.
+
+          Follow the skill's Optimization Audit Workflow strictly:
+          1. Read `.agents/skills/jetpack-compose-performance/SKILL.md` first.
+          2. Inspect every target Kotlin file listed in `.gemini/target_files.txt` that uses Jetpack Compose (`@Composable`, `Modifier`, Compose state, lazy layouts, animations, effects, or custom drawing).
+          3. Whenever a file matches a rule in Categories 1-7, you MUST open and read the corresponding `.agents/skills/jetpack-compose-performance/references/**/*.md` file for the approved fix pattern and scope guards before reporting a finding.
+          4. Do NOT modify any files in the repository.
+          5. Output a well-structured Markdown review report summarizing your findings:
+             - For each finding, include the file path, line numbers, rule category, why it impacts Compose performance, and a concrete Kotlin `suggestion` or code snippet showing the recommended fix.
+             - If all audited Kotlin files follow Jetpack Compose performance best practices (or do not contain Jetpack Compose code), state clearly that no Jetpack Compose performance issues were found.
+
+    - name: Post Findings on Pull Request
+      if: steps.context.outputs.file_count != '0' && steps.context.outputs.pr_number != '' && steps.gemini_review.outputs.summary != ''
+      env:
+        GH_TOKEN: ${{ secrets.PAT || github.token }}
+        PR_NUMBER: ${{ steps.context.outputs.pr_number }}
+        REVIEW_SUMMARY: ${{ steps.gemini_review.outputs.summary }}
+      run: |
+        set -euo pipefail
+        COMMENT_FILE="$(mktemp)"
+        {
+          echo "## ⚡ Jetpack Compose Performance Skill Review"
+          echo ""
+          echo "${REVIEW_SUMMARY}"
+        } > "${COMMENT_FILE}"
+        gh pr comment "${PR_NUMBER}" --body-file "${COMMENT_FILE}"
+        rm -f "${COMMENT_FILE}"
