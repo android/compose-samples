@@ -26,12 +26,14 @@ import com.example.compose.jetchat.data.initialMessages
 /**
  * Holds the conversation state so it survives configuration changes, and handles message
  * actions such as liking a message.
+ *
+ * @param channel the channel of the conversation
  */
-class ConversationViewModel : ViewModel() {
+class ConversationViewModel(channel: String) : ViewModel() {
 
     var uiState by mutableStateOf(
         ConversationUiState(
-            channelName = exampleUiState.channelName,
+            channelName = "#$channel",
             channelMembers = exampleUiState.channelMembers,
             initialMessages = initialMessages,
         ),

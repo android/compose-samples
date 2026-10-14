@@ -55,14 +55,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavKey
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.navigation.Conversation
+import com.example.compose.jetchat.navigation.Profile
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.widget.WidgetReceiver
 
+/**
+ * Content of the navigation drawer.
+ *
+ * @param selectedKey the key of the screen currently displayed, used to highlight its item
+ * @param onNavigate called with the key of the item the user tapped
+ */
 @Composable
-fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit, selectedMenu: String = "composers") {
+fun JetchatDrawerContent(selectedKey: NavKey, onNavigate: (NavKey) -> Unit) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
     Column {
@@ -70,26 +79,12 @@ fun JetchatDrawerContent(onProfileClicked: (String) -> Unit, onChatClicked: (Str
         DrawerHeader()
         DividerItem()
         DrawerItemHeader("Chats")
-        ChatItem("composers", selectedMenu == "composers") {
-            onChatClicked("composers")
-        }
-        ChatItem("droidcon-nyc", selectedMenu == "droidcon-nyc") {
-            onChatClicked("droidcon-nyc")
-        }
+        ChatItem(Conversation("composers"), selectedKey, onNavigate)
+        ChatItem(Conversation("droidcon-nyc"), selectedKey, onNavigate)
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
         DrawerItemHeader("Recent Profiles")
-        ProfileItem(
-            "Ali Conors (you)", meProfile.photo,
-            selectedMenu == meProfile.userId,
-        ) {
-            onProfileClicked(meProfile.userId)
-        }
-        ProfileItem(
-            "Taylor Brooks", colleagueProfile.photo,
-            selectedMenu == colleagueProfile.userId,
-        ) {
-            onProfileClicked(colleagueProfile.userId)
-        }
+        ProfileItem("Ali Conors (you)", meProfile.photo, Profile(meProfile.userId), selectedKey, onNavigate)
+        ProfileItem("Taylor Brooks", colleagueProfile.photo, Profile(colleagueProfile.userId), selectedKey, onNavigate)
         if (widgetAddingIsSupported(LocalContext.current)) {
             DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
             DrawerItemHeader("Settings")
@@ -131,7 +126,8 @@ private fun DrawerItemHeader(text: String) {
 }
 
 @Composable
-private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
+private fun ChatItem(key: Conversation, selectedKey: NavKey, onNavigate: (NavKey) -> Unit) {
+    val selected = key == selectedKey
     val background = if (selected) {
         Modifier.background(MaterialTheme.colorScheme.primaryContainer)
     } else {
@@ -144,7 +140,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             .padding(horizontal = 12.dp)
             .clip(CircleShape)
             .then(background)
-            .clickable(onClick = onChatClicked),
+            .clickable(onClick = { onNavigate(key) }),
         verticalAlignment = CenterVertically,
     ) {
         val iconTint = if (selected) {
@@ -159,7 +155,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             contentDescription = null,
         )
         Text(
-            text,
+            key.channel,
             style = MaterialTheme.typography.bodyMedium,
             color = if (selected) {
                 MaterialTheme.colorScheme.primary
@@ -172,8 +168,8 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
 }
 
 @Composable
-private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, selected: Boolean = false, onProfileClicked: () -> Unit) {
-    val background = if (selected) {
+private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, key: Profile, selectedKey: NavKey, onNavigate: (NavKey) -> Unit) {
+    val background = if (key == selectedKey) {
         Modifier.background(MaterialTheme.colorScheme.primaryContainer)
     } else {
         Modifier
@@ -185,7 +181,7 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, selected: B
             .padding(horizontal = 12.dp)
             .clip(CircleShape)
             .then(background)
-            .clickable(onClick = onProfileClicked),
+            .clickable(onClick = { onNavigate(key) }),
         verticalAlignment = CenterVertically,
     ) {
         val paddingSizeModifier = Modifier
@@ -224,7 +220,7 @@ fun DrawerPreview() {
     JetchatTheme {
         Surface {
             Column {
-                JetchatDrawerContent({}, {})
+                JetchatDrawerContent(selectedKey = Conversation("composers"), onNavigate = {})
             }
         }
     }
@@ -236,7 +232,7 @@ fun DrawerPreviewDark() {
     JetchatTheme(isDarkTheme = true) {
         Surface {
             Column {
-                JetchatDrawerContent({}, {})
+                JetchatDrawerContent(selectedKey = Conversation("composers"), onNavigate = {})
             }
         }
     }

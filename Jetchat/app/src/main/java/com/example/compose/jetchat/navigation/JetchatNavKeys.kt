@@ -16,18 +16,40 @@
 
 package com.example.compose.jetchat.navigation
 
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 /**
- * The conversation screen, which is the start destination.
+ * The conversation screen of [channel], which is the start destination and always the root of the
+ * back stack.
  *
  * The keys are [Serializable] and implement [NavKey] so that the back stack created with
  * `rememberNavBackStack` survives configuration changes and process death.
  */
 @Serializable
-data object Conversation : NavKey
+data class Conversation(val channel: String) : NavKey
 
 /** The profile screen of the user identified by [userId]. */
 @Serializable
 data class Profile(val userId: String) : NavKey
+
+/**
+ * Opens the conversation of [channel]. The conversation is always the root of the back stack, so
+ * this replaces the current conversation and pops everything above it.
+ */
+fun NavBackStack<NavKey>.openConversation(channel: String) {
+    removeAll { it !is Conversation }
+    this[0] = Conversation(channel)
+}
+
+/**
+ * Opens the profile of the user identified by [userId] on top of the current screen. The same
+ * profile is never stacked twice, e.g. when an avatar is tapped repeatedly.
+ */
+fun NavBackStack<NavKey>.openProfile(userId: String) {
+    val profile = Profile(userId)
+    if (lastOrNull() != profile) {
+        add(profile)
+    }
+}
