@@ -105,9 +105,10 @@ private fun DrawerHeader() {
             contentDescription = null,
             modifier = Modifier.size(24.dp),
         )
-        Image(
+        Icon(
             painter = painterResource(id = R.drawable.jetchat_logo),
             contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(start = 8.dp),
         )
     }

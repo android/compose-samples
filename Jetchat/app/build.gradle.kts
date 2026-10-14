@@ -78,7 +78,6 @@ android {
 
     buildFeatures {
         compose = true
-        viewBinding = true
     }
 
     packaging.resources {
@@ -107,8 +106,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
 
@@ -117,7 +114,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.util)
-    implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.compose.ui.googlefonts)
 
     implementation(libs.androidx.media3.exoplayer)
