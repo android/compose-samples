@@ -35,7 +35,3 @@ proguard-project.txt
 *.iml
 .idea
 .kotlin/
-
-# gemini-cli settings
-.gemini/
-.agents/

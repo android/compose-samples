@@ -27,7 +27,7 @@ on:
   workflow_dispatch:
     inputs:
       pr_number:
-        description: 'Optional pull request number to review (leave empty to audit all Kotlin files)'
+        description: 'Pull request number to review (leave empty to review the latest commit)'
         required: false
         type: string
 
@@ -49,13 +49,6 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
 
-    - name: Install Jetpack Compose Performance Skill
-      run: |
-        set -euo pipefail
-        curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
-        export PATH="${HOME}/.local/bin:${PATH}"
-        android skills add --agent=gemini --project=. jetpack-compose-performance
-
     - name: Prepare Review Context
       id: context
       env:
@@ -64,23 +57,37 @@ jobs:
         BASE_REF: ${{ github.base_ref }}
       run: |
         set -euo pipefail
-        mkdir -p .gemini
         if [[ -n "${PR_NUMBER}" ]]; then
-          if [[ -n "${BASE_REF}" ]]; then
-            git diff --name-only --diff-filter=ACMRT "origin/${BASE_REF}...HEAD" -- '*.kt' > .gemini/target_files.txt
-          else
-            gh pr diff "${PR_NUMBER}" --name-only | grep '\.kt$' > .gemini/target_files.txt || true
+          if [[ -z "${BASE_REF}" ]]; then
+            BASE_REF=$(gh pr view "${PR_NUMBER}" --json baseRefName --jq '.baseRefName')
+            gh pr checkout "${PR_NUMBER}"
+            git fetch origin "${BASE_REF}"
           fi
+          DIFF_RANGE="origin/${BASE_REF}...HEAD"
           echo "mode=pr" >> "${GITHUB_OUTPUT}"
           echo "pr_number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
         else
-          find . -name '*.kt' -not -path './.*' | sed 's|^\./||' | sort > .gemini/target_files.txt
-          echo "mode=repo" >> "${GITHUB_OUTPUT}"
+          DIFF_RANGE="HEAD~1...HEAD"
+          echo "mode=commit" >> "${GITHUB_OUTPUT}"
           echo "pr_number=" >> "${GITHUB_OUTPUT}"
         fi
+        if [[ -f .gitignore ]]; then
+          sed -i '/^\.gemini\/$/d; /^\.agents\/$/d' .gitignore
+        fi
+        mkdir -p .gemini
+        git diff --name-only --diff-filter=ACMRT "${DIFF_RANGE}" -- '*.kt' > .gemini/target_files.txt
+        git diff -U5 --diff-filter=ACMRT "${DIFF_RANGE}" -- '*.kt' > .gemini/pr_diff.patch
         FILE_COUNT=$(grep -c '\.kt$' .gemini/target_files.txt || true)
         echo "file_count=${FILE_COUNT}" >> "${GITHUB_OUTPUT}"
-        echo "Found ${FILE_COUNT} Kotlin file(s) to audit."
+        echo "Found ${FILE_COUNT} modified Kotlin file(s) to audit."
+
+    - name: Install Jetpack Compose Performance Skill
+      if: steps.context.outputs.file_count != '0'
+      run: |
+        set -euo pipefail
+        curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
+        export PATH="${HOME}/.local/bin:${PATH}"
+        android skills add --agent=gemini --project=. jetpack-compose-performance
 
     - name: Run Jetpack Compose Performance Skill
       if: steps.context.outputs.file_count != '0'
@@ -96,20 +103,33 @@ jobs:
         settings: |
           {
             "model": {
-              "maxSessionTurns": 35
+              "maxSessionTurns": 50
+            },
+            "context": {
+              "fileFiltering": {
+                "respectGitIgnore": false,
+                "respectGeminiIgnore": false
+              }
+            },
+            "fileFiltering": {
+              "respectGitIgnore": false,
+              "respectGeminiIgnore": false
             }
           }
         prompt: |
-          Use the `jetpack-compose-performance` skill located at `.agents/skills/jetpack-compose-performance/SKILL.md` to audit the target Kotlin files listed in `.gemini/target_files.txt`.
+          Use the `jetpack-compose-performance` skill located at `.agents/skills/jetpack-compose-performance/SKILL.md` to review the newly introduced or modified Kotlin code in `.gemini/pr_diff.patch`.
 
-          Follow the skill's Optimization Audit Workflow strictly:
+          Follow these instructions strictly:
           1. Read `.agents/skills/jetpack-compose-performance/SKILL.md` first.
-          2. Inspect every target Kotlin file listed in `.gemini/target_files.txt` that uses Jetpack Compose (`@Composable`, `Modifier`, Compose state, lazy layouts, animations, effects, or custom drawing).
-          3. Whenever a file matches a rule in Categories 1-7, you MUST open and read the corresponding `.agents/skills/jetpack-compose-performance/references/**/*.md` file for the approved fix pattern and scope guards before reporting a finding.
-          4. Do NOT modify any files in the repository.
-          5. Output a well-structured Markdown review report summarizing your findings:
-             - For each finding, include the file path, line numbers, rule category, why it impacts Compose performance, and a concrete Kotlin `suggestion` or code snippet showing the recommended fix.
-             - If all audited Kotlin files follow Jetpack Compose performance best practices (or do not contain Jetpack Compose code), state clearly that no Jetpack Compose performance issues were found.
+          2. Read `.gemini/pr_diff.patch` to identify the exact lines added or modified in this change (`+` lines in the diff hunks). The list of touched Kotlin files is also in `.gemini/target_files.txt`.
+          3. You may read the touched Kotlin files listed in `.gemini/target_files.txt` ONLY to understand the surrounding context (such as enclosing `@Composable` functions, state declarations, parameters, or imports) of the changed lines.
+          4. **Strict Diff Scope**: Only report Jetpack Compose performance findings on **newly introduced or modified code (`+` lines in `.gemini/pr_diff.patch`)**. Do NOT report findings on pre-existing, untouched code elsewhere in the same file or in other files.
+          5. Whenever newly introduced or modified code matches a rule in Categories 1-7, you MUST open and read the corresponding `.agents/skills/jetpack-compose-performance/references/**/*.md` file for the approved fix pattern and scope guards before reporting a finding.
+          6. Do NOT modify any files in the repository and do NOT run shell commands.
+          7. Format your output as a Markdown review report:
+             - Start your response with the single heading `## ⚡ Jetpack Compose Performance Review` (do not include any other top-level `#` or `##` title heading).
+             - For each finding in the changed code, include the file path, line numbers, rule category, why it impacts Compose performance, and a concrete Kotlin `suggestion` or code snippet showing the recommended fix.
+             - If the newly introduced or modified code follows Jetpack Compose performance best practices (or does not contain Jetpack Compose code), state clearly under the heading that no Jetpack Compose performance issues were found in the changed code.
 
     - name: Post Findings on Pull Request
       if: steps.context.outputs.file_count != '0' && steps.context.outputs.pr_number != '' && steps.gemini_review.outputs.summary != ''
@@ -120,10 +140,14 @@ jobs:
       run: |
         set -euo pipefail
         COMMENT_FILE="$(mktemp)"
-        {
-          echo "## ⚡ Jetpack Compose Performance Skill Review"
-          echo ""
-          echo "${REVIEW_SUMMARY}"
-        } > "${COMMENT_FILE}"
+        if [[ "${REVIEW_SUMMARY}" =~ ^[[:space:]]*# ]]; then
+          printf '%s\n' "${REVIEW_SUMMARY}" > "${COMMENT_FILE}"
+        else
+          {
+            echo "## ⚡ Jetpack Compose Performance Review"
+            echo ""
+            printf '%s\n' "${REVIEW_SUMMARY}"
+          } > "${COMMENT_FILE}"
+        fi
         gh pr comment "${PR_NUMBER}" --body-file "${COMMENT_FILE}"
         rm -f "${COMMENT_FILE}"
