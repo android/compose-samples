@@ -28,8 +28,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,7 +64,9 @@ class NavActivity : ComponentActivity() {
             // The back stack survives configuration changes and process death
             val backStack = rememberNavBackStack(Conversation)
 
-            var selectedMenu by remember { mutableStateOf("composers") }
+            var selectedChat by rememberSaveable { mutableStateOf("composers") }
+            val currentKey = backStack.lastOrNull()
+            val selectedMenu = if (currentKey is Profile) currentKey.userId else selectedChat
 
             JetchatDrawer(
                 drawerState = drawerState,
@@ -76,14 +78,13 @@ class NavActivity : ComponentActivity() {
                     scope.launch {
                         drawerState.close()
                     }
-                    selectedMenu = it
+                    selectedChat = it
                 },
                 onProfileClicked = {
                     backStack.add(Profile(userId = it))
                     scope.launch {
                         drawerState.close()
                     }
-                    selectedMenu = it
                 },
             ) {
                 NavDisplay(

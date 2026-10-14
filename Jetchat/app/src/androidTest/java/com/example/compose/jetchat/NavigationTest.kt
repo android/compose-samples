@@ -26,7 +26,6 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
@@ -107,14 +106,6 @@ class NavigationTest {
         SemanticsProperties.PaneTitle,
         composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu),
     )
-
-    private fun navigateToHome() {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open),
-        ).performClick()
-
-        composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
-    }
 
     private fun navigateToHomeFromProfile() {
         composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
