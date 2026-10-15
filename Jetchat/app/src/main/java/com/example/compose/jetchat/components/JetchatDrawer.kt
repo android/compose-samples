@@ -55,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
@@ -191,8 +192,9 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, selected: B
             .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
             .size(24.dp)
         if (profilePic != null) {
-            Image(
-                painter = painterResource(id = profilePic),
+            // Profile photos are large rasters shown at 24dp: decode off the main thread at that size
+            AsyncImage(
+                model = profilePic,
                 modifier = paddingSizeModifier.then(Modifier.clip(CircleShape)),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
