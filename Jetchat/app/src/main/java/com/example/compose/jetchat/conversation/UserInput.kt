@@ -20,9 +20,16 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -50,19 +57,22 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -74,16 +84,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.res.painterResource
@@ -92,14 +109,16 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.rememberRecordButtonMeshGradientPainter
@@ -113,6 +132,7 @@ enum class InputSelector {
     EMOJI,
     PHONE,
     PICTURE,
+    RICHTEXTEDITOR,
 }
 
 enum class EmojiStickerSelector {
@@ -129,10 +149,10 @@ fun UserInputPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(
-    onMessageSent: (String) -> Unit,
+    onMessageSent: (AnnotatedString) -> Unit,
     modifier: Modifier = Modifier,
     resetScroll: () -> Unit = {},
-    onVideoMessageSent: (videoUri: String, caption: String) -> Unit = { _, _ -> },
+    onVideoMessageSent: (videoUri: String, caption: AnnotatedString) -> Unit = { _, _ -> },
 ) {
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
@@ -142,9 +162,7 @@ fun UserInput(
         BackHandler(onBack = dismissKeyboard)
     }
 
-    var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
+    val formattedTextState = rememberFormattedTextState()
 
     var attachedVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -162,13 +180,14 @@ fun UserInput(
 
     val sendMessage = {
         val currentVideoUri = attachedVideoUri
+        val content = formattedTextState.toAnnotatedString()
         if (currentVideoUri != null) {
-            onVideoMessageSent(currentVideoUri, textState.text.trim())
+            onVideoMessageSent(currentVideoUri, content.trimWhitespace())
             attachedVideoUri = null
-        } else if (textState.text.isNotBlank()) {
-            onMessageSent(textState.text)
+        } else if (content.isNotBlank()) {
+            onMessageSent(content)
         }
-        textState = TextFieldValue()
+        formattedTextState.clear()
         isRecordingActive = false
         resetScroll()
         dismissKeyboard()
@@ -177,8 +196,48 @@ fun UserInput(
     // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
 
-    val surfaceColor = MaterialTheme.colorScheme.surfaceContainer
-    val sendMessageEnabled = textState.text.isNotBlank() || attachedVideoUri != null
+    val surfaceColor by animateColorAsState(
+        targetValue = if (textFieldFocusState) {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
+        label = "inputSurfaceColor",
+    )
+    val sendMessageEnabled = !formattedTextState.isBlank || attachedVideoUri != null
+    val borderColor by animateColorAsState(
+        targetValue = if (textFieldFocusState && !isRecordingActive) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0f)
+        },
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
+        label = "inputBorderColor",
+    )
+
+    val focusProgress = animateFloatAsState(
+        targetValue = if (textFieldFocusState) 1f else 0f,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "inputFocusProgress",
+    )
+    val shadowColor = MaterialTheme.colorScheme.primary
+
+    val focusScale = remember { Animatable(1f) }
+    LaunchedEffect(textFieldFocusState) {
+        if (textFieldFocusState) {
+            focusScale.animateTo(1.03f, tween(durationMillis = 120, easing = FastOutSlowInEasing))
+            focusScale.animateTo(
+                1f,
+                spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMediumLow,
+                ),
+            )
+        } else if (focusScale.value != 1f) {
+            focusScale.animateTo(1f, spring(stiffness = Spring.StiffnessMedium))
+        }
+    }
 
     // Animated mesh-gradient glow behind the card, shown while recording is active.
     val glowAlpha by animateFloatAsState(
@@ -195,129 +254,192 @@ fun UserInput(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
+        modifier = modifier.fillMaxWidth(),
     ) {
-        val cardShape = RoundedCornerShape(32.dp)
+        Column(
+            modifier = Modifier.padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
+        ) {
+            val cardShape = RoundedCornerShape(32.dp)
 
-        Surface(
-            shape = cardShape,
-            color = surfaceColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                // Draw the glow behind the card, scaled past its bounds.
-                .then(
-                    if (glowMeshPainter != null) {
-                        Modifier.drawBehind {
-                            translate(top = -58.dp.toPx()) {
-                                scale(scaleX = 1.38f, scaleY = 2.85f) {
-                                    with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
+            Surface(
+                shape = cardShape,
+                color = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        scaleX = focusScale.value
+                        scaleY = focusScale.value
+                    }
+                    // Draw the glow behind the card, scaled past its bounds.
+                    .then(
+                        if (glowMeshPainter != null) {
+                            Modifier.drawBehind {
+                                translate(top = -58.dp.toPx()) {
+                                    scale(scaleX = 1.38f, scaleY = 2.85f) {
+                                        with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
+                                    }
                                 }
                             }
-                        }
-                    } else {
-                        Modifier
-                    },
-                )
-                .padding(end = 4.dp)
-                // Blue-tinted shadow while idle; the glow replaces it while recording.
-                // Tinted shadows render on API 28+ (black on older versions).
-                .then(
-                    if (isRecordingActive) {
-                        Modifier
-                    } else {
-                        Modifier.shadow(
-                            elevation = 16.dp,
-                            shape = cardShape,
-                            clip = false,
-                            ambientColor = MaterialTheme.colorScheme.primary,
-                            spotColor = MaterialTheme.colorScheme.primary,
-                        )
-                    },
-                )
-                .heightIn(min = 136.dp),
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    AnimatedVisibility(
-                        visible = attachedVideoUri != null,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut(),
-                    ) {
-                        attachedVideoUri?.let { videoUri ->
-                            AttachedVideoPreview(
-                                videoUri = videoUri,
-                                onRemove = { attachedVideoUri = null },
+                        } else {
+                            Modifier
+                        },
+                    )
+                    .padding(end = 4.dp)
+                    // Primary-tinted drop shadow while idle; the glow replaces it while recording.
+                    // Soft and centred at rest, tighter/stronger and offset to the
+                    // bottom-left while focused.
+                    .then(
+                        if (isRecordingActive) {
+                            Modifier
+                        } else {
+                            Modifier.dropShadow(cardShape) {
+                                val p = focusProgress.value
+                                radius = lerp(24.dp.toPx(), 10.dp.toPx(), p)
+                                offset = Offset(
+                                    x = lerp(0f, -4.dp.toPx(), p),
+                                    y = lerp(4.dp.toPx(), 6.dp.toPx(), p),
+                                )
+                                color = shadowColor
+                                alpha = lerp(0.25f, 0.6f, p)
+                            }
+                        },
+                    )
+                    // Fill and border are drawn here so the color animations skip recomposition.
+                    .drawWithCache {
+                        val fill = cardShape.createOutline(size, layoutDirection, this)
+                        val stroke = 1.dp.toPx()
+                        val half = stroke / 2
+                        val borderRadius = CornerRadius(cardShape.topStart.toPx(size, this) - half)
+                        onDrawWithContent {
+                            drawOutline(fill, surfaceColor)
+                            drawContent()
+                            drawRoundRect(
+                                color = borderColor,
+                                topLeft = Offset(half, half),
+                                size = Size(size.width - stroke, size.height - stroke),
+                                cornerRadius = borderRadius,
+                                style = Stroke(stroke),
                             )
                         }
                     }
-
-                    UserInputText(
-                        textFieldValue = textState,
-                        onTextChanged = { textState = it },
-                        // Only show the keyboard if there's no input selector and text field has focus
-                        keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
-                        // Close extended selector if text field receives focus
-                        onTextFieldFocused = { focused ->
-                            if (focused) {
-                                currentInputSelector = InputSelector.NONE
-                                resetScroll()
-                            }
-                            textFieldFocusState = focused
-                        },
-                        onMessageSent = { sendMessage() },
-                        focusState = textFieldFocusState,
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                    .heightIn(min = 136.dp),
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    UserInputSelector(
-                        onSelectorChange = { currentInputSelector = it },
-                        currentInputSelector = currentInputSelector,
-                        recordingActive = isRecordingActive,
-                        onRecordingClick = { isRecordingActive = !isRecordingActive },
-                        onVideoClick = {
-                            currentInputSelector = InputSelector.NONE
-                            videoPickerLauncher.launch("video/*")
-                        },
-                        onAddClick = { currentInputSelector = InputSelector.MAP },
-                    )
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        AnimatedVisibility(
+                            visible = attachedVideoUri != null,
+                            enter = expandVertically() + fadeIn(),
+                            exit = shrinkVertically() + fadeOut(),
+                        ) {
+                            attachedVideoUri?.let { videoUri ->
+                                AttachedVideoPreview(
+                                    videoUri = videoUri,
+                                    onRemove = { attachedVideoUri = null },
+                                )
+                            }
+                        }
 
-                    IconButton(
-                        onClick = sendMessage,
-                        enabled = sendMessageEnabled,
-                        modifier = Modifier.size(48.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_send),
-                            contentDescription = stringResource(id = R.string.send),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                alpha = if (sendMessageEnabled) 0.85f else 0.54f,
-                            ),
-                            modifier = Modifier.size(24.dp),
+                        UserInputText(
+                            formattedTextState = formattedTextState,
+                            // Only show the keyboard if there's no extended input selector (or rich
+                            // text editor is active) and text field has focus
+                            keyboardShown =
+                                (
+                                    currentInputSelector == InputSelector.NONE ||
+                                        currentInputSelector == InputSelector.RICHTEXTEDITOR
+                                    ) && textFieldFocusState,
+                            // Close extended selector if text field receives focus, keeping rich text
+                            // editor open while editing
+                            onTextFieldFocused = { focused ->
+                                if (focused) {
+                                    if (currentInputSelector != InputSelector.RICHTEXTEDITOR) {
+                                        currentInputSelector = InputSelector.NONE
+                                    }
+                                    resetScroll()
+                                }
+                                textFieldFocusState = focused
+                            },
+                            onMessageSent = { sendMessage() },
+                            focusState = textFieldFocusState,
+                            showCloseButton = currentInputSelector == InputSelector.RICHTEXTEDITOR,
+                            onCloseRichTextEditor = dismissKeyboard,
                         )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        UserInputSelector(
+                            onSelectorChange = { currentInputSelector = it },
+                            currentInputSelector = currentInputSelector,
+                            recordingActive = isRecordingActive,
+                            onRecordingClick = { isRecordingActive = !isRecordingActive },
+                            onVideoClick = {
+                                currentInputSelector = InputSelector.NONE
+                                videoPickerLauncher.launch("video/*")
+                            },
+                            onAddClick = { currentInputSelector = InputSelector.MAP },
+                        )
+
+                        // Wide filled icon button: primary container when enabled; icon-only (no
+                        // container) when disabled.
+                        FilledIconButton(
+                            onClick = sendMessage,
+                            enabled = sendMessageEnabled,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = Color.Transparent,
+                                disabledContentColor =
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.54f),
+                            ),
+                            modifier = Modifier.size(
+                                IconButtonDefaults.smallContainerSize(
+                                    IconButtonDefaults.IconButtonWidthOption.Wide,
+                                ),
+                            ),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_send),
+                                contentDescription = stringResource(id = R.string.send),
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
                     }
                 }
             }
+
+            SelectorExpanded(
+                onCloseRequested = dismissKeyboard,
+                onTextAdded = { formattedTextState.addText(it) },
+                currentSelector = currentInputSelector,
+            )
         }
 
-        SelectorExpanded(
-            onCloseRequested = dismissKeyboard,
-            onTextAdded = { textState = textState.addText(it) },
-            currentSelector = currentInputSelector,
-        )
+        if (currentInputSelector == InputSelector.RICHTEXTEDITOR) {
+            Surface { RichTextToolbar(spanStyleState = formattedTextState.spanStyleState) }
+        }
     }
+}
+
+/**
+ * Trims leading and trailing whitespace while keeping [SpanStyle] ranges aligned with the trimmed
+ * text ([AnnotatedString.subSequence] re-bases the ranges).
+ */
+private fun AnnotatedString.trimWhitespace(): AnnotatedString {
+    val start = indexOfFirst { !it.isWhitespace() }
+    if (start == -1) return AnnotatedString("")
+    val end = indexOfLast { !it.isWhitespace() } + 1
+    return if (start == 0 && end == length) this else subSequence(start, end)
 }
 
 @Composable
@@ -358,42 +480,131 @@ private fun AttachedVideoPreview(videoUri: String, onRemove: () -> Unit, modifie
     }
 }
 
-private fun TextFieldValue.addText(newString: String): TextFieldValue {
-    val newText = this.text.replaceRange(
-        this.selection.start,
-        this.selection.end,
-        newString,
-    )
-    val newSelection = TextRange(
-        start = newText.length,
-        end = newText.length,
-    )
-
-    return this.copy(text = newText, selection = newSelection)
-}
-
 @Composable
 private fun SelectorExpanded(currentSelector: InputSelector, onCloseRequested: () -> Unit, onTextAdded: (String) -> Unit) {
-    if (currentSelector == InputSelector.NONE) return
+    if (currentSelector == InputSelector.NONE || currentSelector == InputSelector.RICHTEXTEDITOR) return
 
     // Request focus to force the TextField to lose it
     val focusRequester = remember { FocusRequester() }
-    // If the selector is shown, always request focus to trigger a TextField.onFocusChange.
+    // If the emoji selector is shown, request focus to trigger a TextField.onFocusChange.
     SideEffect {
         if (currentSelector == InputSelector.EMOJI) {
             focusRequester.requestFocus()
         }
     }
 
-    Surface(tonalElevation = 8.dp) {
+    Surface(
+        tonalElevation = 8.dp,
+    ) {
         when (currentSelector) {
             InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester)
             InputSelector.DM -> NotAvailablePopup(onCloseRequested)
             InputSelector.PICTURE -> FunctionalityNotAvailablePanel()
             InputSelector.MAP -> FunctionalityNotAvailablePanel()
             InputSelector.PHONE -> FunctionalityNotAvailablePanel()
-            InputSelector.NONE -> Unit
+            InputSelector.NONE, InputSelector.RICHTEXTEDITOR -> Unit
         }
+    }
+}
+
+@Composable
+fun RichTextToolbar(spanStyleState: SpanStyleState, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(MaterialTheme.colorScheme.primary),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        InlineStyleButton(
+            spanStyleState = spanStyleState,
+            style = InlineStyle.Bold,
+            iconRes = R.drawable.ic_text_format_bold,
+            contentDescriptionRes = R.string.format_bold,
+        )
+        InlineStyleButton(
+            spanStyleState = spanStyleState,
+            style = InlineStyle.Underline,
+            iconRes = R.drawable.ic_text_format_underlined,
+            contentDescriptionRes = R.string.format_underlined,
+        )
+        InlineStyleButton(
+            spanStyleState = spanStyleState,
+            style = InlineStyle.Strikethrough,
+            iconRes = R.drawable.ic_text_strikethrough,
+            contentDescriptionRes = R.string.format_strikethrough,
+        )
+        val activeColor = spanStyleState.activeColorStyle?.color
+        RichTextToolbarButton(
+            iconRes = R.drawable.ic_text_border_color,
+            contentDescription = stringResource(id = R.string.format_color),
+            selected = activeColor != null,
+            onClick = { spanStyleState.cycleColor() },
+            activeContainerColor = Color.White,
+            iconTint = activeColor ?: MaterialTheme.colorScheme.onPrimary,
+        )
+        InlineStyleButton(
+            spanStyleState = spanStyleState,
+            style = InlineStyle.Italic,
+            iconRes = R.drawable.ic_text_format_italic,
+            contentDescriptionRes = R.string.format_italic,
+        )
+        InlineStyleButton(
+            spanStyleState = spanStyleState,
+            style = InlineStyle.LargeFont,
+            iconRes = R.drawable.ic_text_format_size,
+            contentDescriptionRes = R.string.format_size,
+        )
+    }
+}
+
+@Composable
+private fun InlineStyleButton(
+    spanStyleState: SpanStyleState,
+    style: InlineStyle,
+    @DrawableRes iconRes: Int,
+    @StringRes contentDescriptionRes: Int,
+) {
+    RichTextToolbarButton(
+        iconRes = iconRes,
+        contentDescription = stringResource(id = contentDescriptionRes),
+        selected = spanStyleState.isActive(style),
+        onClick = { spanStyleState.toggle(style) },
+    )
+}
+
+@Composable
+private fun RichTextToolbarButton(
+    iconRes: Int,
+    contentDescription: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    activeContainerColor: Color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
+    iconTint: Color = MaterialTheme.colorScheme.onPrimary,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+            .size(44.dp)
+            .then(
+                if (selected) {
+                    Modifier.background(
+                        color = activeContainerColor,
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                } else {
+                    Modifier
+                },
+            ),
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
     }
 }
 
@@ -500,7 +711,27 @@ private fun RowScope.UserInputSelector(
         )
     }
 
-    // Add / attachment
+    val isRichTextSelected = currentInputSelector == InputSelector.RICHTEXTEDITOR
+    IconButton(
+        onClick = {
+            onSelectorChange(
+                if (isRichTextSelected) {
+                    InputSelector.NONE
+                } else {
+                    InputSelector.RICHTEXTEDITOR
+                },
+            )
+        },
+        modifier = Modifier.size(48.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_text_format),
+            contentDescription = stringResource(id = R.string.format_text),
+            tint = iconTint,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+
     IconButton(
         onClick = onAddClick,
         modifier = Modifier.size(48.dp),
@@ -525,53 +756,90 @@ var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
-    keyboardType: KeyboardType = KeyboardType.Text,
-    onTextChanged: (TextFieldValue) -> Unit,
-    textFieldValue: TextFieldValue,
+    formattedTextState: FormattedTextState,
     keyboardShown: Boolean,
     onTextFieldFocused: (Boolean) -> Unit,
-    onMessageSent: (String) -> Unit,
+    onMessageSent: () -> Unit,
     focusState: Boolean,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    showCloseButton: Boolean = false,
+    onCloseRichTextEditor: () -> Unit = {},
 ) {
     val a11ylabel = stringResource(id = R.string.textfield_desc)
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, top = 20.dp, end = 32.dp)
+            .padding(
+                start = 24.dp,
+                top = 20.dp,
+                end = if (showCloseButton) 16.dp else 32.dp,
+            )
             .heightIn(min = 48.dp),
     ) {
         UserInputTextField(
-            textFieldValue,
-            onTextChanged,
-            onTextFieldFocused,
-            keyboardType,
-            focusState,
-            onMessageSent,
-            Modifier
+            formattedTextState = formattedTextState,
+            onTextFieldFocused = onTextFieldFocused,
+            keyboardType = keyboardType,
+            focusState = focusState,
+            onMessageSent = onMessageSent,
+            modifier = Modifier
                 .fillMaxWidth()
+                .padding(end = if (showCloseButton) 36.dp else 0.dp)
                 .semantics {
                     contentDescription = a11ylabel
                     keyboardShownProperty = keyboardShown
                 },
         )
+
+        if (showCloseButton) {
+            IconButton(
+                onClick = onCloseRichTextEditor,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(32.dp),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_close),
+                    contentDescription = stringResource(id = R.string.close_rich_text_editor),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun BoxScope.UserInputTextField(
-    textFieldValue: TextFieldValue,
-    onTextChanged: (TextFieldValue) -> Unit,
+    formattedTextState: FormattedTextState,
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
-    onMessageSent: (String) -> Unit,
+    onMessageSent: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
 
-    BasicTextField(
-        value = textFieldValue,
-        onValueChange = { onTextChanged(it) },
+    val codeBackground = MaterialTheme.colorScheme.surface
+    val markdownStyling = remember(codeBackground) {
+        val codeStyle = SpanStyle(fontFamily = FontFamily.Monospace, background = codeBackground)
+        // Same syntax as the message bubbles (MessageFormatter). Markers stay visible while typing.
+        OutputTransformation {
+            symbolPattern.findAll(asCharSequence()).forEach { match ->
+                val style = when (match.value.first()) {
+                    '@', '*' -> InlineStyle.Bold.spanStyle
+                    '_' -> InlineStyle.Italic.spanStyle
+                    '~' -> InlineStyle.Strikethrough.spanStyle
+                    '`' -> codeStyle
+                    else -> null // URLs
+                }
+                style?.let { addStyle(it, match.range.first, match.range.last + 1) }
+            }
+        }
+    }
+
+    FormattedTextField(
+        state = formattedTextState,
         modifier = modifier
             .align(Alignment.TopStart)
             .onFocusChanged { state ->
@@ -584,17 +852,18 @@ private fun BoxScope.UserInputTextField(
             keyboardType = keyboardType,
             imeAction = ImeAction.Send,
         ),
-        keyboardActions = KeyboardActions {
-            if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
+        onKeyboardAction = {
+            if (formattedTextState.text.isNotBlank()) onMessageSent()
         },
-        maxLines = 4,
+        lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = 4),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         textStyle = MaterialTheme.typography.titleLarge.copy(
             color = MaterialTheme.colorScheme.primary,
         ),
+        outputTransformation = markdownStyling,
     )
 
-    if (textFieldValue.text.isEmpty() && !focusState) {
+    if (formattedTextState.isEmpty && !focusState) {
         Text(
             modifier = Modifier.align(Alignment.TopStart),
             text = stringResource(R.string.textfield_hint),

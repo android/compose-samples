@@ -18,6 +18,7 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.text.AnnotatedString
 import com.example.compose.jetchat.R
 
 class ConversationUiState(val channelName: String, val channelMembers: Int, initialMessages: List<Message>) {
@@ -47,4 +48,5 @@ data class Message(
     val videoUri: String? = null,
     val id: String = "$author-$timestamp-$content",
     val isLiked: Boolean = false,
+    val annotatedContent: AnnotatedString? = null,
 )
