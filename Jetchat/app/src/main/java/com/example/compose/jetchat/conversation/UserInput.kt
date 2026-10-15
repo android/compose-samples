@@ -103,7 +103,6 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -117,7 +116,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
@@ -256,175 +254,180 @@ fun UserInput(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
+        modifier = modifier.fillMaxWidth()
     ) {
-        val cardShape = RoundedCornerShape(32.dp)
-
-        Surface(
-            shape = cardShape,
-            color = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .fillMaxWidth()
-                .graphicsLayer {
-                    scaleX = focusScale.value
-                    scaleY = focusScale.value
-                }
-                // Draw the glow behind the card, scaled past its bounds.
-                .then(
-                    if (glowMeshPainter != null) {
-                        Modifier.drawBehind {
-                            translate(top = -58.dp.toPx()) {
-                                scale(scaleX = 1.38f, scaleY = 2.85f) {
-                                    with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
-                                }
-                            }
-                        }
-                    } else {
-                        Modifier
-                    },
-                )
-                .padding(end = 4.dp)
-                // Primary-tinted drop shadow while idle; the glow replaces it while recording.
-                // Soft and centred at rest, tighter/stronger and offset to the
-                // bottom-left while focused.
-                .then(
-                    if (isRecordingActive) {
-                        Modifier
-                    } else {
-                        Modifier.dropShadow(cardShape) {
-                            val p = focusProgress.value
-                            radius = lerp(24.dp.toPx(), 10.dp.toPx(), p)
-                            offset = Offset(
-                                x = lerp(0f, -4.dp.toPx(), p),
-                                y = lerp(4.dp.toPx(), 6.dp.toPx(), p),
-                            )
-                            color = shadowColor
-                            alpha = lerp(0.25f, 0.6f, p)
-                        }
-                    },
-                )
-                // Fill and border are drawn here so the color animations skip recomposition.
-                .drawWithCache {
-                    val fill = cardShape.createOutline(size, layoutDirection, this)
-                    val stroke = 1.dp.toPx()
-                    val half = stroke / 2
-                    val borderRadius = CornerRadius(cardShape.topStart.toPx(size, this) - half)
-                    onDrawWithContent {
-                        drawOutline(fill, surfaceColor)
-                        drawContent()
-                        drawRoundRect(
-                            color = borderColor,
-                            topLeft = Offset(half, half),
-                            size = Size(size.width - stroke, size.height - stroke),
-                            cornerRadius = borderRadius,
-                            style = Stroke(stroke),
-                        )
-                    }
-                }
-                .heightIn(min = 136.dp),
+        Column(
+            modifier = Modifier.padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    AnimatedVisibility(
-                        visible = attachedVideoUri != null,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut(),
-                    ) {
-                        attachedVideoUri?.let { videoUri ->
-                            AttachedVideoPreview(
-                                videoUri = videoUri,
-                                onRemove = { attachedVideoUri = null },
+            val cardShape = RoundedCornerShape(32.dp)
+
+            Surface(
+                shape = cardShape,
+                color = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        scaleX = focusScale.value
+                        scaleY = focusScale.value
+                    }
+                    // Draw the glow behind the card, scaled past its bounds.
+                    .then(
+                        if (glowMeshPainter != null) {
+                            Modifier.drawBehind {
+                                translate(top = -58.dp.toPx()) {
+                                    scale(scaleX = 1.38f, scaleY = 2.85f) {
+                                        with(glowMeshPainter) { draw(size, alpha = glowAlpha) }
+                                    }
+                                }
+                            }
+                        } else {
+                            Modifier
+                        },
+                    )
+                    .padding(end = 4.dp)
+                    // Primary-tinted drop shadow while idle; the glow replaces it while recording.
+                    // Soft and centred at rest, tighter/stronger and offset to the
+                    // bottom-left while focused.
+                    .then(
+                        if (isRecordingActive) {
+                            Modifier
+                        } else {
+                            Modifier.dropShadow(cardShape) {
+                                val p = focusProgress.value
+                                radius = lerp(24.dp.toPx(), 10.dp.toPx(), p)
+                                offset = Offset(
+                                    x = lerp(0f, -4.dp.toPx(), p),
+                                    y = lerp(4.dp.toPx(), 6.dp.toPx(), p),
+                                )
+                                color = shadowColor
+                                alpha = lerp(0.25f, 0.6f, p)
+                            }
+                        },
+                    )
+                    // Fill and border are drawn here so the color animations skip recomposition.
+                    .drawWithCache {
+                        val fill = cardShape.createOutline(size, layoutDirection, this)
+                        val stroke = 1.dp.toPx()
+                        val half = stroke / 2
+                        val borderRadius = CornerRadius(cardShape.topStart.toPx(size, this) - half)
+                        onDrawWithContent {
+                            drawOutline(fill, surfaceColor)
+                            drawContent()
+                            drawRoundRect(
+                                color = borderColor,
+                                topLeft = Offset(half, half),
+                                size = Size(size.width - stroke, size.height - stroke),
+                                cornerRadius = borderRadius,
+                                style = Stroke(stroke),
                             )
                         }
                     }
-
-                    UserInputText(
-                        formattedTextState = formattedTextState,
-                        // Only show the keyboard if there's no extended input selector (or rich
-                        // text editor is active) and text field has focus
-                        keyboardShown =
-                            (
-                                currentInputSelector == InputSelector.NONE ||
-                                    currentInputSelector == InputSelector.RICHTEXTEDITOR
-                                ) && textFieldFocusState,
-                        // Close extended selector if text field receives focus, keeping rich text
-                        // editor open while editing
-                        onTextFieldFocused = { focused ->
-                            if (focused) {
-                                if (currentInputSelector != InputSelector.RICHTEXTEDITOR) {
-                                    currentInputSelector = InputSelector.NONE
-                                }
-                                resetScroll()
-                            }
-                            textFieldFocusState = focused
-                        },
-                        onMessageSent = { sendMessage() },
-                        focusState = textFieldFocusState,
-                        showCloseButton = currentInputSelector == InputSelector.RICHTEXTEDITOR,
-                        onCloseRichTextEditor = dismissKeyboard,
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                    .heightIn(min = 136.dp),
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    UserInputSelector(
-                        onSelectorChange = { currentInputSelector = it },
-                        currentInputSelector = currentInputSelector,
-                        recordingActive = isRecordingActive,
-                        onRecordingClick = { isRecordingActive = !isRecordingActive },
-                        onVideoClick = {
-                            currentInputSelector = InputSelector.NONE
-                            videoPickerLauncher.launch("video/*")
-                        },
-                        onAddClick = { currentInputSelector = InputSelector.MAP },
-                    )
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        AnimatedVisibility(
+                            visible = attachedVideoUri != null,
+                            enter = expandVertically() + fadeIn(),
+                            exit = shrinkVertically() + fadeOut(),
+                        ) {
+                            attachedVideoUri?.let { videoUri ->
+                                AttachedVideoPreview(
+                                    videoUri = videoUri,
+                                    onRemove = { attachedVideoUri = null },
+                                )
+                            }
+                        }
 
-                    // Wide filled icon button: primary container when enabled; icon-only (no
-                    // container) when disabled.
-                    FilledIconButton(
-                        onClick = sendMessage,
-                        enabled = sendMessageEnabled,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
-                            disabledContainerColor = Color.Transparent,
-                            disabledContentColor =
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.54f),
-                        ),
-                        modifier = Modifier.size(
-                            IconButtonDefaults.smallContainerSize(
-                                IconButtonDefaults.IconButtonWidthOption.Wide,
-                            ),
-                        ),
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_send),
-                            contentDescription = stringResource(id = R.string.send),
-                            modifier = Modifier.size(24.dp),
+                        UserInputText(
+                            formattedTextState = formattedTextState,
+                            // Only show the keyboard if there's no extended input selector (or rich
+                            // text editor is active) and text field has focus
+                            keyboardShown =
+                                (
+                                    currentInputSelector == InputSelector.NONE ||
+                                        currentInputSelector == InputSelector.RICHTEXTEDITOR
+                                    ) && textFieldFocusState,
+                            // Close extended selector if text field receives focus, keeping rich text
+                            // editor open while editing
+                            onTextFieldFocused = { focused ->
+                                if (focused) {
+                                    if (currentInputSelector != InputSelector.RICHTEXTEDITOR) {
+                                        currentInputSelector = InputSelector.NONE
+                                    }
+                                    resetScroll()
+                                }
+                                textFieldFocusState = focused
+                            },
+                            onMessageSent = { sendMessage() },
+                            focusState = textFieldFocusState,
+                            showCloseButton = currentInputSelector == InputSelector.RICHTEXTEDITOR,
+                            onCloseRichTextEditor = dismissKeyboard,
                         )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        UserInputSelector(
+                            onSelectorChange = { currentInputSelector = it },
+                            currentInputSelector = currentInputSelector,
+                            recordingActive = isRecordingActive,
+                            onRecordingClick = { isRecordingActive = !isRecordingActive },
+                            onVideoClick = {
+                                currentInputSelector = InputSelector.NONE
+                                videoPickerLauncher.launch("video/*")
+                            },
+                            onAddClick = { currentInputSelector = InputSelector.MAP },
+                        )
+
+                        // Wide filled icon button: primary container when enabled; icon-only (no
+                        // container) when disabled.
+                        FilledIconButton(
+                            onClick = sendMessage,
+                            enabled = sendMessageEnabled,
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledContainerColor = Color.Transparent,
+                                disabledContentColor =
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.54f),
+                            ),
+                            modifier = Modifier.size(
+                                IconButtonDefaults.smallContainerSize(
+                                    IconButtonDefaults.IconButtonWidthOption.Wide,
+                                ),
+                            ),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_send),
+                                contentDescription = stringResource(id = R.string.send),
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
                     }
                 }
             }
+
+            SelectorExpanded(
+                onCloseRequested = dismissKeyboard,
+                onTextAdded = { formattedTextState.addText(it) },
+                currentSelector = currentInputSelector,
+            )
         }
 
-        SelectorExpanded(
-            onCloseRequested = dismissKeyboard,
-            onTextAdded = { formattedTextState.addText(it) },
-            currentSelector = currentInputSelector,
-            spanStyleState = formattedTextState.spanStyleState,
-        )
+        if (currentInputSelector == InputSelector.RICHTEXTEDITOR) {
+            Surface { RichTextToolbar(spanStyleState = formattedTextState.spanStyleState) }
+        }
     }
 }
 
@@ -482,14 +485,12 @@ private fun SelectorExpanded(
     currentSelector: InputSelector,
     onCloseRequested: () -> Unit,
     onTextAdded: (String) -> Unit,
-    spanStyleState: SpanStyleState,
 ) {
-    if (currentSelector == InputSelector.NONE) return
+    if (currentSelector == InputSelector.NONE || currentSelector == InputSelector.RICHTEXTEDITOR) return
 
     // Request focus to force the TextField to lose it
     val focusRequester = remember { FocusRequester() }
     // If the emoji selector is shown, request focus to trigger a TextField.onFocusChange.
-    // Do not steal focus when RICHTEXTEDITOR is open so the user can keep typing/selecting text.
     SideEffect {
         if (currentSelector == InputSelector.EMOJI) {
             focusRequester.requestFocus()
@@ -498,12 +499,6 @@ private fun SelectorExpanded(
 
     Surface(
         tonalElevation = 8.dp,
-        // The rich-text toolbar is docked to the keyboard rather than inset under the card.
-        modifier = if (currentSelector == InputSelector.RICHTEXTEDITOR) {
-            Modifier.dockedToKeyboard()
-        } else {
-            Modifier
-        },
     ) {
         when (currentSelector) {
             InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester)
@@ -511,31 +506,8 @@ private fun SelectorExpanded(
             InputSelector.PICTURE -> FunctionalityNotAvailablePanel()
             InputSelector.MAP -> FunctionalityNotAvailablePanel()
             InputSelector.PHONE -> FunctionalityNotAvailablePanel()
-            InputSelector.RICHTEXTEDITOR -> RichTextToolbar(spanStyleState = spanStyleState)
-            InputSelector.NONE -> Unit
+            InputSelector.NONE, InputSelector.RICHTEXTEDITOR -> Unit
         }
-    }
-}
-
-/**
- * Lets the rich-text toolbar break out of [UserInput]'s inset column padding so it spans the full
- * width and sits flush on the keyboard (the column itself follows the IME via the caller's
- * imePadding). [start], [end] and [bottom] must match that column's padding.
- */
-private fun Modifier.dockedToKeyboard(start: Dp = 8.dp, end: Dp = 4.dp, bottom: Dp = 8.dp): Modifier = layout { measurable, constraints ->
-    val startPx = start.roundToPx()
-    val extraWidth = startPx + end.roundToPx()
-    val placeable = measurable.measure(
-        if (constraints.hasBoundedWidth) {
-            constraints.copy(maxWidth = constraints.maxWidth + extraWidth)
-        } else {
-            constraints
-        },
-    )
-    val width = (placeable.width - extraWidth).coerceIn(constraints.minWidth, constraints.maxWidth)
-    layout(width, placeable.height) {
-        // Shift left over the start padding and down over the bottom padding.
-        placeable.place(x = -startPx, y = bottom.roundToPx())
     }
 }
 
