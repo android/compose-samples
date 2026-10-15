@@ -254,10 +254,10 @@ fun UserInput(
     }
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier.padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp)
+            modifier = Modifier.padding(start = 8.dp, end = 4.dp, bottom = 8.dp, top = 6.dp),
         ) {
             val cardShape = RoundedCornerShape(32.dp)
 
@@ -481,11 +481,7 @@ private fun AttachedVideoPreview(videoUri: String, onRemove: () -> Unit, modifie
 }
 
 @Composable
-private fun SelectorExpanded(
-    currentSelector: InputSelector,
-    onCloseRequested: () -> Unit,
-    onTextAdded: (String) -> Unit,
-) {
+private fun SelectorExpanded(currentSelector: InputSelector, onCloseRequested: () -> Unit, onTextAdded: (String) -> Unit) {
     if (currentSelector == InputSelector.NONE || currentSelector == InputSelector.RICHTEXTEDITOR) return
 
     // Request focus to force the TextField to lose it
