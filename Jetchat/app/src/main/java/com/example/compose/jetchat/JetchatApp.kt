@@ -16,9 +16,6 @@
 
 package com.example.compose.jetchat
 
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -73,18 +70,6 @@ fun JetchatApp() {
         NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
-            transitionSpec = {
-                slideInHorizontally(initialOffsetX = { it }) togetherWith
-                    slideOutHorizontally(targetOffsetX = { -it })
-            },
-            popTransitionSpec = {
-                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                    slideOutHorizontally(targetOffsetX = { it })
-            },
-            predictivePopTransitionSpec = {
-                slideInHorizontally(initialOffsetX = { -it }) togetherWith
-                    slideOutHorizontally(targetOffsetX = { it })
-            },
             // Scope the ViewModels to their entry. The ViewModelStoreNavEntryDecorator
             // requires the default SaveableStateHolderNavEntryDecorator, which saves the
             // state of each entry.
