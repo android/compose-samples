@@ -23,14 +23,20 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.navigation3.runtime.NavKey
 import com.example.compose.jetchat.theme.JetchatTheme
 
+/**
+ * Navigation drawer of the app.
+ *
+ * @param selectedKey the key of the screen currently displayed, used to highlight its drawer item
+ * @param onNavigate called with the key of the drawer item the user tapped
+ */
 @Composable
 fun JetchatDrawer(
+    selectedKey: NavKey,
+    onNavigate: (NavKey) -> Unit,
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
-    selectedMenu: String,
-    onProfileClicked: (String) -> Unit,
-    onChatClicked: (String) -> Unit,
     content: @Composable () -> Unit,
 ) {
     JetchatTheme {
@@ -43,9 +49,8 @@ fun JetchatDrawer(
                     drawerContentColor = MaterialTheme.colorScheme.onBackground,
                 ) {
                     JetchatDrawerContent(
-                        onProfileClicked = onProfileClicked,
-                        onChatClicked = onChatClicked,
-                        selectedMenu = selectedMenu,
+                        selectedKey = selectedKey,
+                        onNavigate = onNavigate,
                     )
                 }
             },
