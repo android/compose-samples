@@ -32,11 +32,20 @@ import com.example.compose.jetchat.data.initialMessages
 class ConversationViewModel(channel: String) : ViewModel() {
 
     var uiState by mutableStateOf(
-        ConversationUiState(
-            channelName = "#$channel",
-            channelMembers = exampleUiState.channelMembers,
-            initialMessages = initialMessages,
-        ),
+        if (channel == exampleUiState.channelName.removePrefix("#")) {
+            ConversationUiState(
+                channelName = exampleUiState.channelName,
+                channelMembers = exampleUiState.channelMembers,
+                initialMessages = initialMessages,
+            )
+        } else {
+            // Only #composers has sample messages, other channels start empty
+            ConversationUiState(
+                channelName = "#$channel",
+                channelMembers = 0,
+                initialMessages = emptyList(),
+            )
+        },
     )
         private set
 
