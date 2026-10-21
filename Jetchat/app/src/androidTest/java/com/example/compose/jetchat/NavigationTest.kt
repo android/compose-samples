@@ -62,8 +62,11 @@ class NavigationTest {
         // Press back
         Espresso.pressBack()
 
-        // Check that we're home
+        // Check that we're home and the profile was popped
         assertConversationIsDisplayed()
+        composeTestRule
+            .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
+            .assertDoesNotExist()
     }
 
     /**
@@ -88,16 +91,26 @@ class NavigationTest {
     }
 
     private fun assertConversationIsDisplayed() {
-        // The channel name is shown in the conversation's app bar (and in the drawer, which is excluded)
+        // The channel name is shown in the conversation's app bar (and in the drawer/list pane,
+        // which is excluded)
         composeTestRule.onNode(hasText("composers") and !isInDrawer()).assertIsDisplayed()
     }
 
     private fun navigateToProfile(name: String) {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open),
-        ).performClick()
+        if (!isDrawerDisplayed()) {
+            composeTestRule.onNodeWithContentDescription(
+                composeTestRule.activity.getString(R.string.navigation_drawer_open),
+            ).performClick()
+        }
 
         composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
+    }
+
+    private fun isDrawerDisplayed(): Boolean = try {
+        composeTestRule.onNode(hasText("Recent Profiles") and isInDrawer()).assertIsDisplayed()
+        true
+    } catch (e: AssertionError) {
+        false
     }
 
     private fun isInDrawer() = hasAnyAncestor(isDrawer())
@@ -108,8 +121,10 @@ class NavigationTest {
     )
 
     private fun navigateToHomeFromProfile() {
-        composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
-            swipeRight()
+        if (!isDrawerDisplayed()) {
+            composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
+                swipeRight()
+            }
         }
         composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
     }

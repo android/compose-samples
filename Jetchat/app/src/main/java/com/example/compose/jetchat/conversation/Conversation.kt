@@ -140,7 +140,8 @@ import kotlinx.coroutines.launch
  * @param uiState [ConversationUiState] that contains messages to display
  * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
- * @param onNavIconPressed Sends an event up when the user clicks on the menu
+ * @param onNavIconPressed Sends an event up when the user clicks on the menu, which is only shown
+ * when this is not null
  * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -149,7 +150,7 @@ fun ConversationContent(
     uiState: ConversationUiState,
     navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onNavIconPressed: () -> Unit = { },
+    onNavIconPressed: (() -> Unit)? = { },
     onMessageLikeToggled: (messageId: String) -> Unit = { },
 ) {
     val authorMe = stringResource(R.string.author_me)
@@ -289,18 +290,34 @@ fun ConversationContent(
                         target = dragAndDropCallback,
                     ),
             ) {
-                Messages(
-                    messages = uiState.messages,
-                    navigateToProfile = navigateToProfile,
-                    modifier = Modifier.weight(1f),
-                    scrollState = scrollState,
-                    contentPadding = paddingValues,
-                    onVideoClick = { videoUri, messageText ->
-                        activeVideoUri = videoUri
-                        activeVideoText = messageText
-                    },
-                    onMessageLikeToggled = onMessageLikeToggled,
-                )
+                if (uiState.messages.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.no_messages),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                } else {
+                    Messages(
+                        messages = uiState.messages,
+                        navigateToProfile = navigateToProfile,
+                        modifier = Modifier.weight(1f),
+                        scrollState = scrollState,
+                        contentPadding = paddingValues,
+                        onVideoClick = { videoUri, messageText ->
+                            activeVideoUri = videoUri
+                            activeVideoText = messageText
+                        },
+                        onMessageLikeToggled = onMessageLikeToggled,
+                    )
+                }
             }
         }
 
@@ -330,7 +347,7 @@ fun ChannelNameBar(
     channelMembers: Int,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onNavIconPressed: () -> Unit = { },
+    onNavIconPressed: (() -> Unit)? = { },
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -350,14 +367,8 @@ fun ChannelNameBar(
             ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
-        navigationIcon = {},
         title = {
-            val navDrawerDescription = stringResource(R.string.navigation_drawer_open)
             Surface(
-                onClick = onNavIconPressed,
-                modifier = Modifier.semantics {
-                    contentDescription = navDrawerDescription
-                },
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
             ) {
