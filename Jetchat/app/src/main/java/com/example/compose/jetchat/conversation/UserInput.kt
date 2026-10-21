@@ -851,6 +851,7 @@ private fun BoxScope.UserInputTextField(
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
             imeAction = ImeAction.Send,
+            showKeyboardOnFocus = false,
         ),
         onKeyboardAction = {
             if (formattedTextState.text.isNotBlank()) onMessageSent()
