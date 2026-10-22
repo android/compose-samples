@@ -17,12 +17,15 @@
 package com.example.compose.jetchat
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
@@ -30,7 +33,9 @@ import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.text.AnnotatedString
 import androidx.test.espresso.Espresso
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
@@ -133,6 +138,39 @@ class UserInputTest {
         findSendButton().assertIsEnabled()
     }
 
+    @Test
+    fun markdownMarkers_hiddenOnScreenButKeptInText() {
+        findTextInputField().performTextInput("*Hello*")
+
+        findTextInputField().assertTextEquals("Hello")
+        assertRawText("*Hello*")
+    }
+
+    @Test
+    fun typingAfterHiddenMarker_keepsTheMarker() {
+        findTextInputField().performTextInput("*Hello*")
+        // Display offset 5 is right after "Hello"; it maps onto the hidden closing '*', as a tap does.
+        // Move away first: setting the selection it already has is a no-op.
+        findTextInputField().performSemanticsAction(SemanticsActions.SetSelection) { it(0, 0, false) }
+        findTextInputField().performSemanticsAction(SemanticsActions.SetSelection) { it(5, 5, false) }
+        findTextInputField().performTextInput(" world")
+
+        assertRawText("*Hello* world")
+    }
+
+    @Test
+    fun typingBetweenTouchingTokens_keepsBothMarkers() {
+        findTextInputField().performTextInput("*a*_b_")
+        // Display offset 1 (between "a" and "b") maps onto the hidden '*' and '_' together.
+        findTextInputField().performSemanticsAction(SemanticsActions.SetSelection) { it(1, 1, false) }
+        findTextInputField().performTextInput("x")
+
+        assertRawText("*a*x_b_")
+    }
+
+    private fun assertRawText(text: String) = findTextInputField()
+        .assert(SemanticsMatcher.expectValue(SemanticsProperties.InputText, AnnotatedString(text)))
+
     private fun clickOnTextField() = composeTestRule
         .onNodeWithContentDescription(activity.getString(R.string.textfield_desc))
         .performClick()
@@ -157,7 +195,7 @@ class UserInputTest {
     private fun findTextInputField(): SemanticsNodeInteraction {
         return composeTestRule.onNode(
             hasSetTextAction() and
-                hasAnyAncestor(hasContentDescription(activity.getString(R.string.textfield_desc))),
+                hasContentDescription(activity.getString(R.string.textfield_desc)),
         )
     }
 }

@@ -58,6 +58,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.verticalScroll
@@ -111,6 +112,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -823,17 +825,29 @@ private fun BoxScope.UserInputTextField(
     val codeBackground = MaterialTheme.colorScheme.surface
     val markdownStyling = remember(codeBackground) {
         val codeStyle = SpanStyle(fontFamily = FontFamily.Monospace, background = codeBackground)
-        // Same syntax as the message bubbles (MessageFormatter). Markers stay visible while typing.
+        // Same syntax as the message bubbles (MessageFormatter). Markers are hidden on screen only,
+        // so the sent text keeps them and the bubble formats it the same way.
         OutputTransformation {
-            symbolPattern.findAll(asCharSequence()).forEach { match ->
+            val text = asCharSequence().toString()
+            var removed = 0
+            symbolPattern.findAll(text).forEach { match ->
                 val style = when (match.value.first()) {
                     '@', '*' -> InlineStyle.Bold.spanStyle
                     '_' -> InlineStyle.Italic.spanStyle
                     '~' -> InlineStyle.Strikethrough.spanStyle
                     '`' -> codeStyle
                     else -> null // URLs
+                } ?: return@forEach
+                val start = match.range.first - removed
+                val end = match.range.last + 1 - removed
+                if (match.hidesMarkers()) {
+                    replace(end - 1, end, "")
+                    replace(start, start + 1, "")
+                    addStyle(style, start, end - 2)
+                    removed += 2
+                } else {
+                    addStyle(style, start, end)
                 }
-                style?.let { addStyle(it, match.range.first, match.range.last + 1) }
             }
         }
     }
@@ -861,6 +875,7 @@ private fun BoxScope.UserInputTextField(
             color = MaterialTheme.colorScheme.primary,
         ),
         outputTransformation = markdownStyling,
+        inputTransformation = SkipHiddenMarkers,
     )
 
     if (formattedTextState.isEmpty && !focusState) {
@@ -870,6 +885,31 @@ private fun BoxScope.UserInputTextField(
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+/** `*bold*`, `_italic_`, `~strike~` and `` `code` `` hide their markers in the input field. */
+private fun MatchResult.hidesMarkers() = value.first() in "*_~`"
+
+/**
+ * A tap next to hidden markers maps to a selection of just those markers (2 when tokens touch, as
+ * in `*a*_b_`), so the next keystroke would overwrite them. Collapse it to between the tokens:
+ * after closing markers, before opening ones.
+ */
+private val SkipHiddenMarkers = InputTransformation {
+    if (changes.changeCount != 0 || selection.collapsed) return@InputTransformation
+    val opening = mutableSetOf<Int>()
+    val closing = mutableSetOf<Int>()
+    symbolPattern.findAll(asCharSequence().toString()).forEach { match ->
+        if (match.hidesMarkers()) {
+            opening += match.range.first
+            closing += match.range.last
+        }
+    }
+    if ((selection.min until selection.max).all { it in opening || it in closing }) {
+        var cursor = selection.min
+        while (cursor in closing) cursor++
+        selection = TextRange(cursor)
     }
 }
 

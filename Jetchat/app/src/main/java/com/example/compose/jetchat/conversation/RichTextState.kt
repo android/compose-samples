@@ -25,6 +25,7 @@ import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.then
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -92,6 +93,8 @@ fun rememberFormattedTextState(initialText: String = ""): FormattedTextState = r
 
 /**
  * A rich-text [BasicTextField] wrapper that accepts a [FormattedTextState].
+ *
+ * @param inputTransformation runs after the [state]'s own style-override transformation.
  */
 @Composable
 fun FormattedTextField(
@@ -103,11 +106,13 @@ fun FormattedTextField(
     lineLimits: TextFieldLineLimits = TextFieldLineLimits.Default,
     cursorBrush: Brush = SolidColor(Color.Black),
     outputTransformation: OutputTransformation? = null,
+    inputTransformation: InputTransformation? = null,
 ) {
     BasicTextField(
         state = state.textFieldState,
         modifier = modifier,
-        inputTransformation = state.inputTransformation,
+        inputTransformation = inputTransformation?.let { state.inputTransformation.then(it) }
+            ?: state.inputTransformation,
         textStyle = textStyle,
         keyboardOptions = keyboardOptions,
         onKeyboardAction = onKeyboardAction,
