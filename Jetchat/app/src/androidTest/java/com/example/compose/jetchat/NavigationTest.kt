@@ -30,8 +30,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeRight
+import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -82,12 +82,13 @@ class NavigationTest {
         // Chewie, we're home
         assertConversationIsDisplayed()
 
-        // The profiles were popped off the back stack, so pressing back leaves the app
-        val activity = composeTestRule.activity
+        // The profiles were popped off the back stack, so pressing back leaves the app. API 31+
+        // moves a root launcher activity to the background instead of finishing it, so check
+        // that the activity stopped rather than that it is finishing.
+        val scenario = composeTestRule.activityRule.scenario
         Espresso.pressBackUnconditionally()
-        composeTestRule.runOnIdle {
-            assertTrue(activity.isFinishing)
-        }
+        // Stopping waits on the launcher, which can take a few seconds on slow CI emulators.
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { !scenario.state.isAtLeast(Lifecycle.State.STARTED) }
     }
 
     private fun assertConversationIsDisplayed() {
