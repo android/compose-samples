@@ -238,11 +238,26 @@ val initialMessages = listOf(
 
 val unreadMessages = initialMessages.filter { it.author != "me" }
 
-val exampleUiState = ConversationUiState(
-    initialMessages = initialMessages,
-    channelName = "#composers",
-    channelMembers = 42,
+/** The fake data of a channel: its member count and the messages it starts with. */
+private class FakeChannel(val members: Int, val messages: List<Message>)
+
+/** The channels shown in the chat list. Only #composers has sample messages. */
+private val channels = mapOf(
+    "composers" to FakeChannel(members = 42, messages = initialMessages),
+    "droidcon-nyc" to FakeChannel(members = 7, messages = emptyList()),
 )
+
+/** Creates the initial [ConversationUiState] of [channel] from the fake data. */
+fun conversationUiState(channel: String): ConversationUiState {
+    val fakeChannel = channels.getValue(channel)
+    return ConversationUiState(
+        channelName = "#$channel",
+        channelMembers = fakeChannel.members,
+        initialMessages = fakeChannel.messages,
+    )
+}
+
+val exampleUiState = conversationUiState("composers")
 
 /**
  * Example colleague profile

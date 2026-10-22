@@ -367,9 +367,20 @@ fun ChannelNameBar(
             ),
         scrollBehavior = scrollBehavior,
         onNavIconPressed = onNavIconPressed,
+        navigationIcon = {},
         title = {
+            val navDrawerDescription = stringResource(R.string.navigation_drawer_open)
+            val shape = RoundedCornerShape(20.dp)
             Surface(
-                shape = RoundedCornerShape(20.dp),
+                modifier = if (onNavIconPressed != null) {
+                    Modifier
+                        .clip(shape)
+                        .clickable(onClick = onNavIconPressed)
+                        .semantics { contentDescription = navDrawerDescription }
+                } else {
+                    Modifier
+                },
+                shape = shape,
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
             ) {
                 Column(
