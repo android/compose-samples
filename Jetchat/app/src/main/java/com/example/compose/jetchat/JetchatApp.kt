@@ -73,15 +73,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun JetchatApp() {
-    // The back stack survives configuration changes and process death. On wide screens,
-    // ChatList and Conversation are shown side by side via ListDetailSceneStrategy; on
-    // single-pane phones, the existing ModalNavigationDrawer flow is used.
+    // The back stack survives configuration changes and process death
     val backStack = rememberNavBackStack(ChatList, Conversation("composers"))
     val drawerState = rememberDrawerState(initialValue = Closed)
     val scope = rememberCoroutineScope()
 
-    // Override the defaults so that there isn't a horizontal space between the panes.
-    // See b/418201867
+    // Override the defaults so that there isn't a horizontal space between the panes
     val windowAdaptiveInfo = currentWindowAdaptiveInfoV2()
     val directive = remember(windowAdaptiveInfo) {
         calculatePaneScaffoldDirective(windowAdaptiveInfo)
@@ -91,13 +88,13 @@ fun JetchatApp() {
     val isListAndDetailVisible = isMultiPane && backStack.lastOrNull() is Conversation
     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(directive = directive)
 
-    LaunchedEffect(isListAndDetailVisible) {
-        if (isListAndDetailVisible && drawerState.isOpen) {
+    LaunchedEffect(isMultiPane) {
+        if (isMultiPane && drawerState.isOpen) {
             drawerState.close()
         }
     }
 
-    val selectedKey = backStack.lastOrNull() ?: Conversation("composers")
+    val selectedKey = backStack.last()
     val onNavigate: (NavKey) -> Unit = { key ->
         when (key) {
             is Conversation -> backStack.openConversation(key.channel)
@@ -108,6 +105,7 @@ fun JetchatApp() {
         }
     }
 
+    // On single-pane windows the chat list is shown in the drawer instead of a screen
     val displayBackStack = if (isMultiPane) {
         backStack
     } else {
@@ -119,7 +117,8 @@ fun JetchatApp() {
         selectedKey = selectedKey,
         onNavigate = onNavigate,
         drawerState = drawerState,
-        gesturesEnabled = !isListAndDetailVisible,
+        // The list pane replaces the drawer on wide windows
+        gesturesEnabled = !isMultiPane,
     ) {
         BackHandler(enabled = drawerState.isOpen) {
             scope.launch {
@@ -144,13 +143,11 @@ fun JetchatApp() {
                         detailPlaceholder = { ChatPlaceholder() },
                     ),
                 ) {
-                    val navigationMenuTitle = stringResource(
-                        androidx.compose.ui.R.string.navigation_menu,
-                    )
+                    val chatListTitle = stringResource(R.string.chat_list)
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
-                            .semantics { paneTitle = navigationMenuTitle },
+                            .semantics { paneTitle = chatListTitle },
                         color = MaterialTheme.colorScheme.background,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                     ) {
@@ -166,18 +163,24 @@ fun JetchatApp() {
                     // The channel comes from the key, so pass it when the ViewModel of this
                     // entry is created
                     val viewModel = viewModel { ConversationViewModel(channel = key.channel) }
-                    // Detail screens hide the navigation drawer button when in the
-                    // multi-pane list-detail scene
+                    // The channel name shows the chat list: it opens the drawer on single-pane
+                    // windows and pops the profile that hides the list pane on wide windows
                     val inListDetailScene = LocalListDetailSceneScope.current != null
                     ConversationContent(
                         uiState = viewModel.uiState,
                         navigateToProfile = { userId -> backStack.openProfile(userId) },
-                        onNavIconPressed = if (inListDetailScene) {
-                            null
-                        } else {
-                            {
-                                scope.launch {
-                                    drawerState.open()
+                        onNavIconPressed = when {
+                            isListAndDetailVisible -> null
+
+                            inListDetailScene -> {
+                                { backStack.removeLastOrNull() }
+                            }
+
+                            else -> {
+                                {
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
                                 }
                             }
                         },

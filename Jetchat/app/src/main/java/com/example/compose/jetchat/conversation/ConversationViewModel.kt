@@ -20,8 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.compose.jetchat.data.exampleUiState
-import com.example.compose.jetchat.data.initialMessages
+import com.example.compose.jetchat.data.conversationUiState
 
 /**
  * Holds the conversation state so it survives configuration changes, and handles message
@@ -31,22 +30,7 @@ import com.example.compose.jetchat.data.initialMessages
  */
 class ConversationViewModel(channel: String) : ViewModel() {
 
-    var uiState by mutableStateOf(
-        if (channel == exampleUiState.channelName.removePrefix("#")) {
-            ConversationUiState(
-                channelName = exampleUiState.channelName,
-                channelMembers = exampleUiState.channelMembers,
-                initialMessages = initialMessages,
-            )
-        } else {
-            // Only #composers has sample messages, other channels start empty
-            ConversationUiState(
-                channelName = "#$channel",
-                channelMembers = 0,
-                initialMessages = emptyList(),
-            )
-        },
-    )
+    var uiState by mutableStateOf(conversationUiState(channel))
         private set
 
     fun toggleLike(messageId: String) {

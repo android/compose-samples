@@ -92,41 +92,48 @@ class NavigationTest {
     }
 
     private fun assertConversationIsDisplayed() {
-        // The channel name is shown in the conversation's app bar (and in the drawer/list pane,
-        // which is excluded)
-        composeTestRule.onNode(hasText("composers") and !isInDrawer()).assertIsDisplayed()
+        // The channel name is shown in the conversation's app bar (and in the chat list, which
+        // is excluded)
+        composeTestRule.onNode(hasText("composers") and !isInChatList()).assertIsDisplayed()
     }
 
     private fun navigateToProfile(name: String) {
-        if (!isDrawerDisplayed()) {
+        if (!isChatListDisplayed()) {
             composeTestRule.onNodeWithContentDescription(
                 composeTestRule.activity.getString(R.string.navigation_drawer_open),
             ).performClick()
         }
 
-        composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
+        composeTestRule.onNode(hasText(name) and isInChatList()).performClick()
     }
 
-    private fun isDrawerDisplayed(): Boolean = try {
-        composeTestRule.onNode(hasText("Recent Profiles") and isInDrawer()).assertIsDisplayed()
+    private fun isChatListDisplayed(): Boolean = try {
+        composeTestRule.onNode(hasText("Recent Profiles") and isInChatList()).assertIsDisplayed()
         true
     } catch (e: AssertionError) {
         false
     }
 
-    private fun isInDrawer() = hasAnyAncestor(isDrawer())
+    private fun isInChatList() = hasAnyAncestor(isChatList())
 
-    private fun isDrawer() = SemanticsMatcher.expectValue(
+    /**
+     * The chat list is shown in the navigation drawer on single-pane windows and in the list pane
+     * on wide windows, which are identified by their pane titles.
+     */
+    private fun isChatList() = SemanticsMatcher.expectValue(
         SemanticsProperties.PaneTitle,
         composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu),
+    ) or SemanticsMatcher.expectValue(
+        SemanticsProperties.PaneTitle,
+        composeTestRule.activity.getString(R.string.chat_list),
     )
 
     private fun navigateToHomeFromProfile() {
-        if (!isDrawerDisplayed()) {
+        if (!isChatListDisplayed()) {
             composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
                 swipeRight()
             }
         }
-        composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
+        composeTestRule.onNode(hasText("composers") and isInChatList()).performClick()
     }
 }
