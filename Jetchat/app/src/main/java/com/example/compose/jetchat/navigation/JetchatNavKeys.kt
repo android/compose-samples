@@ -35,7 +35,11 @@ data class Conversation(val channel: String) : NavKey
 
 /** The profile screen of the user identified by [userId]. */
 @Serializable
-data class Profile(val userId: String) : NavKey
+data class Profile(val userId: String, val isExtraPane: Boolean = false) : NavKey
+
+/** The full-screen video player for [videoUri] with optional [messageText] caption. */
+@Serializable
+data class VideoPlayer(val videoUri: String, val messageText: String? = null) : NavKey
 
 /**
  * Opens the conversation of [channel]. Only keeps [ChatList] and the selected conversation so
@@ -53,8 +57,8 @@ fun NavBackStack<NavKey>.openConversation(channel: String) {
  * Opens the profile of the user identified by [userId] on top of the current screen, replacing
  * any profile that is already shown instead of stacking profiles.
  */
-fun NavBackStack<NavKey>.openProfile(userId: String) {
-    val profile = Profile(userId)
+fun NavBackStack<NavKey>.openProfile(userId: String, isExtraPane: Boolean = false) {
+    val profile = Profile(userId, isExtraPane)
     when (lastOrNull()) {
         profile -> Unit
         is Profile -> this[lastIndex] = profile

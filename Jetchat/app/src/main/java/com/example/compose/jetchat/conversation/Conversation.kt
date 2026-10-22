@@ -57,14 +57,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBarsIgnoringVisibility
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -91,7 +91,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -128,7 +127,6 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.rememberHeartReactionMeshGradientPainter
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.example.compose.jetchat.video.FullScreenVideoPlayer
 import com.example.compose.jetchat.video.VideoThumbnail
 import kotlin.math.PI
 import kotlin.math.sin
@@ -144,6 +142,7 @@ import kotlinx.coroutines.launch
  * when this is not null
  * @param navIconContentDescription Accessibility description of what [onNavIconPressed] does
  * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
+ * @param onVideoClick Called when a video attachment in a message is clicked
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -154,6 +153,7 @@ fun ConversationContent(
     onNavIconPressed: (() -> Unit)? = { },
     navIconContentDescription: String = stringResource(R.string.navigation_drawer_open),
     onMessageLikeToggled: (messageId: String) -> Unit = { },
+    onVideoClick: (videoUri: String, messageText: String?) -> Unit = { _, _ -> },
 ) {
     val authorMe = stringResource(R.string.author_me)
     val timeNow = stringResource(id = R.string.now)
@@ -210,8 +210,7 @@ fun ConversationContent(
         }
     }
 
-    var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
-    var activeVideoText by rememberSaveable { mutableStateOf<String?>(null) }
+
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -267,13 +266,13 @@ fun ConversationContent(
                                 ),
                             ),
                         )
-                        .navigationBarsPadding(),
+                        .windowInsetsPadding(WindowInsets.navigationBarsIgnoringVisibility),
                 )
             },
             // Exclude ime and navigation bar padding so this can be added by the UserInput composable
             contentWindowInsets = ScaffoldDefaults
                 .contentWindowInsets
-                .exclude(WindowInsets.navigationBars)
+                .exclude(WindowInsets.navigationBarsIgnoringVisibility)
                 .exclude(WindowInsets.ime),
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
@@ -314,30 +313,10 @@ fun ConversationContent(
                         modifier = Modifier.weight(1f),
                         scrollState = scrollState,
                         contentPadding = paddingValues,
-                        onVideoClick = { videoUri, messageText ->
-                            activeVideoUri = videoUri
-                            activeVideoText = messageText
-                        },
+                        onVideoClick = onVideoClick,
                         onMessageLikeToggled = onMessageLikeToggled,
                     )
                 }
-            }
-        }
-
-        AnimatedVisibility(
-            visible = activeVideoUri != null,
-            enter = fadeIn(animationSpec = tween(200)),
-            exit = fadeOut(animationSpec = tween(200)),
-        ) {
-            activeVideoUri?.let { uri ->
-                FullScreenVideoPlayer(
-                    videoUri = uri,
-                    messageText = activeVideoText,
-                    onDismiss = {
-                        activeVideoUri = null
-                        activeVideoText = null
-                    },
-                )
             }
         }
     }

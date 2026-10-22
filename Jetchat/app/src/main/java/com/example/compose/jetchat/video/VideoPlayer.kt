@@ -186,7 +186,13 @@ fun VideoThumbnail(videoUri: String, onClick: () -> Unit, modifier: Modifier = M
  */
 @OptIn(UnstableApi::class)
 @Composable
-fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Modifier = Modifier, messageText: String? = null) {
+fun FullScreenVideoPlayer(
+    videoUri: String,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    messageText: String? = null,
+    enableBackHandler: Boolean = true,
+) {
     val context = LocalContext.current
     val resolvedUri = remember(videoUri) { resolveVideoUri(videoUri) }
 
@@ -211,7 +217,9 @@ fun FullScreenVideoPlayer(videoUri: String, onDismiss: () -> Unit, modifier: Mod
         exoPlayer.pause()
     }
 
-    BackHandler(onBack = onDismiss)
+    if (enableBackHandler) {
+        BackHandler(onBack = onDismiss)
+    }
 
     // Hide system status and navigation bars for immersive edge-to-edge playback
     ImmersiveSystemBarsEffect()

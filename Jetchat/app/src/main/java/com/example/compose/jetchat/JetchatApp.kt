@@ -17,29 +17,32 @@
 package com.example.compose.jetchat
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.LocalListDetailSceneScope
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.paneTitle
@@ -59,11 +62,13 @@ import com.example.compose.jetchat.conversation.ConversationViewModel
 import com.example.compose.jetchat.navigation.ChatList
 import com.example.compose.jetchat.navigation.Conversation
 import com.example.compose.jetchat.navigation.Profile
+import com.example.compose.jetchat.navigation.VideoPlayer
 import com.example.compose.jetchat.navigation.openConversation
 import com.example.compose.jetchat.navigation.openProfile
 import com.example.compose.jetchat.profile.ProfileError
 import com.example.compose.jetchat.profile.ProfileScreen
 import com.example.compose.jetchat.profile.ProfileViewModel
+import com.example.compose.jetchat.video.FullScreenVideoPlayer
 import kotlinx.coroutines.launch
 
 /**
@@ -87,7 +92,16 @@ fun JetchatApp() {
             .copy(horizontalPartitionSpacerSize = 0.dp)
     }
     val isMultiPane = directive.maxHorizontalPartitions > 1
-    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(directive = directive)
+
+    val selectedKey = backStack.last()
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(
+        backNavigationBehavior = if (selectedKey is Profile) {
+            BackNavigationBehavior.PopLatest
+        } else {
+            BackNavigationBehavior.PopUntilScaffoldValueChange
+        },
+        directive = directive,
+    )
 
     LaunchedEffect(isMultiPane) {
         if (isMultiPane && drawerState.isOpen) {
@@ -95,11 +109,12 @@ fun JetchatApp() {
         }
     }
 
-    val selectedKey = backStack.last()
     val onNavigate: (NavKey) -> Unit = { key ->
         when (key) {
             is Conversation -> backStack.openConversation(key.channel)
-            is Profile -> backStack.openProfile(key.userId)
+            is Profile -> backStack.openProfile(key.userId, key.isExtraPane)
+            is VideoPlayer -> Unit
+            ChatList -> Unit
         }
         scope.launch {
             drawerState.close()
@@ -108,11 +123,15 @@ fun JetchatApp() {
 
     // On single-pane windows the chat list is shown in the drawer instead of a screen. The
     // conversation is never popped, so the displayed back stack is never empty.
-    val displayBackStack = if (isMultiPane) {
-        backStack
-    } else {
-        backStack.filter { it !is ChatList }.also {
-            check(it.isNotEmpty()) { "A conversation must always be on the back stack" }
+    val displayBackStack by remember(isMultiPane) {
+        derivedStateOf {
+            if (isMultiPane) {
+                backStack
+            } else {
+                backStack.filter { it !is ChatList }.also {
+                    check(it.isNotEmpty()) { "A conversation must always be on the back stack" }
+                }
+            }
         }
     }
 
@@ -121,8 +140,8 @@ fun JetchatApp() {
         selectedKey = selectedKey,
         onNavigate = onNavigate,
         drawerState = drawerState,
-        // The list pane replaces the drawer on wide windows
-        gesturesEnabled = !isMultiPane,
+        // The list pane replaces the drawer on wide windows, and disable drawer gestures during video playback
+        gesturesEnabled = !isMultiPane && (selectedKey !is VideoPlayer),
     ) {
         BackHandler(enabled = drawerState.isOpen) {
             scope.launch {
@@ -143,9 +162,7 @@ fun JetchatApp() {
             ),
             entryProvider = entryProvider {
                 entry<ChatList>(
-                    metadata = ListDetailSceneStrategy.listPane(
-                        detailPlaceholder = { ChatPlaceholder() },
-                    ),
+                    metadata = ListDetailSceneStrategy.listPane(),
                 ) {
                     val chatListTitle = stringResource(R.string.chat_list)
                     Surface(
@@ -178,7 +195,7 @@ fun JetchatApp() {
                         ?.get(ListDetailPaneScaffoldRole.List) == PaneAdaptedValue.Expanded
                     ConversationContent(
                         uiState = viewModel.uiState,
-                        navigateToProfile = { userId -> backStack.openProfile(userId) },
+                        navigateToProfile = { userId -> backStack.openProfile(userId, isExtraPane = true) },
                         onNavIconPressed = when {
                             sceneScope == null -> {
                                 {
@@ -191,7 +208,7 @@ fun JetchatApp() {
                             isListPaneShown -> null
 
                             else -> {
-                                { backStack.removeLastOrNull() }
+                                { backStack.openConversation(key.channel) }
                             }
                         },
                         navIconContentDescription = stringResource(
@@ -202,10 +219,19 @@ fun JetchatApp() {
                             },
                         ),
                         onMessageLikeToggled = viewModel::toggleLike,
+                        onVideoClick = { videoUri, messageText ->
+                            backStack.add(VideoPlayer(videoUri, messageText))
+                        },
                     )
                 }
                 entry<Profile>(
-                    metadata = ListDetailSceneStrategy.extraPane(),
+                    metadata = { key ->
+                        if (key.isExtraPane) {
+                            ListDetailSceneStrategy.extraPane()
+                        } else {
+                            ListDetailSceneStrategy.detailPane()
+                        }
+                    },
                 ) { key ->
                     // The user id comes from the key, so set it when the ViewModel of this
                     // entry is created
@@ -222,25 +248,25 @@ fun JetchatApp() {
                         )
                     }
                 }
+                entry<VideoPlayer>(
+                    metadata = NavDisplay.transitionSpec {
+                        fadeIn(animationSpec = tween(200)) togetherWith
+                            fadeOut(animationSpec = tween(200))
+                    } + NavDisplay.popTransitionSpec {
+                        EnterTransition.None togetherWith
+                            fadeOut(animationSpec = tween(200))
+                    } + NavDisplay.predictivePopTransitionSpec {
+                        EnterTransition.None togetherWith fadeOut()
+                    },
+                ) { key ->
+                    FullScreenVideoPlayer(
+                        videoUri = key.videoUri,
+                        messageText = key.messageText,
+                        onDismiss = { backStack.removeLastOrNull() },
+                        enableBackHandler = false,
+                    )
+                }
             },
         )
-    }
-}
-
-/** Shown in the detail pane when no conversation is selected. */
-@Composable
-private fun ChatPlaceholder() {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = stringResource(R.string.select_a_chat),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(24.dp),
-            )
-        }
     }
 }
