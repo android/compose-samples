@@ -26,6 +26,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.LocalListDetailSceneScope
@@ -85,7 +87,6 @@ fun JetchatApp() {
             .copy(horizontalPartitionSpacerSize = 0.dp)
     }
     val isMultiPane = directive.maxHorizontalPartitions > 1
-    val isListAndDetailVisible = isMultiPane && backStack.lastOrNull() is Conversation
     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(directive = directive)
 
     LaunchedEffect(isMultiPane) {
@@ -105,11 +106,14 @@ fun JetchatApp() {
         }
     }
 
-    // On single-pane windows the chat list is shown in the drawer instead of a screen
+    // On single-pane windows the chat list is shown in the drawer instead of a screen. The
+    // conversation is never popped, so the displayed back stack is never empty.
     val displayBackStack = if (isMultiPane) {
         backStack
     } else {
-        backStack.filter { it !is ChatList }
+        backStack.filter { it !is ChatList }.also {
+            check(it.isNotEmpty()) { "A conversation must always be on the back stack" }
+        }
     }
 
     JetchatDrawer(
@@ -164,26 +168,39 @@ fun JetchatApp() {
                     // entry is created
                     val viewModel = viewModel { ConversationViewModel(channel = key.channel) }
                     // The channel name shows the chat list: it opens the drawer on single-pane
-                    // windows and pops the profile that hides the list pane on wide windows
-                    val inListDetailScene = LocalListDetailSceneScope.current != null
+                    // windows, where there is no list-detail scene, and pops the profile that
+                    // hides the list pane on wide windows. Whether the list pane is shown comes
+                    // from the scaffold, as it depends on the number of panes: on 3-pane windows
+                    // it stays next to the conversation while a profile is shown.
+                    val sceneScope = LocalListDetailSceneScope.current
+                    val isListPaneShown = sceneScope?.scaffoldTransitionScope
+                        ?.scaffoldStateTransition?.targetState
+                        ?.get(ListDetailPaneScaffoldRole.List) == PaneAdaptedValue.Expanded
                     ConversationContent(
                         uiState = viewModel.uiState,
                         navigateToProfile = { userId -> backStack.openProfile(userId) },
                         onNavIconPressed = when {
-                            isListAndDetailVisible -> null
-
-                            inListDetailScene -> {
-                                { backStack.removeLastOrNull() }
-                            }
-
-                            else -> {
+                            sceneScope == null -> {
                                 {
                                     scope.launch {
                                         drawerState.open()
                                     }
                                 }
                             }
+
+                            isListPaneShown -> null
+
+                            else -> {
+                                { backStack.removeLastOrNull() }
+                            }
                         },
+                        navIconContentDescription = stringResource(
+                            if (sceneScope == null) {
+                                R.string.navigation_drawer_open
+                            } else {
+                                R.string.show_chat_list
+                            },
+                        ),
                         onMessageLikeToggled = viewModel::toggleLike,
                     )
                 }
