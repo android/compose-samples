@@ -142,6 +142,7 @@ import kotlinx.coroutines.launch
  * @param modifier [Modifier] to apply to this layout node
  * @param onNavIconPressed Sends an event up when the user clicks on the menu, which is only shown
  * when this is not null
+ * @param navIconContentDescription Accessibility description of what [onNavIconPressed] does
  * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -151,6 +152,7 @@ fun ConversationContent(
     navigateToProfile: (String) -> Unit,
     modifier: Modifier = Modifier,
     onNavIconPressed: (() -> Unit)? = { },
+    navIconContentDescription: String = stringResource(R.string.navigation_drawer_open),
     onMessageLikeToggled: (messageId: String) -> Unit = { },
 ) {
     val authorMe = stringResource(R.string.author_me)
@@ -219,6 +221,7 @@ fun ConversationContent(
                     channelName = uiState.channelName,
                     channelMembers = uiState.channelMembers,
                     onNavIconPressed = onNavIconPressed,
+                    navIconContentDescription = navIconContentDescription,
                     scrollBehavior = scrollBehavior,
                 )
             },
@@ -348,6 +351,7 @@ fun ChannelNameBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: (() -> Unit)? = { },
+    navIconContentDescription: String = stringResource(R.string.navigation_drawer_open),
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -369,14 +373,13 @@ fun ChannelNameBar(
         onNavIconPressed = onNavIconPressed,
         navigationIcon = {},
         title = {
-            val navDrawerDescription = stringResource(R.string.navigation_drawer_open)
             val shape = RoundedCornerShape(20.dp)
             Surface(
                 modifier = if (onNavIconPressed != null) {
                     Modifier
                         .clip(shape)
                         .clickable(onClick = onNavIconPressed)
-                        .semantics { contentDescription = navDrawerDescription }
+                        .semantics { contentDescription = navIconContentDescription }
                 } else {
                     Modifier
                 },

@@ -247,9 +247,12 @@ private val channels = mapOf(
     "droidcon-nyc" to FakeChannel(members = 7, messages = emptyList()),
 )
 
-/** Creates the initial [ConversationUiState] of [channel] from the fake data. */
+/**
+ * Creates the initial [ConversationUiState] of [channel] from the fake data. Unknown channels are
+ * empty.
+ */
 fun conversationUiState(channel: String): ConversationUiState {
-    val fakeChannel = channels.getValue(channel)
+    val fakeChannel = channels[channel] ?: FakeChannel(members = 0, messages = emptyList())
     return ConversationUiState(
         channelName = "#$channel",
         channelMembers = fakeChannel.members,
