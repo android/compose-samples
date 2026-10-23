@@ -41,17 +41,19 @@ import com.example.compose.jetchat.theme.JetchatTheme
 fun JetchatAppBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onNavIconPressed: () -> Unit = { },
+    onNavIconPressed: (() -> Unit)? = { },
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit = {},
     navigationIcon: @Composable () -> Unit = {
-        JetchatIcon(
-            contentDescription = stringResource(id = R.string.navigation_drawer_open),
-            modifier = Modifier
-                .size(64.dp)
-                .clickable(onClick = onNavIconPressed)
-                .padding(16.dp),
-        )
+        if (onNavIconPressed != null) {
+            JetchatIcon(
+                contentDescription = stringResource(id = R.string.navigation_drawer_open),
+                modifier = Modifier
+                    .size(64.dp)
+                    .clickable(onClick = onNavIconPressed)
+                    .padding(16.dp),
+            )
+        }
     },
 ) {
     TopAppBar(
