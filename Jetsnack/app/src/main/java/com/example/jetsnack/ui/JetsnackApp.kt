@@ -36,6 +36,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
@@ -114,12 +116,13 @@ fun MainContainer(modifier: Modifier = Modifier, onSnackSelected: (Long, String,
         ?: throw IllegalStateException("No SharedElementScope found")
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
+    val tabs = remember { HomeSections.entries.toTypedArray() }
     JetsnackScaffold(
         bottomBar = {
             with(animatedVisibilityScope) {
                 with(sharedTransitionScope) {
                     JetsnackBottomBar(
-                        tabs = HomeSections.entries.toTypedArray(),
+                        tabs = tabs,
                         currentRoute = currentRoute ?: HomeSections.FEED.route,
                         navigateToRoute = nestedNavController::navigateToBottomBarRoute,
                         modifier = Modifier
@@ -167,4 +170,4 @@ fun MainContainer(modifier: Modifier = Modifier, onSnackSelected: (Long, String,
 }
 
 val LocalNavAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
-val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
+val LocalSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }

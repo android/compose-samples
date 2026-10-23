@@ -109,7 +109,7 @@ private fun SnackCollectionList(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
-        item {
+        item(key = "filter_bar") {
             Spacer(
                 Modifier.windowInsetsTopHeight(
                     WindowInsets.statusBars.add(WindowInsets(top = 56.dp)),
@@ -122,7 +122,10 @@ private fun SnackCollectionList(
                 onShowFilters = onFiltersSelected,
             )
         }
-        itemsIndexed(snackCollections) { index, snackCollection ->
+        itemsIndexed(
+            items = snackCollections,
+            key = { _, snackCollection -> snackCollection.id },
+        ) { index, snackCollection ->
             if (index > 0) {
                 JetsnackDivider(thickness = 2.dp)
             }
