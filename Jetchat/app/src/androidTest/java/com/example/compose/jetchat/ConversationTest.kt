@@ -127,16 +127,17 @@ class ConversationTest {
 
     /**
      * Scrolls the conversation far enough away from the bottom (more than 1.5x the viewport
-     * height) for the jump to bottom button to appear.
+     * height) for the jump to bottom button to appear. Start from the center so the touch down
+     * does not land on the overlaid top app bar.
      */
     private fun scrollAwayFromBottom() {
-        repeat(3) {
+        repeat(5) {
             composeTestRule.onNodeWithTag(
                 testTag = ConversationTestTag,
                 useUnmergedTree = true, // https://issuetracker.google.com/issues/184825850
             ).performTouchInput {
                 this.swipe(
-                    start = Offset(this.center.x, this.top + 10f),
+                    start = this.center,
                     end = Offset(this.center.x, this.bottom - 10f),
                     durationMillis = 200,
                 )
