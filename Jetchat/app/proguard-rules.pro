@@ -36,3 +36,8 @@
 
 
 -keep class androidx.compose.ui.platform.AndroidCompositionLocals_androidKt { *; }
+
+# Keep RoomDatabase implementations and their parameterless constructor for R8 Full Mode
+-keep class * extends androidx.room.RoomDatabase {
+    <init>();
+}

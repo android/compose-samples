@@ -31,8 +31,10 @@ import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.data.resetFakeData
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -49,16 +51,23 @@ class ConversationTest {
 
     @Before
     fun setUp() {
+        resetFakeData()
+        val uiState = createConversationTestUiState()
         // Launch the conversation screen
         composeTestRule.setContent {
             JetchatTheme(isDarkTheme = themeIsDark.collectAsStateWithLifecycle(false).value) {
                 ConversationContent(
-                    uiState = conversationTestUiState,
+                    uiState = uiState,
                     navigateToProfile = { },
                     onNavIconPressed = { },
                 )
             }
         }
+    }
+
+    @After
+    fun tearDown() {
+        resetFakeData()
     }
 
     @Test
@@ -71,13 +80,7 @@ class ConversationTest {
     fun userScrollsUp_jumpToBottomAppears() {
         // Check list is snapped to bottom and swipe up
         findJumpToBottom().assertDoesNotExist()
-        composeTestRule.onNodeWithTag(ConversationTestTag).performTouchInput {
-            this.swipe(
-                start = this.center,
-                end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200,
-            )
-        }
+        scrollAwayFromBottom()
         // Check that the jump to bottom button is shown
         findJumpToBottom().assertIsDisplayed()
     }
@@ -85,13 +88,7 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAndDisappears() {
         // When the scroll is not snapped to the bottom
-        composeTestRule.onNodeWithTag(ConversationTestTag).performTouchInput {
-            this.swipe(
-                start = this.center,
-                end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200,
-            )
-        }
+        scrollAwayFromBottom()
         // Snap scroll to the bottom
         findJumpToBottom().performClick()
 
@@ -102,16 +99,7 @@ class ConversationTest {
     @Test
     fun jumpToBottom_snapsToBottomAfterUserInteracted() {
         // First swipe
-        composeTestRule.onNodeWithTag(
-            testTag = ConversationTestTag,
-            useUnmergedTree = true, // https://issuetracker.google.com/issues/184825850
-        ).performTouchInput {
-            this.swipe(
-                start = this.center,
-                end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200,
-            )
-        }
+        scrollAwayFromBottom()
         // Second, snap to bottom
         findJumpToBottom().performClick()
 
@@ -125,13 +113,7 @@ class ConversationTest {
     @Test
     fun changeTheme_scrollIsPersisted() {
         // Swipe to show the jump to bottom button
-        composeTestRule.onNodeWithTag(ConversationTestTag).performTouchInput {
-            this.swipe(
-                start = this.center,
-                end = Offset(this.center.x, this.center.y + 500),
-                durationMillis = 200,
-            )
-        }
+        scrollAwayFromBottom()
 
         // Check that the jump to bottom button is shown
         findJumpToBottom().assertIsDisplayed()
@@ -141,6 +123,26 @@ class ConversationTest {
 
         // Check that the jump to bottom button is still shown
         findJumpToBottom().assertIsDisplayed()
+    }
+
+    /**
+     * Scrolls the conversation far enough away from the bottom (more than 1.5x the viewport
+     * height) for the jump to bottom button to appear.
+     */
+    private fun scrollAwayFromBottom() {
+        repeat(3) {
+            composeTestRule.onNodeWithTag(
+                testTag = ConversationTestTag,
+                useUnmergedTree = true, // https://issuetracker.google.com/issues/184825850
+            ).performTouchInput {
+                this.swipe(
+                    start = Offset(this.center.x, this.top + 10f),
+                    end = Offset(this.center.x, this.bottom - 10f),
+                    durationMillis = 200,
+                )
+            }
+            composeTestRule.waitForIdle()
+        }
     }
 
     private fun findJumpToBottom() = composeTestRule.onNodeWithText(
@@ -159,8 +161,9 @@ class ConversationTest {
 /**
  * Make the list of messages longer so the test makes sense on tablets.
  */
-private val conversationTestUiState = ConversationUiState(
-    initialMessages = (exampleUiState.messages.plus(exampleUiState.messages)),
+private fun createConversationTestUiState() = ConversationUiState(
+    initialMessages = exampleUiState.messages +
+        exampleUiState.messages.map { it.copy(id = "${it.id}-copy") },
     channelName = "#composers",
     channelMembers = 42,
 )

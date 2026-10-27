@@ -37,9 +37,9 @@ data class Conversation(val channel: String) : NavKey
 @Serializable
 data class Profile(val userId: String, val isExtraPane: Boolean = false) : NavKey
 
-/** The full-screen video player for [videoUri] with optional [messageText] caption. */
+/** The full-screen video player for [videoUri], optionally associated with [messageId]. */
 @Serializable
-data class VideoPlayer(val videoUri: String, val messageText: String? = null) : NavKey
+data class VideoPlayer(val videoUri: String, val messageId: String? = null) : NavKey
 
 /**
  * Opens the conversation of [channel]. Only keeps [ChatList] and the selected conversation so

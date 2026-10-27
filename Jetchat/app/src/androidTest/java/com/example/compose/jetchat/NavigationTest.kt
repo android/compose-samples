@@ -32,6 +32,8 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeRight
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso
+import com.example.compose.jetchat.data.resetFakeData
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,6 +44,13 @@ class NavigationTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<NavActivity>()
+
+    @After
+    fun tearDown() {
+        // NavActivity launches inside composeTestRule before @Before runs, so clear cached channel
+        // state after each test so the next test's Activity starts fresh.
+        resetFakeData()
+    }
 
     @Test
     fun app_launches() {

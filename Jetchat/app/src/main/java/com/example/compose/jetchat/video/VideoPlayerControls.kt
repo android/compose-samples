@@ -85,7 +85,13 @@ fun VideoPlayerOverlayControls(
     messageText: String? = null,
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .then(
+                if (isFullscreen)
+                    Modifier.windowInsetsPadding(WindowInsets.safeContent)
+                else Modifier,
+            ),
     ) {
         // Top-End Exit Fullscreen Button (fullscreen only)
         if (isFullscreen) {
@@ -134,13 +140,7 @@ fun VideoPlayerOverlayControls(
                         onUpdateBlurRegions()
                     }
                 },
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .then(
-                        if (isFullscreen)
-                            Modifier.windowInsetsPadding(WindowInsets.safeContent)
-                        else Modifier,
-                    ),
+                modifier = Modifier.align(Alignment.CenterEnd),
             )
         }
 
@@ -161,11 +161,7 @@ fun VideoPlayerOverlayControls(
                 blurRegionSpecs.remove(id)
                 onUpdateBlurRegions()
             },
-            modifier = Modifier.align(Alignment.BottomCenter).then(
-                if (isFullscreen)
-                    Modifier.windowInsetsPadding(WindowInsets.safeContent)
-                else Modifier,
-            ),
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }

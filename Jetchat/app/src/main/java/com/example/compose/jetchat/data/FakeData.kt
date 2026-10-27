@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.data
 
+import androidx.annotation.VisibleForTesting
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.Message
@@ -247,20 +248,40 @@ private val channels = mapOf(
     "droidcon-nyc" to FakeChannel(members = 7, messages = emptyList()),
 )
 
+private val channelStates = mutableMapOf<String, ConversationUiState>()
+
 /**
- * Creates the initial [ConversationUiState] of [channel] from the fake data. Unknown channels are
- * empty.
+ * Returns the [ConversationUiState] of [channel] from the fake data, creating it on first access.
+ * Unknown channels are empty.
  */
-fun conversationUiState(channel: String): ConversationUiState {
+fun conversationUiState(channel: String): ConversationUiState = channelStates.getOrPut(channel) {
     val fakeChannel = channels[channel] ?: FakeChannel(members = 0, messages = emptyList())
-    return ConversationUiState(
+    ConversationUiState(
         channelName = "#$channel",
         channelMembers = fakeChannel.members,
         initialMessages = fakeChannel.messages,
     )
 }
 
-val exampleUiState = conversationUiState("composers")
+/**
+ * Finds a [Message] by its [messageId] across all conversations.
+ */
+fun findMessage(messageId: String): Message? = channelStates.values.firstNotNullOfOrNull { state ->
+    state.messages.find { it.id == messageId }
+} ?: channels.values.firstNotNullOfOrNull { channel ->
+    channel.messages.find { it.id == messageId }
+}
+
+/**
+ * Clears cached [ConversationUiState] instances so tests start with fresh channel data.
+ */
+@VisibleForTesting
+internal fun resetFakeData() {
+    channelStates.clear()
+}
+
+val exampleUiState: ConversationUiState
+    get() = conversationUiState("composers")
 
 /**
  * Example colleague profile
