@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.compose.jetchat.conversation
 
 import android.content.ClipDescription
+import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
@@ -33,8 +34,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,25 +58,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBarsIgnoringVisibility
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -91,7 +90,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,17 +98,19 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.blur.BlurRadiusSpec
 import androidx.compose.ui.graphics.blur.BlurStop
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -121,6 +121,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastSumBy
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.blur.backdropBlur
@@ -128,8 +129,12 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.rememberHeartReactionMeshGradientPainter
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
-import com.example.compose.jetchat.video.FullScreenVideoPlayer
+import com.example.compose.jetchat.video.LocalAnimatedVisibilityScope
+import com.example.compose.jetchat.video.LocalSharedTransitionScope
 import com.example.compose.jetchat.video.VideoThumbnail
+import com.example.compose.jetchat.video.videoSharedElementKey
+import java.util.Date
+import java.util.UUID
 import kotlin.math.PI
 import kotlin.math.sin
 import kotlinx.coroutines.launch
@@ -144,8 +149,10 @@ import kotlinx.coroutines.launch
  * when this is not null
  * @param navIconContentDescription Accessibility description of what [onNavIconPressed] does
  * @param onMessageLikeToggled Sends an event up when the user double taps a message to like it
+ * @param onVideoClick Called when a video attachment in a message is clicked
+ * @param isReturningFromVideoPlayer Whether the conversation is currently returning from the
+ * full-screen video player
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ConversationContent(
     uiState: ConversationUiState,
@@ -154,9 +161,12 @@ fun ConversationContent(
     onNavIconPressed: (() -> Unit)? = { },
     navIconContentDescription: String = stringResource(R.string.navigation_drawer_open),
     onMessageLikeToggled: (messageId: String) -> Unit = { },
+    onVideoClick: (videoUri: String, messageId: String) -> Unit = { _, _ -> },
+    isReturningFromVideoPlayer: Boolean = false,
 ) {
+    val context = LocalContext.current
     val authorMe = stringResource(R.string.author_me)
-    val timeNow = stringResource(id = R.string.now)
+    fun formatCurrentTime(): String = DateFormat.getTimeFormat(context).format(Date())
 
     val scrollState = rememberLazyListState()
     val topBarState = rememberTopAppBarState()
@@ -171,7 +181,7 @@ fun ConversationContent(
         mutableStateOf(Color.Transparent)
     }
 
-    val dragAndDropCallback = remember {
+    val dragAndDropCallback = remember(uiState, context, authorMe) {
         object : DragAndDropTarget {
             override fun onDrop(event: DragAndDropEvent): Boolean {
                 val clipData = event.toAndroidDragEvent().clipData
@@ -181,7 +191,12 @@ fun ConversationContent(
                 }
 
                 uiState.addMessage(
-                    Message(authorMe, clipData.getItemAt(0).text.toString(), timeNow),
+                    Message(
+                        author = authorMe,
+                        content = clipData.getItemAt(0).text.toString(),
+                        timestamp = formatCurrentTime(),
+                        id = UUID.randomUUID().toString(),
+                    ),
                 )
 
                 return true
@@ -210,9 +225,6 @@ fun ConversationContent(
         }
     }
 
-    var activeVideoUri by rememberSaveable { mutableStateOf<String?>(null) }
-    var activeVideoText by rememberSaveable { mutableStateOf<String?>(null) }
-
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -232,7 +244,8 @@ fun ConversationContent(
                             Message(
                                 author = authorMe,
                                 content = annotatedContent.text,
-                                timestamp = timeNow,
+                                timestamp = formatCurrentTime(),
+                                id = UUID.randomUUID().toString(),
                                 annotatedContent = annotatedContent.takeIf { it.spanStyles.isNotEmpty() },
                             ),
                         )
@@ -242,8 +255,9 @@ fun ConversationContent(
                             Message(
                                 author = authorMe,
                                 content = caption.text,
-                                timestamp = timeNow,
+                                timestamp = formatCurrentTime(),
                                 videoUri = videoUri,
+                                id = UUID.randomUUID().toString(),
                                 annotatedContent = caption.takeIf { it.spanStyles.isNotEmpty() },
                             ),
                         )
@@ -257,6 +271,7 @@ fun ConversationContent(
                     // navigation bar
                     modifier = Modifier
                         .imePadding()
+                        .userInputReturnFromVideoTransition(isReturningFromVideoPlayer)
                         .backdropBlur(
                             fallbackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                             elevation = 0.dp,
@@ -267,13 +282,13 @@ fun ConversationContent(
                                 ),
                             ),
                         )
-                        .navigationBarsPadding(),
+                        .windowInsetsPadding(WindowInsets.navigationBarsIgnoringVisibility),
                 )
             },
             // Exclude ime and navigation bar padding so this can be added by the UserInput composable
             contentWindowInsets = ScaffoldDefaults
                 .contentWindowInsets
-                .exclude(WindowInsets.navigationBars)
+                .exclude(WindowInsets.navigationBarsIgnoringVisibility)
                 .exclude(WindowInsets.ime),
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
@@ -314,36 +329,15 @@ fun ConversationContent(
                         modifier = Modifier.weight(1f),
                         scrollState = scrollState,
                         contentPadding = paddingValues,
-                        onVideoClick = { videoUri, messageText ->
-                            activeVideoUri = videoUri
-                            activeVideoText = messageText
-                        },
+                        onVideoClick = onVideoClick,
                         onMessageLikeToggled = onMessageLikeToggled,
                     )
                 }
             }
         }
-
-        AnimatedVisibility(
-            visible = activeVideoUri != null,
-            enter = fadeIn(animationSpec = tween(200)),
-            exit = fadeOut(animationSpec = tween(200)),
-        ) {
-            activeVideoUri?.let { uri ->
-                FullScreenVideoPlayer(
-                    videoUri = uri,
-                    messageText = activeVideoText,
-                    onDismiss = {
-                        activeVideoUri = null
-                        activeVideoText = null
-                    },
-                )
-            }
-        }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelNameBar(
     channelName: String,
@@ -475,7 +469,7 @@ fun Messages(
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onVideoClick: (videoUri: String, messageId: String) -> Unit = { _, _ -> },
     onMessageLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -521,18 +515,23 @@ fun Messages(
                 }
             }
         }
-        // Jump to bottom button shows up when user scrolls past a threshold.
-        // Convert to pixels:
-        val jumpThreshold = with(LocalDensity.current) {
-            JumpToBottomThreshold.toPx()
-        }
-
-        // Show the button if the first visible item is not the first one or if the offset is
-        // greater than the threshold.
-        val jumpToBottomButtonEnabled by remember {
+        // Jump to bottom button only shows up once the user has scrolled further away from the
+        // bottom than a multiple of the viewport height. Items below the first visible one are
+        // not measured, so their size is estimated from the average size of the visible items.
+        val jumpToBottomButtonEnabled by remember(scrollState) {
             derivedStateOf {
-                scrollState.firstVisibleItemIndex != 0 ||
-                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                val layoutInfo = scrollState.layoutInfo
+                val visibleItems = layoutInfo.visibleItemsInfo
+                val viewportHeight = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
+                if (visibleItems.isEmpty() || viewportHeight <= 0) {
+                    false
+                } else {
+                    val averageItemSize = visibleItems.fastSumBy { it.size } / visibleItems.size
+                    val estimatedDistanceFromBottom =
+                        scrollState.firstVisibleItemIndex * averageItemSize +
+                            scrollState.firstVisibleItemScrollOffset
+                    estimatedDistanceFromBottom > viewportHeight * JumpToBottomViewportThreshold
+                }
             }
         }
 
@@ -558,7 +557,7 @@ fun Message(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onVideoClick: (videoUri: String, messageId: String) -> Unit = { _, _ -> },
     onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val borderColor = if (isUserMe) {
@@ -645,7 +644,7 @@ fun AuthorAndTextMessage(
     isLastMessageByAuthor: Boolean,
     authorClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onVideoClick: (videoUri: String, messageId: String) -> Unit = { _, _ -> },
     onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     Column(
@@ -738,7 +737,7 @@ fun ChatItemBubble(
     message: Message,
     isUserMe: Boolean,
     authorClicked: (String) -> Unit,
-    onVideoClick: (videoUri: String, messageText: String) -> Unit = { _, _ -> },
+    onVideoClick: (videoUri: String, messageId: String) -> Unit = { _, _ -> },
     onLikeToggled: (messageId: String) -> Unit = {},
 ) {
     val isLiked = message.isLiked
@@ -887,14 +886,15 @@ fun ChatItemBubble(
                 ) {
                     VideoThumbnail(
                         videoUri = videoUri,
-                        onClick = { onVideoClick(videoUri, message.content) },
+                        onClick = { onVideoClick(videoUri, message.id) },
                         shape = bubbleShape,
+                        sharedElementKey = videoSharedElementKey(message.id, videoUri),
+                        isUserMe = isUserMe,
                         modifier = Modifier
                             .padding(if (isLiked) 8.dp else 0.dp)
                             .widthIn(max = 260.dp)
                             .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(bubbleShape),
+                            .height(200.dp),
                     )
                 }
             }
@@ -973,4 +973,58 @@ fun DayHeaderPrev() {
     DayHeader("Aug 6")
 }
 
-private val JumpToBottomThreshold = 56.dp
+/**
+ * Animates [UserInput] back in when the conversation returns from the full-screen video player:
+ * it is rendered in the shared transition overlay above the shrinking video frame and slides up
+ * from the bottom. Outside of a shared transition this only clips the drop shadow to the pane.
+ */
+@Composable
+private fun Modifier.userInputReturnFromVideoTransition(isReturningFromVideoPlayer: Boolean): Modifier {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+    val transitionModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+        with(sharedTransitionScope) {
+            with(animatedVisibilityScope) {
+                Modifier
+                    .renderInSharedTransitionScopeOverlay(
+                        renderInOverlay = { isReturningFromVideoPlayer },
+                        zIndexInOverlay = 1f,
+                    )
+                    .animateEnterExit(
+                        enter = if (isReturningFromVideoPlayer) {
+                            slideInVertically(
+                                animationSpec = tween(durationMillis = 250, delayMillis = 50),
+                                initialOffsetY = { fullHeight -> fullHeight },
+                            )
+                        } else {
+                            EnterTransition.None
+                        },
+                        exit = ExitTransition.None,
+                    )
+            }
+        }
+    } else {
+        Modifier
+    }
+    return this
+        .then(transitionModifier)
+        .drawWithContent {
+            // Clip horizontally to the conversation pane bounds so the shadow does not bleed onto
+            // ChatList while rendered in the shared transition overlay, while leaving headroom
+            // above for the top drop shadow.
+            clipRect(
+                left = 0f,
+                top = -UserInputTopShadowHeadroom.toPx(),
+                right = size.width,
+                bottom = size.height,
+            ) {
+                this@drawWithContent.drawContent()
+            }
+        }
+}
+
+/**
+ * The jump to bottom button is shown once the list is scrolled further than this many viewport
+ * heights away from the bottom.
+ */
+private const val JumpToBottomViewportThreshold = 1.5f

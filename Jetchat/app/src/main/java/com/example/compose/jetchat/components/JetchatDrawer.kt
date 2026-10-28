@@ -31,12 +31,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsIgnoringVisibility
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
@@ -73,9 +74,13 @@ import com.example.compose.jetchat.widget.WidgetReceiver
 @Composable
 fun JetchatDrawerContent(selectedKey: NavKey, onNavigate: (NavKey) -> Unit) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
-    // below the status bar (y-axis)
+    // below the status bar and caption bar (y-axis)
     Column {
-        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+        Spacer(
+            Modifier.windowInsetsTopHeight(
+                WindowInsets.statusBarsIgnoringVisibility.union(WindowInsets.captionBar),
+            ),
+        )
         DrawerHeader()
         DividerItem()
         DrawerItemHeader("Chats")
