@@ -21,12 +21,15 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 /**
- * The conversation screen of [channel], which is the start destination and always the root of the
- * back stack.
+ * The list of chats and recent profiles, shown in the list pane of the list-detail layout.
  *
  * The keys are [Serializable] and implement [NavKey] so that the back stack created with
  * `rememberNavBackStack` survives configuration changes and process death.
  */
+@Serializable
+data object ChatList : NavKey
+
+/** The conversation screen of [channel]. */
 @Serializable
 data class Conversation(val channel: String) : NavKey
 
@@ -35,21 +38,26 @@ data class Conversation(val channel: String) : NavKey
 data class Profile(val userId: String) : NavKey
 
 /**
- * Opens the conversation of [channel]. The conversation is always the root of the back stack, so
- * this replaces the current conversation and pops everything above it.
+ * Opens the conversation of [channel]. Only keeps [ChatList] and the selected conversation so
+ * that profiles opened before are popped off the back stack.
  */
 fun NavBackStack<NavKey>.openConversation(channel: String) {
-    removeAll { it !is Conversation }
-    this[0] = Conversation(channel)
+    val conversation = Conversation(channel)
+    removeAll { it != ChatList && it != conversation }
+    if (lastOrNull() != conversation) {
+        add(conversation)
+    }
 }
 
 /**
- * Opens the profile of the user identified by [userId] on top of the current screen. The same
- * profile is never stacked twice, e.g. when an avatar is tapped repeatedly.
+ * Opens the profile of the user identified by [userId] on top of the current screen, replacing
+ * any profile that is already shown instead of stacking profiles.
  */
 fun NavBackStack<NavKey>.openProfile(userId: String) {
     val profile = Profile(userId)
-    if (lastOrNull() != profile) {
-        add(profile)
+    when (lastOrNull()) {
+        profile -> Unit
+        is Profile -> this[lastIndex] = profile
+        else -> add(profile)
     }
 }

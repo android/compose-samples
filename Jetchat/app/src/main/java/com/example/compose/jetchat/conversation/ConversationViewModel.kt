@@ -20,8 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.compose.jetchat.data.exampleUiState
-import com.example.compose.jetchat.data.initialMessages
+import com.example.compose.jetchat.data.conversationUiState
 
 /**
  * Holds the conversation state so it survives configuration changes, and handles message
@@ -31,13 +30,7 @@ import com.example.compose.jetchat.data.initialMessages
  */
 class ConversationViewModel(channel: String) : ViewModel() {
 
-    var uiState by mutableStateOf(
-        ConversationUiState(
-            channelName = "#$channel",
-            channelMembers = exampleUiState.channelMembers,
-            initialMessages = initialMessages,
-        ),
-    )
+    var uiState by mutableStateOf(conversationUiState(channel))
         private set
 
     fun toggleLike(messageId: String) {
