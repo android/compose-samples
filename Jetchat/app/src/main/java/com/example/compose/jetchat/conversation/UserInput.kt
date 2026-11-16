@@ -148,6 +148,17 @@ fun UserInputPreview() {
     UserInput(onMessageSent = {})
 }
 
+private val UserInputIdleShadowRadius = 24.dp
+private val UserInputFocusedShadowRadius = 10.dp
+private val UserInputIdleShadowOffsetY = 4.dp
+private val UserInputFocusedShadowOffsetY = 6.dp
+
+/**
+ * Extra vertical headroom above [UserInput] needed so its idle drop shadow ([UserInputIdleShadowRadius])
+ * is not clipped when clipping horizontally to the conversation pane bounds.
+ */
+internal val UserInputTopShadowHeadroom = UserInputIdleShadowRadius + 8.dp
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(
@@ -297,10 +308,18 @@ fun UserInput(
                         } else {
                             Modifier.dropShadow(cardShape) {
                                 val p = focusProgress.value
-                                radius = lerp(24.dp.toPx(), 10.dp.toPx(), p)
+                                radius = lerp(
+                                    UserInputIdleShadowRadius.toPx(),
+                                    UserInputFocusedShadowRadius.toPx(),
+                                    p,
+                                )
                                 offset = Offset(
                                     x = lerp(0f, -4.dp.toPx(), p),
-                                    y = lerp(4.dp.toPx(), 6.dp.toPx(), p),
+                                    y = lerp(
+                                        UserInputIdleShadowOffsetY.toPx(),
+                                        UserInputFocusedShadowOffsetY.toPx(),
+                                        p,
+                                    ),
                                 )
                                 color = shadowColor
                                 alpha = lerp(0.25f, 0.6f, p)
