@@ -37,11 +37,13 @@ fun JetchatDrawer(
     selectedKey: NavKey,
     onNavigate: (NavKey) -> Unit,
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),
+    gesturesEnabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     JetchatTheme {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = gesturesEnabled,
             drawerContent = {
                 ModalDrawerSheet(
                     drawerState = drawerState,

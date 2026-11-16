@@ -16,21 +16,47 @@
 
 package com.example.compose.jetchat
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue.Closed
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.LocalListDetailSceneScope
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.paneTitle
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.compose.jetchat.components.JetchatDrawer
+import com.example.compose.jetchat.components.JetchatDrawerContent
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationViewModel
+import com.example.compose.jetchat.navigation.ChatList
 import com.example.compose.jetchat.navigation.Conversation
 import com.example.compose.jetchat.navigation.Profile
 import com.example.compose.jetchat.navigation.openConversation
@@ -46,30 +72,68 @@ import kotlinx.coroutines.launch
  * The back stack is the single source of truth for navigation. The drawer derives its selection
  * from it and sends navigation events back to it, following unidirectional data flow.
  */
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun JetchatApp() {
     // The back stack survives configuration changes and process death
-    val backStack = rememberNavBackStack(Conversation("composers"))
+    val backStack = rememberNavBackStack(ChatList, Conversation("composers"))
     val drawerState = rememberDrawerState(initialValue = Closed)
     val scope = rememberCoroutineScope()
 
+    // Override the defaults so that there isn't a horizontal space between the panes
+    val windowAdaptiveInfo = currentWindowAdaptiveInfoV2()
+    val directive = remember(windowAdaptiveInfo) {
+        calculatePaneScaffoldDirective(windowAdaptiveInfo)
+            .copy(horizontalPartitionSpacerSize = 0.dp)
+    }
+    val isMultiPane = directive.maxHorizontalPartitions > 1
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(directive = directive)
+
+    LaunchedEffect(isMultiPane) {
+        if (isMultiPane && drawerState.isOpen) {
+            drawerState.close()
+        }
+    }
+
+    val selectedKey = backStack.last()
+    val onNavigate: (NavKey) -> Unit = { key ->
+        when (key) {
+            is Conversation -> backStack.openConversation(key.channel)
+            is Profile -> backStack.openProfile(key.userId)
+        }
+        scope.launch {
+            drawerState.close()
+        }
+    }
+
+    // On single-pane windows the chat list is shown in the drawer instead of a screen. The
+    // conversation is never popped, so the displayed back stack is never empty.
+    val displayBackStack = if (isMultiPane) {
+        backStack
+    } else {
+        backStack.filter { it !is ChatList }.also {
+            check(it.isNotEmpty()) { "A conversation must always be on the back stack" }
+        }
+    }
+
     JetchatDrawer(
         // Derived from the back stack, so it can't get out of sync with the displayed screen
-        selectedKey = backStack.last(),
-        onNavigate = { key ->
-            when (key) {
-                is Conversation -> backStack.openConversation(key.channel)
-                is Profile -> backStack.openProfile(key.userId)
-            }
+        selectedKey = selectedKey,
+        onNavigate = onNavigate,
+        drawerState = drawerState,
+        // The list pane replaces the drawer on wide windows
+        gesturesEnabled = !isMultiPane,
+    ) {
+        BackHandler(enabled = drawerState.isOpen) {
             scope.launch {
                 drawerState.close()
             }
-        },
-        drawerState = drawerState,
-    ) {
+        }
+
         NavDisplay(
-            backStack = backStack,
+            backStack = displayBackStack,
             onBack = { backStack.removeLastOrNull() },
+            sceneStrategies = listOf(listDetailStrategy),
             // Scope the ViewModels to their entry. The ViewModelStoreNavEntryDecorator
             // requires the default SaveableStateHolderNavEntryDecorator, which saves the
             // state of each entry.
@@ -78,22 +142,71 @@ fun JetchatApp() {
                 rememberViewModelStoreNavEntryDecorator(),
             ),
             entryProvider = entryProvider {
-                entry<Conversation> { key ->
+                entry<ChatList>(
+                    metadata = ListDetailSceneStrategy.listPane(
+                        detailPlaceholder = { ChatPlaceholder() },
+                    ),
+                ) {
+                    val chatListTitle = stringResource(R.string.chat_list)
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .semantics { paneTitle = chatListTitle },
+                        color = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                    ) {
+                        JetchatDrawerContent(
+                            selectedKey = selectedKey,
+                            onNavigate = onNavigate,
+                        )
+                    }
+                }
+                entry<Conversation>(
+                    metadata = ListDetailSceneStrategy.detailPane(),
+                ) { key ->
                     // The channel comes from the key, so pass it when the ViewModel of this
                     // entry is created
                     val viewModel = viewModel { ConversationViewModel(channel = key.channel) }
+                    // The channel name shows the chat list: it opens the drawer on single-pane
+                    // windows, where there is no list-detail scene, and pops the profile that
+                    // hides the list pane on wide windows. Whether the list pane is shown comes
+                    // from the scaffold, as it depends on the number of panes: on 3-pane windows
+                    // it stays next to the conversation while a profile is shown.
+                    val sceneScope = LocalListDetailSceneScope.current
+                    val isListPaneShown = sceneScope?.scaffoldTransitionScope
+                        ?.scaffoldStateTransition?.targetState
+                        ?.get(ListDetailPaneScaffoldRole.List) == PaneAdaptedValue.Expanded
                     ConversationContent(
                         uiState = viewModel.uiState,
                         navigateToProfile = { userId -> backStack.openProfile(userId) },
-                        onNavIconPressed = {
-                            scope.launch {
-                                drawerState.open()
+                        onNavIconPressed = when {
+                            sceneScope == null -> {
+                                {
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
+                                }
+                            }
+
+                            isListPaneShown -> null
+
+                            else -> {
+                                { backStack.removeLastOrNull() }
                             }
                         },
+                        navIconContentDescription = stringResource(
+                            if (sceneScope == null) {
+                                R.string.navigation_drawer_open
+                            } else {
+                                R.string.show_chat_list
+                            },
+                        ),
                         onMessageLikeToggled = viewModel::toggleLike,
                     )
                 }
-                entry<Profile> { key ->
+                entry<Profile>(
+                    metadata = ListDetailSceneStrategy.extraPane(),
+                ) { key ->
                     // The user id comes from the key, so set it when the ViewModel of this
                     // entry is created
                     val viewModel = viewModel {
@@ -111,5 +224,23 @@ fun JetchatApp() {
                 }
             },
         )
+    }
+}
+
+/** Shown in the detail pane when no conversation is selected. */
+@Composable
+private fun ChatPlaceholder() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = stringResource(R.string.select_a_chat),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(24.dp),
+            )
+        }
     }
 }
