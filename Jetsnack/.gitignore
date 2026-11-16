@@ -14,3 +14,4 @@
 .cxx
 local.properties
 .kotlin/
+benchmark_reports/
