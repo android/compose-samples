@@ -151,7 +151,7 @@ private fun ProfileHeader(data: ProfileScreenState) {
             modifier = Modifier
                 .fillMaxWidth()
                 .blur {
-                    radius = BlurRadiusSpec.verticalGradient(
+                    blurRadiusSpec = BlurRadiusSpec.verticalGradient(
                         listOf(
                             BlurStop(0.5f, 0.dp),
                             BlurStop(1.0f, 32.dp),
