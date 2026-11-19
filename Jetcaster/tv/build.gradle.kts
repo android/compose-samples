@@ -30,6 +30,7 @@ android {
         libs.versions.compileSdk
             .get()
             .toInt()
+    compileSdkMinor = 2
 
     defaultConfig {
         applicationId = "com.example.jetcaster"
