@@ -29,6 +29,7 @@ android {
         libs.versions.compileSdk
             .get()
             .toInt()
+    compileSdkMinor = 2
     namespace = "com.example.jetcaster"
 
     defaultConfig {
