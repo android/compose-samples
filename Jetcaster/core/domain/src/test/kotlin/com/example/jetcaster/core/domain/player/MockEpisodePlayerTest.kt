@@ -23,6 +23,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -199,5 +200,37 @@ class MockEpisodePlayerTest {
         mockEpisodePlayer.previous()
         assertEquals(0, mockEpisodePlayer.playerState.value.timeElapsed.toMillis())
         assertEquals(testEpisodes[0], mockEpisodePlayer.currentEpisode)
+    }
+
+    @Test
+    fun whenPlayListOfEpisodes_firstEpisodeIsNotQueuedTwice() = runTest(testDispatcher) {
+        // Same sequence of calls as LatestEpisodeViewModel.onPlayEpisodes()
+        mockEpisodePlayer.currentEpisode = testEpisodes[0]
+
+        mockEpisodePlayer.play(testEpisodes)
+        runCurrent()
+
+        assertEquals(testEpisodes[0], mockEpisodePlayer.currentEpisode)
+        assertEquals(testEpisodes.drop(1), mockEpisodePlayer.playerState.value.queue)
+    }
+
+    @Test
+    fun whenPlayListOfEpisodes_alreadyQueuedEpisodeIsNotDuplicated() = runTest(testDispatcher) {
+        val playingEpisode = PlayerEpisode(
+            uri = "currentEpisode",
+            duration = Duration.ofSeconds(60),
+        )
+        mockEpisodePlayer.currentEpisode = playingEpisode
+        mockEpisodePlayer.addToQueue(testEpisodes[0])
+        mockEpisodePlayer.addToQueue(testEpisodes[1])
+
+        // testEpisodes[1] is in the queue already, it should only be played once
+        mockEpisodePlayer.play(listOf(testEpisodes[1], testEpisodes[2]))
+        runCurrent()
+
+        assertEquals(
+            listOf(testEpisodes[2], playingEpisode, testEpisodes[0]),
+            mockEpisodePlayer.playerState.value.queue,
+        )
     }
 }
