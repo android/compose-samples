@@ -62,8 +62,11 @@ class NavigationTest {
         // Press back
         Espresso.pressBack()
 
-        // Check that we're home
+        // Check that we're home and the profile was popped
         assertConversationIsDisplayed()
+        composeTestRule
+            .onNodeWithText(composeTestRule.activity.getString(R.string.display_name))
+            .assertDoesNotExist()
     }
 
     /**
@@ -89,29 +92,69 @@ class NavigationTest {
     }
 
     private fun assertConversationIsDisplayed() {
-        // The channel name is shown in the conversation's app bar (and in the drawer, which is excluded)
-        composeTestRule.onNode(hasText("composers") and !isInDrawer()).assertIsDisplayed()
+        // The channel name is shown in the conversation's app bar (and in the chat list, which
+        // is excluded)
+        composeTestRule.onNode(hasText("composers") and !isInAnyChatList()).assertIsDisplayed()
     }
 
     private fun navigateToProfile(name: String) {
-        composeTestRule.onNodeWithContentDescription(
-            composeTestRule.activity.getString(R.string.navigation_drawer_open),
-        ).performClick()
+        if (!chatListIsPane) {
+            composeTestRule.onNodeWithContentDescription(
+                composeTestRule.activity.getString(R.string.navigation_drawer_open),
+            ).performClick()
+        }
 
-        composeTestRule.onNode(hasText(name) and isInDrawer()).performClick()
+        composeTestRule.onNode(hasText(name) and isInChatList()).performClick()
     }
 
-    private fun isInDrawer() = hasAnyAncestor(isDrawer())
+    private fun navigateToHomeFromProfile() {
+        if (chatListIsPane) {
+            // On two-pane windows the profile hides the list pane; the channel name brings it
+            // back. On wider windows the list pane stays next to the conversation.
+            if (!isListPaneDisplayed()) {
+                composeTestRule.onNodeWithContentDescription(
+                    composeTestRule.activity.getString(R.string.show_chat_list),
+                ).performClick()
+            }
+        } else {
+            composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
+                swipeRight()
+            }
+        }
+        composeTestRule.onNode(hasText("composers") and isInChatList()).performClick()
+    }
+
+    /**
+     * Whether the chat list is shown in the list pane next to the conversation (wide windows)
+     * rather than in the navigation drawer (single-pane windows).
+     *
+     * Resolved on first use, which must happen while the conversation is on top of the back
+     * stack: on two-pane windows a profile hides the list pane.
+     */
+    private val chatListIsPane: Boolean by lazy { isListPaneDisplayed() }
+
+    private fun isListPaneDisplayed(): Boolean = try {
+        composeTestRule.onNode(isListPane()).assertIsDisplayed()
+        true
+    } catch (e: AssertionError) {
+        false
+    }
+
+    /**
+     * Matches nodes in the container that currently shows the chat list. The closed drawer keeps
+     * its content composed on wide windows, so the two containers are never matched together.
+     */
+    private fun isInChatList() = hasAnyAncestor(if (chatListIsPane) isListPane() else isDrawer())
+
+    private fun isInAnyChatList() = hasAnyAncestor(isDrawer() or isListPane())
 
     private fun isDrawer() = SemanticsMatcher.expectValue(
         SemanticsProperties.PaneTitle,
         composeTestRule.activity.getString(androidx.compose.ui.R.string.navigation_menu),
     )
 
-    private fun navigateToHomeFromProfile() {
-        composeTestRule.onAllNodes(isRoot()).onFirst().performTouchInput {
-            swipeRight()
-        }
-        composeTestRule.onNode(hasText("composers") and isInDrawer()).performClick()
-    }
+    private fun isListPane() = SemanticsMatcher.expectValue(
+        SemanticsProperties.PaneTitle,
+        composeTestRule.activity.getString(R.string.chat_list),
+    )
 }
