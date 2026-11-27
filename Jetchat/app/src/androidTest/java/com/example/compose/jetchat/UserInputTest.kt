@@ -40,7 +40,9 @@ import androidx.test.espresso.Espresso
 import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.KeyboardShownKey
 import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.data.resetFakeData
 import com.example.compose.jetchat.theme.JetchatTheme
+import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -58,16 +60,23 @@ class UserInputTest {
 
     @Before
     fun setUp() {
+        resetFakeData()
         // Launch the conversation screen
+        val uiState = exampleUiState
         composeTestRule.setContent {
             JetchatTheme {
                 ConversationContent(
-                    uiState = exampleUiState,
+                    uiState = uiState,
                     navigateToProfile = { },
                     onNavIconPressed = { },
                 )
             }
         }
+    }
+
+    @After
+    fun tearDown() {
+        resetFakeData()
     }
 
     @Test

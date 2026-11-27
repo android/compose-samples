@@ -30,13 +30,11 @@
     <string name="conversations">Conversations</string>
     <string name="chat_list" description="Accessibility title of the pane that shows the list of chats and recent profiles next to the conversation on wide screens [CHAR_LIMIT=40]">Chat list</string>
     <string name="show_chat_list" description="Accessibility description of the channel name button in the conversation on wide screens, which closes the profile to show the chat list pane again [CHAR_LIMIT=40]">Show chat list</string>
-    <string name="select_a_chat" description="Placeholder text shown in the conversation detail pane on wide screens when no chat is selected [CHAR_LIMIT=60]">Select a chat to start messaging</string>
     <string name="no_messages" description="Empty state message shown in a chat conversation when there are no messages in the channel yet [CHAR_LIMIT=40]">No messages yet</string>
     <string name="profile">Profile</string>
     <string name="jumpBottom">Jump to bottom</string>
     <string name="send">Send</string>
     <string name="author_me">me</string>
-    <string name="now">8:30 PM</string>
     <string name="members">%d members</string>
     <string name="textfield_hint">Send a message</string>
     <string name="emojis_label">Emojis</string>

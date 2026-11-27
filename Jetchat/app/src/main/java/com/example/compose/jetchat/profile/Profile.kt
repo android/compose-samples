@@ -21,15 +21,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBarsIgnoringVisibility
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -42,7 +43,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
@@ -91,7 +91,7 @@ fun ProfileScreen(userData: ProfileScreenState) {
 
 @Composable
 private fun UserInfoFields(userData: ProfileScreenState) {
-    Column(modifier = Modifier.navigationBarsPadding()) {
+    Column(modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBarsIgnoringVisibility)) {
         Spacer(modifier = Modifier.height(40.dp))
 
         NameAndPosition(userData)
@@ -202,7 +202,7 @@ fun ProfileFab(extended: Boolean, userIsMe: Boolean, modifier: Modifier = Modifi
             onClick = onFabClicked,
             modifier = modifier
                 .padding(16.dp)
-                .navigationBarsPadding()
+                .windowInsetsPadding(WindowInsets.navigationBarsIgnoringVisibility)
                 .height(48.dp)
                 .widthIn(min = 48.dp),
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
